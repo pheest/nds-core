@@ -17,8 +17,12 @@ LIBS = -lnds3
 SRCS = oscilloscope.cpp 
  
 OBJS = $(SRCS:.cpp=.o)
+
+all: $(TARGETDIR)/$(TARGET)
+
 # Rules for building
 $(TARGETDIR)/$(TARGET): $(OBJS)
+	mkdir -p $(TARGETDIR)
 	$(CXX) $(LINK) $(LDFLAGS) -o $@ $^ $(LIBS)
  
 .PHONY: clean
