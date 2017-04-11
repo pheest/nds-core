@@ -62,10 +62,11 @@ $(SHAREDLIBRARY): $(OBJECTS)
 $(STATICLIBRARY): $(OBJECTS)
 	$(AR) rcs $@ $^
 	
-$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp
-	mkdir -p $(OBJECT_DIR)
+$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(OBJECT_DIR)
 	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
 
-$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c
-	mkdir -p $(OBJECT_DIR)
+$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c $(OBJECT_DIR)
 	$(C) $(CFLAGS) $(INCLUDES) $< -o $@
+
+$(OBJECT_DIR):
+	mkdir -p $(OBJECT_DIR)
