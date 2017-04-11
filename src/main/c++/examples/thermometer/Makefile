@@ -1,13 +1,14 @@
 CXX = g++
 
-# We enable the c++0x flag, plus we define the NDS3_DLL preprocessor macro.
-CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL
+CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include
+LDFLAGS = -L../../../../lib
 
+TARGETDIR = ../../../lib
 # Flags passed to gcc during linking
 LINK = -shared -fPIC -Wl,-as-needed
 
 # Name of our device library
-TARGET = libthermometer.so
+TARGET = libnds3-dev-thermometer.so
  
 # We specify that we depend on NDS3
 LIBS = -lnds3
@@ -17,8 +18,8 @@ SRCS = thermometer.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 # Rules for building
-$(TARGET): $(OBJS)
-	$(CXX) $(LINK) -o $@ $^ $(LIBS)
+$(TARGETDIR)/$(TARGET): $(OBJS)
+	$(CXX) $(LINK) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 .PHONY: clean
 clean:
