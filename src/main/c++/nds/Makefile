@@ -64,7 +64,7 @@ $(STATICLIBRARY): $(OBJECTS)
 	
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	mkdir -p $(OBJECT_DIR)
-        $(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
 
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c
 	mkdir -p $(OBJECT_DIR)
