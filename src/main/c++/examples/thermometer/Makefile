@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include
 LDFLAGS = -L../../../../lib
 
-TARGETDIR = ../../../lib
+TARGETDIR = ../../../../lib
 # Flags passed to gcc during linking
 LINK = -shared -fPIC -Wl,-as-needed
 
