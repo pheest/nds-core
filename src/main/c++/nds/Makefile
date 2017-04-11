@@ -24,9 +24,9 @@ LIBNAME=nds3
 
 LIBRARIES=
 LIBRARY_DIRS=
-INCLUDE_DIRS=. ../include $(CODAC_ROOT)/include $(EPICS_BASE)/include/os/Linux $(EPICS_BASE)/include/compiler/gcc $(EPICS_BASE)/include
+INCLUDE_DIRS=. ../include $(CODAC_ROOT)/include
 
-TARGET=../../../../target
+TARGET=../../..
 LIBRARY_DIR=$(TARGET)/lib
 OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
 SOURCE_DIR=.
@@ -34,14 +34,14 @@ SOURCE_DIR=.
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 INCLUDES=$(foreach inc,$(INCLUDE_DIRS),-I$(inc))
-LDLIBS=-L$(CODAC_ROOT)/lib -L$(EPICS_BASE)/lib/$(EPICS_HOST_ARCH) $(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) $(foreach libs,$(LIBRARIES),-l$(libs))
+LDLIBS=-L$(CODAC_ROOT)/lib $(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) $(foreach libs,$(LIBRARIES),-l$(libs))
 SOURCES=$(SOURCE_DIR)/$(wildcard *.cpp)
 OBJECTS=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
 C=gcc
 CC=g++
 CFLAGS=-c -Wall -fPIC
-CCFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden
+CXXFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden -DNDS3_DLL -DNDS3_DLL_EXPORTS
 LDFLAGS= -shared
 
 
@@ -64,7 +64,7 @@ $(STATICLIBRARY): $(OBJECTS)
 	
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	mkdir -p $(OBJECT_DIR)
-	$(CC) $(CCFLAGS) $(INCLUDES) $< -o $@
+        $(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
 
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c
 	mkdir -p $(OBJECT_DIR)
