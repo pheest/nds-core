@@ -74,6 +74,12 @@
                         <package develof="nds3-core">
                             <include type="file" source="main/c++/include/nds3" target="include/" />
                         </package>
+                        <package unitPrefix="false" name="nds3-examples">
+                            <include type="library" name="nds3-dev-oscilloscope" />
+                            <include type="library" name="nds3-dev-oscilloscopemultichannel" />
+                            <include type="library" name="nds3-dev-thermometer" />
+                            <requires codac="true">nds3-core</requires>
+                        </package>
                     </packaging>
                 </configuration>
              </plugin>
