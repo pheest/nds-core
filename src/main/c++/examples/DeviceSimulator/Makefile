@@ -1,7 +1,7 @@
 CXX = g++
  
-CXXFLAGS = -std=c++0x -g -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/usr/include/boost/regex
-LDFLAGS = -L../../../../lib
+CXXFLAGS = -std=c++0x -g -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/opt/codac/include -I/usr/include/boost/regex
+LDFLAGS = -L../../../../lib -L/opt/codac/lib
 
 TARGETDIR = ../../../../lib
 LINK = -shared -fPIC -Wl,-as-needed
