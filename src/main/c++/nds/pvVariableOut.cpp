@@ -7,8 +7,8 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3/pvVariableOut.h"
-#include "../include/nds3impl/pvVariableOutImpl.h"
+#include "nds3/pvVariableOut.h"
+#include "nds3/pvVariableOutImpl.h"
 
 #include <cstdint>
 #include <vector>

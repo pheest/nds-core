@@ -10,13 +10,12 @@
 #ifndef NDSPVBASEINIMPL_H
 #define NDSPVBASEINIMPL_H
 
-#include "baseImpl.h"
-#include "pvBaseImpl.h"
-#include "../nds3/definitions.h"
-
 #include <string>
 #include <set>
 #include <mutex>
+#include "nds3/baseImpl.h"
+#include "nds3/pvBaseImpl.h"
+#include "nds3/definitions.h"
 
 namespace nds
 {

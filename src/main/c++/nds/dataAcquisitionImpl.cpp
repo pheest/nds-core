@@ -7,11 +7,11 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/dataAcquisitionImpl.h"
-#include "../include/nds3impl/stateMachineImpl.h"
-#include "../include/nds3impl/pvVariableInImpl.h"
-#include "../include/nds3impl/pvVariableOutImpl.h"
-#include "../include/nds3/definitions.h"
+#include "nds3/dataAcquisitionImpl.h"
+#include "nds3/stateMachineImpl.h"
+#include "nds3/pvVariableInImpl.h"
+#include "nds3/pvVariableOutImpl.h"
+#include "nds3/definitions.h"
 
 namespace nds
 {

@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "interfaceBaseImpl.h"
 #include <tango.h>
+#include "nds3/interfaceBaseImpl.h"
 
 namespace nds
 {

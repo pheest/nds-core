@@ -7,11 +7,11 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/stateMachineImpl.h"
-#include "../include/nds3impl/pvDelegateOutImpl.h"
-#include "../include/nds3impl/pvDelegateInImpl.h"
-#include "../include/nds3impl/pvBaseImpl.h"
-#include "../include/nds3/exceptions.h"
+#include "nds3/stateMachineImpl.h"
+#include "nds3/pvDelegateOutImpl.h"
+#include "nds3/pvDelegateInImpl.h"
+#include "nds3/pvBaseImpl.h"
+#include "nds3/exceptions.h"
 #include <cstdint>
 #include <mutex>
 #include <sstream>

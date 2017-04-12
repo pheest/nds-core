@@ -7,10 +7,10 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/nodeImpl.h"
-#include "../include/nds3impl/stateMachineImpl.h"
-#include "../include/nds3impl/factoryBaseImpl.h"
-#include "../include/nds3/definitions.h"
+#include "nds3/nodeImpl.h"
+#include "nds3/stateMachineImpl.h"
+#include "nds3/factoryBaseImpl.h"
+#include "nds3/definitions.h"
 #include <memory>
 #include <mutex>
 #include <sstream>

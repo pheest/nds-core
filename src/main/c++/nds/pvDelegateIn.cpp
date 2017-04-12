@@ -7,8 +7,8 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3/pvDelegateIn.h"
-#include "../include/nds3impl/pvDelegateInImpl.h"
+#include "nds3/pvDelegateIn.h"
+#include "nds3/pvDelegateInImpl.h"
 
 #include <cstdint>
 #include <vector>

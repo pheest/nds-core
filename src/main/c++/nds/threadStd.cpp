@@ -7,7 +7,7 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/threadStd.h"
+#include "nds3/threadStd.h"
 #include <thread>
 
 namespace nds

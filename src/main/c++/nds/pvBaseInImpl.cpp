@@ -7,11 +7,11 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/pvBaseInImpl.h"
-#include "../include/nds3impl/pvBaseOutImpl.h"
-#include "../include/nds3impl/portImpl.h"
-#include "../include/nds3impl/ndsFactoryImpl.h"
-#include "../include/nds3impl/factoryBaseImpl.h"
+#include "nds3/pvBaseInImpl.h"
+#include "nds3/pvBaseOutImpl.h"
+#include "nds3/portImpl.h"
+#include "nds3/ndsFactoryImpl.h"
+#include "nds3/factoryBaseImpl.h"
 #include <sstream>
 #include <cstring>
 

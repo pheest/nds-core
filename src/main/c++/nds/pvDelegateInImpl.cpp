@@ -7,7 +7,7 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/pvDelegateInImpl.h"
+#include "nds3/pvDelegateInImpl.h"
 #include <type_traits>
 namespace nds
 {

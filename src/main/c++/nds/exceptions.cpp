@@ -7,7 +7,7 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3/exceptions.h"
+#include "nds3/exceptions.h"
 
 namespace nds
 {

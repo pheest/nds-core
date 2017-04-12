@@ -10,11 +10,10 @@
 #ifndef NDSPVBASEOUTIMPL_H
 #define NDSPVBASEOUTIMPL_H
 
-#include "baseImpl.h"
-#include "pvBaseImpl.h"
-#include "../nds3/definitions.h"
-
 #include <string>
+#include "nds3/baseImpl.h"
+#include "nds3/pvBaseImpl.h"
+#include "nds3/definitions.h"
 
 namespace nds
 {

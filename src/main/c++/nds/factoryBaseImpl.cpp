@@ -7,14 +7,14 @@
  * file included in the distribution.
  */
 
-#include "../include/nds3impl/factoryBaseImpl.h"
-#include "../include/nds3impl/ndsFactoryImpl.h"
-#include "../include/nds3impl/baseImpl.h"
-#include "../include/nds3impl/nodeImpl.h"
-#include "../include/nds3impl/threadStd.h"
-#include "../include/nds3impl/iniFileParserImpl.h"
-#include "../include/nds3/exceptions.h"
-#include "../include/nds3/factory.h"
+#include "nds3/factoryBaseImpl.h"
+#include "nds3/ndsFactoryImpl.h"
+#include "nds3/baseImpl.h"
+#include "nds3/nodeImpl.h"
+#include "nds3/threadStd.h"
+#include "nds3/iniFileParserImpl.h"
+#include "nds3/exceptions.h"
+#include "nds3/factory.h"
 
 #include <sstream>
 #include <cstdio>
