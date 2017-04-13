@@ -8,7 +8,7 @@
  */
 
 #include "nds3/iniFileParser.h"
-#include "nds3/iniFileParserImpl.h"
+#include "nds3/impl/iniFileParserImpl.h"
 
 namespace nds
 {

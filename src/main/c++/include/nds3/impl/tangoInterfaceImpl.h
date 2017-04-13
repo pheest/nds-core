@@ -7,7 +7,7 @@
 #include <vector>
 #include <set>
 #include <tango.h>
-#include "nds3/interfaceBaseImpl.h"
+#include "nds3/impl/interfaceBaseImpl.h"
 
 namespace nds
 {

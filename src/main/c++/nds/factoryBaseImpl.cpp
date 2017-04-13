@@ -7,18 +7,18 @@
  * file included in the distribution.
  */
 
-#include "nds3/factoryBaseImpl.h"
-#include "nds3/ndsFactoryImpl.h"
-#include "nds3/baseImpl.h"
-#include "nds3/nodeImpl.h"
-#include "nds3/threadStd.h"
-#include "nds3/iniFileParserImpl.h"
-#include "nds3/exceptions.h"
-#include "nds3/factory.h"
-
 #include <sstream>
 #include <cstdio>
 #include <algorithm>
+
+#include "nds3/exceptions.h"
+#include "nds3/factory.h"
+#include "nds3/impl/factoryBaseImpl.h"
+#include "nds3/impl/ndsFactoryImpl.h"
+#include "nds3/impl/baseImpl.h"
+#include "nds3/impl/nodeImpl.h"
+#include "nds3/impl/threadStd.h"
+#include "nds3/impl/iniFileParserImpl.h"
 
 namespace nds
 {

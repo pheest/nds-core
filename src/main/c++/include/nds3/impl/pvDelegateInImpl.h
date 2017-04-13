@@ -10,8 +10,8 @@
 #ifndef NDSDELEGATEPVINIMPL_H
 #define NDSDELEGATEPVINIMPL_H
 
-#include "nds3/pvBaseInImpl.h"
 #include "nds3/definitions.h"
+#include "nds3/impl/pvBaseInImpl.h"
 
 namespace nds
 {

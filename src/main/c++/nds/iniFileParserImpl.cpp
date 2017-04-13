@@ -7,10 +7,11 @@
  * file included in the distribution.
  */
 
-#include "nds3/iniFileParserImpl.h"
-#include "nds3/exceptions.h"
 #include <iostream>
 #include <sstream>
+
+#include "nds3/exceptions.h"
+#include "nds3/impl/iniFileParserImpl.h"
 
 namespace nds
 {

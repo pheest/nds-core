@@ -10,8 +10,8 @@
 #include "nds3/base.h"
 #include "nds3/port.h"
 #include "nds3/factory.h"
-#include "nds3/baseImpl.h"
-#include "nds3/threadBaseImpl.h"
+#include "nds3/impl/baseImpl.h"
+#include "nds3/impl/threadBaseImpl.h"
 
 namespace nds
 {

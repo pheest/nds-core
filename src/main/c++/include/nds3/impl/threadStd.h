@@ -11,8 +11,8 @@
 #define NDSTHREADSTD_H
 
 #include <thread>
-#include "nds3/threadBaseImpl.h"
 #include "nds3/definitions.h"
+#include "nds3/impl/threadBaseImpl.h"
 
 namespace nds
 {

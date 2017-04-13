@@ -8,7 +8,7 @@
  */
 
 #include "nds3/dataAcquisition.h"
-#include "nds3/dataAcquisitionImpl.h"
+#include "nds3/impl/dataAcquisitionImpl.h"
 
 namespace nds
 {

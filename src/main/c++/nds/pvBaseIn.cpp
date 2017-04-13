@@ -8,7 +8,7 @@
  */
 
 #include "nds3/pvBaseIn.h"
-#include "nds3/pvBaseInImpl.h"
+#include "nds3/impl/pvBaseInImpl.h"
 
 namespace nds
 {

@@ -7,13 +7,14 @@
  * file included in the distribution.
  */
 
-#include "nds3/nodeImpl.h"
-#include "nds3/stateMachineImpl.h"
-#include "nds3/factoryBaseImpl.h"
-#include "nds3/definitions.h"
 #include <memory>
 #include <mutex>
 #include <sstream>
+
+#include "nds3/definitions.h"
+#include "nds3/impl/nodeImpl.h"
+#include "nds3/impl/stateMachineImpl.h"
+#include "nds3/impl/factoryBaseImpl.h"
 
 namespace nds
 {

@@ -7,7 +7,7 @@
  * file included in the distribution.
  */
 
-#include "nds3/interfaceBaseImpl.h"
+#include "nds3/impl/interfaceBaseImpl.h"
 
 namespace nds
 {

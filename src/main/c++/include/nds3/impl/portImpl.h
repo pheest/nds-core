@@ -10,7 +10,7 @@
 #ifndef NDSPORTIMPL_H
 #define NDSPORTIMPL_H
 
-#include "nds3/nodeImpl.h"
+#include "nds3/impl/nodeImpl.h"
 
 namespace nds
 {

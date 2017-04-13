@@ -11,7 +11,7 @@
 #define NDSPVVARIABLEOUTIMPL_H
 
 #include <mutex>
-#include "nds3/pvBaseOutImpl.h"
+#include "nds3/impl/pvBaseOutImpl.h"
 
 namespace nds
 {

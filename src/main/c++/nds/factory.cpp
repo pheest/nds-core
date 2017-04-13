@@ -8,10 +8,10 @@
  */
 
 #include "nds3/factory.h"
-#include "nds3/factoryBaseImpl.h"
-#include "nds3/ndsFactoryImpl.h"
-#include "nds3/threadBaseImpl.h"
 #include "nds3/thread.h"
+#include "nds3/impl/factoryBaseImpl.h"
+#include "nds3/impl/ndsFactoryImpl.h"
+#include "nds3/impl/threadBaseImpl.h"
 
 
 namespace nds

@@ -8,7 +8,7 @@
  */
 
 #include "nds3/stateMachine.h"
-#include "nds3/stateMachineImpl.h"
+#include "nds3/impl/stateMachineImpl.h"
 
 namespace nds
 {

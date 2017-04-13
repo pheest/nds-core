@@ -7,8 +7,8 @@
  * file included in the distribution.
  */
 
-#include "nds3/threadBaseImpl.h"
-#include "nds3/factoryBaseImpl.h"
+#include "nds3/impl/threadBaseImpl.h"
+#include "nds3/impl/factoryBaseImpl.h"
 
 namespace nds
 {

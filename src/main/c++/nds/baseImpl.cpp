@@ -7,11 +7,11 @@
  * file included in the distribution.
  */
 
-#include "nds3/baseImpl.h"
-#include "nds3/nodeImpl.h"
-#include "nds3/factoryBaseImpl.h"
-#include "nds3/logStreamGetterImpl.h"
-#include "nds3/threadBaseImpl.h"
+#include "nds3/impl/baseImpl.h"
+#include "nds3/impl/nodeImpl.h"
+#include "nds3/impl/factoryBaseImpl.h"
+#include "nds3/impl/logStreamGetterImpl.h"
+#include "nds3/impl/threadBaseImpl.h"
 
 #include <stdexcept>
 

@@ -11,8 +11,8 @@
 #define NDSPVBASEIMPL_H
 
 #include <string>
-#include "nds3/baseImpl.h"
 #include "nds3/definitions.h"
+#include "nds3/impl/baseImpl.h"
 
 namespace nds
 {

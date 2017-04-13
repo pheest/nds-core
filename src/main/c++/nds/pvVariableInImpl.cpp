@@ -7,8 +7,8 @@
  * file included in the distribution.
  */
 
-#include "nds3/pvVariableInImpl.h"
-#include "nds3/pvBaseOutImpl.h"
+#include "nds3/impl/pvVariableInImpl.h"
+#include "nds3/impl/pvBaseOutImpl.h"
 
 namespace nds
 {

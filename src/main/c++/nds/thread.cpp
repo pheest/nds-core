@@ -8,7 +8,7 @@
  */
 
 #include "nds3/thread.h"
-#include "nds3/threadBaseImpl.h"
+#include "nds3/impl/threadBaseImpl.h"
 
 namespace nds
 {

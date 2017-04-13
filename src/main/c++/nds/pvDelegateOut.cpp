@@ -7,11 +7,11 @@
  * file included in the distribution.
  */
 
-#include "nds3/pvDelegateOut.h"
-#include "nds3/pvDelegateOutImpl.h"
-
 #include <cstdint>
 #include <vector>
+
+#include "nds3/pvDelegateOut.h"
+#include "nds3/impl/pvDelegateOutImpl.h"
 
 namespace nds
 {
