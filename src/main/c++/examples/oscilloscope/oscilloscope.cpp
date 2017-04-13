@@ -419,4 +419,4 @@ void Oscilloscope::acquireSquareWave()
     }
 }
 
-NDS_DEFINE_DRIVER("Oscilloscope", Oscilloscope);
+NDS_DEFINE_DRIVER("Oscilloscope", Oscilloscope)

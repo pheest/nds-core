@@ -288,4 +288,4 @@ void Channel::acquisitionLoop()
 // The following MACRO defines the function to be exported in order
 //  to allow the dynamic loading of the shared module
 ///////////////////////////////////////////////////////////////////
-NDS_DEFINE_DRIVER("OscilloscopeMultiChannel", OscilloscopeMultiChannel);
+NDS_DEFINE_DRIVER("OscilloscopeMultiChannel", OscilloscopeMultiChannel)
