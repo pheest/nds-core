@@ -71,8 +71,14 @@
                         <package>
                             <include type="library" name="nds3" />
                         </package>
-                        <package develof="nds3-core">
-                            <include type="file" source="main/c++/include/nds3" target="include/" />
+                        <package develof="">
+                            <include type="file" source="main/c++/include/nds3" target="include/">
+                                <include>*.h</include>
+                            </include>
+                        </package>
+                        <package name="impl-devel">
+                            <include type="file" source="main/c++/include/nds3/impl" target="include/nds3/" />
+                            <requires codac="true">nds3-core-devel</requires>
                         </package>
                         <package unitPrefix="false" name="nds3-examples">
                             <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
