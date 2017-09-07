@@ -5,6 +5,8 @@
  *
  * For more information about the license please refer to the license.txt
  * file included in the distribution.
+ *
+ * Modified by GMV & UPM
  */
 
 #ifndef NDSDATAACQUISITIONIMPL_H
@@ -13,6 +15,8 @@
 #include <memory>
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
+#include "nds3/impl/pvDelegateOutImpl.h"
+#include "nds3/impl/pvDelegateInImpl.h"
 
 namespace nds
 {
@@ -26,13 +30,29 @@ class DataAcquisitionImpl: public NodeImpl
 {
 public:
     DataAcquisitionImpl(const std::string& name,
-                    size_t maxElements,
-                    stateChange_t switchOnFunction,
-                    stateChange_t switchOffFunction,
-                    stateChange_t startFunction,
-                    stateChange_t stopFunction,
-                    stateChange_t recoverFunction,
-                    allowChange_t allowStateChangeFunction);
+            size_t maxElements,
+            stateChange_t switchOnFunction,
+            stateChange_t switchOffFunction,
+            stateChange_t startFunction,
+            stateChange_t stopFunction,
+            stateChange_t recoverFunction,
+            allowChange_t allowStateChangeFunction,
+    		writerDouble_t PV_Gain_Writer,
+    		readerDouble_t PV_Gain_Reader,
+    		writerDouble_t PV_Offset_Writer,
+    		readerDouble_t PV_Offset_Reader,
+    		writerDouble_t PV_Bw_Writer,
+    		readerDouble_t PV_Bw_Reader,
+    		writerDouble_t PV_Resolution_Writer,
+    		readerDouble_t PV_Resolution_Reader,
+    		writerDouble_t PV_Impedance_Writer,
+    		readerDouble_t PV_Impedance_Reader,
+    		writerInt32_t PV_Coupling_Writer,
+    		readerInt32_t PV_Coupling_Reader,
+    		writerInt32_t PV_SignalRef_Writer,
+    		readerInt32_t PV_SignalRef_Reader,
+    		writerInt32_t PV_Ground_Writer,
+    		readerInt32_t PV_Ground_Reader);
 
     /**
      * @brief Specifies the function to call to get the acquisition start timestamp.
@@ -48,8 +68,7 @@ public:
 
     void push(const timespec& timestamp, const T& data);
 
-    double getFrequencyHz();
-    double getDurationSeconds();
+
     size_t getMaxElements();
     size_t getDecimation();
 
@@ -95,11 +114,27 @@ protected:
 
     // PVs
     std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_frequencyPV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_durationPV;
+
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimationPV;
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
+    std::shared_ptr<PVDelegateOutImpl<double> > m_offset_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_offset_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_Gain_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_BW_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_BW_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_Resolution_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Impedance_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_Impedance_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Coupling_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_Coupling_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalRefType_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalRefType_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ground_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_ground_RBVPV;
 
 
 };

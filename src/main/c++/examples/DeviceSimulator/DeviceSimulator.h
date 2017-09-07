@@ -3,6 +3,7 @@
  *
  *  Created on: Jan 16, 2017
  *      Author: ebernal
+ *      GMV & UPM
  */
 
 #ifndef DEVICESIMULATOR_H_

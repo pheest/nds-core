@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <nds3/nds.h>
+//#define DAQ
 
 /**
  * @brief Class that declares and implement a fictional Oscilloscope device.
@@ -42,12 +43,14 @@ private:
     /**
      * @brief Acquisition node for the sinusoidal wave
      */
+#ifdef DAQ
     nds::DataAcquisition<std::vector<std::int32_t> > m_acquisitionSinWave;
 
     /**
      * @brief Acquisition node for the square wave
      */
     nds::DataAcquisition<std::vector<std::int32_t> > m_acquisitionSquareWave;
+#endif
 
     void switchOnSinWave();  ///< Called to switch on the sinusoidal wave acquisition node.
     void switchOffSinWave(); ///< Called to switch off the sinusoidal wave acquisition node.
@@ -60,6 +63,24 @@ private:
     void startSquareWave();     ///< Called to start the data acquisition on the square wave node.
     void stopSquareWave();      ///< Called to stop the data acquisition on the square wave node.
     void recoverSquareWave();   ///< Called to recover the square wave node from a failure.
+
+    void PVGainWriter(const timespec& timestamp, const double& value);
+    void PVOffsetWriter(const timespec& timestamp, const double& value);
+    void PVBwWriter(const timespec& timestamp, const double& value);
+    void PVResolutionWriter(const timespec& timestamp, const double& value);
+    void PVImpedanceWriter(const timespec& timestamp, const double& value);
+    void PVCouplingWriter(const timespec& timestamp, const int32_t& value);
+    void PVSignalRefWriter(const timespec& timestamp, const int32_t& value);
+    void PVGroundWriter(const timespec& timestamp, const int32_t& value);
+
+    void PVGainWriter2(const timespec& timestamp, const double& value);
+    void PVOffsetWriter2(const timespec& timestamp, const double& value);
+    void PVBwWriter2(const timespec& timestamp, const double& value);
+    void PVResolutionWriter2(const timespec& timestamp, const double& value);
+    void PVImpedanceWriter2(const timespec& timestamp, const double& value);
+    void PVCouplingWriter2(const timespec& timestamp, const int32_t& value);
+    void PVSignalRefWriter2(const timespec& timestamp, const int32_t& value);
+    void PVGroundWriter2(const timespec& timestamp, const int32_t& value);
 
     /**
      * @brief Called to verify if a state change is allowed
@@ -148,6 +169,7 @@ Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName,
     //  acquisition.
     // This node is for the sinusoidal wave....
     ////////////////////////////////////////////////////////////////////////////////
+#ifdef DAQ
     m_acquisitionSinWave = rootNode.addChild(nds::DataAcquisition<std::vector<std::int32_t> >(
                                                  "SinWave",
                                                  100,
@@ -160,7 +182,31 @@ Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName,
                                                            this,
                                                            std::placeholders::_1,
                                                            std::placeholders::_2,
-                                                           std::placeholders::_3)
+                                                           std::placeholders::_3),
+												std::bind(&Oscilloscope::PVGainWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVOffsetWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVBwWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVResolutionWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVImpedanceWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVCouplingWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+												std::bind(&Oscilloscope::PVSignalRefWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2),
+											   std::bind(&Oscilloscope::PVGroundWriter,this,
+														   std::placeholders::_1,
+														   std::placeholders::_2)
                                                  ));
 
     // ...and this node is for the square wave
@@ -177,15 +223,103 @@ Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName,
                                                               this,
                                                               std::placeholders::_1,
                                                               std::placeholders::_2,
-                                                              std::placeholders::_3)
+                                                              std::placeholders::_3),
+													std::bind(&Oscilloscope::PVGainWriter2,this,
+															   std::placeholders::_1,
+															   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVOffsetWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVBwWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVResolutionWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVImpedanceWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVCouplingWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+													std::bind(&Oscilloscope::PVSignalRefWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2),
+												   std::bind(&Oscilloscope::PVGroundWriter2,this,
+																   std::placeholders::_1,
+																   std::placeholders::_2)
                                                     ));
-
+#endif
     // We have declared all the nodes and PVs in our device: now we register them
     //  with the control system that called this constructor.
     ////////////////////////////////////////////////////////////////////////////////
     rootNode.initialize(this, factory);
 }
 
+void Oscilloscope::PVGainWriter(const timespec& timestamp, const double& value)
+{
+
+
+}
+
+void Oscilloscope::PVGainWriter2(const timespec& timestamp, const double& value)
+{
+
+
+}
+
+
+void Oscilloscope::PVOffsetWriter(const timespec& timestamp, const double& value)
+{
+
+}
+void Oscilloscope::PVBwWriter(const timespec& timestamp, const double& value)
+{
+
+}
+void Oscilloscope::PVResolutionWriter(const timespec& timestamp, const double& value)
+{
+
+}
+void Oscilloscope::PVImpedanceWriter(const timespec& timestamp, const double& value)
+{
+
+}
+void Oscilloscope::PVCouplingWriter(const timespec& timestamp, const int32_t& value)
+{
+
+}
+void Oscilloscope::PVSignalRefWriter(const timespec& timestamp, const int32_t& value)
+{
+
+}
+void Oscilloscope::PVGroundWriter(const timespec& timestamp, const int32_t& value)
+{
+
+}
+
+void Oscilloscope::PVOffsetWriter2(const timespec& timestamp, const double& value){
+
+}
+void Oscilloscope::PVBwWriter2(const timespec& timestamp, const double& value){
+
+}
+void Oscilloscope::PVResolutionWriter2(const timespec& timestamp, const double& value){
+
+}
+void Oscilloscope::PVImpedanceWriter2(const timespec& timestamp, const double& value){
+
+}
+void Oscilloscope::PVCouplingWriter2(const timespec& timestamp, const int32_t& value){
+
+}
+void Oscilloscope::PVSignalRefWriter2(const timespec& timestamp, const int32_t& value){
+
+}
+void Oscilloscope::PVGroundWriter2(const timespec& timestamp, const int32_t& value)
+{
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -347,6 +481,7 @@ bool Oscilloscope::allowChange(const nds::state_t, const nds::state_t, const nds
 ////////////////////////////////////////////////////////////////////////////////
 void Oscilloscope::acquireSinusoidalWave()
 {
+#ifdef DAQ
     // Let's allocate a vector that will contain the data that we will push to the
     //  control system
     ////////////////////////////////////////////////////////////////////////////////
@@ -376,6 +511,7 @@ void Oscilloscope::acquireSinusoidalWave()
         ////////////////////////////////////////////////////////////////////////////////
         ::usleep(100000);
     }
+#endif
 }
 
 
@@ -387,6 +523,7 @@ void Oscilloscope::acquireSinusoidalWave()
 ////////////////////////////////////////////////////////////////////////////////
 void Oscilloscope::acquireSquareWave()
 {
+#ifdef DAQ
     // Let's allocate a vector that will contain the data that we will push to the
     //  control system
     ////////////////////////////////////////////////////////////////////////////////
@@ -416,6 +553,7 @@ void Oscilloscope::acquireSquareWave()
         ////////////////////////////////////////////////////////////////////////////////
         ::usleep(100000);
     }
+#endif
 }
 
 NDS_DEFINE_DRIVER("Oscilloscope", Oscilloscope)

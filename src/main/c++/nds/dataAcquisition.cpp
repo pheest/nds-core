@@ -5,6 +5,8 @@
  *
  * For more information about the license please refer to the license.txt
  * file included in the distribution.
+ *
+ * Modified by GMV & UPM
  */
 
 #include "nds3/dataAcquisition.h"
@@ -33,7 +35,23 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
                 stateChange_t startFunction,
                 stateChange_t stopFunction,
                 stateChange_t recoverFunction,
-                allowChange_t allowStateChangeFunction):
+                allowChange_t allowStateChangeFunction,
+				writerDouble_t PV_Gain_Writer,
+				readerDouble_t PV_Gain_Reader,
+				writerDouble_t PV_Offset_Writer,
+				readerDouble_t PV_Offset_Reader,
+				writerDouble_t PV_Bw_Writer,
+				readerDouble_t PV_Bw_Reader,
+				writerDouble_t PV_Resolution_Writer,
+				readerDouble_t PV_Resolution_Reader,
+				writerDouble_t PV_Impedance_Writer,
+				readerDouble_t PV_Impedance_Reader,
+				writerInt32_t PV_Coupling_Writer,
+				readerInt32_t PV_Coupling_Reader,
+				writerInt32_t PV_SignalRef_Writer,
+				readerInt32_t PV_SignalRef_Reader,
+				writerInt32_t PV_Ground_Writer,
+				readerInt32_t PV_Ground_Reader):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -41,7 +59,23 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
                                                                              startFunction,
                                                                              stopFunction,
                                                                              recoverFunction,
-                                                                             allowStateChangeFunction)))
+                                                                             allowStateChangeFunction,
+																			 PV_Gain_Writer,
+																	 	 	 PV_Gain_Reader,
+																	 	 	 PV_Offset_Writer,
+																	 		 PV_Offset_Reader,
+																	 		 PV_Bw_Writer,
+																	 		 PV_Bw_Reader,
+																	 		 PV_Resolution_Writer,
+																	 		 PV_Resolution_Reader,
+																	 		 PV_Impedance_Writer,
+																	 		 PV_Impedance_Reader,
+																	 		 PV_Coupling_Writer,
+																	 		 PV_Coupling_Reader,
+																	 		 PV_SignalRef_Writer,
+																	 		 PV_SignalRef_Reader,
+																	 		 PV_Ground_Writer,
+																	 		 PV_Ground_Reader)))
 {
 }
 
@@ -67,18 +101,6 @@ template <typename T>
 void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->push(timestamp, data);
-}
-
-template <typename T>
-double DataAcquisition<T>::getFrequencyHz()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getFrequencyHz();
-}
-
-template <typename T>
-double DataAcquisition<T>::getDurationSeconds()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDurationSeconds();
 }
 
 template <typename T>

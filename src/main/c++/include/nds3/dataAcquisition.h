@@ -5,6 +5,8 @@
  *
  * For more information about the license please refer to the license.txt
  * file included in the distribution.
+ *
+ * Modified by GMV & UPM
  */
 
 #ifndef NDSDATAACQUISITION_H
@@ -81,12 +83,27 @@ public:
                     stateChange_t startFunction,           ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
                     stateChange_t stopFunction,            ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                     stateChange_t recoverFunction,         ///< Delegate function to execute to recover from an error state
-                    allowChange_t allowStateChangeFunction ///< Delegate function that can deny a state change. Usually just returns true
-                    );
+                    allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
+					writerDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_Gain_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Offset_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_Offset_Reader,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Bw_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_Bw_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_Resolution_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Impedance_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_Impedance_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_Coupling_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_SignalRef_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_SignalRef_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_Ground_Reader);        ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing
-     * @brief Set the function that retrieves the exaxt start time when the data acquisition starts.
+     * @brief Set the function that retrieves the exact start time when the data acquisition starts.
      *
      * @param timestampDelegate the function that returns the exact starting time of the
      *                           data acquisition
@@ -105,19 +122,7 @@ public:
      */
     void push(const timespec& timestamp, const T& data);
 
-    /**
-     * @brief Retrieve the desidered acquisition frequency, in Hertz.
-     *
-     * @return the acquisition frequency in Hertz
-     */
-    double getFrequencyHz();
 
-    /**
-     * @brief Retrieve the desidered duration of the acquisition, in seconds
-     *
-     * @return the desidered duration of the acquisition, in seconds
-     */
-    double getDurationSeconds();
 
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the

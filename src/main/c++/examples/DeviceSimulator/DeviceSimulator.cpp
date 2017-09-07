@@ -3,8 +3,10 @@
  *
  *  Created on: Jan 16, 2017
  *      Author: ebernal
+ *      GMV & UPM
  */
 #include "DeviceSimulator.h"
+//#define DAQ
 
 DeviceSimulator::DeviceSimulator(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & /* parameters */){
     // Here we declare the root node.
@@ -114,6 +116,7 @@ ChannelGroup::ChannelGroup(const std::string &name, nds::Node &parentNode)
     nds::Node channelgroup = parentNode.addChild(nds::Node(name));
     samples_per_channelgroup=100;
     // We create an acquisition node with the requested name...
+#ifdef DAQ
     m_dataAcquisition = nds::DataAcquisition<std::vector<std::int32_t> >("DAQGroup",
     																 samples_per_channelgroup,
                                                                      std::bind(&ChannelGroup::switchOn, this),
@@ -127,6 +130,7 @@ ChannelGroup::ChannelGroup(const std::string &name, nds::Node &parentNode)
                                                                                std::placeholders::_3));
     // ...and we add it to the root
     channelgroup.addChild(m_dataAcquisition);
+#endif
     // We also add to the acquisition node a PV that specifies the amplitude of the
     //  generated wave
     m_amplitude = nds::PVVariableOut<std::int32_t>("Amplitude");
@@ -145,7 +149,9 @@ ChannelGroup::ChannelGroup(const std::string &name, nds::Node &parentNode)
 //
 void ChannelGroup::switchOn()
 {
+#ifdef DAQ
 	ndsDebugStream(this->m_dataAcquisition) << "The ChannelGroup " << this->m_dataAcquisition.getFullName() << " has been switched ON." << std::endl;
+#endif
 }
 //
 // Called when the acquisition node has to be switched off.
@@ -154,7 +160,9 @@ void ChannelGroup::switchOn()
 //
 void ChannelGroup::switchOff()
 {
+#ifdef DAQ
 	ndsDebugStream(this->m_dataAcquisition) << "The ChannelGroup " << this->m_dataAcquisition.getFullName() << " has been switched OFF." << std::endl;
+#endif
 
 }
 //
@@ -168,8 +176,10 @@ void ChannelGroup::start()
     // We don't need to check if the thread was already started because the state
     //  machine guarantees that the start handler is called only while the state
     //  is ON.
+#ifdef DAQ
     m_dataAcquisitionThread = m_dataAcquisition.runInThread("DAQGroupThread", std::bind(&ChannelGroup::DataAcquisitionLoop, this));
 	ndsDebugStream(this->m_dataAcquisition) << "The ChannelGroup " << this->m_dataAcquisition.getFullName() << " has been started." << std::endl;
+#endif
 
 }
 //
@@ -178,8 +188,10 @@ void ChannelGroup::start()
 void ChannelGroup::stop()
 {
     m_bStopDataAcquisition = true;
+#ifdef DAQ
     m_dataAcquisitionThread.join();
 	ndsDebugStream(this->m_dataAcquisition) << "The ChannelGroup " << this->m_dataAcquisition.getFullName() << " has been stopped." << std::endl;
+#endif
 
 }
 //
@@ -206,7 +218,7 @@ bool ChannelGroup::allowChange(const nds::state_t, const nds::state_t, const nds
 //
 void ChannelGroup::DataAcquisitionLoop()
 {
-
+#ifdef DAQ
 	ndsDebugStream(this->m_dataAcquisition) << "Entering in the ChannelGroup " << this->m_dataAcquisition.getFullName() << " DataAcquisitionLoop" << std::endl;
     // Let's allocate a vector that will contain the data that we will push to the
     //  control system
@@ -240,6 +252,7 @@ void ChannelGroup::DataAcquisitionLoop()
         // Rest for a while
         ::usleep(100000);
     }
+#endif
 }
 
 //
@@ -250,6 +263,7 @@ Channel::Channel(const std::string &name, nds::Node &parentNode)
     nds::Node Channel = parentNode.addChild(nds::Node(name));
     samples_per_channel=100;
     // We create an acquisition node with the requested name...
+#ifdef DAQ
     m_dataAcquisition = nds::DataAcquisition<std::vector<std::int32_t> >("DAQChannel",
     																 samples_per_channel,
                                                                      std::bind(&Channel::switchOn, this),
@@ -263,6 +277,7 @@ Channel::Channel(const std::string &name, nds::Node &parentNode)
                                                                                std::placeholders::_3));
     // ...and we add it to the root
     Channel.addChild(m_dataAcquisition);
+#endif
     // We also add to the acquisition node a PV that specifies the amplitude of the
     //  generated wave
     m_amplitude = nds::PVVariableOut<std::int32_t>("Amplitude");
@@ -304,8 +319,10 @@ void Channel::start()
     // We don't need to check if the thread was already started because the state
     //  machine guarantees that the start handler is called only while the state
     //  is ON.
+#ifdef DAQ
     m_dataAcquisitionThread = m_dataAcquisition.runInThread("DAQChannelThread", std::bind(&Channel::DataAcquisitionLoop, this));
 	ndsDebugStream(this->m_dataAcquisition) << "The Channel " << this->m_dataAcquisition.getFullName() << " has been switched ON." << std::endl;
+#endif
 
 }
 //
@@ -341,7 +358,7 @@ bool Channel::allowChange(const nds::state_t, const nds::state_t, const nds::sta
 //
 void Channel::DataAcquisitionLoop()
 {
-
+#ifdef DAQ
 	ndsDebugStream(this->m_dataAcquisition) << "Entering in the Channel " << this->m_dataAcquisition.getFullName() << " DataAcquisitionLoop" << std::endl;
 
     // Let's allocate a vector that will contain the data that we will push to the
@@ -378,6 +395,7 @@ void Channel::DataAcquisitionLoop()
         // Rest for a while
         ::usleep(100000);
     }
+#endif
 }
 // The following MACRO defines the function to be exported in order
 //  to allow the dynamic loading of the shared module

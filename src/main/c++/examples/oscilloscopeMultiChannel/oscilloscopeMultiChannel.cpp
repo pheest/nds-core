@@ -5,6 +5,7 @@
 
 #include <nds3/nds.h>
 
+//#define DAQ
 class Channel; // Forward declaration
 
 /**
@@ -143,6 +144,7 @@ Channel::Channel(const std::string &name, nds::Node &parentNode)
 
     // We create an acquisition node with the requested name...
     ////////////////////////////////////////////////////////////////////////////////
+#ifdef DAQ
     m_acquisition = nds::DataAcquisition<std::vector<std::int32_t> >("Acquisition",
                                                                      100,
                                                                      std::bind(&Channel::switchOn, this),
@@ -158,7 +160,7 @@ Channel::Channel(const std::string &name, nds::Node &parentNode)
     // ...and we add it to the root
     ////////////////////////////////////////////////////////////////////////////////
     channel.addChild(m_acquisition);
-
+#endif
     // We also add to the acquisition node a PV that specifies the amplitude of the
     //  generated wave
     ////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +207,9 @@ void Channel::start()
     //  machine guarantees that the start handler is called only while the state
     //  is ON.
     ////////////////////////////////////////////////////////////////////////////////
+#ifdef DAQ
     m_acquisitionThread = m_acquisition.runInThread("Acquisition", std::bind(&Channel::acquisitionLoop, this));
+#endif
 }
 
 
@@ -217,7 +221,9 @@ void Channel::start()
 void Channel::stop()
 {
     m_bStopAcquisition = true;
+#ifdef DAQ
     m_acquisitionThread.join();
+#endif
 }
 
 
@@ -255,6 +261,7 @@ bool Channel::allowChange(const nds::state_t, const nds::state_t, const nds::sta
 ////////////////////////////////////////////////////////////////////////////////
 void Channel::acquisitionLoop()
 {
+#ifdef DAQ
     // Let's allocate a vector that will contain the data that we will push to the
     //  control system
     ////////////////////////////////////////////////////////////////////////////////
@@ -284,6 +291,7 @@ void Channel::acquisitionLoop()
         ////////////////////////////////////////////////////////////////////////////////
         ::usleep(100000);
     }
+#endif
 }
 
 // The following MACRO defines the function to be exported in order
