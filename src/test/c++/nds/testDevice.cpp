@@ -24,7 +24,7 @@ TestDevice::TestDevice(nds::Factory &factory, const std::string &parameter): m_n
     nds::Node channel1 = rootNode.addChild(nds::Port("Channel1"));
     m_variableIn0 = channel1.addChild(nds::PVVariableIn<std::int32_t>("variableIn0"));
     m_variableIn1 = channel1.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("variableIn1"));
-    m_dataAcquisition = channel1.addChild(nds::DataAcquisition<std::vector<std::int32_t> >("data",
+    /*m_dataAcquisition = channel1.addChild(nds::DataAcquisition<std::vector<std::int32_t> >("data",
                                                                                            10000,
                                                                                            std::bind(&TestDevice::switchOn, this),
                                                                                            std::bind(&TestDevice::switchOff, this),
@@ -52,6 +52,7 @@ TestDevice::TestDevice(nds::Factory &factory, const std::string &parameter): m_n
     m_setCurrentTime = channel1.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
     channel1.setTimestampDelegate(std::bind(&TestDevice::getCurrentTime, this));
+*/
 
     rootNode.initialize(this, factory);
 }
