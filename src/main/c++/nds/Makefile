@@ -40,8 +40,8 @@ OBJECTS=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
 C=gcc
 CC=g++
-CFLAGS=-c -Wall -fPIC
-CXXFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden -DNDS3_DLL -DNDS3_DLL_EXPORTS
+CFLAGS=-c -Wall -fPIC -g
+CXXFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden -DNDS3_DLL -DNDS3_DLL_EXPORTS -g
 LDFLAGS= -shared
 
 

@@ -27,13 +27,13 @@ NDSLIBDIR:= $(realpath ../../../../target/lib)
 ifneq (,$(wildcard ../../../main/c/include))
 
 ENV_CXXFLAGS := -I../../../main/c/lib -I../../../main/c/driver \
-                -I../../../main/c/include
+                -I../../../main/c++/include
 ENV_LDFLAGS :=  -L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 #-L../../../main/c/lib
 
 else # NI
 
-ENV_CXXFLAGS := -I../../src -I../../../driver/src -I../../../include
+ENV_CXXFLAGS := -I../../src -I../../../driver/src -I../../../main/c++/include
 ENV_LDFLAGS := -L../../../../target/lib -Wl,-rpath=$(NDSLIBDIR)
 endif
 

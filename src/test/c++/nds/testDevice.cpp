@@ -24,7 +24,7 @@ TestDevice::TestDevice(nds::Factory &factory, const std::string &parameter): m_n
     nds::Node channel1 = rootNode.addChild(nds::Port("Channel1"));
     m_variableIn0 = channel1.addChild(nds::PVVariableIn<std::int32_t>("variableIn0"));
     m_variableIn1 = channel1.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("variableIn1"));
-    /*m_dataAcquisition = channel1.addChild(nds::DataAcquisition<std::vector<std::int32_t> >("data",
+    m_dataAcquisition = channel1.addChild(nds::DataAcquisition<std::vector<std::int32_t> >("data",
                                                                                            10000,
                                                                                            std::bind(&TestDevice::switchOn, this),
                                                                                            std::bind(&TestDevice::switchOff, this),
@@ -34,7 +34,23 @@ TestDevice::TestDevice(nds::Factory &factory, const std::string &parameter): m_n
                                                                                            std::bind(&TestDevice::allowChange, this,
                                                                                                      std::placeholders::_1,
                                                                                                      std::placeholders::_2,
-                                                                                                     std::placeholders::_3)));
+                                                                                                     std::placeholders::_3),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Gain_Reader,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Offset_Reader,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Bw_Writer,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Bw_Reader,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Resolution_Reader,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Impedance_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Coupling_Reader,this,   std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_SignalRef_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
+																									 std::bind(&TestDevice::PV_DataAcquisition_Ground_Reader,this, std::placeholders::_1, std::placeholders::_2)));
 
     m_numberAcquisitions = channel1.addChild(nds::PVVariableOut<std::int32_t>("numAcquisitions"));
 
@@ -52,10 +68,12 @@ TestDevice::TestDevice(nds::Factory &factory, const std::string &parameter): m_n
     m_setCurrentTime = channel1.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
     channel1.setTimestampDelegate(std::bind(&TestDevice::getCurrentTime, this));
-*/
+
 
     rootNode.initialize(this, factory);
 }
+
+
 
 TestDevice::~TestDevice()
 {
@@ -183,5 +201,62 @@ timespec TestDevice::getCurrentTime()
     time.tv_sec = m_setCurrentTime.getValue();
     time.tv_nsec = time.tv_sec + 10;
     return time;
+}
+
+
+/*
+* DataAcquisition setters
+*/
+void TestDevice::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
+
+}
+void TestDevice::PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value){
+
+}
+void TestDevice::PV_DataAcquisition_Bw_Writer(const timespec& timestamp, const double& value){
+
+}
+void TestDevice::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value){
+
+}
+void TestDevice::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value){
+
+}
+void TestDevice::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const int32_t& value){
+
+}
+void TestDevice::PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp, const int32_t& value){
+
+}
+void TestDevice::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const int32_t& value){
+
+}
+
+/**
+* DataAcquisition getters
+*/
+void TestDevice::PV_DataAcquisition_Gain_Reader(timespec* timestamp, double* value){
+
+}
+void TestDevice::PV_DataAcquisition_Offset_Reader(timespec* timestamp, double* value){
+
+}
+void TestDevice::PV_DataAcquisition_Bw_Reader(timespec* timestamp, double* value){
+
+}
+void TestDevice::PV_DataAcquisition_Resolution_Reader(timespec* timestamp, double* value){
+
+}
+void TestDevice::PV_DataAcquisition_Impedance_Reader(timespec* timestamp, double* value){
+
+}
+void TestDevice::PV_DataAcquisition_Coupling_Reader(timespec* timestamp, int32_t* value){
+
+}
+void TestDevice::PV_DataAcquisition_SignalRef_Reader(timespec* timestamp, int32_t* value){
+
+}
+void TestDevice::PV_DataAcquisition_Ground_Reader(timespec* timestamp, int32_t* value){
+
 }
 

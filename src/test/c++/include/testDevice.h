@@ -53,12 +53,38 @@ private:
     void pushTestVariableIn(const timespec& timestamp, const std::string& value);
     void readTestVariableOut(timespec* pTimestamp, std::string* pValue);
 
+
     std::thread m_acquisitionThread;
 
     std::string m_name;
 
     std::string m_writtenByDelegate;
     timespec m_timestamp;
+
+
+	/**
+	 * DataAcquisition setters
+	 */
+	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Bw_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const int32_t& value);
+	void PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp, const int32_t& value);
+	void PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const int32_t& value);
+
+	/**
+	 * DataAcquisition getters
+	 */
+	void PV_DataAcquisition_Gain_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_Offset_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_Bw_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_Resolution_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_Impedance_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_Coupling_Reader(timespec* timestamp, int32_t* value);
+	void PV_DataAcquisition_SignalRef_Reader(timespec* timestamp, int32_t* value);
+	void PV_DataAcquisition_Ground_Reader(timespec* timestamp, int32_t* value);
 
 
 };
