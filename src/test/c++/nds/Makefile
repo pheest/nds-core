@@ -27,14 +27,14 @@ NDSLIBDIR:= $(realpath ../../../../target/lib)
 ifneq (,$(wildcard ../../../main/c/include))
 
 ENV_CXXFLAGS := -I../../../main/c/lib -I../../../main/c/driver \
-                -I../../../main/c++/include
-ENV_LDFLAGS :=  -L../../../lib -Wl,-rpath=$(NDSLIBDIR)
+                -I../../../main/c++/include --coverage
+ENV_LDFLAGS :=  -L../../../lib -Wl,-rpath=$(NDSLIBDIR) --coverage
 #-L../../../main/c/lib
 
 else # NI
 
-ENV_CXXFLAGS := -I../../src -I../../../driver/src -I../../../main/c++/include
-ENV_LDFLAGS := -L../../../../target/lib -Wl,-rpath=$(NDSLIBDIR)
+ENV_CXXFLAGS := -I../../src -I../../../driver/src -I../../../main/c++/include --coverage
+ENV_LDFLAGS := -L../../../../target/lib -Wl,-rpath=$(NDSLIBDIR) --coverage
 endif
 
 # TODO: support "make debug" as a way to build with this flag

@@ -5,8 +5,11 @@
 
 TEST(testDeviceAllocation, testAllocationMissingDevice)
 {
-    nds::Factory factory("test");
+
+    nds::Factory factory("test"); //first we create the factory
+    //testDev1 does not exist error should be raised
     EXPECT_THROW(factory.createDevice("testDevi", "rootNode", nds::namedParameters_t()), nds::DriverNotFound);
+    //rootNode does not exist
     EXPECT_EQ((void*)0, TestDevice::getInstance("rootNode"));
 }
 
@@ -17,7 +20,8 @@ TEST(testDeviceAllocation, testDoubleAllocation)
 {
     nds::Factory factory("test");
 
-    // First allocation
+
+    // First allocation, testDevice exists because has been loaded in the main program
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
     // The port should have been allocated
