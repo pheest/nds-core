@@ -61,15 +61,21 @@ public:
      * @brief Constructs the data generation node.
      *
      */
-	DMASupport( const std::string& name,
-					size_t maxElements,                      ///< The node's name
-					readerDouble_t PV_BufferSize_Reader,
-					writerInt32_t PV_EnableDMA_Writer,
-					readerInt32_t PV_EnableDMA_Reader,
-					readerInt32_t PV_NumDMAChannels_Reader,
-					readerInt32_t PV_DMAFrameType_Reader,
-					readerInt32_t PV_DMASampleSize_Reader,
-					readerInt32_t PV_DMASamplingRate_Reader);
+	DMASupport( const std::string& name,                   ///< The node's name
+				size_t maxElements,                        ///< Maximum size of the acquired array. Set to 1 for scalar values
+                stateChange_t switchOnFunction,            ///< Delegate function that performs the actions to switch the node on
+                stateChange_t switchOffFunction,           ///< Delegate function that performs the actions to switch the node off
+                stateChange_t startFunction,               ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+                stateChange_t stopFunction,                ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+                stateChange_t recoverFunction,             ///< Delegate function to execute to recover from an error state
+                allowChange_t allowStateChangeFunction,    ///< Delegate function that can deny a state change. Usually just returns true
+				readerDouble_t PV_BufferSize_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+				writerInt32_t PV_EnableDMA_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+				readerInt32_t PV_EnableDMA_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+				readerInt32_t PV_NumDMAChannels_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+				readerInt32_t PV_DMAFrameType_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+				readerInt32_t PV_DMASampleSize_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+				readerInt32_t PV_DMASamplingRate_Reader);  ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
     /**
@@ -140,11 +146,17 @@ public:
      * @brief Constructs the node.
      *
      */
-	StreamingConf( const std::string& name,
-					size_t maxElements,                      ///< The node's name
-					readerInt32_t PV_StreamingDataFormat_Reader,
-					writerInt32_t PV_StreamingType_Writer,
-					readerInt32_t PV_StreamingType_Reader);
+	StreamingConf( const std::string& name,                       ///< The node's name
+				   size_t maxElements,                           ///< Maximum size of the acquired array. Set to 1 for scalar values
+                   stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
+                   stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
+                   stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+                   stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+                   stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
+                   allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
+				   readerInt32_t PV_StreamingDataFormat_Reader,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+				   writerInt32_t PV_StreamingType_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+				   readerInt32_t PV_StreamingType_Reader);       ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
     /**

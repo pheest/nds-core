@@ -65,14 +65,20 @@ public:
      * @brief Constructs the node.
      *
      */
-    DataProcessing( const std::string& name,                       ///< The node's name
-					size_t maxElements,                            ///< Maximum size of the acquired array. Set to 1 for scalar values
-					writerInt32_t PV_EnableFilter_Writer,          ///< Delegate function that performs the actions to switch the node on
-					readerInt32_t PV_EnableFilter_Reader,          ///< Delegate function that performs the actions to switch the node off
-					writerInt32_t PV_FilterType_Writer,            ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-					readerInt32_t PV_FilterType_Reader,            ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-					writerVectorInt32_t PV_FilterParams_Writer,    ///< Delegate function to execute to recover from an error state
-					readerVectorInt32_t PV_FilterParams_Reader,    ///< Delegate function that can deny a state change. Usually just returns true
+    DataProcessing( const std::string& name,                  	   ///< The node's name
+					size_t maxElements,                            ///< Maximum size of the array. Set to 1 for scalar values
+					stateChange_t switchOnFunction,                ///< Delegate function that performs the actions to switch the node on
+					stateChange_t switchOffFunction,               ///< Delegate function that performs the actions to switch the node off
+					stateChange_t startFunction,                   ///< Delegate function that performs the actions to start the data generation (usually launches the gneration thread)
+					stateChange_t stopFunction,                    ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
+					stateChange_t recoverFunction,                 ///< Delegate function to execute to recover from an error state
+					allowChange_t allowStateChangeFunction,        ///< Delegate function that can deny a state change. Usually just returns true
+					writerInt32_t PV_EnableFilter_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_EnableFilter_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FilterType_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FilterType_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerVectorInt32_t PV_FilterParams_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerVectorInt32_t PV_FilterParams_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					size_t 		maxFFTElements,                    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_EnableFFT_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_EnableFFT_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -81,21 +87,19 @@ public:
 					writerInt32_t PV_FFTwindowType_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_FFTwindowType_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_FFTOverlap_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_FFTOverlap_Reader,
-					writerInt32_t PV_FFTFrameSize_Writer,
-					readerInt32_t PV_FFTFrameSize_Reader,
-					writerInt32_t PV_FFTSmooth_Writer,
-					readerInt32_t PV_FFTSmooth_Reader,
-					writerInt32_t PV_EnableDecimation_Writer,
-					readerInt32_t PV_EnableDecimation_Reader,
-					writerInt32_t PV_DecimationType_Writer,
-					readerInt32_t PV_DecimationType_Reader,
-					writerInt32_t PV_DecimationOffset_Writer,
-					readerInt32_t PV_DecimationOffset_Reader,
-					writerInt32_t PV_RAW2Eng_Writer,
-					readerInt32_t PV_RAW2Eng_Reader);
-
-
+					readerInt32_t PV_FFTOverlap_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTFrameSize_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FFTFrameSize_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTSmooth_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FFTSmooth_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_EnableDecimation_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_EnableDecimation_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationType_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_DecimationType_Reader,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationOffset_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_DecimationOffset_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_RAW2Eng_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_RAW2Eng_Reader);              ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing

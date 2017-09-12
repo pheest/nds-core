@@ -20,45 +20,44 @@ namespace nds
 {
 
 template<typename T>
-DataGenerationImpl<T>::DataGenerationImpl(
-        const std::string& name,
-        size_t maxElements,
-        stateChange_t switchOnFunction,
-        stateChange_t switchOffFunction,
-        stateChange_t startFunction,
-        stateChange_t stopFunction,
-        stateChange_t recoverFunction,
-        allowChange_t allowStateChangeFunction,
-		writerDouble_t PV_Frequency_Writer,
-		readerDouble_t PV_Frequency_Reader,
-		writerDouble_t PV_RefFrequency_Writer,
-		readerDouble_t PV_RefFrequency_Reader,
-		writerDouble_t PV_Amp_Writer,
-		readerDouble_t PV_Amp_Reader,
-		writerDouble_t PV_Phase_Writer,
-		readerDouble_t PV_Phase_Reader,
-		writerDouble_t PV_UpdateRate_Writer,
-		readerDouble_t PV_UpdateRate_Reader,
-		writerDouble_t PV_DutyCycle_Writer,
-		readerDouble_t PV_DutyCycle_Reader,
-		writerDouble_t PV_Gain_Writer,
-		readerDouble_t PV_Gain_Reader,
-		writerDouble_t PV_Offset_Writer,
-		readerDouble_t PV_Offset_Reader,
-		writerDouble_t PV_Bw_Writer,
-		readerDouble_t PV_Bw_Reader,
-		writerDouble_t PV_Resolution_Writer,
-		readerDouble_t PV_Resolution_Reader,
-		writerDouble_t PV_Impedance_Writer,
-		readerDouble_t PV_Impedance_Reader,
-		writerInt32_t PV_Coupling_Writer,
-		readerInt32_t PV_Coupling_Reader,
-		writerInt32_t PV_SignalRef_Writer,
-		readerInt32_t PV_SignalRef_Reader,
-		writerInt32_t PV_SignalType_Writer,
-		readerInt32_t PV_SignalType_Reader,
-		writerInt32_t PV_Ground_Writer,
-		readerInt32_t PV_Ground_Reader):
+DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
+                                          size_t maxElements,
+                                          stateChange_t switchOnFunction,
+                                          stateChange_t switchOffFunction,
+                                          stateChange_t startFunction,
+                                          stateChange_t stopFunction,
+                                          stateChange_t recoverFunction,
+                                          allowChange_t allowStateChangeFunction,
+		                                  writerDouble_t PV_Frequency_Writer,
+		                                  readerDouble_t PV_Frequency_Reader,
+		                                  writerDouble_t PV_RefFrequency_Writer,
+		                                  readerDouble_t PV_RefFrequency_Reader,
+		                                  writerDouble_t PV_Amp_Writer,
+		                                  readerDouble_t PV_Amp_Reader,
+		                                  writerDouble_t PV_Phase_Writer,
+		                                  readerDouble_t PV_Phase_Reader,
+		                                  writerDouble_t PV_UpdateRate_Writer,
+		                                  readerDouble_t PV_UpdateRate_Reader,
+		                                  writerDouble_t PV_DutyCycle_Writer,
+		                                  readerDouble_t PV_DutyCycle_Reader,
+		                                  writerDouble_t PV_Gain_Writer,
+		                                  readerDouble_t PV_Gain_Reader,
+		                                  writerDouble_t PV_Offset_Writer,
+		                                  readerDouble_t PV_Offset_Reader,
+		                                  writerDouble_t PV_Bw_Writer,
+		                                  readerDouble_t PV_Bw_Reader,
+		                                  writerDouble_t PV_Resolution_Writer,
+		                                  readerDouble_t PV_Resolution_Reader,
+		                                  writerDouble_t PV_Impedance_Writer,
+		                                  readerDouble_t PV_Impedance_Reader,
+		                                  writerInt32_t PV_Coupling_Writer,
+		                                  readerInt32_t PV_Coupling_Reader,
+		                                  writerInt32_t PV_SignalRef_Writer,
+		                                  readerInt32_t PV_SignalRef_Reader,
+		                                  writerInt32_t PV_SignalType_Writer,
+		                                  readerInt32_t PV_SignalType_Reader,
+		                                  writerInt32_t PV_Ground_Writer,
+		                                  readerInt32_t PV_Ground_Reader):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -79,7 +78,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_frequency_RBVPV.reset(new PVDelegateInImpl<double>("Frequency_RBV", PV_Frequency_Reader));
 	m_frequency_RBVPV->setDescription("Generation frequency ReadBack");
 	m_frequency_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_frequency_RBVPV->write(getTimestamp(), (double)1);
 	addChild(m_frequency_RBVPV);
 
     m_RefFrequency_PV.reset(new PVDelegateOutImpl<double>("RefFrequency", PV_RefFrequency_Writer));
@@ -90,7 +88,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_RefFrequency_RBVPV.reset(new PVDelegateInImpl<double>("RefFrequency_RBV", PV_RefFrequency_Reader));
     m_RefFrequency_RBVPV->setDescription("Reference frequency");
     m_RefFrequency_RBVPV->setScanType(scanType_t::passive, 0);
-    m_RefFrequency_RBVPV->write(getTimestamp(), (double)1);
     addChild(m_RefFrequency_RBVPV);
 
 
@@ -102,7 +99,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_amplitude_RBVPV.reset(new PVDelegateInImpl<double>("Amplitude_RBV", PV_Amp_Reader));
 	m_amplitude_RBVPV->setDescription("Amplitude ReadBack");
 	m_amplitude_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_amplitude_RBVPV->write(getTimestamp(), (double)1);
 	addChild(m_amplitude_RBVPV);
 
     m_phase_PV.reset(new PVDelegateOutImpl<double>("Phase", PV_Phase_Writer));
@@ -113,7 +109,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_phase_RBVPV.reset(new PVDelegateInImpl<double>("Phase_RBV", PV_Phase_Reader));
 	m_phase_RBVPV->setDescription("Phase ReadBack");
 	m_phase_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_phase_RBVPV->write(getTimestamp(), (double)1);
 	addChild(m_phase_RBVPV);
 
 	m_updateRate_PV.reset(new PVDelegateOutImpl<double>("UpdateRate", PV_UpdateRate_Writer));
@@ -124,7 +119,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_updateRate_RBVPV.reset(new PVDelegateInImpl<double>("UpdateRate_RBV", PV_UpdateRate_Reader));
 	m_updateRate_RBVPV->setDescription("Update Rate ReadBack");
 	m_updateRate_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_updateRate_RBVPV->write(getTimestamp(), (double)1);
 	addChild(m_updateRate_RBVPV);
 
     m_DutyCycle_PV.reset(new PVDelegateOutImpl<double>("DutyCycle", PV_DutyCycle_Writer));
@@ -135,7 +129,6 @@ DataGenerationImpl<T>::DataGenerationImpl(
     m_DutyCycle_RBVPV.reset(new PVDelegateInImpl<double>("DutyCycle_RBV", PV_DutyCycle_Reader));
 	m_DutyCycle_RBVPV->setDescription("Signal Duty Cycle ReadBack");
 	m_DutyCycle_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_DutyCycle_RBVPV->write(getTimestamp(), (double)1);
 	addChild(m_DutyCycle_RBVPV);
 
 	m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
@@ -221,16 +214,18 @@ DataGenerationImpl<T>::DataGenerationImpl(
 	SignalTypeEnumeratorStrings.push_back("WaveForm");
 	SignalTypeEnumeratorStrings.push_back("Spline");
 	SignalTypeEnumeratorStrings.push_back("Sin");
+	SignalTypeEnumeratorStrings.push_back("Square");
+	SignalTypeEnumeratorStrings.push_back("Triangle");
 	SignalTypeEnumeratorStrings.push_back("Pulse");
 	SignalTypeEnumeratorStrings.push_back("Sawtooth");
 
-	m_signalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalType_Writer));
-	m_signalType_PV->setDescription("Type of signal: Waveform, Spline, Sin, Pulse, Sawtooth");
+	m_signalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalType",PV_SignalType_Writer));
+	m_signalType_PV->setDescription("Type of signal: Waveform, Spline, Sin, Square, Triangle, Pulse, Sawtooth");
 	m_signalType_PV->setEnumeration(SignalTypeEnumeratorStrings);
 	addChild(m_signalType_PV);
 
-	m_signalType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SignalRefType_RBV",PV_SignalType_Reader));
-	m_signalType_RBVPV->setDescription("Type of signal: Waveform, Spline, Sin, Pulse, Sawtooth ReadBack");
+	m_signalType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SignalType_RBV",PV_SignalType_Reader));
+	m_signalType_RBVPV->setDescription("Type of signal: Waveform, Spline, Sin,Square, Triangle, Pulse, Sawtooth ReadBack");
 	m_signalType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_signalType_RBVPV->setEnumeration(SignalTypeEnumeratorStrings);
 	addChild(m_signalType_RBVPV);
@@ -261,6 +256,21 @@ DataGenerationImpl<T>::DataGenerationImpl(
                                    recoverFunction,
                                    allowStateChangeFunction));
     addChild(m_stateMachine);
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getMaxElements()
+{
+    return m_dataPV->getMaxElements();
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getSignalType()
+{
+	std::int32_t signalType;
+	timespec timestamp;
+	m_signalType_RBVPV->read(&timestamp, &signalType);
+	return (size_t)signalType;
 }
 
 template<typename T>

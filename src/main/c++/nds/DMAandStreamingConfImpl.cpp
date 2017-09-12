@@ -21,17 +21,24 @@ namespace nds
 {
 
 template<typename T>
-DMASupportImpl<T>::DMASupportImpl(
-        const std::string& name,
-		size_t maxElements,
-		readerDouble_t PV_BufferSize_Reader,
-		writerInt32_t PV_EnableDMA_Writer,
-		readerInt32_t PV_EnableDMA_Reader,
-		readerInt32_t PV_NumDMAChannels_Reader,
-		readerInt32_t PV_DMAFrameType_Reader,
-		readerInt32_t PV_DMASampleSize_Reader,
-		readerInt32_t PV_DMASamplingRate_Reader):
-    NodeImpl(name, nodeType_t::dataSourceChannel)//,
+DMASupportImpl<T>::DMASupportImpl( const std::string& name,
+								   size_t maxElements,
+								   stateChange_t switchOnFunction,
+								   stateChange_t switchOffFunction,
+								   stateChange_t startFunction,
+								   stateChange_t stopFunction,
+								   stateChange_t recoverFunction,
+								   allowChange_t allowStateChangeFunction,
+								   readerDouble_t PV_BufferSize_Reader,
+								   writerInt32_t PV_EnableDMA_Writer,
+								   readerInt32_t PV_EnableDMA_Reader,
+								   readerInt32_t PV_NumDMAChannels_Reader,
+								   readerInt32_t PV_DMAFrameType_Reader,
+								   readerInt32_t PV_DMASampleSize_Reader,
+								   readerInt32_t PV_DMASamplingRate_Reader):
+    NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_onStartDelegate(startFunction),
+    m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
     m_dataPV.reset(new PVVariableInImpl<T>("Data"));
@@ -75,46 +82,15 @@ DMASupportImpl<T>::DMASupportImpl(
 	m_DMASamplingRate_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASamplingRate_PV);
 
-}
-
-
-template<typename T>
-StreamingConfImpl<T>::StreamingConfImpl(
-        const std::string& name,
-		size_t maxElements,
-		readerInt32_t PV_StreamingDataFormat_Reader,
-		writerInt32_t PV_StreamingType_Writer,
-		readerInt32_t PV_StreamingType_Reader):
-    NodeImpl(name, nodeType_t::dataSourceChannel)//,
-{
-	// Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
-
-	m_StreamingDataFormat_PV.reset(new PVDelegateInImpl<std::int32_t>("StreamingDataFormat",PV_StreamingDataFormat_Reader));
-	m_StreamingDataFormat_PV->setDescription("Streaming Data Format: Binary or ASCII");
-	m_StreamingDataFormat_PV->setScanType(scanType_t::interrupt, 0);
-	m_StreamingDataFormat_PV->write(getTimestamp(), (std::int32_t)1);
-	addChild(m_StreamingDataFormat_PV);
-
-    enumerationStrings_t DataFormatEnumeratorStrings;
-    DataFormatEnumeratorStrings.push_back("Binary");
-    DataFormatEnumeratorStrings.push_back("ASCII");
-
-	m_StreamingType_PV.reset(new PVDelegateOutImpl<std::int32_t>("StreamingType",PV_StreamingType_Writer));
-	m_StreamingType_PV->setDescription("Streaming Type: Continuous or On Demand");
-	m_StreamingType_PV->write(getTimestamp(), (std::int32_t)1);
-	m_StreamingType_PV->setEnumeration(DataFormatEnumeratorStrings);
-	addChild(m_StreamingType_PV);
-
-	m_StreamingType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("StreamingType_RBV",PV_StreamingType_Reader));
-	m_StreamingType_RBVPV->setDescription("Streaming Type ReadBack");
-	m_StreamingType_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_StreamingType_RBVPV->write(getTimestamp(), (std::int32_t)1);
-	addChild(m_StreamingType_RBVPV);
+    // Add state machine
+    m_stateMachine.reset(new StateMachineImpl(true,
+                                   switchOnFunction,
+                                   switchOffFunction,
+                                   std::bind(&DMASupportImpl::onStart, this),
+                                   stopFunction,
+                                   recoverFunction,
+                                   allowStateChangeFunction));
+    addChild(m_stateMachine);
 
 }
 
@@ -150,6 +126,75 @@ void DMASupportImpl<T>::onStart()
     m_onStartDelegate();
 }
 
+template class DMASupportImpl<std::int32_t>;
+template class DMASupportImpl<double>;
+template class DMASupportImpl<std::vector<std::int8_t> >;
+template class DMASupportImpl<std::vector<std::uint8_t> >;
+template class DMASupportImpl<std::vector<std::int32_t> >;
+template class DMASupportImpl<std::vector<double> >;
+template class DMASupportImpl<std::string >;
+
+
+
+template<typename T>
+StreamingConfImpl<T>::StreamingConfImpl( const std::string& name,
+										 size_t maxElements,
+										 stateChange_t switchOnFunction,
+										 stateChange_t switchOffFunction,
+										 stateChange_t startFunction,
+										 stateChange_t stopFunction,
+										 stateChange_t recoverFunction,
+										 allowChange_t allowStateChangeFunction,
+										 readerInt32_t PV_StreamingDataFormat_Reader,
+										 writerInt32_t PV_StreamingType_Writer,
+										 readerInt32_t PV_StreamingType_Reader):
+    NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_onStartDelegate(startFunction),
+    m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	// Add the children PVs
+    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
+    m_dataPV->setMaxElements(maxElements);
+    m_dataPV->setDescription("Acquired data");
+    m_dataPV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_dataPV);
+
+	m_StreamingDataFormat_PV.reset(new PVDelegateInImpl<std::int32_t>("StreamingDataFormat",PV_StreamingDataFormat_Reader));
+	m_StreamingDataFormat_PV->setDescription("Streaming Data Format: Binary or ASCII");
+	m_StreamingDataFormat_PV->setScanType(scanType_t::interrupt, 0);
+	m_StreamingDataFormat_PV->write(getTimestamp(), (std::int32_t)1);
+	addChild(m_StreamingDataFormat_PV);
+
+    enumerationStrings_t DataFormatEnumeratorStrings;
+    DataFormatEnumeratorStrings.push_back("Binary");
+    DataFormatEnumeratorStrings.push_back("ASCII");
+
+	m_StreamingType_PV.reset(new PVDelegateOutImpl<std::int32_t>("StreamingType",PV_StreamingType_Writer));
+	m_StreamingType_PV->setDescription("Streaming Type: Continuous or On Demand");
+	m_StreamingType_PV->write(getTimestamp(), (std::int32_t)1);
+	m_StreamingType_PV->setEnumeration(DataFormatEnumeratorStrings);
+	addChild(m_StreamingType_PV);
+
+	m_StreamingType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("StreamingType_RBV",PV_StreamingType_Reader));
+	m_StreamingType_RBVPV->setDescription("Streaming Type ReadBack");
+	m_StreamingType_RBVPV->setScanType(scanType_t::interrupt, 0);
+	m_StreamingType_RBVPV->write(getTimestamp(), (std::int32_t)1);
+	addChild(m_StreamingType_RBVPV);
+
+    // Add state machine
+    m_stateMachine.reset(new StateMachineImpl(true,
+                                   switchOnFunction,
+                                   switchOffFunction,
+                                   std::bind(&StreamingConfImpl::onStart, this),
+                                   stopFunction,
+                                   recoverFunction,
+                                   allowStateChangeFunction));
+    addChild(m_stateMachine);
+
+}
+
+
+
 template<typename T>
 timespec StreamingConfImpl<T>::getStartTimestamp() const
 {
@@ -174,16 +219,13 @@ size_t StreamingConfImpl<T>::getMaxElements()
     return m_dataPV->getMaxElements();
 }
 
-
-
-
-template class DMASupportImpl<std::int32_t>;
-template class DMASupportImpl<double>;
-template class DMASupportImpl<std::vector<std::int8_t> >;
-template class DMASupportImpl<std::vector<std::uint8_t> >;
-template class DMASupportImpl<std::vector<std::int32_t> >;
-template class DMASupportImpl<std::vector<double> >;
-template class DMASupportImpl<std::string >;
+template<typename T>
+void StreamingConfImpl<T>::onStart()
+{
+    m_startTime = m_startTimestampFunction();
+    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_onStartDelegate();
+}
 
 template class StreamingConfImpl<std::int32_t>;
 template class StreamingConfImpl<double>;

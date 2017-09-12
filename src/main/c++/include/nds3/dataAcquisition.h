@@ -76,13 +76,13 @@ public:
      * @brief Constructs the data acquisition node.
      *
      */
-    DataAcquisition(const std::string& name,               ///< The node's name
-                    size_t maxElements,                    ///< Maximum size of the acquired array. Set to 1 for scalar values
-                    stateChange_t switchOnFunction,        ///< Delegate function that performs the actions to switch the node on
-                    stateChange_t switchOffFunction,       ///< Delegate function that performs the actions to switch the node off
-                    stateChange_t startFunction,           ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-                    stateChange_t stopFunction,            ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-                    stateChange_t recoverFunction,         ///< Delegate function to execute to recover from an error state
+    DataAcquisition(const std::string& name,                ///< The node's name
+                    size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
+                    stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
+                    stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
+                    stateChange_t startFunction,            ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+                    stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+                    stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
                     allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
 					writerDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerDouble_t PV_Gain_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API

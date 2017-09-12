@@ -22,37 +22,44 @@ namespace nds
 {
 
 template<typename T>
-DataProcessingImpl<T>::DataProcessingImpl(
-        const std::string& name,
-		size_t maxElements,
-		writerInt32_t PV_EnableFilter_Writer,
-		readerInt32_t PV_EnableFilter_Reader,
-		writerInt32_t PV_FilterType_Writer,
-		readerInt32_t PV_FilterType_Reader,
-		writerVectorInt32_t PV_FilterParams_Writer,
-		readerVectorInt32_t PV_FilterParams_Reader,
-		size_t 		maxFFTElements,
-		writerInt32_t PV_EnableFFT_Writer,
-		readerInt32_t PV_EnableFFT_Reader,
-		writerInt32_t PV_EnableSwFFT_Writer,
-		readerInt32_t PV_EnableSwFFT_Reader,
-		writerInt32_t PV_FFTwindowType_Writer,
-		readerInt32_t PV_FFTwindowType_Reader,
-		writerInt32_t PV_FFTOverlap_Writer,
-		readerInt32_t PV_FFTOverlap_Reader,
-		writerInt32_t PV_FFTFrameSize_Writer,
-		readerInt32_t PV_FFTFrameSize_Reader,
-		writerInt32_t PV_FFTSmooth_Writer,
-		readerInt32_t PV_FFTSmooth_Reader,
-		writerInt32_t PV_EnableDecimation_Writer,
-		readerInt32_t PV_EnableDecimation_Reader,
-		writerInt32_t PV_DecimationType_Writer,
-		readerInt32_t PV_DecimationType_Reader,
-		writerInt32_t PV_DecimationOffset_Writer,
-		readerInt32_t PV_DecimationOffset_Reader,
-		writerInt32_t PV_RAW2Eng_Writer,
-		readerInt32_t PV_RAW2Eng_Reader):
-    NodeImpl(name, nodeType_t::dataSourceChannel)//,
+DataProcessingImpl<T>::DataProcessingImpl( const std::string& name,
+										   size_t maxElements,
+										   stateChange_t switchOnFunction,
+										   stateChange_t switchOffFunction,
+										   stateChange_t startFunction,
+										   stateChange_t stopFunction,
+										   stateChange_t recoverFunction,
+										   allowChange_t allowStateChangeFunction,
+										   writerInt32_t PV_EnableFilter_Writer,
+										   readerInt32_t PV_EnableFilter_Reader,
+										   writerInt32_t PV_FilterType_Writer,
+										   readerInt32_t PV_FilterType_Reader,
+										   writerVectorInt32_t PV_FilterParams_Writer,
+										   readerVectorInt32_t PV_FilterParams_Reader,
+										   size_t 		maxFFTElements,
+										   writerInt32_t PV_EnableFFT_Writer,
+										   readerInt32_t PV_EnableFFT_Reader,
+										   writerInt32_t PV_EnableSwFFT_Writer,
+										   readerInt32_t PV_EnableSwFFT_Reader,
+										   writerInt32_t PV_FFTwindowType_Writer,
+										   readerInt32_t PV_FFTwindowType_Reader,
+										   writerInt32_t PV_FFTOverlap_Writer,
+										   readerInt32_t PV_FFTOverlap_Reader,
+										   writerInt32_t PV_FFTFrameSize_Writer,
+										   readerInt32_t PV_FFTFrameSize_Reader,
+										   writerInt32_t PV_FFTSmooth_Writer,
+										   readerInt32_t PV_FFTSmooth_Reader,
+										   writerInt32_t PV_EnableDecimation_Writer,
+										   readerInt32_t PV_EnableDecimation_Reader,
+										   writerInt32_t PV_DecimationType_Writer,
+										   readerInt32_t PV_DecimationType_Reader,
+										   writerInt32_t PV_DecimationOffset_Writer,
+										   readerInt32_t PV_DecimationOffset_Reader,
+										   writerInt32_t PV_RAW2Eng_Writer,
+										   readerInt32_t PV_RAW2Eng_Reader):
+    NodeImpl(name, nodeType_t::dataSourceChannel),
+    m_onStartDelegate(startFunction),
+    m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
     m_dataPV.reset(new PVVariableInImpl<T>("Data"));
@@ -76,7 +83,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableFilter_RBVPV->setDescription("Enable filter ReadBack");
 	m_enableFilter_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableFilter_RBVPV->setEnumeration(enableFiterEnumeratorStrings);
-	m_enableFilter_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableFilter_RBVPV);
 
 	enumerationStrings_t fiterTypeEnumeratorStrings;
@@ -96,7 +102,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FilterType_RBVPV->setDescription("Filter types: SW, Polynomial, LowPass, HighPass");
 	m_FilterType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_FilterType_RBVPV->setEnumeration(fiterTypeEnumeratorStrings);
-	m_FilterType_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_FilterType_RBVPV);
 
 
@@ -110,7 +115,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FilterParams_RBVPV->setDescription("Filter Parameters");
 	m_FilterParams_RBVPV->setScanType(scanType_t::passive, 0);
 	m_FilterParams_RBVPV->setEnumeration(fiterTypeEnumeratorStrings);
-	m_FilterParams_RBVPV->setMaxElements(100);//TODO TBD
 	addChild(m_FilterParams_RBVPV);
 
     m_FFTdataPV.reset(new PVVariableInImpl<T>("FFTData"));
@@ -133,7 +137,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableFFT_RBVPV->setDescription("Enable FFT ReadBack");
 	m_enableFFT_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableFFT_RBVPV->setEnumeration(enableFFTEnumeratorStrings);
-	m_enableFFT_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableFFT_RBVPV);
 
 	enumerationStrings_t enableSwFFTEnumeratorStrings;
@@ -146,11 +149,10 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableSwFFT_PV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableSwFFT_PV);
 
-	m_enableSwFFT_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("enableSwFFT",PV_EnableSwFFT_Reader));
+	m_enableSwFFT_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("enableSwFFT_RBVPV",PV_EnableSwFFT_Reader));
 	m_enableSwFFT_RBVPV->setDescription("Enable Software FFT ReadBack");
 	m_enableSwFFT_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableSwFFT_RBVPV->setEnumeration(enableSwFFTEnumeratorStrings);
-	m_enableSwFFT_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableSwFFT_RBVPV);
 
 	enumerationStrings_t FFTwindowTypeEnumeratorStrings;
@@ -173,7 +175,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FFTWindowType_RBVPV->setDescription("FFT Window Types: NONE, Barlett, Blackman, FlatTop, Hann, Hamm, Tukey, Welch");
 	m_FFTWindowType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_FFTWindowType_RBVPV->setEnumeration(FFTwindowTypeEnumeratorStrings);
-	m_FFTWindowType_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_FFTWindowType_RBVPV);
 
 
@@ -185,7 +186,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FFTFrameOverlap_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("FFToverlap_RBV",PV_FFTOverlap_Reader));
 	m_FFTFrameOverlap_RBVPV->setDescription("FFT Number of frames to overlap ReadBack");
 	m_FFTFrameOverlap_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_FFTFrameOverlap_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_FFTFrameOverlap_RBVPV);
 
 	m_FFTFrameSize_PV.reset(new PVDelegateOutImpl<std::int32_t>("FFTframeSize",PV_FFTFrameSize_Writer));
@@ -196,7 +196,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FFTFrameSize_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("FFTframeSize_RBV",PV_FFTFrameSize_Reader));
 	m_FFTFrameSize_RBVPV->setDescription("FFT Size of the frame ReadBack");
 	m_FFTFrameSize_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_FFTFrameSize_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_FFTFrameSize_RBVPV);
 
 	m_FFTSmoothFactor_PV.reset(new PVDelegateOutImpl<std::int32_t>("FFTSmoothFactor",PV_FFTSmooth_Writer));
@@ -207,7 +206,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_FFTSmoothFactor_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("FFTSmoothFactor_RBV",PV_FFTSmooth_Reader));
 	m_FFTSmoothFactor_RBVPV->setDescription("FFT Smooth Factor ReadBack");
 	m_FFTSmoothFactor_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_FFTSmoothFactor_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_FFTSmoothFactor_RBVPV);
 
 	enumerationStrings_t enableDecimationEnumeratorStrings;
@@ -224,7 +222,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableDecimation_RBVPV->setDescription("Enable Software FFT ReadBack");
 	m_enableDecimation_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableDecimation_RBVPV->setEnumeration(enableDecimationEnumeratorStrings);
-	m_enableDecimation_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableDecimation_RBVPV);
 
 	enumerationStrings_t decimationTypeEnumeratorStrings;
@@ -241,7 +238,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableDecimation_RBVPV->setDescription("Decimation type: Frames or Samples ReadBack");
 	m_enableDecimation_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableDecimation_RBVPV->setEnumeration(decimationTypeEnumeratorStrings);
-	m_enableDecimation_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableDecimation_RBVPV);
 
 	m_DecimationFactor_PV.reset(new PVVariableOutImpl<std::int32_t>("DecimationFactor"));
@@ -258,7 +254,6 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_DecimationOffset_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("DecimationOffset_RBV",PV_DecimationOffset_Reader));
 	m_DecimationOffset_RBVPV->setDescription("Index of the first sample that is not decimated ReadBack");
 	m_DecimationOffset_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_DecimationOffset_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_DecimationOffset_RBVPV);
 
 	enumerationStrings_t enableRAW2ENGEnumeratorStrings;
@@ -276,9 +271,17 @@ DataProcessingImpl<T>::DataProcessingImpl(
 	m_enableRaw2EngConversion_RBVPV->setDescription("Enable RAW to ENG Conversion of data ReadBack");
 	m_enableRaw2EngConversion_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_enableRaw2EngConversion_RBVPV->setEnumeration(enableRAW2ENGEnumeratorStrings);
-	m_enableRaw2EngConversion_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_enableRaw2EngConversion_RBVPV);
 
+    // Add state machine
+    m_stateMachine.reset(new StateMachineImpl(true,
+                                   switchOnFunction,
+                                   switchOffFunction,
+                                   std::bind(&DataProcessingImpl::onStart, this),
+                                   stopFunction,
+                                   recoverFunction,
+                                   allowStateChangeFunction));
+    addChild(m_stateMachine);
 
 }
 

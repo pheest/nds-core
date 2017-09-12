@@ -26,52 +26,36 @@ DMASupport<T>::DMASupport(): Node()
  *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
-DMASupport<T>::DMASupport(	const std::string& name,
-							size_t maxElements,
-							readerDouble_t PV_BufferSize_Reader,
-							writerInt32_t PV_EnableDMA_Writer,
-							readerInt32_t PV_EnableDMA_Reader,
-							readerInt32_t PV_NumDMAChannels_Reader,
-							readerInt32_t PV_DMAFrameType_Reader,
-							readerInt32_t PV_DMASampleSize_Reader,
-							readerInt32_t PV_DMASamplingRate_Reader):
-    Node(std::shared_ptr<DMASupportImpl<T> >(new DMASupportImpl<T>(
-    		name,
-    		maxElements,
-			PV_BufferSize_Reader,
-			PV_EnableDMA_Writer,
-			PV_EnableDMA_Reader,
-			PV_NumDMAChannels_Reader,
-			PV_DMAFrameType_Reader,
-			PV_DMASampleSize_Reader,
-			PV_DMASamplingRate_Reader)))
-{
-}
-
-template <typename T>
-StreamingConf<T>::StreamingConf(): Node()
-{
-}
-
-/**
- * @brief Constructs the data acquisition node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
- */
-template <typename T>
-StreamingConf<T>::StreamingConf(	const std::string& name,
-							size_t maxElements,
-							readerInt32_t PV_StreamingDataFormat_Reader,
-							writerInt32_t PV_StreamingType_Writer,
-							readerInt32_t PV_StreamingType_Reader):
-    Node(std::shared_ptr<StreamingConfImpl<T> >(new StreamingConfImpl<T>(
-    		name,
-    		maxElements,
-			PV_StreamingDataFormat_Reader,
-			PV_StreamingType_Writer,
-			PV_StreamingType_Reader)))
+DMASupport<T>::DMASupport( const std::string& name,
+						   size_t maxElements,
+						   stateChange_t switchOnFunction,
+						   stateChange_t switchOffFunction,
+						   stateChange_t startFunction,
+						   stateChange_t stopFunction,
+						   stateChange_t recoverFunction,
+						   allowChange_t allowStateChangeFunction,
+						   readerDouble_t PV_BufferSize_Reader,
+						   writerInt32_t PV_EnableDMA_Writer,
+						   readerInt32_t PV_EnableDMA_Reader,
+						   readerInt32_t PV_NumDMAChannels_Reader,
+						   readerInt32_t PV_DMAFrameType_Reader,
+						   readerInt32_t PV_DMASampleSize_Reader,
+						   readerInt32_t PV_DMASamplingRate_Reader):
+    Node(std::shared_ptr<DMASupportImpl<T> >(new DMASupportImpl<T>( name,
+																	maxElements,
+																	switchOnFunction,
+																	switchOffFunction,
+																	startFunction,
+																	stopFunction,
+																	recoverFunction,
+																	allowStateChangeFunction,
+																	PV_BufferSize_Reader,
+																	PV_EnableDMA_Writer,
+																	PV_EnableDMA_Reader,
+																	PV_NumDMAChannels_Reader,
+																	PV_DMAFrameType_Reader,
+																	PV_DMASampleSize_Reader,
+																	PV_DMASamplingRate_Reader)))
 {
 }
 
@@ -110,7 +94,52 @@ timespec DMASupport<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<DMASupportImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
+template <typename T>
+StreamingConf<T>::StreamingConf(): Node()
+{
+}
 
+template class DMASupport<std::int32_t>;
+template class DMASupport<double>;
+template class DMASupport<std::vector<std::int8_t> >;
+template class DMASupport<std::vector<std::uint8_t> >;
+template class DMASupport<std::vector<std::int32_t> >;
+template class DMASupport<std::vector<double> >;
+template class DMASupport<std::string >;
+
+
+/**
+ * @brief Constructs the StreamingConf node.
+ *
+ * @param name        the node name
+ * @param maxElements if the data type is an array, then indicated
+ *                    the maximum size (in elements) of the acquired array
+ */
+template <typename T>
+StreamingConf<T>::StreamingConf( const std::string& name,
+							     size_t maxElements,
+								 stateChange_t switchOnFunction,
+								 stateChange_t switchOffFunction,
+								 stateChange_t startFunction,
+								 stateChange_t stopFunction,
+								 stateChange_t recoverFunction,
+								 allowChange_t allowStateChangeFunction,
+							     readerInt32_t PV_StreamingDataFormat_Reader,
+							     writerInt32_t PV_StreamingType_Writer,
+							     readerInt32_t PV_StreamingType_Reader):
+    Node(std::shared_ptr<StreamingConfImpl<T> >(new StreamingConfImpl<T>( name,
+																		  maxElements,
+																		  switchOnFunction,
+																		  switchOffFunction,
+																		  startFunction,
+																	      stopFunction,
+																		  recoverFunction,
+																		  allowStateChangeFunction,
+																		  PV_StreamingDataFormat_Reader,
+																		  PV_StreamingType_Writer,
+																		  PV_StreamingType_Reader)))
+{
+}
 
 template <typename T>
 StreamingConf<T>::StreamingConf(const StreamingConf<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
@@ -147,14 +176,6 @@ timespec StreamingConf<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<StreamingConfImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
-
-template class DMASupport<std::int32_t>;
-template class DMASupport<double>;
-template class DMASupport<std::vector<std::int8_t> >;
-template class DMASupport<std::vector<std::uint8_t> >;
-template class DMASupport<std::vector<std::int32_t> >;
-template class DMASupport<std::vector<double> >;
-template class DMASupport<std::string >;
 
 template class StreamingConf<std::int32_t>;
 template class StreamingConf<double>;

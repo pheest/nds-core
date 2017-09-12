@@ -24,7 +24,7 @@ template<typename T>
 class DataGenerationImpl: public NodeImpl
 {
 public:
-    DataGenerationImpl(const std::string& name,
+    DataGenerationImpl( const std::string& name,
 						size_t maxElements,
 						stateChange_t switchOnFunction,
 						stateChange_t switchOffFunction,
@@ -74,6 +74,11 @@ public:
      * @param timestampDelegate the function to call to get the start time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    void push(const timespec& timestamp, const T& data);
+
+    size_t getMaxElements();
+    size_t getSignalType();
 
     void write(const timespec& timestamp, const T& data);
 

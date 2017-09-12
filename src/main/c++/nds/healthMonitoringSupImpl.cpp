@@ -22,29 +22,35 @@ namespace nds
 {
 
 template<typename T>
-HealthMonitSupImpl<T>::HealthMonitSupImpl(
-        const std::string& name,
-		readerDouble_t PV_DevicePower_Reader,
-		readerDouble_t PV_DeviceTemp_Reader,
-		readerDouble_t PV_DeviceVoltage_Reader,
-		readerDouble_t PV_DeviceCurrent_Reader,
-		writerInt32_t PV_EnableSEU_Writer,
-		readerInt32_t PV_EnableSEU_Reader,
-		writerInt32_t PV_EnableMonitorDAQ_Writer,
-		readerInt32_t PV_EnableMonitorDAQ_Reader,
-		writerInt32_t PV_EnableShelfTest_Writer,
-		readerInt32_t PV_EnableShelfTest_Reader,
-		writerInt32_t PV_ShelfTestType_Writer,
-		readerInt32_t PV_ShelfTestType_Reader,
-		writerInt32_t PV_VerboseShelfTest_Writer,
-		readerInt32_t PV_VerboseShelfTest_Reader,
-		writerInt32_t PV_EnableShelfTestId_Writer,
-		readerInt32_t PV_EnableShelfTestId_Reader,
-		writerInt32_t PV_EnableShelfTestText_Writer,
-		readerInt32_t PV_EnableShelfTestText_Reader,
-		readerInt32_t PV_SignalQualityFlag_Reader,
-		readerDouble_t PV_SignalQualityFlagLevel_Reader):
+HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
+											stateChange_t switchOnFunction,
+											stateChange_t switchOffFunction,
+											stateChange_t startFunction,
+											stateChange_t stopFunction,
+											stateChange_t recoverFunction,
+											allowChange_t allowStateChangeFunction,
+											readerDouble_t PV_DevicePower_Reader,
+											readerDouble_t PV_DeviceTemp_Reader,
+											readerDouble_t PV_DeviceVoltage_Reader,
+											readerDouble_t PV_DeviceCurrent_Reader,
+											writerInt32_t PV_EnableSEU_Writer,
+											readerInt32_t PV_EnableSEU_Reader,
+											writerInt32_t PV_EnableMonitorDAQ_Writer,
+											readerInt32_t PV_EnableMonitorDAQ_Reader,
+											writerInt32_t PV_EnableShelfTest_Writer,
+											readerInt32_t PV_EnableShelfTest_Reader,
+											writerInt32_t PV_ShelfTestType_Writer,
+											readerInt32_t PV_ShelfTestType_Reader,
+											writerInt32_t PV_VerboseShelfTest_Writer,
+											readerInt32_t PV_VerboseShelfTest_Reader,
+											writerInt32_t PV_EnableShelfTestId_Writer,
+											readerInt32_t PV_EnableShelfTestId_Reader,
+											writerInt32_t PV_EnableShelfTestText_Writer,
+											readerInt32_t PV_EnableShelfTestText_Reader,
+											readerInt32_t PV_SignalQualityFlag_Reader,
+											readerDouble_t PV_SignalQualityFlagLevel_Reader):
     NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
@@ -158,6 +164,15 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(
 	m_SignalQualityFlagLevel_PV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_SignalQualityFlagLevel_PV);
 
+    // Add state machine
+    m_stateMachine.reset(new StateMachineImpl(true,
+                                   switchOnFunction,
+                                   switchOffFunction,
+                                   std::bind(&HealthMonitSupImpl::onStart, this),
+                                   stopFunction,
+                                   recoverFunction,
+                                   allowStateChangeFunction));
+    addChild(m_stateMachine);
 }
 
 
@@ -173,6 +188,13 @@ void HealthMonitSupImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t times
     m_startTimestampFunction = timestampDelegate;
 }
 
+template<typename T>
+void HealthMonitSupImpl<T>::onStart()
+{
+    m_startTime = m_startTimestampFunction();
+    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_onStartDelegate();
+}
 
 template class HealthMonitSupImpl<std::int32_t>;
 template class HealthMonitSupImpl<double>;

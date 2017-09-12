@@ -8,8 +8,8 @@
 int main(int argc, char **argv)
 {
     nds::Factory::registerDriver("testDevice",
-                           std::bind(&TestDevice::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&TestDevice::deallocateDevice, std::placeholders::_1));
+                           std::bind(&testDevice::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&testDevice::deallocateDevice, std::placeholders::_1));
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);

@@ -27,27 +27,33 @@ template<typename T>
 class HealthMonitSupImpl: public NodeImpl
 {
 public:
-	HealthMonitSupImpl(const std::string& name,
-			readerDouble_t PV_DevicePower_Reader,
-			readerDouble_t PV_DeviceTemp_Reader,
-			readerDouble_t PV_DeviceVoltage_Reader,
-			readerDouble_t PV_DeviceCurrent_Reader,
-			writerInt32_t PV_EnableSEU_Writer,
-			readerInt32_t PV_EnableSEU_Reader,
-			writerInt32_t PV_EnableMonitorDAQ_Writer,
-			readerInt32_t PV_EnableMonitorDAQ_Reader,
-			writerInt32_t PV_EnableShelfTest_Writer,
-			readerInt32_t PV_EnableShelfTest_Reader,
-			writerInt32_t PV_ShelfTestType_Writer,
-			readerInt32_t PV_ShelfTestType_Reader,
-			writerInt32_t PV_VerboseShelfTest_Writer,
-			readerInt32_t PV_VerboseShelfTest_Reader,
-			writerInt32_t PV_EnableShelfTestId_Writer,
-			readerInt32_t PV_EnableShelfTestId_Reader,
-			writerInt32_t PV_EnableShelfTestText_Writer,
-			readerInt32_t PV_EnableShelfTestText_Reader,
-			readerInt32_t PV_SignalQualityFlag_Reader,
-			readerDouble_t PV_SignalQualityFlagLevel_Reader);
+	HealthMonitSupImpl( const std::string& name,
+						stateChange_t switchOnFunction,
+						stateChange_t switchOffFunction,
+						stateChange_t startFunction,
+						stateChange_t stopFunction,
+						stateChange_t recoverFunction,
+						allowChange_t allowStateChangeFunction,
+						readerDouble_t PV_DevicePower_Reader,
+						readerDouble_t PV_DeviceTemp_Reader,
+						readerDouble_t PV_DeviceVoltage_Reader,
+						readerDouble_t PV_DeviceCurrent_Reader,
+						writerInt32_t PV_EnableSEU_Writer,
+						readerInt32_t PV_EnableSEU_Reader,
+						writerInt32_t PV_EnableMonitorDAQ_Writer,
+						readerInt32_t PV_EnableMonitorDAQ_Reader,
+						writerInt32_t PV_EnableShelfTest_Writer,
+						readerInt32_t PV_EnableShelfTest_Reader,
+						writerInt32_t PV_ShelfTestType_Writer,
+						readerInt32_t PV_ShelfTestType_Reader,
+						writerInt32_t PV_VerboseShelfTest_Writer,
+						readerInt32_t PV_VerboseShelfTest_Reader,
+						writerInt32_t PV_EnableShelfTestId_Writer,
+						readerInt32_t PV_EnableShelfTestId_Reader,
+						writerInt32_t PV_EnableShelfTestText_Writer,
+						readerInt32_t PV_EnableShelfTestText_Reader,
+						readerInt32_t PV_SignalQualityFlag_Reader,
+						readerDouble_t PV_SignalQualityFlagLevel_Reader);
 
 
     /**
@@ -72,7 +78,19 @@ public:
      */
     timespec getStartTimestamp() const;
 
+    /**
+     * @brief Called by the state machine. Store the current timestamp and then calls the
+     *        delegated onStart function.
+     */
+    void onStart();
+
 protected:
+
+    /**
+     * @brief In the state machine we set the start function to onStart(), so we
+     *        remember here what to call from onStart().
+     */
+    stateChange_t m_onStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time.
@@ -123,6 +141,9 @@ protected:
 
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQualityFlag_PV;
     std::shared_ptr<PVDelegateInImpl<double> > m_SignalQualityFlagLevel_PV;
+
+    std::shared_ptr<StateMachineImpl> m_stateMachine;
+
 
 };
 

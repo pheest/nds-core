@@ -25,8 +25,14 @@ template<typename T>
 class DataProcessingImpl: public NodeImpl
 {
 public:
-    DataProcessingImpl(const std::string& name,
+    DataProcessingImpl( const std::string& name,
 						size_t maxElements,
+						stateChange_t switchOnFunction,
+						stateChange_t switchOffFunction,
+						stateChange_t startFunction,
+						stateChange_t stopFunction,
+						stateChange_t recoverFunction,
+						allowChange_t allowStateChangeFunction,
 						writerInt32_t PV_EnableFilter_Writer,
 						readerInt32_t PV_EnableFilter_Reader,
 						writerInt32_t PV_FilterType_Writer,
@@ -159,6 +165,9 @@ protected:
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableRaw2EngConversion_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableRaw2EngConversion_RBVPV;
+
+    std::shared_ptr<StateMachineImpl> m_stateMachine;
+
 
 };
 

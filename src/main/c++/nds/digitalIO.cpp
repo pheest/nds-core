@@ -24,35 +24,35 @@ DigitalIO<T>::DigitalIO(): Node()
  *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
-DigitalIO<T>::DigitalIO(const std::string& name,
-                size_t maxElements,
-                stateChange_t switchOnFunction,
-                stateChange_t switchOffFunction,
-                stateChange_t startFunction,
-                stateChange_t stopFunction,
-                stateChange_t recoverFunction,
-                allowChange_t allowStateChangeFunction,
-				writerInt32_t PV_voltLevelHigh_Writer,
-				readerInt32_t PV_voltLevelHigh_Reader,
-				writerInt32_t PV_voltLevelLow_Writer,
-				readerInt32_t PV_voltLevelLow_Reader,
-				writerInt32_t PV_ChannelDir_Writer,
-				readerInt32_t PV_ChannelDir_Reader):
+DigitalIO<T>::DigitalIO( const std::string& name,
+						 size_t maxElements,
+						 stateChange_t switchOnFunction,
+						 stateChange_t switchOffFunction,
+						 stateChange_t startFunction,
+						 stateChange_t stopFunction,
+						 stateChange_t recoverFunction,
+						 allowChange_t allowStateChangeFunction,
+						 writerInt32_t PV_voltLevelHigh_Writer,
+						 readerInt32_t PV_voltLevelHigh_Reader,
+						 writerInt32_t PV_voltLevelLow_Writer,
+						 readerInt32_t PV_voltLevelLow_Reader,
+						 writerInt32_t PV_ChannelDir_Writer,
+						 readerInt32_t PV_ChannelDir_Reader):
 
-    Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>(name,
-																 maxElements,
-																 switchOnFunction,
-																 switchOffFunction,
-																 startFunction,
-																 stopFunction,
-																 recoverFunction,
-																 allowStateChangeFunction,
-																PV_voltLevelHigh_Writer,
-																PV_voltLevelHigh_Reader,
-																PV_voltLevelLow_Writer,
-																PV_voltLevelLow_Reader,
-																PV_ChannelDir_Writer,
-																PV_ChannelDir_Reader)))
+    Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
+																  maxElements,
+																  switchOnFunction,
+																  switchOffFunction,
+																  startFunction,
+																  stopFunction,
+																  recoverFunction,
+																  allowStateChangeFunction,
+																  PV_voltLevelHigh_Writer,
+																  PV_voltLevelHigh_Reader,
+																  PV_voltLevelLow_Writer,
+																  PV_voltLevelLow_Reader,
+																  PV_ChannelDir_Writer,
+																  PV_ChannelDir_Reader)))
 {
 }
 

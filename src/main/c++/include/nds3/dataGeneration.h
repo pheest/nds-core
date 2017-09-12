@@ -67,15 +67,15 @@ public:
      * @brief Constructs the data generation node.
      *
      */
-    DataGeneration( const std::string& name,
-					size_t maxElements,                      ///< The node's name
-					stateChange_t switchOnFunction,           ///< Maximum size of the array. Set to 1 for scalar values
-					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node on
-					stateChange_t startFunction,              ///< Delegate function that performs the actions to switch the node off
-					stateChange_t stopFunction,               ///< Delegate function that performs the actions to start the data generation (usually launches the gneration thread)
-					stateChange_t recoverFunction,            ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
-					allowChange_t allowStateChangeFunction,   ///< Delegate function to execute to recover from an error state
-					writerDouble_t PV_Frequency_Writer,      ///< Delegate function that can deny a state change. Usually just returns true
+    DataGeneration( const std::string& name,                  ///< The node's name
+					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
+					stateChange_t switchOnFunction,           ///< Delegate function that performs the actions to switch the node on
+					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node off
+					stateChange_t startFunction,              ///< Delegate function that performs the actions to start the data generation (usually launches the gneration thread)
+					stateChange_t stopFunction,               ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
+					stateChange_t recoverFunction,            ///< Delegate function to execute to recover from an error state
+					allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
+					writerDouble_t PV_Frequency_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerDouble_t PV_Frequency_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_RefFrequency_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerDouble_t PV_RefFrequency_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -139,6 +139,33 @@ public:
      */
     //TODO: Discuss if necessary
     timespec getStartTimestamp() const;
+
+    /**
+     * @ingroup datareadwrite
+     * @brief Push acquired data to the control system.
+     *
+     * Usually your device implementation will call this function from the
+     *  data acquisition thread in order to push the acquired data.
+     *
+     * @param timestamp the timestamp for the data
+     * @param data      the data to push to the control system
+     */
+    void push(const timespec& timestamp, const T& data);
+
+    /**
+     * @brief Retrieve the maximum number of elements that can be stored in the
+     *        pushed array. This number is set in the DataAcquisition constructor.
+     *
+     * @return the maximum number of elements that can be stored in the pushed array
+     */
+    size_t getMaxElements();
+
+    /**
+     * @brief Retrieve the desidered signal type to be generated.
+     *
+     * @return the signalType value
+     */
+    size_t getSignalType();
 };
 
 }

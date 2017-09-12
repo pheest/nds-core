@@ -74,100 +74,100 @@ public:
      * @brief Constructs the data acquisition node.
      *
      */
-    imageAcquisition(const std::string& name,               ///< The node's name
-			size_t maxElements,
-			stateChange_t switchOnFunction,
-			stateChange_t switchOffFunction,
-			stateChange_t startFunction,
-			stateChange_t stopFunction,
-			stateChange_t recoverFunction,
-			allowChange_t allowStateChangeFunction,
-			readerInt32_t PV_MaxSizeX_Reader,
-			readerInt32_t PV_MaxSizeY_Reader,
-			writerInt32_t PV_BinX_Writer,
-			readerInt32_t PV_BinX_Reader,
-			writerInt32_t PV_BinY_Writer,
-			readerInt32_t PV_BinY_Reader,
-			writerInt32_t PV_MinX_Writer,
-			readerInt32_t PV_MinX_Reader,
-			writerInt32_t PV_MinY_Writer,
-			readerInt32_t PV_MinY_Reader,
-			writerInt32_t PV_SizeX_Writer,
-			readerInt32_t PV_SizeX_Reader,
-			writerInt32_t PV_SizeY_Writer,
-			readerInt32_t PV_SizeY_Reader,
-			writerInt32_t PV_ReverseX_Writer,
-			readerInt32_t PV_ReverseX_Reader,
-			writerInt32_t PV_ReverseY_Writer,
-			readerInt32_t PV_ReverseY_Reader,
-			writerInt32_t PV_Resolution_Writer,
-			readerInt32_t PV_Resolution_Reader,
-			writerInt32_t PV_SamplesPerPixel_Writer,
-			readerInt32_t PV_SamplesPerPixel_Reader,
-			writerDouble_t PV_AcquireTime_Writer,
-			readerDouble_t PV_AcquireTime_Reader,
-			writerDouble_t PV_AcquirePeriod_Writer,
-			readerDouble_t PV_AcquirePeriod_Reader,
-			readerDouble_t PV_TimeRemaining_Reader,
-			writerDouble_t PV_Gain_Writer,
-			readerDouble_t PV_Gain_Reader,
-			writerInt32_t PV_FrameType_Writer,
-			readerInt32_t PV_FrameType_Reader,
-			writerInt32_t PV_LostFrames_Writer,
-			readerInt32_t PV_LostFrames_Reader,
-			writerInt32_t PV_ImageMode_Writer,
-			readerInt32_t PV_ImageMode_Reader,
-			writerInt32_t PV_TriggerMode_Writer,
-			readerInt32_t PV_TriggerMode_Reader,
-			writerInt32_t PV_NumExposures_Writer,
-			readerInt32_t PV_NumExposures_Reader,
-			readerInt32_t PV_NumExposuresCounter_Reader,
-			writerInt32_t PV_Exposure_Writer,
-			readerInt32_t PV_Exposure_Reader,
-			writerInt32_t PV_minExposure_Writer,
-			readerInt32_t PV_minExposure_Reader,
-			writerInt32_t PV_maxExposure_Writer,
-			readerInt32_t PV_maxExposure_Reader,
-			writerInt32_t PV_ExposureStep_Writer,
-			readerInt32_t PV_ExposureStep_Reader,
-			writerInt32_t PV_BlackLevel_Writer,
-			readerInt32_t PV_BlackLevel_Reader,
-			writerInt32_t PV_NumImages_Writer,
-			readerInt32_t PV_NumImages_Reader,
-			readerInt32_t PV_NumImagesCounter_Reader,
-			writerInt32_t PV_Acquire_Writer,
-			readerInt32_t PV_Acquire_Reader,
-			readerInt32_t PV_DetectorState_Reader,
-			readerString_t PV_StatusMessage_Reader,
-			readerString_t PV_StringToServer_Reader,
-			readerString_t PV_StringFromServer_Reader,
-			writerInt32_t PV_ReadStatus_Writer,
-			writerInt32_t PV_ShutterMode_Writer,
-			readerInt32_t PV_ShutterMode_Reader,
-			writerInt32_t PV_ShutterControlMode_Writer,
-			readerInt32_t PV_ShutterControlMode_Reader,
-			readerInt32_t PV_ShutterStatus_Reader,
-			writerInt32_t PV_DelayStep_Writer,
-			readerInt32_t PV_DelayStep_Reader,
-			writerDouble_t PV_ShutterOpenDelay_Writer,
-			readerDouble_t PV_ShutterOpenDelay_Reader,
-			writerDouble_t PV_ShutterMinOpenDelay_Writer,
-			readerDouble_t PV_ShutterMinOpenDelay_Reader,
-			writerDouble_t PV_ShutterMaxOpenDelay_Writer,
-			readerDouble_t PV_ShutterMaxOpenDelay_Reader,
-			writerDouble_t PV_ShutterCloseDelay_Writer,
-			readerDouble_t PV_ShutterCloseDelay_Reader,
-			writerDouble_t PV_ShutterMinCloseDelay_Writer,
-			readerDouble_t PV_ShutterMinCloseDelay_Reader,
-			writerDouble_t PV_ShutterMaxCloseDelay_Writer,
-			readerDouble_t PV_ShutterMaxCloseDelay_Reader,
-			writerVectorInt32_t PV_HotPixels_Writer,
-			readerVectorInt32_t PV_HotPixels_Reader,
-			writerVectorInt32_t PV_HotPixelsCorr_Writer,
-			readerVectorInt32_t PV_HotPixelsCorr_Reader,
-			writerDouble_t PV_Temperature_Writer,
-			readerDouble_t PV_Temperature_Reader,
-			readerDouble_t PV_ActualTemperature_Reader);
+    imageAcquisition(const std::string& name,                           ///< The node's name
+					 size_t maxElements,                                ///< Maximum size of the acquired array. Set to 1 for scalar values
+					 stateChange_t switchOnFunction,                    ///< Delegate function that performs the actions to switch the node on
+					 stateChange_t switchOffFunction,                   ///< Delegate function that performs the actions to switch the node off
+					 stateChange_t startFunction,                       ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+					 stateChange_t stopFunction,                        ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+					 stateChange_t recoverFunction,                     ///< Delegate function to execute to recover from an error state
+					 allowChange_t allowStateChangeFunction,            ///< Delegate function that can deny a state change. Usually just returns true
+					 readerInt32_t PV_MaxSizeX_Reader,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_MaxSizeY_Reader,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_BinX_Writer,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_BinX_Reader,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_BinY_Writer,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_BinY_Reader,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_MinX_Writer,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_MinX_Reader,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_MinY_Writer,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_MinY_Reader,                      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_SizeX_Writer,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_SizeX_Reader,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_SizeY_Writer,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_SizeY_Reader,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ReverseX_Writer,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ReverseX_Reader,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ReverseY_Writer,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ReverseY_Reader,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_Resolution_Writer,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_Resolution_Reader,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_SamplesPerPixel_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_SamplesPerPixel_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_AcquireTime_Writer,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_AcquireTime_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_AcquirePeriod_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_AcquirePeriod_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_TimeRemaining_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_Gain_Writer,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_Gain_Reader,                     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_FrameType_Writer,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_FrameType_Reader,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_LostFrames_Writer,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_LostFrames_Reader,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ImageMode_Writer,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ImageMode_Reader,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_TriggerMode_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_TriggerMode_Reader,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_NumExposures_Writer,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_NumExposures_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_NumExposuresCounter_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_Exposure_Writer,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_Exposure_Reader,                  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_minExposure_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_minExposure_Reader,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_maxExposure_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_maxExposure_Reader,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ExposureStep_Writer,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ExposureStep_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_BlackLevel_Writer,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_BlackLevel_Reader,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_NumImages_Writer,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_NumImages_Reader,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_NumImagesCounter_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_Acquire_Writer,                   ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_Acquire_Reader,                   ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_DetectorState_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerString_t PV_StatusMessage_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerString_t PV_StringToServer_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerString_t PV_StringFromServer_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ReadStatus_Writer,                ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ShutterMode_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ShutterMode_Reader,               ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_ShutterControlMode_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ShutterControlMode_Reader,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_ShutterStatus_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerInt32_t PV_DelayStep_Writer,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerInt32_t PV_DelayStep_Reader,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterOpenDelay_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterOpenDelay_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterMinOpenDelay_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterMinOpenDelay_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterMaxOpenDelay_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterMaxOpenDelay_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterCloseDelay_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterCloseDelay_Reader,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterMinCloseDelay_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterMinCloseDelay_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_ShutterMaxCloseDelay_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ShutterMaxCloseDelay_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerVectorInt32_t PV_HotPixels_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerVectorInt32_t PV_HotPixels_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerVectorInt32_t PV_HotPixelsCorr_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerVectorInt32_t PV_HotPixelsCorr_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 writerDouble_t PV_Temperature_Writer,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_Temperature_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					 readerDouble_t PV_ActualTemperature_Reader);       ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing

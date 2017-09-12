@@ -18,14 +18,19 @@ namespace nds
 
 template <typename T> class PVVariableInImpl;
 template <typename T> class PVVariableOutImpl;
-//TODO ALBB modify this
 
 template<typename T>
 class DMASupportImpl: public NodeImpl
 {
 public:
-	DMASupportImpl(const std::string& name,
+	DMASupportImpl( const std::string& name,
 					size_t maxElements,
+					stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
 					readerDouble_t PV_BufferSize_Reader,
 					writerInt32_t PV_EnableDMA_Writer,
 					readerInt32_t PV_EnableDMA_Reader,
@@ -106,6 +111,7 @@ protected:
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASampleSize_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASamplingRate_PV;
 
+    std::shared_ptr<StateMachineImpl> m_stateMachine;
 
 
 };
@@ -114,11 +120,17 @@ template<typename T>
 class StreamingConfImpl: public NodeImpl
 {
 public:
-	StreamingConfImpl(const std::string& name,
-					size_t maxElements,
-					readerInt32_t PV_StreamingDataFormat_Reader,
-					writerInt32_t PV_StreamingType_Writer,
-					readerInt32_t PV_StreamingType_Reader);
+	StreamingConfImpl( const std::string& name,
+					   size_t maxElements,
+					   stateChange_t switchOnFunction,
+					   stateChange_t switchOffFunction,
+					   stateChange_t startFunction,
+					   stateChange_t stopFunction,
+					   stateChange_t recoverFunction,
+					   allowChange_t allowStateChangeFunction,
+					   readerInt32_t PV_StreamingDataFormat_Reader,
+					   writerInt32_t PV_StreamingType_Writer,
+					   readerInt32_t PV_StreamingType_Reader);
 
     /**
      * @brief Specifies the function to call to get the start timestamp.
@@ -152,6 +164,11 @@ public:
      */
     timespec getStartTimestamp() const;
 
+    /**
+     * @brief Called by the state machine. Store the current timestamp and then calls the
+     *        delegated onStart function.
+     */
+    void onStart();
 
 protected:
     /**
@@ -182,6 +199,9 @@ protected:
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_StreamingType_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_StreamingType_RBVPV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_StreamingDataFormat_PV;
+
+    std::shared_ptr<StateMachineImpl> m_stateMachine;
+
 
 };
 

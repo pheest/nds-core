@@ -71,23 +71,23 @@ public:
     DigitalIO& operator=(const DigitalIO<T>& right);
 
     /**
-     * @brief Constructs the data acquisition node.
+     * @brief Constructs the Digital IO node.
      *
      */
-    DigitalIO(const std::string& name,             		   ///< The node's name
-                    size_t maxElements,                    ///< Maximum size of the acquired array. Set to 1 for scalar values
-                    stateChange_t switchOnFunction,        ///< Delegate function that performs the actions to switch the node on
-                    stateChange_t switchOffFunction,       ///< Delegate function that performs the actions to switch the node off
-                    stateChange_t startFunction,           ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-                    stateChange_t stopFunction,            ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-                    stateChange_t recoverFunction,         ///< Delegate function to execute to recover from an error state
-	                allowChange_t allowStateChangeFunction,///< Delegate function that can deny a state change. Usually just returns true
-					writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_voltLevelHigh_Reader,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_voltLevelLow_Reader,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_ChannelDir_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_ChannelDir_Reader);      ///< Delegate function setter/getter to interact to the Low Level Driver API
+    DigitalIO( const std::string& name,                ///< The node's name
+               size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
+               stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
+               stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
+               stateChange_t startFunction,            ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+               stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+               stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
+	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
+			   writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   readerInt32_t PV_voltLevelHigh_Reader,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   readerInt32_t PV_voltLevelLow_Reader,   ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerInt32_t PV_ChannelDir_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   readerInt32_t PV_ChannelDir_Reader);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
 

@@ -20,6 +20,7 @@ TEST(testDeviceAllocation, testDoubleAllocation)
 {
     nds::Factory factory("test");
 
+
     // First allocation, testDevice exists because has been loaded in the main program
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
@@ -76,8 +77,8 @@ TEST(testDeviceAllocation, testTwoAllocations)
     //nds::tests::TestControlSystemInterfaceImpl* pInterface0 = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode0-Channel1");
     //nds::tests::TestControlSystemInterfaceImpl* pInterface1 = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode1-Channel1");
 
-    //timespec timestamp = {0, 0};
-    //pInterface0->writeCSValue("/rootNode0-Channel1.data.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    timespec timestamp = {0, 0};
+    pInterface0->writeCSValue("/rootNode0-Channel1.data.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 
     //const timespec* pStateMachineSwitchTime;
     //const std::int32_t* pStateMachineState;
