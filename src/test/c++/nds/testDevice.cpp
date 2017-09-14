@@ -10,7 +10,7 @@ static std::mutex m_lockDevicesMap;
 
 testDevice::testDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& ): m_name(deviceName)
 {
-
+	//TODO:Study this.
 	{
 		std::lock_guard<std::mutex> lock(m_lockDevicesMap);
 		if(m_devicesMap.find(deviceName) != m_devicesMap.end())
@@ -187,6 +187,179 @@ testDevice::testDevice(nds::Factory& factory, const std::string& deviceName, con
 				std::bind(&testDevice::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&testDevice::PV_DigitalIO_ChannelDir_Reader,this, std::placeholders::_1, std::placeholders::_2)
 	    ));
+
+	    /**
+	      * Add a DMA Support node:
+	      */
+	    m_DMASupport = rootNode.addChild(nds::DMASupport<std::vector<int32_t> >(
+	     		"DMASupportNode",
+	 			128,
+	 			std::bind(&testDevice::switchOn_DMASupport, this),
+	 			std::bind(&testDevice::switchOff_DMASupport, this),
+	 			std::bind(&testDevice::start_DMASupport, this),
+	 			std::bind(&testDevice::stop_DMASupport, this),
+	 			std::bind(&testDevice::recover_DMASupport, this),
+	 			std::bind(&testDevice::allow_DMASupport_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&testDevice::PV_DMASupport_BufferSize_Reader,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_DMASupport_EnableDMA_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_DMASupport_EnableDMA_Reader,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_DMASupport_NumDMAChannels_Reader,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_DMASupport_DMAFrameType_Reader,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_DMASupport_DMASampleSize_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_DMASupport_DMASamplingRate_Reader,this, std::placeholders::_1, std::placeholders::_2)
+	     ));
+
+	    /**
+	      * Add a Streaming Config node:
+	      */
+	    m_StreamingConf = rootNode.addChild(nds::StreamingConf<std::vector<int32_t> >(
+	     		"StreamingConfNode",
+	 			128,
+	 			std::bind(&testDevice::switchOn_StreamingConf, this),
+	 			std::bind(&testDevice::switchOff_StreamingConf, this),
+	 			std::bind(&testDevice::start_StreamingConf, this),
+	 			std::bind(&testDevice::stop_StreamingConf, this),
+	 			std::bind(&testDevice::recover_StreamingConf, this),
+	 			std::bind(&testDevice::allow_StreamingConf_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&testDevice::PV_StreamingConf_StreamingDataFormat_Reader,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_StreamingConf_StreamingType_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&testDevice::PV_StreamingConf_StreamingType_Reader,this, std::placeholders::_1, std::placeholders::_2)
+	     ));
+
+	    /**
+	     * Add a HealthMonitSup node.
+	     */
+	    m_HealthMonitSup = rootNode.addChild(nds::HealthMonitSup<std::vector<std::int32_t> >(
+	    		"HealthMonitSupNode",
+				std::bind(&testDevice::switchOn_HealthMonitSup, this),
+				std::bind(&testDevice::switchOff_HealthMonitSup, this),
+				std::bind(&testDevice::start_HealthMonitSup, this),
+				std::bind(&testDevice::stop_HealthMonitSup, this),
+				std::bind(&testDevice::recover_HealthMonitSup, this),
+				std::bind(&testDevice::allow_HealthMonitSup_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&testDevice::PV_HealthMonitSup_DevicePower_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_DeviceTemp_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_DeviceVoltage_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_DeviceCurrent_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableSEU_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableSEU_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableMonitorDAQ_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableMonitorDAQ_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTest_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTest_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_ShelfTestType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_ShelfTestType_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_VerboseShelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_VerboseShelfTest_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestId_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestText_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Reader,this, std::placeholders::_1, std::placeholders::_2)
+	    ));
+
+
+	    /**
+	     * Add a imageAcquisition node.
+	     */
+	    m_imageAcquisition = rootNode.addChild(nds::imageAcquisition<std::vector<double> >(
+	    		"imageAcquisitionNode",
+				128,
+				std::bind(&testDevice::switchOn_imageAcquisition, this),
+				std::bind(&testDevice::switchOff_imageAcquisition, this),
+				std::bind(&testDevice::start_imageAcquisition, this),
+				std::bind(&testDevice::stop_imageAcquisition, this),
+				std::bind(&testDevice::recover_imageAcquisition, this),
+				std::bind(&testDevice::allow_imageAcquisition_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&testDevice::PV_imageAcquisition_MaxSizeX_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_MaxSizeY_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BinX_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BinX_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BinY_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BinY_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_MinX_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_MinX_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_MinY_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_MinY_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SizeX_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SizeX_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SizeY_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SizeY_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ReverseX_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ReverseX_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ReverseY_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ReverseY_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Resolution_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SamplesPerPixel_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_SamplesPerPixel_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_AcquireTime_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_AcquireTime_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_AcquirePeriod_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_AcquirePeriod_Reader,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_TimeRemaining_Reader,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Gain_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Gain_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_FrameType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_FrameType_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_LostFrames_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_LostFrames_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ImageMode_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ImageMode_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_TriggerMode_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_TriggerMode_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumExposures_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumExposures_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumExposuresCounter_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Exposure_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Exposure_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_minExposure_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_minExposure_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_maxExposure_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_maxExposure_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ExposureStep_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ExposureStep_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BlackLevel_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_BlackLevel_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumImages_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumImages_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_NumImagesCounter_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Acquire_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Acquire_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_DetectorState_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_StatusMessage_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_StringToServer_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_StringFromServer_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ReadStatus_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMode_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMode_Reader,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterControlMode_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterControlMode_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterStatus_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_DelayStep_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_DelayStep_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterOpenDelay_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterOpenDelay_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMinOpenDelay_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMinOpenDelay_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMaxOpenDelay_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMaxOpenDelay_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterCloseDelay_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterCloseDelay_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMinCloseDelay_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMinCloseDelay_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMaxCloseDelay_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ShutterMaxCloseDelay_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_HotPixels_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_HotPixels_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_HotPixelsCorr_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_HotPixelsCorr_Reader,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Temperature_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_Temperature_Reader,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&testDevice::PV_imageAcquisition_ActualTemperature_Reader,this,  std::placeholders::_1, std::placeholders::_2)
+	    ));
+
 	// We have declared all the nodes and PVs in our device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
@@ -892,7 +1065,7 @@ void testDevice::PV_imageAcquisition_AcquirePeriod_Writer(const timespec& timest
 void testDevice::PV_imageAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
 
 }
-void testDevice::PV_imageAcquisition_FrameType_Writer(const timespec& timestamp, const double& value){
+void testDevice::PV_imageAcquisition_FrameType_Writer(const timespec& timestamp, const int32_t& value){
 
 }
 void testDevice::PV_imageAcquisition_LostFrames_Writer(const timespec& timestamp, const int32_t& value){
@@ -958,10 +1131,10 @@ void testDevice::PV_imageAcquisition_ShutterMinCloseDelay_Writer(const timespec&
 void testDevice::PV_imageAcquisition_ShutterMaxCloseDelay_Writer(const timespec& timestamp, const double& value){
 
 }
-void testDevice::PV_imageAcquisition_HotPixels_Writer(const timespec& timestamp, const int32_t& value){
+void testDevice::PV_imageAcquisition_HotPixels_Writer(const timespec& timestamp, const std::vector<std::int32_t>& value){
 
 }
-void testDevice::PV_imageAcquisition_HotPixelsCorr_Writer(const timespec& timestamp, const int32_t& value){
+void testDevice::PV_imageAcquisition_HotPixelsCorr_Writer(const timespec& timestamp, const std::vector<std::int32_t>& value){
 
 }
 void testDevice::PV_imageAcquisition_Temperature_Writer(const timespec& timestamp, const double& value){
@@ -1103,10 +1276,10 @@ void testDevice::PV_imageAcquisition_ShutterMinCloseDelay_Reader(timespec* times
 void testDevice::PV_imageAcquisition_ShutterMaxCloseDelay_Reader(timespec* timestamp, double* value){
 
 }
-void testDevice::PV_imageAcquisition_HotPixels_Reader(timespec* timestamp, int32_t* value){
+void testDevice::PV_imageAcquisition_HotPixels_Reader(timespec* timestamp, std::vector<std::int32_t>* value){
 
 }
-void testDevice::PV_imageAcquisition_HotPixelsCorr_Reader(timespec* timestamp, int32_t* value){
+void testDevice::PV_imageAcquisition_HotPixelsCorr_Reader(timespec* timestamp, std::vector<std::int32_t>* value){
 
 }
 void testDevice::PV_imageAcquisition_Temperature_Reader(timespec* timestamp, double* value){

@@ -76,6 +76,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 
     m_EnableSEU_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableSEU",PV_EnableSEU_Writer));
     m_EnableSEU_PV->setDescription("Enable Detect SEU");
+    m_EnableSEU_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableSEU_PV);
 
     m_EnableSEU_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableSEU_RBV",PV_EnableSEU_Reader));
@@ -86,9 +87,10 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 
     m_EnableMonitorDAQ_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableMonitorDAQ",PV_EnableMonitorDAQ_Writer));
     m_EnableMonitorDAQ_PV->setDescription("Enable Monitor DAQ anomalies");
+    m_EnableMonitorDAQ_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableMonitorDAQ_PV);
 
-    m_EnableMonitorDAQ_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableSEU_RBV",PV_EnableMonitorDAQ_Reader));
+    m_EnableMonitorDAQ_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableMonitorDAQ_RBV",PV_EnableMonitorDAQ_Reader));
 	m_EnableMonitorDAQ_RBVPV->setDescription("Enable Monitor DAQ anomalies ReadBack");
 	m_EnableMonitorDAQ_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_EnableMonitorDAQ_RBVPV);
@@ -96,6 +98,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 
     m_EnableShelfTest_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTest",PV_EnableShelfTest_Writer));
     m_EnableShelfTest_PV->setDescription("Enable ShelfTest");
+    m_EnableShelfTest_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableShelfTest_PV);
 
     m_EnableShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTest_RBV",PV_EnableShelfTest_Reader));
@@ -120,15 +123,17 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 
     m_VerboseShelfTest_PV.reset(new PVDelegateOutImpl<std::int32_t>("VerboseShelfTest",PV_VerboseShelfTest_Writer));
     m_VerboseShelfTest_PV->setDescription("Enable Verbose ShelfTest");
+    m_VerboseShelfTest_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_VerboseShelfTest_PV);
 
-    m_VerboseShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTest_RBV",PV_VerboseShelfTest_Reader));
+    m_VerboseShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("VerboseShelfTest_RBV",PV_VerboseShelfTest_Reader));
 	m_VerboseShelfTest_RBVPV->setDescription("Enable Verbose ShelfTest ReadBack");
 	m_VerboseShelfTest_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VerboseShelfTest_RBVPV);
 
     m_EnableShelfTestId_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestId",PV_EnableShelfTestId_Writer));
     m_EnableShelfTestId_PV->setDescription("Enable ShelfTest Id");
+    m_EnableShelfTestId_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableShelfTestId_PV);
 
     m_EnableShelfTestId_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestId_RBV",PV_EnableShelfTestId_Reader));
@@ -138,6 +143,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 
     m_EnableShelfTestText_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestText",PV_EnableShelfTestText_Writer));
     m_EnableShelfTestText_PV->setDescription("Enable ShelfTest Out Text");
+    m_EnableShelfTestText_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableShelfTestText_PV);
 
     m_EnableShelfTestText_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestText_RBV",PV_EnableShelfTestText_Reader));
@@ -145,11 +151,12 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 	m_EnableShelfTestText_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_EnableShelfTestText_RBVPV);
 
-    m_EnableShelfTestOutputNum_PV.reset(new PVDelegateOutImpl<std::int32_t>("m_EnableShelfTestTextOutputNum_RBVPV",PV_EnableShelfTestText_Writer));
+    m_EnableShelfTestOutputNum_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestTextOutputNum",PV_EnableShelfTestText_Writer));
     m_EnableShelfTestOutputNum_PV->setDescription("Enable ShelfTest Out Num");
+    m_EnableShelfTestOutputNum_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_EnableShelfTestOutputNum_PV);
 
-    m_EnableShelfTestTextOutputNum_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("m_EnableShelfTestTextOutputNum_RBVPV_RBV",PV_EnableShelfTestText_Reader));
+    m_EnableShelfTestTextOutputNum_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestTextOutputNum_RBV",PV_EnableShelfTestText_Reader));
 	m_EnableShelfTestTextOutputNum_RBVPV->setDescription("Enable ShelfTest Out Num ReadBack");
 	m_EnableShelfTestTextOutputNum_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_EnableShelfTestTextOutputNum_RBVPV);

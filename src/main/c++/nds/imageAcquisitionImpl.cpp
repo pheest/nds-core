@@ -252,7 +252,7 @@ imageAcquisitionImpl<T>::imageAcquisitionImpl(  const std::string& name,
 
 
 
-	m_SamplesPerPixel_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("Resolution_RBV",PV_SamplesPerPixel_Reader));
+	m_SamplesPerPixel_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SamplesPerPixel_RBV",PV_SamplesPerPixel_Reader));
 	m_SamplesPerPixel_RBVPV->setDescription("Samples per Pixel ReadBack");
 	m_SamplesPerPixel_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SamplesPerPixel_RBVPV);
@@ -359,12 +359,12 @@ imageAcquisitionImpl<T>::imageAcquisitionImpl(  const std::string& name,
     TriggerModeEnumeratorStrings.push_back("External");
 
 	m_TriggerMode_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggerMode",PV_TriggerMode_Writer));
-	m_TriggerMode_PV->setDescription("Image Mode Type: Single, Multiple, Continuous");
+	m_TriggerMode_PV->setDescription("TriggerMode Mode Type: Internal, External");
 	m_TriggerMode_PV->setEnumeration(TriggerModeEnumeratorStrings);
 	addChild(m_TriggerMode_PV);
 
-	m_TriggerMode_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("ImageMode_RBV",PV_TriggerMode_Reader));
-	m_TriggerMode_RBVPV->setDescription("ImageMode ReadBack:Single, Multiple, Continuous");
+	m_TriggerMode_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TriggerMode_RBV",PV_TriggerMode_Reader));
+	m_TriggerMode_RBVPV->setDescription("TriggerMode ReadBack: Internal, External");
 	m_TriggerMode_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_TriggerMode_RBVPV->setEnumeration(TriggerModeEnumeratorStrings);
 	addChild(m_TriggerMode_RBVPV);

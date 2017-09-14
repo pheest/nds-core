@@ -5,11 +5,12 @@
 
 TEST(testDeviceAllocation, testAllocationMissingDevice)
 {
+	//first we create the factory
+    nds::Factory factory("test");
 
-    nds::Factory factory("test"); //first we create the factory
-    //testDev1 does not exist error should be raised
+    //testDev1 does not exist, so a testDevice object called rootNode can not be created. Error should be raised
     EXPECT_THROW(factory.createDevice("testDev1", "rootNode", nds::namedParameters_t()), nds::DriverNotFound);
-    //rootNode does not exist
+    //testDevice object called rootNode does not exist
     EXPECT_EQ((void*)0, testDevice::getInstance("rootNode"));
 }
 
@@ -20,22 +21,22 @@ TEST(testDeviceAllocation, testDoubleAllocation)
 {
     nds::Factory factory("test");
 
-    // First allocation, testDevice exists because has been loaded in the main program
+    // First allocation, testDevice exists because has been loaded in the main program, so a testDevice object called rootNode can be created.
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
     // The port should have been allocated
     EXPECT_NE((void*)0, testDevice::getInstance("rootNode"));
 
-    // 2nd allocation: should throw
+    // 2nd allocation of a testDevice object with the same name (rootNode). Error should be raised
     EXPECT_THROW(factory.createDevice("testDevice", "rootNode", nds::namedParameters_t()), nds::DeviceAlreadyCreated);
 
-    // Destroy the first allocated device
+    // Destroy the first allocated testDevice.
     factory.destroyDevice("rootNode");
 
     // The port should have been deallocated
     EXPECT_EQ((void*)0, testDevice::getInstance("rootNode"));
 
-    // Try to destroy again the same device: should throw
+    // Try to destroy again the same device. Error should be raised
     EXPECT_THROW(factory.destroyDevice("rootNode"), nds::DeviceNotAllocated);
 }
 

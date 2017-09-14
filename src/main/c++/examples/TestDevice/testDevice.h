@@ -453,7 +453,7 @@ private:
 	void PV_imageAcquisition_AcquireTime_Writer(const timespec& timestamp, const double& value);
 	void PV_imageAcquisition_AcquirePeriod_Writer(const timespec& timestamp, const double& value);
 	void PV_imageAcquisition_Gain_Writer(const timespec& timestamp, const double& value);
-	void PV_imageAcquisition_FrameType_Writer(const timespec& timestamp, const double& value);
+	void PV_imageAcquisition_FrameType_Writer(const timespec& timestamp, const int32_t& value);
 	void PV_imageAcquisition_LostFrames_Writer(const timespec& timestamp, const int32_t& value);
 	void PV_imageAcquisition_ImageMode_Writer(const timespec& timestamp, const int32_t& value);
 	void PV_imageAcquisition_TriggerMode_Writer(const timespec& timestamp, const int32_t& value);
@@ -475,8 +475,8 @@ private:
 	void PV_imageAcquisition_ShutterCloseDelay_Writer(const timespec& timestamp, const double& value);
 	void PV_imageAcquisition_ShutterMinCloseDelay_Writer(const timespec& timestamp, const double& value);
 	void PV_imageAcquisition_ShutterMaxCloseDelay_Writer(const timespec& timestamp, const double& value);
-	void PV_imageAcquisition_HotPixels_Writer(const timespec& timestamp, const int32_t& value);
-	void PV_imageAcquisition_HotPixelsCorr_Writer(const timespec& timestamp, const int32_t& value);
+	void PV_imageAcquisition_HotPixels_Writer(const timespec& timestamp, const std::vector<std::int32_t>& value);
+	void PV_imageAcquisition_HotPixelsCorr_Writer(const timespec& timestamp, const std::vector<std::int32_t>& value);
 	void PV_imageAcquisition_Temperature_Writer(const timespec& timestamp, const double& value);
 
 	/**
@@ -526,8 +526,8 @@ private:
 	void PV_imageAcquisition_ShutterCloseDelay_Reader(timespec* timestamp, double* value);
 	void PV_imageAcquisition_ShutterMinCloseDelay_Reader(timespec* timestamp, double* value);
 	void PV_imageAcquisition_ShutterMaxCloseDelay_Reader(timespec* timestamp, double* value);
-	void PV_imageAcquisition_HotPixels_Reader(timespec* timestamp, int32_t* value);
-	void PV_imageAcquisition_HotPixelsCorr_Reader(timespec* timestamp, int32_t* value);
+	void PV_imageAcquisition_HotPixels_Reader(timespec* timestamp, std::vector<std::int32_t>* value);
+	void PV_imageAcquisition_HotPixelsCorr_Reader(timespec* timestamp, std::vector<std::int32_t>* value);
 	void PV_imageAcquisition_Temperature_Reader(timespec* timestamp, double* value);
 	void PV_imageAcquisition_ActualTemperature_Reader(timespec* timestamp, double* value);
 

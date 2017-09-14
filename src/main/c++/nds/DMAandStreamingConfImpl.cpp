@@ -162,7 +162,6 @@ StreamingConfImpl<T>::StreamingConfImpl( const std::string& name,
 	m_StreamingDataFormat_PV.reset(new PVDelegateInImpl<std::int32_t>("StreamingDataFormat",PV_StreamingDataFormat_Reader));
 	m_StreamingDataFormat_PV->setDescription("Streaming Data Format: Binary or ASCII");
 	m_StreamingDataFormat_PV->setScanType(scanType_t::interrupt, 0);
-	m_StreamingDataFormat_PV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_StreamingDataFormat_PV);
 
     enumerationStrings_t DataFormatEnumeratorStrings;
@@ -178,7 +177,6 @@ StreamingConfImpl<T>::StreamingConfImpl( const std::string& name,
 	m_StreamingType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("StreamingType_RBV",PV_StreamingType_Reader));
 	m_StreamingType_RBVPV->setDescription("Streaming Type ReadBack");
 	m_StreamingType_RBVPV->setScanType(scanType_t::interrupt, 0);
-	m_StreamingType_RBVPV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_StreamingType_RBVPV);
 
     // Add state machine
