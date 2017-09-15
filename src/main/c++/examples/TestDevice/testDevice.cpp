@@ -355,6 +355,42 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
     ));
 
 
+    /**
+     * Test variables: input variable to CS. The device support sets its value, and the CS reads this value
+     * The device support uses getValue()to retrieve the PV's value and the control system use read() and write() to read and set the value.
+     */
+
+    m_int32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int32_t>("int32_VariableIn"));
+    m_int32_VariableIn.setValue(1);
+    m_int32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int32_t>("int32_VariableOut"));
+
+    m_double_VariableIn = rootNode.addChild(nds::PVVariableIn<double>("double_VariableIn"));
+    m_double_VariableIn.setValue(1);
+    m_double_VariableOut = rootNode.addChild(nds::PVVariableOut<double>("double_VariableOut"));
+
+    m_vectorI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int8_t> >("vectorI8_VariableIn"));
+    m_vectorI8_VariableIn.setMaxElements(2);
+    m_vectorI8_VariableIn.setValue(std::vector<int8_t>(2,1));
+    m_vectorI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int8_t> >("vectorI8_VariableOut"));
+
+    m_vectorUI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint8_t> >("vectorUI8_VariableIn"));
+    m_vectorUI8_VariableIn.setMaxElements(2);
+    m_vectorUI8_VariableIn.setValue(std::vector<uint8_t>(2,1));
+    m_vectorUI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::uint8_t> >("vectorUI8_VariableOut"));
+
+    m_vectorI32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("vectorI32_VariableIn"));
+    m_vectorI32_VariableIn.setMaxElements(2);
+    m_vectorI32_VariableIn.setValue(std::vector<int32_t>(2,1));
+    m_vectorI32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int32_t> >("vectorI32_VariableOut"));
+
+    m_vectorDBL_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<double> >("vectorDBL_VariableIn"));
+    m_vectorDBL_VariableIn.setMaxElements(2);
+    m_vectorDBL_VariableIn.setValue(std::vector<double>(2,1));
+    m_vectorDBL_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<double> >("vectorDBL_VariableOut"));
+
+    m_string_VariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("string_VariableIn"));
+    m_string_VariableIn.setValue("Initial value");
+    m_string_VariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("string_VariableOut"));
 
 
     // We have declared all the nodes and PVs in our device: now we register them

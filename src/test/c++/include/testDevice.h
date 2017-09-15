@@ -635,6 +635,37 @@ private:
 	   */
 	  nds::PVVariableOut<double> m_maxAmplitude;
 
+	  /**
+	   * PVVariables In and Out for testing purposes
+	   *      - std::int32_t
+	   *      - double
+	   *      - std::vector<std::int8_t>
+	   *      - std::vector<std::uint8_t>
+	   *      - std::vector<std::int32_t>
+	   *      - std::vector<double>
+	   *      - std::string
+	   */
+	   nds::PVVariableIn<std::int32_t> m_int32_VariableIn;
+	   nds::PVVariableOut<std::int32_t> m_int32_VariableOut;
+
+	   nds::PVVariableIn<double> m_double_VariableIn;
+	   nds::PVVariableOut<double> m_double_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::int8_t>> m_vectorI8_VariableIn;
+	   nds::PVVariableOut<std::vector<std::int8_t>> m_vectorI8_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::uint8_t>> m_vectorUI8_VariableIn;
+	   nds::PVVariableOut<std::vector<std::uint8_t>> m_vectorUI8_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::int32_t>> m_vectorI32_VariableIn;
+	   nds::PVVariableOut<std::vector<std::int32_t>> m_vectorI32_VariableOut;
+
+	   nds::PVVariableIn<std::vector<double>> m_vectorDBL_VariableIn;
+	   nds::PVVariableOut<std::vector<double>> m_vectorDBL_VariableOut;
+
+	   nds::PVVariableIn<std::string> m_string_VariableIn;
+	   nds::PVVariableOut<std::string> m_string_VariableOut;
+
 };
 
 #endif // TESTDEVICE_H
