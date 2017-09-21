@@ -12,22 +12,60 @@
 
 #include "testDevice.h"
 
-testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters){
+
+testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
+	m_name(deviceName),
+
+	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),
+	PVVariable_vector_UI8(2,0),	PVDelegate_vector_UI8(2,0),PVVariable_vector_I32(2,0),PVDelegate_vector_I32(2,0),PVVariable_vector_DBL(2,0),PVDelegate_vector_DBL(2,0),
+	PVVariable_value_string{""},PVDelegate_value_string{""},
+
+	timestamp_device{0,0},readtimeStamp{0,0},
+
+	m_int32_DelegateIn("int32_DelegateIn",std::bind(&testDevice::read_I32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int32_DelegateOut("int32_DelegateOut",std::bind(&testDevice::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int32_DelegateOut_init("int32_DelegateOut_init",std::bind(&testDevice::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_double_DelegateIn("double_DelegateIn",std::bind(&testDevice::read_DBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_double_DelegateOut("double_DelegateOut",std::bind(&testDevice::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_double_DelegateOut_init("double_DelegateOut_init",std::bind(&testDevice::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_vectorI8_DelegateIn("vectorI8_DelegateIn",std::bind(&testDevice::read_vectorI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI8_DelegateOut("vectorI8_DelegateOut",std::bind(&testDevice::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI8_DelegateOut_init("vectorI8_DelegateOut_init",std::bind(&testDevice::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_vectorUI8_DelegateIn("vectorUI8_DelegateIn",std::bind(&testDevice::read_vectorUI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorUI8_DelegateOut("vectorUI8_DelegateOut",std::bind(&testDevice::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorUI8_DelegateOut_init("vectorUI8_DelegateOut_init",std::bind(&testDevice::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_vectorI32_DelegateIn("vectorI32_DelegateIn",std::bind(&testDevice::read_vectorI32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI32_DelegateOut("vectorI32_DelegateOut",std::bind(&testDevice::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI32_DelegateOut_init("vectorI32_DelegateOut_init",std::bind(&testDevice::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_vectorDBL_DelegateIn("vectorDBL_DelegateIn",std::bind(&testDevice::read_vectorDBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorDBL_DelegateOut("vectorDBL_DelegateOut",std::bind(&testDevice::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorDBL_DelegateOut_init("vectorDBL_DelegateOut_init",std::bind(&testDevice::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_string_DelegateIn("string_DelegateIn",std::bind(&testDevice::read_string_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_string_DelegateOut("string_DelegateOut",std::bind(&testDevice::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_string_DelegateOut_init("string_DelegateOut_init",std::bind(&testDevice::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&testDevice::init_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2))
+{
+
 	/**
 	 * Here we declare the root node.
-     * It is a good practice to name it with the device name.
-     *
-     * Also, for simplicity we declare it as a "Port": this means that
-     * the root node will be responsible for the communication with
-     * the underlying control system.
-     *
-     * It is possible to have the root node as a simple Node and promote one or
-     * more of its children to "Port": each port will interface with a different
-     * control system thread.
+	 * It is a good practice to name it with the device name.
+	 *
+	 * Also, for simplicity we declare it as a "Port": this means that
+	 * the root node will be responsible for the communication with
+	 * the underlying control system.
+	 *
+	 * It is possible to have the root node as a simple Node and promote one or
+	 * more of its children to "Port": each port will interface with a different
+	 * control system thread.
 	 */
 	nds::Port rootNode(deviceName);
 
-    // Add state machine
+	// Add state machine
 	m_testDevice_stateMachine = rootNode.addChild(nds::StateMachine(true,
 			std::bind(&testDevice::switchOn_testDevice, this),
 			std::bind(&testDevice::switchOff_testDevice, this),
@@ -356,42 +394,105 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 
 
     /**
-     * Test variables: input variable to CS. The device support sets its value, and the CS reads this value
-     * The device support uses getValue()to retrieve the PV's value and the control system use read() and write() to read and set the value.
+     * Test PV variables:
+     * 		- PVVariableIn: input variable to CS. The device support sets its value using setValue, and the CS reads this value.
+     * 		- PVVariableOut: output variable from CS. The device support uses getValue()to retrieve the PV's value,
+     * 		                 and the control system uses read() and write() to read and set the value.
+     *
+     * For testing purposes, we use:
+     * 		- setValue(const T& value) and setValue(const timespec& timestamp, const T& value), over PVVariableIn
+     *        but we do not modify the initial value.
+     *      - getValue() and getValue(timespec* pTime, T* pValue) to retrieve the initial value and timestamp.
      */
 
     m_int32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int32_t>("int32_VariableIn"));
-    m_int32_VariableIn.setValue(1);
+    m_int32_VariableIn.setValue((std::int32_t)0);
+    m_int32_VariableIn.setValue(timestamp_device,(std::int32_t)0);
     m_int32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int32_t>("int32_VariableOut"));
+    m_int32_VariableOut.getValue();
+    m_int32_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I32);
 
     m_double_VariableIn = rootNode.addChild(nds::PVVariableIn<double>("double_VariableIn"));
-    m_double_VariableIn.setValue(1);
+    m_double_VariableIn.setValue((double)0);
+    m_double_VariableIn.setValue(timestamp_device,(double)0);
     m_double_VariableOut = rootNode.addChild(nds::PVVariableOut<double>("double_VariableOut"));
+    m_double_VariableOut.getValue();
+    m_double_VariableOut.getValue(&readtimeStamp,&PVVariable_value_DBL);
 
     m_vectorI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int8_t> >("vectorI8_VariableIn"));
     m_vectorI8_VariableIn.setMaxElements(2);
-    m_vectorI8_VariableIn.setValue(std::vector<int8_t>(2,1));
+    m_vectorI8_VariableIn.setValue(std::vector<int8_t>(2,0));
+    m_vectorI8_VariableIn.setValue(timestamp_device,std::vector<int8_t>(2,0));
     m_vectorI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int8_t> >("vectorI8_VariableOut"));
+    m_vectorI8_VariableOut.getValue();
+    m_vectorI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I8);
 
     m_vectorUI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint8_t> >("vectorUI8_VariableIn"));
     m_vectorUI8_VariableIn.setMaxElements(2);
-    m_vectorUI8_VariableIn.setValue(std::vector<uint8_t>(2,1));
+    m_vectorUI8_VariableIn.setValue(std::vector<uint8_t>(2,0));
+    m_vectorUI8_VariableIn.setValue(timestamp_device,std::vector<uint8_t>(2,0));
     m_vectorUI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::uint8_t> >("vectorUI8_VariableOut"));
+    m_vectorUI8_VariableOut.getValue();
+    m_vectorUI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_UI8);
 
     m_vectorI32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("vectorI32_VariableIn"));
     m_vectorI32_VariableIn.setMaxElements(2);
-    m_vectorI32_VariableIn.setValue(std::vector<int32_t>(2,1));
+    m_vectorI32_VariableIn.setValue(std::vector<int32_t>(2,0));
+    m_vectorI32_VariableIn.setValue(timestamp_device,std::vector<int32_t>(2,0));
     m_vectorI32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int32_t> >("vectorI32_VariableOut"));
+    m_vectorI32_VariableOut.getValue();
+    m_vectorI32_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I32);
 
     m_vectorDBL_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<double> >("vectorDBL_VariableIn"));
     m_vectorDBL_VariableIn.setMaxElements(2);
-    m_vectorDBL_VariableIn.setValue(std::vector<double>(2,1));
+    m_vectorDBL_VariableIn.setValue(std::vector<double>(2,0));
+    m_vectorDBL_VariableIn.setValue(timestamp_device,std::vector<double>(2,0));
     m_vectorDBL_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<double> >("vectorDBL_VariableOut"));
+    m_vectorDBL_VariableOut.getValue();
+    m_vectorDBL_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_DBL);
 
     m_string_VariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("string_VariableIn"));
-    m_string_VariableIn.setValue("Initial value");
+    m_string_VariableIn.setValue("");
+    m_string_VariableIn.setValue(timestamp_device,"");
     m_string_VariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("string_VariableOut"));
+    m_string_VariableOut.getValue();
+    m_string_VariableOut.getValue(&readtimeStamp,&PVVariable_value_string);
+    /**
+     * Test PV Delegates: input Delegate to CS. The device support sets its value, and the CS reads this value
+     * The device support uses getValue()to retrieve the PV's value and the control system use read() and write() to read and set the value.
+     */
 
+    rootNode.addChild(m_int32_DelegateIn);
+    rootNode.addChild(m_int32_DelegateOut);
+    rootNode.addChild(m_int32_DelegateOut_init);
+
+    rootNode.addChild(m_double_DelegateIn);
+    rootNode.addChild(m_double_DelegateOut);
+    rootNode.addChild(m_double_DelegateOut_init);
+
+    m_vectorI8_DelegateIn.setMaxElements(2);
+    rootNode.addChild(m_vectorI8_DelegateIn);
+    rootNode.addChild(m_vectorI8_DelegateOut);
+    rootNode.addChild(m_vectorI8_DelegateOut_init);
+
+    m_vectorUI8_DelegateIn.setMaxElements(2);
+    rootNode.addChild(m_vectorUI8_DelegateIn);
+    rootNode.addChild(m_vectorUI8_DelegateOut);
+    rootNode.addChild(m_vectorUI8_DelegateOut_init);
+
+    m_vectorI32_DelegateIn.setMaxElements(2);
+    rootNode.addChild(m_vectorI32_DelegateIn);
+    rootNode.addChild(m_vectorI32_DelegateOut);
+    rootNode.addChild(m_vectorI32_DelegateOut_init);
+
+    m_vectorDBL_DelegateIn.setMaxElements(2);
+    rootNode.addChild(m_vectorDBL_DelegateIn);
+    rootNode.addChild(m_vectorDBL_DelegateOut);
+    rootNode.addChild(m_vectorDBL_DelegateOut_init);
+
+    rootNode.addChild(m_string_DelegateIn);
+    rootNode.addChild(m_string_DelegateOut);
+    rootNode.addChild(m_string_DelegateOut_init);
 
     // We have declared all the nodes and PVs in our device: now we register them
     //  with the control system that called this constructor.
@@ -556,15 +657,23 @@ void testDevice::switchOff_DataGeneration(){
 }
 
 void testDevice::start_DataGeneration(){
-
+	m_bStop_DataGeneration = false; //< We will set to true to stop the acquisition thread
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_DataGeneration_Thread = std::thread(std::bind(&testDevice::DataGeneration_thread_body, this));
 }
 
 void testDevice::stop_DataGeneration(){
-
+	m_bStop_DataGeneration = true;
+	m_DataGeneration_Thread.join();
 }
 
 void testDevice::recover_DataGeneration(){
-
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 bool testDevice::allow_DataGeneration_Change(const nds::state_t, const nds::state_t, const nds::state_t){
@@ -1379,6 +1488,98 @@ void testDevice::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* timestamp,
 void testDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Reader(timespec* timestamp, double* value){
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/// EXTRA PVDELEGATE IN/OUT FOR TESTING PURPOSES
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+void testDevice::read_I32_DelegateIn(timespec* timestamp, std::int32_t* value){
+	*value=PVDelegate_value_I32;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_DBL_DelegateIn(timespec* timestamp, double* value){
+	*value=PVDelegate_value_DBL;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_vectorI8_DelegateIn(timespec* timestamp, std::vector<std::int8_t>* value){
+	*value=PVDelegate_vector_I8;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_vectorUI8_DelegateIn(timespec* timestamp, std::vector<std::uint8_t>* value){
+	*value=PVDelegate_vector_UI8;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int32_t>* value){
+	*value=PVDelegate_vector_I32;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value){
+	*value=PVDelegate_vector_DBL;
+	*timestamp=timestamp_device;
+}
+void testDevice::read_string_DelegateIn(timespec* timestamp, std::string* value){
+	*value=PVDelegate_value_string;
+	*timestamp=timestamp_device;
+}
+
+void testDevice::write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value){
+	PVDelegate_value_I32=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_DBL_DelegateOut(const timespec& timestamp,const double& value){
+	PVDelegate_value_DBL=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_vectorI8_DelegateOut(const timespec& timestamp,const std::vector<std::int8_t>& value){
+	PVDelegate_vector_I8=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_vectorUI8_DelegateOut(const timespec& timestamp,const std::vector<std::uint8_t>& value){
+	PVDelegate_vector_UI8=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_vectorI32_DelegateOut(const timespec& timestamp,const std::vector<std::int32_t>& value){
+	PVDelegate_vector_I32=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value){
+	PVDelegate_vector_DBL=value;
+	timestamp_device=timestamp;
+}
+void testDevice::write_string_DelegateOut(const timespec& timestamp,const std::string& value){
+	PVDelegate_value_string=value;
+	timestamp_device=timestamp;
+}
+
+void testDevice::init_I32_DelegateOut(timespec* timestamp,  std::int32_t* value){
+	*value=PVDelegate_value_I32;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_DBL_DelegateOut(timespec* timestamp, double* value){
+	*value=PVDelegate_value_DBL;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_vectorI8_DelegateOut(timespec* timestamp, std::vector<std::int8_t>* value){
+	*value=PVDelegate_vector_I8;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::uint8_t>* value){
+	*value=PVDelegate_vector_UI8;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value){
+	*value=PVDelegate_vector_I32;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value){
+	*value=PVDelegate_vector_DBL;
+	*timestamp=timestamp_device;
+}
+void testDevice::init_string_DelegateOut(timespec* timestamp, std::string* value){
+	*value=PVDelegate_value_string;
+	*timestamp=timestamp_device;
+}
+
 
 
 NDS_DEFINE_DRIVER("testDevice", testDevice);

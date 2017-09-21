@@ -44,6 +44,8 @@ TestControlSystemInterfaceImpl* TestControlSystemInterfaceImpl::getInstance(cons
 void TestControlSystemInterfaceImpl::registerPV(std::shared_ptr<PVBaseImpl> pv)
 {
     m_registeredPVs[pv->getFullExternalName()] = pv.get();
+    //Added for testing purposes.
+    dataType_t dataType = pv->getDataType();
 
 }
 

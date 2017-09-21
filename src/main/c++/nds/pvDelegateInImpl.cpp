@@ -20,8 +20,7 @@ namespace nds
  *************/
 template <typename T>
 PVDelegateInImpl<T>::PVDelegateInImpl(const std::string& name, read_t readFunction, const inputPvType_t pvType): PVBaseInImpl(name, pvType),
-    m_reader(readFunction)
-{}
+    m_reader(readFunction){}
 
 
 /*
@@ -54,8 +53,6 @@ template class PVDelegateInImpl<std::vector<std::int8_t> >;
 template class PVDelegateInImpl<std::vector<std::uint8_t> >;
 template class PVDelegateInImpl<std::vector<std::int32_t> >;
 template class PVDelegateInImpl<std::vector<double> >;
-template class PVDelegateInImpl<std::string>;
-
-}
+template class PVDelegateInImpl<std::string>;}
 
 

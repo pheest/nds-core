@@ -39,6 +39,25 @@ public:
 
 private:
 
+	/*
+	 * @brief name of the device
+	 */
+	std::string m_name;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	/// Variables to store simulated data
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	std::int32_t PVVariable_value_I32, PVDelegate_value_I32;
+	double  PVVariable_value_DBL, PVDelegate_value_DBL;
+	std::vector<std::int8_t> PVVariable_vector_I8, PVDelegate_vector_I8;
+	std::vector<std::uint8_t> PVVariable_vector_UI8, PVDelegate_vector_UI8;
+	std::vector<std::int32_t> PVVariable_vector_I32, PVDelegate_vector_I32;
+	std::vector<double> PVVariable_vector_DBL, PVDelegate_vector_DBL;
+	std::string PVVariable_value_string, PVDelegate_value_string;
+
+	timespec timestamp_device, readtimeStamp;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  TEST DEVICE STATE MACHINE
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -613,14 +632,14 @@ private:
      */
     volatile bool m_bStop_HealthMonitSup;
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  EXTRA PVs
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	  //  EXTRA PVs for testing purposes
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * @brief PVVariableOut used to set MAX Amplitude in DataGeneration
-     */
-    nds::PVVariableOut<double> m_maxAmplitude;
+	  /**
+	   * @brief PVVariableOut used to set MAX Amplitude in DataGeneration
+	   */
+	  nds::PVVariableOut<double> m_maxAmplitude;
 
 	  /**
 	   * PVVariables In and Out for testing purposes
@@ -652,6 +671,73 @@ private:
 
 	   nds::PVVariableIn<std::string> m_string_VariableIn;
 	   nds::PVVariableOut<std::string> m_string_VariableOut;
+
+	   /**
+	    * PVDelegates In and Out for testing purposes
+	    *      - std::int32_t
+	    *      - double
+	    *      - std::vector<std::int8_t>
+	    *      - std::vector<std::uint8_t>
+	    *      - std::vector<std::int32_t>
+	    *      - std::vector<double>
+	    *      - std::string
+	    */
+	   nds::PVDelegateIn<std::int32_t> m_int32_DelegateIn;
+	   nds::PVDelegateOut<std::int32_t> m_int32_DelegateOut;
+	   nds::PVDelegateOut<std::int32_t> m_int32_DelegateOut_init;
+
+	   nds::PVDelegateIn<double> m_double_DelegateIn;
+	   nds::PVDelegateOut<double> m_double_DelegateOut;
+	   nds::PVDelegateOut<double> m_double_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::int8_t>> m_vectorI8_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::int8_t>> m_vectorI8_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::int8_t>> m_vectorI8_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::uint8_t>> m_vectorUI8_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::uint8_t>> m_vectorUI8_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::uint8_t>> m_vectorUI8_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::int32_t>> m_vectorI32_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::int32_t>> m_vectorI32_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::int32_t>> m_vectorI32_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<double>> m_vectorDBL_DelegateIn;
+	   nds::PVDelegateOut<std::vector<double>> m_vectorDBL_DelegateOut;
+	   nds::PVDelegateOut<std::vector<double>> m_vectorDBL_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::string> m_string_DelegateIn;
+	   nds::PVDelegateOut<std::string> m_string_DelegateOut;
+	   nds::PVDelegateOut<std::string> m_string_DelegateOut_init;
+
+	   ///////////////////////////////////////////////////////////////////////////////////////////////////
+	   /// SETTERS/GETTERS FOR PVDELEGATE IN/OUT PVs
+	   ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	   void read_I32_DelegateIn(timespec* timestamp, std::int32_t* value);
+	   void read_DBL_DelegateIn(timespec* timestamp, double* value);
+	   void read_vectorI8_DelegateIn(timespec* timestamp, std::vector<std::int8_t>* value);
+	   void read_vectorUI8_DelegateIn(timespec* timestamp, std::vector<std::uint8_t>* value);
+	   void read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int32_t>* value);
+	   void read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value);
+	   void read_string_DelegateIn(timespec* timestamp, std::string* value);
+
+	   void write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value);
+	   void write_DBL_DelegateOut(const timespec& timestamp,const double& value);
+	   void write_vectorI8_DelegateOut(const timespec& timestamp,const std::vector<std::int8_t>& value);
+	   void write_vectorUI8_DelegateOut(const timespec& timestamp,const std::vector<std::uint8_t>& value);
+	   void write_vectorI32_DelegateOut(const timespec& timestamp,const std::vector<std::int32_t>& value);
+	   void write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value);
+	   void write_string_DelegateOut(const timespec& timestamp,const std::string& value);
+
+	   void init_I32_DelegateOut(timespec* timestamp, std::int32_t* value);
+	   void init_DBL_DelegateOut(timespec* timestamp, double* value);
+	   void init_vectorI8_DelegateOut(timespec* timestamp, std::vector<std::int8_t>* value);
+	   void init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::uint8_t>* value);
+	   void init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value);
+	   void init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value);
+	   void init_string_DelegateOut(timespec* timestamp, std::string* value);
+
 };
 
 #endif /* TESTDEVICE_H_ */

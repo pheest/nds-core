@@ -40,6 +40,9 @@ TEST(testDataGeneration, testStateMachine)
     ::sleep(1);
     pInterface->getPushedInt32("/rootNode-DataGenerationNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
+    ::sleep(5);
+
+    //TODO: Check generated data
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-DataGenerationNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);

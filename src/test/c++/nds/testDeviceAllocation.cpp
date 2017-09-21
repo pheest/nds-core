@@ -102,3 +102,47 @@ TEST(testDeviceAllocation, testTwoAllocations)
     EXPECT_THROW(factory.destroyDevice("rootNode1"), nds::DeviceNotAllocated);
 }
 
+
+void wait1s()
+{
+    ::sleep(1);
+}
+
+bool allowChange(const nds::state_t, const nds::state_t, const nds::state_t)
+{
+    return true;
+}
+
+TEST(testNode, testaddNode)
+{
+
+    nds::Factory factory("test");
+
+
+    nds::Port rootNode("rootNode");
+
+
+    nds::Node testNode("testNode");
+
+    rootNode.addNode(testNode);
+
+    nds::PVVariableIn<std::int32_t> PVVarIn0("PVVarIn0");
+
+    testNode.addPV(PVVarIn0);
+
+
+    nds::StateMachine stateMachine0 = nds::StateMachine(true,
+            										   std::bind(&wait1s),
+													   std::bind(&wait1s),
+													   std::bind(&wait1s),
+													   std::bind(&wait1s),
+													   std::bind(&wait1s),
+													   std::bind(&allowChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+    testNode.addStateMachine(stateMachine0);
+
+    rootNode.initialize(0, factory);
+
+    factory.destroyDevice("");
+
+}

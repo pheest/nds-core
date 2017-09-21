@@ -22,8 +22,7 @@ namespace nds
  *************/
 template <typename T>
 PVDelegateIn<T>::PVDelegateIn(const std::string& name, read_t readFunction):
-    PVBaseIn(std::shared_ptr<PVBaseInImpl>(new PVDelegateInImpl<T>(name, readFunction)))
-{}
+    PVBaseIn(std::shared_ptr<PVBaseInImpl>(new PVDelegateInImpl<T>(name, readFunction))){}
 
 
 // Instantiate all the needed data types
@@ -34,8 +33,5 @@ template class PVDelegateIn<std::vector<std::int8_t> >;
 template class PVDelegateIn<std::vector<std::uint8_t> >;
 template class PVDelegateIn<std::vector<std::int32_t> >;
 template class PVDelegateIn<std::vector<double> >;
-template class PVDelegateIn<std::string>;
-
-
-}
+template class PVDelegateIn<std::string>;}
 
