@@ -13,6 +13,12 @@
 namespace nds
 {
 
+//template < typename T1, typename T2 >
+//struct is_same_type { static const bool result = false; };
+//
+//template <typename T3>
+//struct is_same_type<T3,T3> { static const bool result = true; };
+
 /*
  * Constructor
  *
@@ -38,6 +44,26 @@ void PVVariableInImpl<T>::read(timespec* pTimestamp, T* pValue) const
     *pTimestamp = m_timestamp;
 }
 
+//TODO Remove
+//template <typename T>
+//void PVVariableInImpl<T>::read(timespec* /* pTimestamp */, std::string* /* pValue */) const
+//{
+//   if(is_same_type<T,std::string){
+//	   //ALGO
+//   }else{
+//	   throw
+//   }
+//}
+//
+//template <typename T>
+//void PVVariableInImpl<T>::read(timespec* /* pTimestamp */, std::int* /* pValue */) const
+//{
+//   if(is_same_type<T,std::int){
+//	   //ALGO
+//   }else{
+//	   throw
+//   }
+//}
 
 /*
  * Store a new value and its timestamp in the PV

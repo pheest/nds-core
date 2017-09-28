@@ -10,27 +10,27 @@ TEST(testTime, testDelegate)
 
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
-    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode-Channel1");
+    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
     // Set the channel1 time
     ////////////////////////
     std::int32_t startTimestamp = 400;
     timespec timestamp = {0, 0};
-    pInterface->writeCSValue("/rootNode-Channel1.setCurrentTime", timestamp, startTimestamp);
+    pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
-    pInterface->getPushedInt32("/rootNode-Channel1.data.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
-    pInterface->writeCSValue("/rootNode-Channel1.data.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-Channel1.data.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
 
     // Wait for the switch on state (it should take one second)
     ///////////////////////////////////////////////////////////
     ::sleep(2);
-    pInterface->getPushedInt32("/rootNode-Channel1.data.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     EXPECT_EQ(400, pStateMachineSwitchTime->tv_sec);

@@ -19,6 +19,7 @@
 namespace nds
 {
 
+
 PVBaseInImpl::PVBaseInImpl(const std::string& name, const inputPvType_t pvType): PVBaseImpl(name), m_pvType(pvType),
     m_decimationFactor(1), m_decimationCount(1)
 {
@@ -53,25 +54,27 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
     throw;
 }
 
-void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int8_t>* /* pValue */) const
 {
     // TODO
     // Epics calls this also for unsigned-int and strings
     // If we arrive here maybe we really wanted to call the unsigned int function.
     // This is as ugly as it can get: consider modifying this
-    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
+//    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
+    throw;
 }
 
-void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue) const
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::uint8_t>* /* pValue */) const
 {
-    // TODO
-    // Epics calls this also for strings.
-    // If we arrive here maybe we really wanted to call the string function.
-    // This is as ugly as it can get: consider modifying this
-    std::string temporaryValue;
-    read(pTimestamp, &temporaryValue);
-    pValue->resize(temporaryValue.size());
-    ::memcpy(pValue->data(), temporaryValue.data(), temporaryValue.size());
+//    // TODO
+//    // Epics calls this also for strings.
+//    // If we arrive here maybe we really wanted to call the string function.
+//    // This is as ugly as it can get: consider modifying this
+//    std::string temporaryValue;
+//    read(pTimestamp, &temporaryValue);
+//    pValue->resize(temporaryValue.size());
+//    ::memcpy(pValue->data(), temporaryValue.data(), temporaryValue.size());
+	throw;
 }
 
 void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* pValue */) const

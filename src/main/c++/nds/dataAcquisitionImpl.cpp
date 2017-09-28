@@ -32,44 +32,39 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											stateChange_t recoverFunction,
 											allowChange_t allowStateChangeFunction,
 											writerDouble_t PV_Gain_Writer,
-											readerDouble_t PV_Gain_Reader,
 											writerDouble_t PV_Offset_Writer,
-											readerDouble_t PV_Offset_Reader,
-											writerDouble_t PV_Bw_Writer,
-											readerDouble_t PV_Bw_Reader,
+											writerDouble_t PV_Bandwidth_Writer,
 											writerDouble_t PV_Resolution_Writer,
-											readerDouble_t PV_Resolution_Reader,
 											writerDouble_t PV_Impedance_Writer,
-											readerDouble_t PV_Impedance_Reader,
 											writerInt32_t PV_Coupling_Writer,
-											readerInt32_t PV_Coupling_Reader,
 											writerInt32_t PV_SignalRef_Writer,
-											readerInt32_t PV_SignalRef_Reader,
-											writerInt32_t PV_Ground_Writer,
-											readerInt32_t PV_Ground_Reader):
+											writerInt32_t PV_Ground_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
     // Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+    m_data_PV.reset(new PVVariableInImpl<T>("data"));
+    m_data_PV->setMaxElements(maxElements);
+    m_data_PV->setDescription("Acquired data");
+    m_data_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_data_PV);
 
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    addChild(m_decimation_PV);
 
-    m_decimationPV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
-    m_decimationPV->setDescription("Decimation");
-    m_decimationPV->setScanType(scanType_t::passive, 0);
-    m_decimationPV->write(getTimestamp(), (std::int32_t)1);
-    addChild(m_decimationPV);
+    m_decimation_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Decimation_RBV"));
+    m_decimation_RBVPV->setDescription("Decimation");
+    m_decimation_RBVPV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_decimation_RBVPV);
 
     m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
     addChild(m_Gain_PV);
 
-    m_Gain_RBVPV.reset(new PVDelegateInImpl<double>("Gain_RBV",PV_Gain_Reader));
+    m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
 	m_Gain_RBVPV->setDescription("Gain of the Channel");
 	m_Gain_RBVPV-> setScanType(scanType_t::passive,0);
 	addChild(m_Gain_RBVPV);
@@ -78,26 +73,26 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_offset_PV->setDescription("Offset");
 	addChild(m_offset_PV);
 
-	m_offset_RBVPV.reset(new PVDelegateInImpl<double>("Offset_RBV",PV_Offset_Reader));
+	m_offset_RBVPV.reset(new PVVariableInImpl<double>("Offset_RBV"));
 	m_offset_RBVPV->setDescription("Offset ReadBack");
 	m_offset_RBVPV->setScanType(scanType_t::passive, 0);
 	addChild(m_offset_RBVPV);
 
-	m_BW_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bw_Writer));
-	m_BW_PV->setDescription("BandWidth");
-	addChild(m_BW_PV);
+	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
+	m_Bandwidth_PV->setDescription("BandWidth");
+	addChild(m_Bandwidth_PV);
 
-	m_BW_RBVPV.reset(new PVDelegateInImpl<double>("BandWidth_RBV",PV_Bw_Reader));
-	m_BW_RBVPV->setDescription("BandWidth ReadBack");
-	m_BW_RBVPV->setScanType(scanType_t::passive, 0);
-	addChild(m_BW_RBVPV);
+	m_Bandwidth_RBVPV.reset(new PVVariableInImpl<double>("BandWidth_RBV"));
+	m_Bandwidth_RBVPV->setDescription("BandWidth ReadBack");
+	m_Bandwidth_RBVPV->setScanType(scanType_t::passive, 0);
+	addChild(m_Bandwidth_RBVPV);
 
 
 	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
 	m_Resolution_PV->setDescription("Resolution: Number of Bits per Sample");
 	addChild(m_Resolution_PV);
 
-	m_Resolution_RBVPV.reset(new PVDelegateInImpl<double>("Resolution_RBV",PV_Resolution_Reader));
+	m_Resolution_RBVPV.reset(new PVVariableInImpl<double>("Resolution_RBV"));
 	m_Resolution_RBVPV->setDescription("Resolution: Number of Bits per Sample ReadBack");
 	m_Resolution_RBVPV->setScanType(scanType_t::passive, 0);
 	addChild(m_Resolution_RBVPV);
@@ -106,7 +101,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Impedance_PV->setDescription("Impedance");
 	addChild(m_Impedance_PV);
 
-	m_Impedance_RBVPV.reset(new PVDelegateInImpl<double>("Impedance_RBV",PV_Impedance_Reader));
+	m_Impedance_RBVPV.reset(new PVVariableInImpl<double>("Impedance_RBV"));
 	m_Impedance_RBVPV->setDescription("Impedance ReadBack");
 	m_Impedance_RBVPV->setScanType(scanType_t::passive, 0);
 	addChild(m_Impedance_RBVPV);
@@ -121,7 +116,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Coupling_PV->setEnumeration(CouplingEnumeratorStrings);
 	addChild(m_Coupling_PV);
 
-	m_Coupling_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("Coupling_RBV",PV_Coupling_Reader));
+	m_Coupling_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Coupling_RBV"));
 	m_Coupling_RBVPV->setDescription("Coupling: AC or DC ReadBack");
 	m_Coupling_RBVPV->setEnumeration(CouplingEnumeratorStrings);
 	m_Coupling_RBVPV->setScanType(scanType_t::interrupt,0);
@@ -137,7 +132,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	addChild(m_SignalRefType_PV);
 
-	m_SignalRefType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SignalRefType_RBV",PV_SignalRef_Reader));
+	m_SignalRefType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SignalRefType_RBV"));
 	m_SignalRefType_RBVPV->setDescription("Type of input: Differential or Single Ended");
 	m_SignalRefType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_SignalRefType_RBVPV->setEnumeration(SignalRefTypeEnumeratorStrings);
@@ -154,7 +149,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_ground_PV->setEnumeration(groundEnumeratorStrings);
     addChild(m_ground_PV);
 
-    m_ground_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("Ground_RBV",PV_Ground_Reader));
+    m_ground_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Ground_RBV"));
     m_ground_RBVPV->setDescription("Ground State ReadBack");
     m_ground_RBVPV->setEnumeration(groundEnumeratorStrings);
     m_ground_RBVPV->setScanType(scanType_t::interrupt,0);
@@ -171,11 +166,130 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     addChild(m_stateMachine);
 }
 
+template<typename T>
+size_t DataAcquisitionImpl<T>::getGain()
+{
+    double Gain;
+    timespec timestamp;
+    m_Gain_RBVPV->read(&timestamp, &Gain);
+    return (double)Gain;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getOffset()
+{
+    double Offset;
+    timespec timestamp;
+    m_offset_RBVPV->read(&timestamp, &Offset);
+    return (double)Offset;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getBandwidth()
+{
+    double Bandwidth;
+    timespec timestamp;
+    m_Bandwidth_RBVPV->read(&timestamp, &Bandwidth);
+    return (double)Bandwidth;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getResolution()
+{
+    double Resolution;
+    timespec timestamp;
+    m_Resolution_RBVPV->read(&timestamp, &Resolution);
+    return (double)Resolution;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getImpedance()
+{
+    double Impedance;
+    timespec timestamp;
+    m_Impedance_RBVPV->read(&timestamp, &Impedance);
+    return (double)Impedance;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getCoupling()
+{
+    std::int32_t Coupling;
+    timespec timestamp;
+    m_Coupling_RBVPV->read(&timestamp, &Coupling);
+    return (std::int32_t)Coupling;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getSignalRef()
+{
+	std::int32_t SignalRef;
+    timespec timestamp;
+    m_SignalRefType_RBVPV->read(&timestamp, &SignalRef);
+    return (std::int32_t)SignalRef;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getGround()
+{
+	std::int32_t Ground;
+    timespec timestamp;
+    m_ground_RBVPV->read(&timestamp, &Ground);
+    return (std::int32_t)Ground;
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
+{
+	m_Gain_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setOffset(const timespec& timestamp, const double& value)
+{
+	m_offset_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setBandwidth(const timespec& timestamp, const double& value)
+{
+	m_Bandwidth_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setResolution(const timespec& timestamp, const double& value)
+{
+	m_Resolution_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const double& value)
+{
+	m_Impedance_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
+{
+	m_Coupling_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SignalRefType_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setGround(const timespec& timestamp, const std::int32_t& value)
+{
+	m_ground_RBVPV->setValue(timestamp, value);
+}
 
 template<typename T>
 size_t DataAcquisitionImpl<T>::getMaxElements()
 {
-    return m_dataPV->getMaxElements();
+    return m_data_PV->getMaxElements();
 }
 
 template<typename T>
@@ -183,7 +297,7 @@ size_t DataAcquisitionImpl<T>::getDecimation()
 {
     std::int32_t decimation;
     timespec timestamp;
-    m_decimationPV->read(&timestamp, &decimation);
+    m_decimation_RBVPV->read(&timestamp, &decimation);
     return (size_t)decimation;
 }
 
@@ -202,14 +316,14 @@ void DataAcquisitionImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t time
 template<typename T>
 void DataAcquisitionImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_dataPV->push(timestamp, data);
+    m_data_PV->push(timestamp, data);
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)(m_decimation_PV->getValue()));
     m_onStartDelegate();
 }
 

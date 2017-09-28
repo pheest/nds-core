@@ -37,21 +37,13 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									stateChange_t recoverFunction,
 									allowChange_t allowStateChangeFunction,
 									writerDouble_t PV_Gain_Writer,
-									readerDouble_t PV_Gain_Reader,
 									writerDouble_t PV_Offset_Writer,
-									readerDouble_t PV_Offset_Reader,
-									writerDouble_t PV_Bw_Writer,
-									readerDouble_t PV_Bw_Reader,
+									writerDouble_t PV_Bandwidth_Writer,
 									writerDouble_t PV_Resolution_Writer,
-									readerDouble_t PV_Resolution_Reader,
 									writerDouble_t PV_Impedance_Writer,
-									readerDouble_t PV_Impedance_Reader,
 									writerInt32_t PV_Coupling_Writer,
-									readerInt32_t PV_Coupling_Reader,
 									writerInt32_t PV_SignalRef_Writer,
-									readerInt32_t PV_SignalRef_Reader,
-									writerInt32_t PV_Ground_Writer,
-									readerInt32_t PV_Ground_Reader):
+									writerInt32_t PV_Ground_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -61,21 +53,13 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
                                                                              recoverFunction,
                                                                              allowStateChangeFunction,
 																			 PV_Gain_Writer,
-																	 	 	 PV_Gain_Reader,
 																	 	 	 PV_Offset_Writer,
-																	 		 PV_Offset_Reader,
-																	 		 PV_Bw_Writer,
-																	 		 PV_Bw_Reader,
+																	 		 PV_Bandwidth_Writer,
 																	 		 PV_Resolution_Writer,
-																	 		 PV_Resolution_Reader,
 																	 		 PV_Impedance_Writer,
-																	 		 PV_Impedance_Reader,
 																	 		 PV_Coupling_Writer,
-																	 		 PV_Coupling_Reader,
 																	 		 PV_SignalRef_Writer,
-																	 		 PV_SignalRef_Reader,
-																	 		 PV_Ground_Writer,
-																	 		 PV_Ground_Reader)))
+																	 		 PV_Ground_Writer)))
 {
 }
 
@@ -91,6 +75,7 @@ DataAcquisition<T>& DataAcquisition<T>::operator=(const DataAcquisition<T>& righ
     return *this;
 }
 
+
 template <typename T>
 void DataAcquisition<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
@@ -101,6 +86,102 @@ template <typename T>
 void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getGain()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGain();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getOffset()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getOffset();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getBandwidth()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getBandwidth();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getResolution()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getResolution();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getImpedance()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getImpedance();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getCoupling()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getCoupling();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getSignalRef()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSignalRef();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getGround()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGround();
+}
+
+template <typename T>
+void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setOffset(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setOffset(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setBandwidth(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setBandwidth(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setResolution(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setResolution(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setImpedance(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setImpedance(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setCoupling(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSignalRef(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setGround(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGround(timestamp, value);
 }
 
 template <typename T>

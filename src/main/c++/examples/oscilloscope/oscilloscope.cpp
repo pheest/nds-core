@@ -27,7 +27,7 @@ public:
      * @param device     the name given to the device
      * @param parameters optional parameters passed to the device
      */
-    Oscilloscope(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
+    Oscilloscope(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& /*parameters*/);
 
 private:
     /**
@@ -64,23 +64,23 @@ private:
     void stopSquareWave();      ///< Called to stop the data acquisition on the square wave node.
     void recoverSquareWave();   ///< Called to recover the square wave node from a failure.
 
-    void PVGainWriter(const timespec& timestamp, const double& value);
-    void PVOffsetWriter(const timespec& timestamp, const double& value);
-    void PVBwWriter(const timespec& timestamp, const double& value);
-    void PVResolutionWriter(const timespec& timestamp, const double& value);
-    void PVImpedanceWriter(const timespec& timestamp, const double& value);
-    void PVCouplingWriter(const timespec& timestamp, const int32_t& value);
-    void PVSignalRefWriter(const timespec& timestamp, const int32_t& value);
-    void PVGroundWriter(const timespec& timestamp, const int32_t& value);
+    void PVGainWriter(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVOffsetWriter(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVBwWriter(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVResolutionWriter(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVImpedanceWriter(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVCouplingWriter(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    void PVSignalRefWriter(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    void PVGroundWriter(const timespec& /*timestamp*/, const int32_t& /*value*/);
 
-    void PVGainWriter2(const timespec& timestamp, const double& value);
-    void PVOffsetWriter2(const timespec& timestamp, const double& value);
-    void PVBwWriter2(const timespec& timestamp, const double& value);
-    void PVResolutionWriter2(const timespec& timestamp, const double& value);
-    void PVImpedanceWriter2(const timespec& timestamp, const double& value);
-    void PVCouplingWriter2(const timespec& timestamp, const int32_t& value);
-    void PVSignalRefWriter2(const timespec& timestamp, const int32_t& value);
-    void PVGroundWriter2(const timespec& timestamp, const int32_t& value);
+    void PVGainWriter2(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVOffsetWriter2(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVBwWriter2(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVResolutionWriter2(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVImpedanceWriter2(const timespec& /*timestamp*/, const double& /*value*/);
+    void PVCouplingWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    void PVSignalRefWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    void PVGroundWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/);
 
     /**
      * @brief Called to verify if a state change is allowed
@@ -137,7 +137,7 @@ private:
 //  (which in turn register all its children).
 //
 ////////////////////////////////////////////////////////////////////////////////
-Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters)
+Oscilloscope::Oscilloscope(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& /*parameters*/)
 {
     // Here we declare the root node.
     // It is a good practice to name it with the device name.
@@ -256,67 +256,67 @@ Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName,
     rootNode.initialize(this, factory);
 }
 
-void Oscilloscope::PVGainWriter(const timespec& timestamp, const double& value)
+void Oscilloscope::PVGainWriter(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 
 }
 
-void Oscilloscope::PVGainWriter2(const timespec& timestamp, const double& value)
+void Oscilloscope::PVGainWriter2(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 
 }
 
 
-void Oscilloscope::PVOffsetWriter(const timespec& timestamp, const double& value)
+void Oscilloscope::PVOffsetWriter(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 }
-void Oscilloscope::PVBwWriter(const timespec& timestamp, const double& value)
+void Oscilloscope::PVBwWriter(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 }
-void Oscilloscope::PVResolutionWriter(const timespec& timestamp, const double& value)
+void Oscilloscope::PVResolutionWriter(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 }
-void Oscilloscope::PVImpedanceWriter(const timespec& timestamp, const double& value)
+void Oscilloscope::PVImpedanceWriter(const timespec& /*timestamp*/, const double& /*value*/)
 {
 
 }
-void Oscilloscope::PVCouplingWriter(const timespec& timestamp, const int32_t& value)
+void Oscilloscope::PVCouplingWriter(const timespec& /*timestamp*/, const int32_t& /*value*/)
 {
 
 }
-void Oscilloscope::PVSignalRefWriter(const timespec& timestamp, const int32_t& value)
+void Oscilloscope::PVSignalRefWriter(const timespec& /*timestamp*/, const int32_t& /*value*/)
 {
 
 }
-void Oscilloscope::PVGroundWriter(const timespec& timestamp, const int32_t& value)
+void Oscilloscope::PVGroundWriter(const timespec& /*timestamp*/, const int32_t& /*value*/)
 {
 
 }
 
-void Oscilloscope::PVOffsetWriter2(const timespec& timestamp, const double& value){
+void Oscilloscope::PVOffsetWriter2(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
-void Oscilloscope::PVBwWriter2(const timespec& timestamp, const double& value){
+void Oscilloscope::PVBwWriter2(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
-void Oscilloscope::PVResolutionWriter2(const timespec& timestamp, const double& value){
+void Oscilloscope::PVResolutionWriter2(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
-void Oscilloscope::PVImpedanceWriter2(const timespec& timestamp, const double& value){
+void Oscilloscope::PVImpedanceWriter2(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
-void Oscilloscope::PVCouplingWriter2(const timespec& timestamp, const int32_t& value){
+void Oscilloscope::PVCouplingWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void Oscilloscope::PVSignalRefWriter2(const timespec& timestamp, const int32_t& value){
+void Oscilloscope::PVSignalRefWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void Oscilloscope::PVGroundWriter2(const timespec& timestamp, const int32_t& value)
+void Oscilloscope::PVGroundWriter2(const timespec& /*timestamp*/, const int32_t& /*value*/)
 {
 
 }

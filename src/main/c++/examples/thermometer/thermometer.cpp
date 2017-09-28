@@ -10,7 +10,7 @@ public:
     //////////////////////////////////////////////////
     Thermometer(nds::Factory &factory,
                 const std::string &deviceName,
-                const nds::namedParameters_t &parameters)
+                const nds::namedParameters_t /*&parameters*/)
     {
         nds::Port rootNode(deviceName);
         rootNode.addChild(nds::PVDelegateIn<double>("Temperature", std::bind(&Thermometer::getTemperature, 
@@ -21,7 +21,7 @@ public:
         rootNode.initialize(this, factory);
     }
 
-    void getTemperature(timespec* pTimestamp, double* pValue)
+    void getTemperature(timespec* /*pTimestamp*/, double* pValue)
     {
         *pValue = 10; // It is always cold in here
     }

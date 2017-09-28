@@ -85,21 +85,13 @@ public:
                     stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
                     allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
 					writerDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_Gain_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Offset_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_Offset_Reader,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Bw_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_Bw_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Bandwidth_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_Resolution_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Impedance_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_Impedance_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_Coupling_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalRef_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SignalRef_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_Ground_Reader);        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Ground_Writer);        ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing
@@ -122,8 +114,61 @@ public:
      */
     void push(const timespec& timestamp, const T& data);
 
+    /**
+     * @brief Retrieve the Gain
+     *
+     * @return the Gain value
+     */
+    size_t getGain();
 
+    /**
+     * @brief Retrieve the Offset
+     *
+     * @return the Offset value
+     */
+    size_t getOffset();
 
+    /**
+     * @brief Retrieve the Bandwidth
+     *
+     * @return the Bandwidth value
+     */
+    size_t getBandwidth();
+
+    /**
+     * @brief Retrieve the Resolution
+     *
+     * @return the Resolution value
+     */
+    size_t getResolution();
+
+    /**
+     * @brief Retrieve the Impedance
+     *
+     * @return the Impedance value
+     */
+    size_t getImpedance();
+
+    /**
+     * @brief Retrieve the Coupling
+     *
+     * @return the Coupling value
+     */
+    size_t getCoupling();
+
+    /**
+     * @brief Retrieve the SignalRef
+     *
+     * @return the SignalRef value
+     */
+    size_t getSignalRef();
+
+    /**
+     * @brief Retrieve the Ground
+     *
+     * @return the Ground value
+     */
+    size_t getGround();
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the
      *        pushed array. This number is set in the DataAcquisition constructor.
@@ -149,6 +194,50 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+
+    /**
+     * @brief Sets the value of the m_Gain_RBV.
+     *
+     */
+    void setGain(const timespec& timestamp, const double& value);
+    /**
+     * @brief Sets the value of the m_Offset_RBV.
+     *
+     */
+    void setOffset(const timespec& timestamp, const double& value);
+
+    /**
+     * @brief Sets the value of the m_Bandwidth_RBV.
+     *
+     */
+    void setBandwidth(const timespec& timestamp, const double& value);
+    /**
+     * @brief Sets the value of the m_Resolution_RBV.
+     *
+     */
+    void setResolution(const timespec& timestamp, const double& value);
+    /**
+     * @brief Sets the value of the m_Impedance_RBV.
+     *
+     */
+    void setImpedance(const timespec& timestamp, const double& value);
+    /**
+     * @brief Sets the value of the m_Coupling_RBV.
+     *
+     */
+    void setCoupling(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_SignalRef_RBV.
+     *
+     */
+    void setSignalRef(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_Ground_RBV.
+     *
+     */
+    void setGround(const timespec& timestamp, const std::int32_t& value);
+
+
 };
 
 }

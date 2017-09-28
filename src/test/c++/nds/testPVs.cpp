@@ -504,18 +504,15 @@ TEST(testPVs, testDelegateInitialized)
 
 }
 
-TEST(testPVs, testSubscriptionDelegate)
+TEST(testPVs, testSubscription0)
 {
     nds::Factory factory("test");
 
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
-    /**
-     * subscribe command needs PV names without slashes at the begining ("/")
-     */
     nds::parameters_t parameters;
-    parameters.push_back("rootNode-string_DelegateIn");
-    nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("subscribe", "rootNode-string_DelegateOut", parameters);
+    parameters.push_back("rootNode-testVariableIn");
+    nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("subscribe", "rootNode-testVariableOut", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -526,32 +523,38 @@ TEST(testPVs, testSubscriptionDelegate)
 
         timespec timestamp;
         timestamp.tv_sec = count;
-        timestamp.tv_nsec = count;
-        pInterface->writeCSValue("/rootNode-string_DelegateOut", timestamp, value.str());
+        timestamp.tv_nsec = count + 10;
+        pInterface->writeCSValue("/rootNode-writeTestVariableIn", timestamp, value.str());
 
         std::string readValue;
         timespec readTimestamp;
-        pInterface->readCSValue("/rootNode-string_DelegateIn", &readTimestamp, &readValue);
+        pInterface->readCSValue("/rootNode-readTestVariableOut", &readTimestamp, &readValue);
         EXPECT_EQ(value.str(), readValue);
-        EXPECT_EQ(timestamp.tv_sec, readTimestamp.tv_sec);
-        EXPECT_EQ(timestamp.tv_nsec, readTimestamp.tv_nsec);
+        EXPECT_EQ(count, readTimestamp.tv_sec);
+        EXPECT_EQ(count + 10, readTimestamp.tv_nsec);
     }
 
     factory.destroyDevice("rootNode");
 }
 
-TEST(testPVs, testSubscriptionVariable)
+
+TEST(testPVs, testSubscription1)
 {
     nds::Factory factory("test");
 
     factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
 
-    /**
-     * subscribe command needs PV names without slashes at the begining ("/")
-     */
-    nds::parameters_t parameters;
-    parameters.push_back("rootNode-string_VariableIn");
-    nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("subscribe", "rootNode-string_VariableOut", parameters);
+    {
+        nds::parameters_t parameters;
+        parameters.push_back("rootNode-testVariableIn");
+        nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("subscribe", "rootNode-testVariableOut", parameters);
+    }
+
+    {
+        nds::parameters_t parameters;
+        parameters.push_back("0");
+        nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("decimation", "rootNode-testVariableIn", parameters);
+    }
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -562,103 +565,56 @@ TEST(testPVs, testSubscriptionVariable)
 
         timespec timestamp;
         timestamp.tv_sec = count;
-        timestamp.tv_nsec = count;
-        pInterface->writeCSValue("/rootNode-string_VariableOut", timestamp, value.str());
+        timestamp.tv_nsec = count + 10;
+        pInterface->writeCSValue("/rootNode-pushTestVariableIn", timestamp, value.str());
 
         {
-        	const std::string* readValue;
-        	const timespec* readTimestamp;
-        	EXPECT_THROW(pInterface->getPushedString("/rootNode-string_VariableIn", readTimestamp, readValue), std::runtime_error);
+            const std::string* readValue;
+            const timespec* readTimestamp;
+            EXPECT_THROW(pInterface->getPushedString("/rootNode-pushTestVariableIn", readTimestamp, readValue), std::runtime_error);
         }
 
         std::string readValue;
         timespec readTimestamp;
-        pInterface->readCSValue("/rootNode-string_VariableOut", &readTimestamp, &readValue);
+        pInterface->readCSValue("/rootNode-readTestVariableOut", &readTimestamp, &readValue);
         EXPECT_EQ(value.str(), readValue);
-        EXPECT_EQ(timestamp.tv_sec, readTimestamp.tv_sec);
-        EXPECT_EQ(timestamp.tv_nsec, readTimestamp.tv_nsec);
+        EXPECT_EQ(count, readTimestamp.tv_sec);
+        EXPECT_EQ(count + 10, readTimestamp.tv_nsec);
     }
 
     factory.destroyDevice("rootNode");
 }
-//
-//TEST(testPVs, testSubscription1)
-//{
-//    nds::Factory factory("test");
-//
-//    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
-//
-//    {
-//        nds::parameters_t parameters;
-//        parameters.push_back("rootNode-Channel1-testVariableIn");
-//        nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("subscribe", "rootNode-Channel1-testVariableOut", parameters);
-//    }
-//
-//    {
-//        nds::parameters_t parameters;
-//        parameters.push_back("0");
-//        nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("decimation", "rootNode-Channel1-testVariableIn", parameters);
-//    }
-//
-//    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode-Channel1");
-//
-//    for(std::int32_t count(0); count != 10; ++count)
-//    {
-//        std::ostringstream value;
-//        value << "Test string " << count;
-//
-//        timespec timestamp;
-//        timestamp.tv_sec = count;
-//        timestamp.tv_nsec = count + 10;
-//        pInterface->writeCSValue("/rootNode-Channel1.pushTestVariableIn", timestamp, value.str());
-//
-//        {
-//            const std::string* readValue;
-//            const timespec* readTimestamp;
-//            EXPECT_THROW(pInterface->getPushedString("/rootNode-Channel1.pushTestVariableIn", readTimestamp, readValue), std::runtime_error);
-//        }
-//
-//        std::string readValue;
-//        timespec readTimestamp;
-//        pInterface->readCSValue("/rootNode-Channel1.readTestVariableOut", &readTimestamp, &readValue);
-//        EXPECT_EQ(value.str(), readValue);
-//        EXPECT_EQ(count, readTimestamp.tv_sec);
-//        EXPECT_EQ(count + 10, readTimestamp.tv_nsec);
-//    }
-//
-//    factory.destroyDevice("rootNode");
-//}
-//
-//TEST(testPVs, testReplication)
-//{
-//    nds::Factory factory("test");
-//
-//    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
-//
-//    nds::parameters_t parameters;
-//    parameters.push_back("rootNode-Channel1-testVariableIn");
-//    nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("replicate", "rootNode-Channel1-delegateIn", parameters);
-//
-//    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode-Channel1");
-//
-//    for(std::int32_t count(0); count != 10; ++count)
-//    {
-//        std::ostringstream value;
-//        value << "Test string " << count;
-//
-//        timespec timestamp;
-//        timestamp.tv_sec = count;
-//        timestamp.tv_nsec = count + 10;
-//        pInterface->writeCSValue("/rootNode-Channel1.pushTestVariableIn", timestamp, value.str());
-//
-//        const std::string* pReadValue;
-//        const timespec* pReadTimestamp;
-//        pInterface->getPushedString("/rootNode-Channel1.delegateIn", pReadTimestamp, pReadValue);
-//        EXPECT_EQ(value.str(), *pReadValue);
-//        EXPECT_EQ(count, pReadTimestamp->tv_sec);
-//        EXPECT_EQ(count + 10, pReadTimestamp->tv_nsec);
-//    }
-//
-//    factory.destroyDevice("rootNode");
-//}
+
+TEST(testPVs, testReplication)
+{
+    nds::Factory factory("test");
+
+    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+
+    nds::parameters_t parameters;
+    parameters.push_back("rootNode-testVariableIn");
+    nds::tests::TestControlSystemFactoryImpl::getInstance()->executeCommand("replicate", "rootNode-delegateIn", parameters);
+
+    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+    for(std::int32_t count(0); count != 10; ++count)
+    {
+        std::ostringstream value;
+        value << "Test string " << count;
+
+        timespec timestamp;
+        timestamp.tv_sec = count;
+        timestamp.tv_nsec = count + 10;
+        pInterface->writeCSValue("/rootNode-pushTestVariableIn", timestamp, value.str());
+
+        const std::string* pReadValue;
+        const timespec* pReadTimestamp;
+        pInterface->getPushedString("/rootNode-delegateIn", pReadTimestamp, pReadValue);
+        EXPECT_EQ(value.str(), *pReadValue);
+        EXPECT_EQ(count, pReadTimestamp->tv_sec);
+        EXPECT_EQ(count + 10, pReadTimestamp->tv_nsec);
+    }
+
+    factory.destroyDevice("rootNode");
+}
 

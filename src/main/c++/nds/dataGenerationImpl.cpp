@@ -29,104 +29,98 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
                                           stateChange_t recoverFunction,
                                           allowChange_t allowStateChangeFunction,
 		                                  writerDouble_t PV_Frequency_Writer,
-		                                  readerDouble_t PV_Frequency_Reader,
 		                                  writerDouble_t PV_RefFrequency_Writer,
-		                                  readerDouble_t PV_RefFrequency_Reader,
 		                                  writerDouble_t PV_Amp_Writer,
-		                                  readerDouble_t PV_Amp_Reader,
 		                                  writerDouble_t PV_Phase_Writer,
-		                                  readerDouble_t PV_Phase_Reader,
 		                                  writerDouble_t PV_UpdateRate_Writer,
-		                                  readerDouble_t PV_UpdateRate_Reader,
 		                                  writerDouble_t PV_DutyCycle_Writer,
-		                                  readerDouble_t PV_DutyCycle_Reader,
 		                                  writerDouble_t PV_Gain_Writer,
-		                                  readerDouble_t PV_Gain_Reader,
 		                                  writerDouble_t PV_Offset_Writer,
-		                                  readerDouble_t PV_Offset_Reader,
-		                                  writerDouble_t PV_Bw_Writer,
-		                                  readerDouble_t PV_Bw_Reader,
+		                                  writerDouble_t PV_Bandwidth_Writer,
 		                                  writerDouble_t PV_Resolution_Writer,
-		                                  readerDouble_t PV_Resolution_Reader,
-		                                  writerDouble_t PV_Impedance_Writer,
-		                                  readerDouble_t PV_Impedance_Reader,
+										  writerInt32_t PV_Impedance_Writer,
 		                                  writerInt32_t PV_Coupling_Writer,
-		                                  readerInt32_t PV_Coupling_Reader,
 		                                  writerInt32_t PV_SignalRef_Writer,
-		                                  readerInt32_t PV_SignalRef_Reader,
 		                                  writerInt32_t PV_SignalType_Writer,
-		                                  readerInt32_t PV_SignalType_Reader,
-		                                  writerInt32_t PV_Ground_Writer,
-		                                  readerInt32_t PV_Ground_Reader):
+		                                  writerInt32_t PV_Ground_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 
 	// Add the children PVs
-    m_dataPV.reset(new PVVariableOutImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("AWG Samples to send");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+    m_data_PV.reset(new PVVariableInImpl<T>("data"));
+    m_data_PV->setDescription("Data Generated");
+	m_data_PV->setMaxElements(maxElements);
+    m_data_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_data_PV);
+
+	m_data_AWG.reset(new PVVariableOutImpl<T>("dataAWG"));
+	m_data_AWG->setMaxElements(maxElements);
+	m_data_AWG->setDescription("AWG Samples for signal generation");
+	m_data_AWG->setScanType(scanType_t::passive, 0);
+    addChild(m_data_AWG);
+
+    m_frequency_RBVPV.reset(new PVVariableInImpl<double>("Frequency_RBV"));
+	m_frequency_RBVPV->setDescription("Generation frequency ReadBack");
+	m_frequency_RBVPV->setScanType(scanType_t::interrupt, 0);
+	m_frequency_RBVPV->getDataDirection();
+	addChild(m_frequency_RBVPV);
 
     m_frequency_PV.reset(new PVDelegateOutImpl<double>("Frequency", PV_Frequency_Writer));
     m_frequency_PV->setDescription("Generation frequency");
-    m_frequency_PV->write(getTimestamp(), (double)1);
+    m_frequency_PV->setUnits("Hz");
+    m_frequency_PV->getDescription();
+    m_frequency_PV->getUnits();
+    m_frequency_PV->getScanType();
+    m_frequency_PV->getScanPeriodSeconds();
+    m_frequency_PV->getEnumerations();
+    m_frequency_PV->getProcessAtInit();
+    m_frequency_PV->getDataDirection();
     addChild(m_frequency_PV);
-
-    m_frequency_RBVPV.reset(new PVDelegateInImpl<double>("Frequency_RBV", PV_Frequency_Reader));
-	m_frequency_RBVPV->setDescription("Generation frequency ReadBack");
-	m_frequency_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_frequency_RBVPV);
 
     m_RefFrequency_PV.reset(new PVDelegateOutImpl<double>("RefFrequency", PV_RefFrequency_Writer));
     m_RefFrequency_PV->setDescription("Reference frequency");
-    m_RefFrequency_PV->write(getTimestamp(), (double)1);
     addChild(m_RefFrequency_PV);
 
-    m_RefFrequency_RBVPV.reset(new PVDelegateInImpl<double>("RefFrequency_RBV", PV_RefFrequency_Reader));
+    m_RefFrequency_RBVPV.reset(new PVVariableInImpl<double>("RefFrequency_RBV"));
     m_RefFrequency_RBVPV->setDescription("Reference frequency");
-    m_RefFrequency_RBVPV->setScanType(scanType_t::passive, 0);
+    m_RefFrequency_RBVPV->setScanType(scanType_t::interrupt, 0);
     addChild(m_RefFrequency_RBVPV);
-
 
     m_amplitude_PV.reset(new PVDelegateOutImpl<double>("Amplitude", PV_Amp_Writer));
     m_amplitude_PV->setDescription("Amplitude");
-    m_amplitude_PV->write(getTimestamp(), (double)1);
     addChild(m_amplitude_PV);
 
-    m_amplitude_RBVPV.reset(new PVDelegateInImpl<double>("Amplitude_RBV", PV_Amp_Reader));
+    //m_Aplitude_RBPV is PVVariable because every time that the CS updates m_Amplitude value, the m_Amplitude writer updates the AmplitudeRBPV value.
+    m_amplitude_RBVPV.reset(new PVVariableInImpl<double>("Amplitude_RBV"/*, PV_Amp_Reader*/));
 	m_amplitude_RBVPV->setDescription("Amplitude ReadBack");
 	m_amplitude_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_amplitude_RBVPV);
 
     m_phase_PV.reset(new PVDelegateOutImpl<double>("Phase", PV_Phase_Writer));
     m_phase_PV->setDescription("Phase");
-    m_phase_PV->write(getTimestamp(), (double)1);
     addChild(m_phase_PV);
 
-    m_phase_RBVPV.reset(new PVDelegateInImpl<double>("Phase_RBV", PV_Phase_Reader));
+    m_phase_RBVPV.reset(new PVVariableInImpl<double>("Phase_RBV"));
 	m_phase_RBVPV->setDescription("Phase ReadBack");
 	m_phase_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_phase_RBVPV);
 
 	m_updateRate_PV.reset(new PVDelegateOutImpl<double>("UpdateRate", PV_UpdateRate_Writer));
     m_updateRate_PV->setDescription("Update Rate");
-    m_updateRate_PV->write(getTimestamp(), (double)1);
     addChild(m_updateRate_PV);
 
-    m_updateRate_RBVPV.reset(new PVDelegateInImpl<double>("UpdateRate_RBV", PV_UpdateRate_Reader));
+    m_updateRate_RBVPV.reset(new PVVariableInImpl<double>("UpdateRate_RBV"));
 	m_updateRate_RBVPV->setDescription("Update Rate ReadBack");
 	m_updateRate_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_updateRate_RBVPV);
 
     m_DutyCycle_PV.reset(new PVDelegateOutImpl<double>("DutyCycle", PV_DutyCycle_Writer));
     m_DutyCycle_PV->setDescription("Signal Duty Cycle");
-    m_DutyCycle_PV->write(getTimestamp(), (double)1);
     addChild(m_DutyCycle_PV);
 
-    m_DutyCycle_RBVPV.reset(new PVDelegateInImpl<double>("DutyCycle_RBV", PV_DutyCycle_Reader));
+    m_DutyCycle_RBVPV.reset(new PVVariableInImpl<double>("DutyCycle_RBV"));
 	m_DutyCycle_RBVPV->setDescription("Signal Duty Cycle ReadBack");
 	m_DutyCycle_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DutyCycle_RBVPV);
@@ -135,7 +129,7 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	m_Gain_PV->setDescription("Gain of the Channel");
 	addChild(m_Gain_PV);
 
-	m_Gain_RBVPV.reset(new PVDelegateInImpl<double>("Gain_RBV",PV_Gain_Reader));
+	m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
 	m_Gain_RBVPV->setDescription("Gain of the Channel ReadBack");
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
@@ -144,35 +138,42 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	m_offset_PV->setDescription("Offset");
 	addChild(m_offset_PV);
 
-	m_offset_RBVPV.reset(new PVDelegateInImpl<double>("Offset_RBV",PV_Offset_Reader));
+	m_offset_RBVPV.reset(new PVVariableInImpl<double>("Offset_RBV"));
 	m_offset_RBVPV->setDescription("Offset ReadBack");
 	m_offset_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_offset_RBVPV);
 
-	m_BW_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bw_Writer));
-	m_BW_PV->setDescription("BandWidth");
-	addChild(m_BW_PV);
+	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
+	m_Bandwidth_PV->setDescription("BandWidth");
+	addChild(m_Bandwidth_PV);
 
-	m_BW_RBVPV.reset(new PVDelegateInImpl<double>("BandWidth_RBV",PV_Bw_Reader));
-	m_BW_RBVPV->setDescription("BandWidth ReadBack");
-	m_BW_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_BW_RBVPV);
+	m_Bandwidth_RBVPV.reset(new PVVariableInImpl<double>("BandWidth_RBV"));
+	m_Bandwidth_RBVPV->setDescription("BandWidth ReadBack");
+	m_Bandwidth_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_Bandwidth_RBVPV);
 
 	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
 	m_Resolution_PV->setDescription("Resolution: Number of Bits per Sample");
 	addChild(m_Resolution_PV);
 
-	m_Resolution_RBVPV.reset(new PVDelegateInImpl<double>("Resolution_RBV",PV_Resolution_Reader));
+	m_Resolution_RBVPV.reset(new PVVariableInImpl<double>("Resolution_RBV"));
 	m_Resolution_RBVPV->setDescription("Resolution: Number of Bits per Sample ReadBack");
 	m_Resolution_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Resolution_RBVPV);
 
-	m_Impedance_PV.reset(new PVDelegateOutImpl<double>("Impedance",PV_Impedance_Writer));
-	m_Impedance_PV->setDescription("Impedance");
+	//add enumeration for Signal Reference type
+	enumerationStrings_t ImpedanceEnumeratorStrings;
+	ImpedanceEnumeratorStrings.push_back("50ohm");
+	ImpedanceEnumeratorStrings.push_back("Inf");
+
+	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
+	m_Impedance_PV->setDescription("Impedance: 50 ohm or Inf ");
+	m_Impedance_PV->setEnumeration(ImpedanceEnumeratorStrings);
 	addChild(m_Impedance_PV);
 
-	m_Impedance_RBVPV.reset(new PVDelegateInImpl<double>("Impedance_RBV",PV_Impedance_Reader));
+	m_Impedance_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Impedance_RBV"));
 	m_Impedance_RBVPV->setDescription("Impedance ReadBack");
+	m_Impedance_RBVPV->setEnumeration(ImpedanceEnumeratorStrings);
 	m_Impedance_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Impedance_RBVPV);
 
@@ -187,9 +188,9 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	addChild(m_Coupling_PV);
 
 
-	m_Coupling_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("Coupling_RBV",PV_Coupling_Reader));
+	m_Coupling_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Coupling_RBV"));
 	m_Coupling_RBVPV->setDescription("Coupling: AC or DC ReadBack");
-	m_Coupling_RBVPV->setScanType(scanType_t::passive, 0);
+	m_Coupling_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_Coupling_RBVPV->setEnumeration(CouplingEnumeratorStrings);
 	addChild(m_Coupling_RBVPV);
 
@@ -203,7 +204,7 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	addChild(m_SignalRefType_PV);
 
-	m_SignalRefType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SignalRefType_RBV",PV_SignalRef_Reader));
+	m_SignalRefType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SignalRefType_RBV"));
 	m_SignalRefType_RBVPV->setDescription("Type of input: Differential or Single Ended ReadBack");
 	m_SignalRefType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_SignalRefType_RBVPV->setEnumeration(SignalRefTypeEnumeratorStrings);
@@ -213,6 +214,7 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	enumerationStrings_t SignalTypeEnumeratorStrings;
 	SignalTypeEnumeratorStrings.push_back("WaveForm");
 	SignalTypeEnumeratorStrings.push_back("Spline");
+	SignalTypeEnumeratorStrings.push_back("DC");
 	SignalTypeEnumeratorStrings.push_back("Sin");
 	SignalTypeEnumeratorStrings.push_back("Square");
 	SignalTypeEnumeratorStrings.push_back("Triangle");
@@ -220,12 +222,12 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	SignalTypeEnumeratorStrings.push_back("Sawtooth");
 
 	m_signalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalType",PV_SignalType_Writer));
-	m_signalType_PV->setDescription("Type of signal: Waveform, Spline, Sin, Square, Triangle, Pulse, Sawtooth");
+	m_signalType_PV->setDescription("Type of signal: Waveform, Spline,DC, Sin, Square, Triangle, Pulse, Sawtooth");
 	m_signalType_PV->setEnumeration(SignalTypeEnumeratorStrings);
 	addChild(m_signalType_PV);
 
-	m_signalType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SignalType_RBV",PV_SignalType_Reader));
-	m_signalType_RBVPV->setDescription("Type of signal: Waveform, Spline, Sin,Square, Triangle, Pulse, Sawtooth ReadBack");
+	m_signalType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SignalType_RBV"));
+	m_signalType_RBVPV->setDescription("Type of signal: Waveform, Spline,DC, Sin,Square, Triangle, Pulse, Sawtooth ReadBack");
 	m_signalType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_signalType_RBVPV->setEnumeration(SignalTypeEnumeratorStrings);
 	addChild(m_signalType_RBVPV);
@@ -235,16 +237,22 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	groundEnumeratorStrings.push_back("On");
 	groundEnumeratorStrings.push_back("Off");
 
-	m_ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
-	m_ground_PV->setDescription("Ground State");
-	m_ground_PV->setEnumeration(groundEnumeratorStrings);
-	addChild(m_ground_PV);
+	m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
+	m_Ground_PV->setDescription("Ground State");
+	m_Ground_PV->setEnumeration(groundEnumeratorStrings);
+	addChild(m_Ground_PV);
 
-	m_ground_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("Ground_RBV",PV_Ground_Reader));
-	m_ground_RBVPV->setDescription("Ground State ReadBack");
-	m_ground_RBVPV->setScanType(scanType_t::interrupt,0);
-	m_ground_RBVPV->setEnumeration(groundEnumeratorStrings);
-	addChild(m_ground_RBVPV);
+	m_Ground_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Ground_RBV"));
+	m_Ground_RBVPV->setDescription("Ground State ReadBack");
+	m_Ground_RBVPV->setScanType(scanType_t::interrupt,0);
+	m_Ground_RBVPV->setEnumeration(groundEnumeratorStrings);
+	addChild(m_Ground_RBVPV);
+
+	// Add the children PVs
+	m_NumberOfPushedDataBlocks.reset(new PVVariableInImpl<std::int32_t>("NumberOfPushedDataBlocks"));
+	m_NumberOfPushedDataBlocks->setDescription("Number Of Pushed Data Blocks");
+	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
+	addChild(m_NumberOfPushedDataBlocks);
 
 
     // Add state machine
@@ -258,10 +266,29 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
     addChild(m_stateMachine);
 }
 
+
+template<typename T>
+void DataGenerationImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    m_startTimestampFunction = timestampDelegate;
+}
+
+template<typename T>
+timespec DataGenerationImpl<T>::getStartTimestamp() const
+{
+    return m_startTime;
+}
+
+template<typename T>
+void DataGenerationImpl<T>::push(const timespec& timestamp, const T& data)
+{
+    m_data_PV->push(timestamp,data);
+}
+
 template<typename T>
 size_t DataGenerationImpl<T>::getMaxElements()
 {
-    return m_dataPV->getMaxElements();
+    return m_data_PV->getMaxElements();
 }
 
 template<typename T>
@@ -274,28 +301,232 @@ size_t DataGenerationImpl<T>::getSignalType()
 }
 
 template<typename T>
-timespec DataGenerationImpl<T>::getStartTimestamp() const
+size_t DataGenerationImpl<T>::getAmplitude()
 {
-    return m_startTime;
+	double amplitude;
+	timespec timestamp;
+	m_amplitude_RBVPV->read(&timestamp, &amplitude);
+	return (double)amplitude;
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+size_t DataGenerationImpl<T>::getFrequency()
 {
-    m_startTimestampFunction = timestampDelegate;
+	double frequency;
+	timespec timestamp;
+	m_frequency_RBVPV->read(&timestamp, &frequency);
+	return (double)frequency;
 }
 
 template<typename T>
-void DataGenerationImpl<T>::write(const timespec& timestamp, const T& data)
+size_t DataGenerationImpl<T>::getUpdateRate()
 {
-    m_dataPV->write(timestamp,data);
+	double updateRate;
+	timespec timestamp;
+	m_updateRate_RBVPV->read(&timestamp, &updateRate);
+	return (double)updateRate;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getOffset()
+{
+	double offset;
+	timespec timestamp;
+	m_offset_RBVPV->read(&timestamp, &offset);
+	return (double)offset;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getPhase()
+{
+	double phase;
+	timespec timestamp;
+	m_phase_RBVPV->read(&timestamp, &phase);
+	return (double)phase;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getImpedance()
+{
+	std::int32_t impedance;
+	timespec timestamp;
+	m_Impedance_RBVPV->read(&timestamp, &impedance);
+	return (std::int32_t)impedance;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getRefFrequency()
+{
+	double RefFrequency;
+	timespec timestamp;
+	m_RefFrequency_RBVPV->read(&timestamp, &RefFrequency);
+	return (double)RefFrequency;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getDutyCycle()
+{
+	double DutyCycle;
+	timespec timestamp;
+	m_DutyCycle_RBVPV->read(&timestamp, &DutyCycle);
+	return (double)DutyCycle;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getGain()
+{
+	double Gain;
+	timespec timestamp;
+	m_Gain_RBVPV->read(&timestamp, &Gain);
+	return (double)Gain;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getBandwidth()
+{
+	double Bandwidth;
+	timespec timestamp;
+	m_Bandwidth_RBVPV->read(&timestamp, &Bandwidth);
+	return (double)Bandwidth;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getResolution()
+{
+	double Resolution;
+	timespec timestamp;
+	m_Resolution_RBVPV->read(&timestamp, &Resolution);
+	return (double)Resolution;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getCoupling()
+{
+	std::int32_t Coupling;
+	timespec timestamp;
+	m_Coupling_RBVPV->read(&timestamp, &Coupling);
+	return (std::int32_t)Coupling;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getSignalRef()
+{
+	std::int32_t SignalRef;
+	timespec timestamp;
+	m_SignalRefType_RBVPV->read(&timestamp, &SignalRef);
+	return (std::int32_t)SignalRef;
+}
+
+template<typename T>
+size_t DataGenerationImpl<T>::getGround()
+{
+	std::int32_t Ground;
+	timespec timestamp;
+	m_Ground_RBVPV->read(&timestamp, &Ground);
+	return (std::int32_t)Ground;
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+	m_NumberOfPushedDataBlocks->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setAmplitude(const timespec& timestamp, const double& value)
+{
+	m_amplitude_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setSignalType(const timespec& timestamp, const std::int32_t& value)
+{
+	m_signalType_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setFrequency(const timespec& timestamp, const double& value)
+{
+	m_frequency_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setUpdateRate(const timespec& timestamp, const double& value)
+{
+	m_updateRate_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setOffset(const timespec& timestamp, const double& value)
+{
+	m_offset_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setPhase(const timespec& timestamp, const double& value)
+{
+	m_phase_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
+{
+	m_Impedance_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setRefFrequency(const timespec& timestamp, const double& value)
+{
+	m_RefFrequency_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setDutyCycle(const timespec& timestamp, const double& value)
+{
+	m_DutyCycle_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setGain(const timespec& timestamp, const double& value)
+{
+	m_Gain_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setBandwidth(const timespec& timestamp, const double& value)
+{
+	m_Bandwidth_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setResolution(const timespec& timestamp, const double& value)
+{
+	m_Resolution_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
+{
+	m_Coupling_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SignalRefType_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataGenerationImpl<T>::setGround(const timespec& timestamp, const std::int32_t& value)
+{
+	m_Ground_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
 void DataGenerationImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    //m_data_PV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
     m_onStartDelegate();
 }
 
@@ -306,7 +537,6 @@ template class DataGenerationImpl<std::vector<std::int8_t> >;
 template class DataGenerationImpl<std::vector<std::uint8_t> >;
 template class DataGenerationImpl<std::vector<std::int32_t> >;
 template class DataGenerationImpl<std::vector<double> >;
-template class DataGenerationImpl<std::string >;
 
 
 }
