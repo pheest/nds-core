@@ -76,10 +76,11 @@ public:
     void setOffset(const timespec& timestamp, const double& value);
     void setBandwidth(const timespec& timestamp, const double& value);
     void setResolution(const timespec& timestamp, const double& value);
-    void setImpedance(const timespec& timestamp, const double& value);
+    void setImpedance(const timespec& timestamp, const std::int32_t& value);
     void setCoupling(const timespec& timestamp, const std::int32_t& value);
     void setSignalRef(const timespec& timestamp, const std::int32_t& value);
     void setGround(const timespec& timestamp, const std::int32_t& value);
+    void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
 
     /**
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -128,6 +129,7 @@ protected:
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_decimation_RBVPV;
+
     std::shared_ptr<PVDelegateOutImpl<double> > m_offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_offset_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
@@ -136,15 +138,17 @@ protected:
     std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Resolution_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<double> > m_Impedance_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_Impedance_RBVPV;
 
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Impedance_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Impedance_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Coupling_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Coupling_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalRefType_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SignalRefType_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ground_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ground_RBVPV;
+
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 
 };
 

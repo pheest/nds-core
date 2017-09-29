@@ -161,7 +161,7 @@ void DataAcquisition<T>::setResolution(const timespec& timestamp, const double& 
 }
 
 template <typename T>
-void DataAcquisition<T>::setImpedance(const timespec& timestamp, const double& value)
+void DataAcquisition<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setImpedance(timestamp, value);
 }
@@ -182,6 +182,12 @@ template <typename T>
 void DataAcquisition<T>::setGround(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGround(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
 }
 
 template <typename T>
@@ -208,7 +214,6 @@ template class DataAcquisition<std::vector<std::int8_t> >;
 template class DataAcquisition<std::vector<std::uint8_t> >;
 template class DataAcquisition<std::vector<std::int32_t> >;
 template class DataAcquisition<std::vector<double> >;
-template class DataAcquisition<std::string >;
 
 
 }

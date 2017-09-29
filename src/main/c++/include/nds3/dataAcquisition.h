@@ -220,7 +220,7 @@ public:
      * @brief Sets the value of the m_Impedance_RBV.
      *
      */
-    void setImpedance(const timespec& timestamp, const double& value);
+    void setImpedance(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_Coupling_RBV.
      *
@@ -236,7 +236,11 @@ public:
      *
      */
     void setGround(const timespec& timestamp, const std::int32_t& value);
-
+    /**
+     * @brief Sets the value of the m_NumberOfPushedDataBocks.
+     *
+     */
+    void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
 
 };
 

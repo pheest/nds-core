@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/testDevice.h"
+#include "../include/Device_Vector_DBL.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
@@ -8,7 +8,7 @@ TEST(testPVs, testVariable)
 {
 	nds::Factory factory("test");
 
-	factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -170,7 +170,7 @@ TEST(testPVs, testDelegate)
 {
 	nds::Factory factory("test");
 
-	factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -339,7 +339,7 @@ TEST(testPVs, testDelegateInitialized)
 {
 	nds::Factory factory("test");
 
-	factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -508,7 +508,7 @@ TEST(testPVs, testSubscription0)
 {
     nds::Factory factory("test");
 
-    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
     nds::parameters_t parameters;
     parameters.push_back("rootNode-testVariableIn");
@@ -542,7 +542,7 @@ TEST(testPVs, testSubscription1)
 {
     nds::Factory factory("test");
 
-    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
     {
         nds::parameters_t parameters;
@@ -589,7 +589,7 @@ TEST(testPVs, testReplication)
 {
     nds::Factory factory("test");
 
-    factory.createDevice("testDevice", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
     nds::parameters_t parameters;
     parameters.push_back("rootNode-testVariableIn");

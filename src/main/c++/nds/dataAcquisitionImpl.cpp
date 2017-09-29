@@ -97,11 +97,11 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Resolution_RBVPV->setScanType(scanType_t::passive, 0);
 	addChild(m_Resolution_RBVPV);
 
-	m_Impedance_PV.reset(new PVDelegateOutImpl<double>("Impedance",PV_Impedance_Writer));
+	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
 	m_Impedance_PV->setDescription("Impedance");
 	addChild(m_Impedance_PV);
 
-	m_Impedance_RBVPV.reset(new PVVariableInImpl<double>("Impedance_RBV"));
+	m_Impedance_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Impedance_RBV"));
 	m_Impedance_RBVPV->setDescription("Impedance ReadBack");
 	m_Impedance_RBVPV->setScanType(scanType_t::passive, 0);
 	addChild(m_Impedance_RBVPV);
@@ -155,6 +155,11 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_ground_RBVPV->setScanType(scanType_t::interrupt,0);
     addChild(m_ground_RBVPV);
 
+	m_NumberOfPushedDataBlocks.reset(new PVVariableInImpl<std::int32_t>("NumberOfPushedDataBlocks"));
+	m_NumberOfPushedDataBlocks->setDescription("Number Of Pushed Data Blocks");
+	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
+	addChild(m_NumberOfPushedDataBlocks);
+
     // Add state machine
     m_stateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
@@ -205,10 +210,10 @@ size_t DataAcquisitionImpl<T>::getResolution()
 template<typename T>
 size_t DataAcquisitionImpl<T>::getImpedance()
 {
-    double Impedance;
+	std::int32_t Impedance;
     timespec timestamp;
     m_Impedance_RBVPV->read(&timestamp, &Impedance);
-    return (double)Impedance;
+    return (std::int32_t)Impedance;
 }
 
 template<typename T>
@@ -263,7 +268,7 @@ void DataAcquisitionImpl<T>::setResolution(const timespec& timestamp, const doub
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const double& value)
+void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Impedance_RBVPV->setValue(timestamp, value);
 }
@@ -314,6 +319,12 @@ void DataAcquisitionImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t time
 }
 
 template<typename T>
+void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+	m_NumberOfPushedDataBlocks->setValue(timestamp, value);
+}
+
+template<typename T>
 void DataAcquisitionImpl<T>::push(const timespec& timestamp, const T& data)
 {
     m_data_PV->push(timestamp, data);
@@ -334,7 +345,6 @@ template class DataAcquisitionImpl<std::vector<std::int8_t> >;
 template class DataAcquisitionImpl<std::vector<std::uint8_t> >;
 template class DataAcquisitionImpl<std::vector<std::int32_t> >;
 template class DataAcquisitionImpl<std::vector<double> >;
-template class DataAcquisitionImpl<std::string >;
 
 
 }

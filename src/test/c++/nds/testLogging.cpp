@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 #include <functional>
-#include "../include/testDevice.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 #include <unistd.h>
 #include <thread>
+
+#include "../include/Device_Vector_DBL.h"
 
 
 void logPV(std::vector<nds::PVBase>& pvs, nds::logLevel_t severity)

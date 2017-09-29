@@ -1,5 +1,5 @@
-#ifndef TESTDEVICE_H_
-#define TESTDEVICE_H_
+#ifndef DEVICEVECTORDBL_H_
+#define DEVICEVECTORDBL_H_
 
 #include <memory>
 
@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class testDevice
+class DeviceVectorDBL
 {
 public:
 	/**
@@ -28,8 +28,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	testDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~testDevice();
+	DeviceVectorDBL(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceVectorDBL();
 
 	/*
 	 * Allocation/deallocation
@@ -42,7 +42,7 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static testDevice* getInstance(const std::string& deviceName);
+	static DeviceVectorDBL* getInstance(const std::string& deviceName);
 
 
 private:
@@ -71,20 +71,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief testDevice state machine
+	 * @brief DeviceVectorDBL state machine
 	 */
-	nds::StateMachine m_testDevice_stateMachine;
+	nds::StateMachine m_DeviceVectorDBL_stateMachine;
 
 	/**
-	 * Methods to control testDevice state machine
+	 * Methods to control DeviceVectorDBL state machine
 	 */
-	void switchOn_testDevice();  ///< Called to switch on the testDevice (rootnode).
-	void switchOff_testDevice(); ///< Called to switch off the testDevice (rootnode).
-	void start_testDevice();     ///< Called to start the testDevice (rootnode).
-	void stop_testDevice();      ///< Called to stop the testDevice (rootnode).
-	void recover_testDevice();   ///< Called to recover the testDevice (rootnode) from a failure.
+	void switchOn_DeviceVectorDBL();  ///< Called to switch on the DeviceVectorDBL (rootnode).
+	void switchOff_DeviceVectorDBL(); ///< Called to switch off the DeviceVectorDBL (rootnode).
+	void start_DeviceVectorDBL();     ///< Called to start the DeviceVectorDBL (rootnode).
+	void stop_DeviceVectorDBL();      ///< Called to stop the DeviceVectorDBL (rootnode).
+	void recover_DeviceVectorDBL();   ///< Called to recover the DeviceVectorDBL (rootnode) from a failure.
 
-	bool allow__testDevice_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow__DeviceVectorDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION
@@ -739,4 +739,4 @@ private:
 
 };
 
-#endif // TESTDEVICE_H
+#endif // DEVICEVECTORDBL_H_
