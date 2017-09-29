@@ -177,7 +177,7 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
     /**
      * Add a Digital I/O node:
      */
-    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<int32_t> >(
+    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<uint8_t> >(
     		"DigitalIONode",
 			128,
 			std::bind(&testDevice::switchOn_DigitalIO, this),
@@ -187,11 +187,8 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::recover_DigitalIO, this),
 			std::bind(&testDevice::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 			std::bind(&testDevice::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&testDevice::PV_DigitalIO_voltLevelHigh_Reader,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&testDevice::PV_DigitalIO_voltLevelLow_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&testDevice::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&testDevice::PV_DigitalIO_ChannelDir_Reader,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&testDevice::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
 
     /**
@@ -563,38 +560,130 @@ bool testDevice::allow_DataAcquisition_Change(const nds::state_t, const nds::sta
 /*
 * DataAcquisition setters
 */
-void testDevice::PV_DataAcquisition_Gain_Writer(const timespec& /*timestamp*/, const double& /*value*/){
-
+void testDevice::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the Gain to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setGain(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Offset_Writer(const timespec& /*timestamp*/, const double& /*value*/){
-
+void testDevice::PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the Offset to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Offset programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setOffset(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Bandwidth_Writer(const timespec& /*timestamp*/, const double& /*value*/){
-
+void testDevice::PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the Bandwidth to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Bandwidth programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setBandwidth(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Resolution_Writer(const timespec& /*timestamp*/, const double& /*value*/){
-
+void testDevice::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the Resolution to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Resolution programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setResolution(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Impedance_Writer(const timespec& /*timestamp*/, const double& /*value*/){
-
+void testDevice::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the Impedance to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Impedance programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setImpedance(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Coupling_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
+void testDevice::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t HW_value;
+	//Value has the Coupling to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Coupling programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setCoupling(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_SignalRef_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
+void testDevice::PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t HW_value;
+	//Value has the SignalRef to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real SignalRef programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setSignalRef(timestamp,HW_value);
 }
-void testDevice::PV_DataAcquisition_Ground_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
+void testDevice::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t HW_value;
+	//Value has the Ground to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Ground programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
 /*
 * Body of function to acquire data
 */
 void testDevice::DataAcquisition_thread_body(){
+	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
+		std::vector<double> outputData(m_DataAcquisition.getMaxElements(),0);
 
+		double counter(0);
+
+		//Counter for number of pushed data blocks
+		std::int32_t NumberOfPushedDataBlocks(0);
+
+		// Get Gain
+		double Gain = m_DataAcquisition.getGain();
+		// Get Bandwidth
+		double Bandwidth = m_DataAcquisition.getBandwidth();
+		// Get Resolution
+		double Resolution = m_DataAcquisition.getResolution();
+		// Get Coupling
+		double Coupling = m_DataAcquisition.getCoupling();
+		// Get SignalRef
+		double SignalRef = m_DataAcquisition.getSignalRef();
+		// Get Ground
+		double Ground = m_DataAcquisition.getGround();
+		// Get offset
+		double Offset = m_DataAcquisition.getOffset();
+		// Get impedance
+		std::int32_t Impedance = m_DataAcquisition.getImpedance();
+
+		std::cout<<"\tGain = "<<Gain<<std::endl;
+		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
+		std::cout<<"\tResolution = "<<Resolution<<std::endl;
+		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
+		std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
+		std::cout<<"\tGround = "<<Ground<<std::endl;
+		std::cout<<"\tOffset = "<<Offset<<std::endl;
+		std::cout<<"\tImpedance = "<<Impedance<<std::endl;
+		// Run until the state machine stops us
+		while(!m_bStop_DataAcquisition){
+
+			size_t scanVector(0);
+			for(scanVector=0; scanVector != outputData.size(); ++scanVector){
+				outputData[scanVector] = counter;
+			}
+			counter++;
+
+		// Push the vector to the control system
+		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+		++NumberOfPushedDataBlocks;
+		std::cout<<"outputData=";
+		for(scanVector=0; scanVector != outputData.size(); ++scanVector){
+			std::cout<<outputData[scanVector];
+		}
+		std::cout<<std::endl;
+		// Rest for a while
+		::usleep(100000);
+		}
+		m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // DATA GENERATION NODE*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1037,19 +1126,6 @@ void testDevice::PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/,
 
 }
 void testDevice::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-
-/**
-* DigitalIO getters
-*/
-void testDevice::PV_DigitalIO_voltLevelHigh_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DigitalIO_voltLevelLow_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DigitalIO_ChannelDir_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
 
 }
 

@@ -83,11 +83,8 @@ public:
                stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
 	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
 			   writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   readerInt32_t PV_voltLevelHigh_Reader,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   readerInt32_t PV_voltLevelLow_Reader,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_ChannelDir_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   readerInt32_t PV_ChannelDir_Reader);    ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerInt32_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
 

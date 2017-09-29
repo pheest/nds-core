@@ -33,11 +33,8 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 						 stateChange_t recoverFunction,
 						 allowChange_t allowStateChangeFunction,
 						 writerInt32_t PV_voltLevelHigh_Writer,
-						 readerInt32_t PV_voltLevelHigh_Reader,
 						 writerInt32_t PV_voltLevelLow_Writer,
-						 readerInt32_t PV_voltLevelLow_Reader,
-						 writerInt32_t PV_ChannelDir_Writer,
-						 readerInt32_t PV_ChannelDir_Reader):
+						 writerInt32_t PV_ChannelDir_Writer):
 
     Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
 																  maxElements,
@@ -48,11 +45,8 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 																  recoverFunction,
 																  allowStateChangeFunction,
 																  PV_voltLevelHigh_Writer,
-																  PV_voltLevelHigh_Reader,
 																  PV_voltLevelLow_Writer,
-																  PV_voltLevelLow_Reader,
-																  PV_ChannelDir_Writer,
-																  PV_ChannelDir_Reader)))
+																  PV_ChannelDir_Writer)))
 {
 }
 
@@ -86,13 +80,18 @@ timespec DigitalIO<T>::getStartTimestamp() const
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
 
-template class DigitalIO<std::int32_t>;
-template class DigitalIO<double>;
-template class DigitalIO<std::vector<std::int8_t> >;
-template class DigitalIO<std::vector<std::uint8_t> >;
-template class DigitalIO<std::vector<std::int32_t> >;
-template class DigitalIO<std::vector<double> >;
-template class DigitalIO<std::string >;
+/*
+ * TODO: Major modifications must be done to include this new data types.
+ */
+//template class DigitalIO<bool>;
+//template class DigitalIO<std::uint8_t>;
+//template class DigitalIO<std::uint16_t>;
+//template class DigitalIO<std::uint32_t>;
+
+//template class DigitalIO<std::vector<bool>>;
+template class DigitalIO<std::vector<std::uint8_t>>;
+//template class DigitalIO<std::vector<std::uint16_t>>;
+//template class DigitalIO<std::vector<std::uint32_t>>;
 
 
 }

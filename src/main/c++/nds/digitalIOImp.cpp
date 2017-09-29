@@ -25,38 +25,40 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 								 stateChange_t recoverFunction,
 								 allowChange_t allowStateChangeFunction,
 								 writerInt32_t PV_voltLevelHigh_Writer,
-								 readerInt32_t PV_voltLevelHigh_Reader,
 								 writerInt32_t PV_voltLevelLow_Writer,
-								 readerInt32_t PV_voltLevelLow_Reader,
-								 writerInt32_t PV_ChannelDir_Writer,
-								 readerInt32_t PV_ChannelDir_Reader):
+								 writerInt32_t PV_ChannelDir_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+    m_dataInPV.reset(new PVVariableInImpl<T>("dataIn"));
+    m_dataInPV->setMaxElements(maxElements);
+    m_dataInPV->setDescription("digital input");
+    m_dataInPV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_dataInPV);
+
+	// Add the children PVs
+    m_dataOutPV.reset(new PVVariableOutImpl<T>("dataOut"));
+    m_dataOutPV->setMaxElements(maxElements);
+    m_dataOutPV->setDescription("digital output");
+    m_dataOutPV->setScanType(scanType_t::passive, 0);
+    addChild(m_dataOutPV);
 
     m_voltLevelHigh_PV.reset(new PVDelegateOutImpl<std::int32_t>("voltLevelHigh",PV_voltLevelHigh_Writer));
     m_voltLevelHigh_PV->setDescription("Gain of the Channel");
-    m_voltLevelHigh_PV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_voltLevelHigh_PV);
 
-	m_voltLevelHigh_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("voltLevelHigh_RBV",PV_voltLevelHigh_Reader));
+	m_voltLevelHigh_RBVPV.reset(new PVVariableInImpl<std::int32_t>("voltLevelHigh_RBV"));
 	m_voltLevelHigh_RBVPV->setDescription("Gain of the Channel ReadBack");
 	m_voltLevelHigh_RBVPV-> setScanType(scanType_t::passive,0);
 	addChild(m_voltLevelHigh_RBVPV);
 
     m_voltLevelLow_PV.reset(new PVDelegateOutImpl<std::int32_t>("voltLevelLow",PV_voltLevelLow_Writer));
     m_voltLevelLow_PV->setDescription("Gain of the Channel");
-    m_voltLevelLow_PV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_voltLevelLow_PV);
 
-	m_voltLevelLow_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("voltLevelLow_RBV",PV_voltLevelLow_Reader));
+	m_voltLevelLow_RBVPV.reset(new PVVariableInImpl<std::int32_t>("voltLevelLow_RBV"));
 	m_voltLevelLow_RBVPV->setDescription("Gain of the Channel");
 	m_voltLevelLow_RBVPV-> setScanType(scanType_t::passive,0);
 	addChild(m_voltLevelLow_RBVPV);
@@ -69,10 +71,9 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_channelDir_PV.reset(new PVDelegateOutImpl<std::int32_t>("channelDir",PV_ChannelDir_Writer));
     m_channelDir_PV->setDescription("Channel Direction: In/Out");
     m_channelDir_PV->setEnumeration(channelDirEnumeratorStrings);
-    m_channelDir_PV->write(getTimestamp(), (std::int32_t)1);
     addChild(m_channelDir_PV);
 
-    m_channelDir_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("channelDir_RBV",PV_ChannelDir_Reader));
+    m_channelDir_RBVPV.reset(new PVVariableInImpl<std::int32_t>("channelDir_RBV"));
     m_channelDir_RBVPV->setDescription("Channel Direction: In/Out");
     m_channelDir_RBVPV->setScanType(scanType_t::passive, 0);
     m_channelDir_RBVPV->setEnumeration(channelDirEnumeratorStrings);
@@ -104,7 +105,7 @@ void DigitalIOImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampD
 template<typename T>
 void DigitalIOImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_dataPV->push(timestamp, data);
+    m_dataInPV->push(timestamp, data);
 }
 
 template<typename T>
@@ -116,13 +117,18 @@ void DigitalIOImpl<T>::onStart()
 }
 
 
-template class DigitalIOImpl<std::int32_t>;
-template class DigitalIOImpl<double>;
-template class DigitalIOImpl<std::vector<std::int8_t> >;
-template class DigitalIOImpl<std::vector<std::uint8_t> >;
-template class DigitalIOImpl<std::vector<std::int32_t> >;
-template class DigitalIOImpl<std::vector<double> >;
-template class DigitalIOImpl<std::string >;
+/*
+ * TODO: Major modifications must be done to include this new data types.
+ */
+//template class DigitalIOImpl<bool>;
+//template class DigitalIOImpl<std::uint8_t>;
+//template class DigitalIOImpl<std::uint16_t>;
+//template class DigitalIOImpl<std::uint32_t>;
+
+//template class DigitalIOImpl<std::vector<bool>>;
+template class DigitalIOImpl<std::vector<std::uint8_t>>;
+//template class DigitalIOImpl<std::vector<std::uint16_t>>;
+//template class DigitalIOImpl<std::vector<std::uint32_t>>;
 
 
 }

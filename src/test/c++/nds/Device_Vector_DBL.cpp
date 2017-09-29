@@ -182,7 +182,7 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 	    /**
 	     * Add a Digital I/O node:
 	     */
-	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<int32_t> >(
+	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t> >(
 	    		"DigitalIONode",
 				128,
 				std::bind(&DeviceVectorDBL::switchOn_DigitalIO, this),
@@ -192,11 +192,8 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 				std::bind(&DeviceVectorDBL::recover_DigitalIO, this),
 				std::bind(&DeviceVectorDBL::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 				std::bind(&DeviceVectorDBL::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DigitalIO_voltLevelHigh_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DeviceVectorDBL::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DigitalIO_voltLevelLow_Reader,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DigitalIO_ChannelDir_Reader,this, std::placeholders::_1, std::placeholders::_2)
+				std::bind(&DeviceVectorDBL::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	    ));
 
 	    /**
@@ -1181,19 +1178,6 @@ void DeviceVectorDBL::PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timesta
 
 }
 void DeviceVectorDBL::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-
-/**
-* DigitalIO getters
-*/
-void DeviceVectorDBL::PV_DigitalIO_voltLevelHigh_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void DeviceVectorDBL::PV_DigitalIO_voltLevelLow_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void DeviceVectorDBL::PV_DigitalIO_ChannelDir_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
 
 }
 

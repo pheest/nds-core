@@ -37,11 +37,8 @@ public:
                     stateChange_t recoverFunction,
                     allowChange_t allowStateChangeFunction,
 					writerInt32_t PV_voltLevelHigh_Writer,
-					readerInt32_t PV_voltLevelHigh_Reader,
 					writerInt32_t PV_voltLevelLow_Writer,
-					readerInt32_t PV_voltLevelLow_Reader,
-					writerInt32_t PV_ChannelDir_Writer,
-					readerInt32_t PV_ChannelDir_Reader);
+					writerInt32_t PV_ChannelDir_Writer);
 
 
     /**
@@ -101,15 +98,17 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_dataInPV;
+    std::shared_ptr<PVVariableOutImpl<T> > m_dataOutPV;
+
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_voltLevelHigh_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_voltLevelHigh_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_voltLevelHigh_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_voltLevelLow_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_voltLevelLow_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_voltLevelLow_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_channelDir_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_channelDir_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_channelDir_RBVPV;
 
 };
 
