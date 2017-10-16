@@ -139,6 +139,7 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+
 };
 
 }

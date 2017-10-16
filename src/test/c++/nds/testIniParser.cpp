@@ -3,7 +3,7 @@
 #include "../include/ndsTestInterface.h"
 #include <sstream>
 
-#include "../include/Device_Vector_DBL.h"
+#include "../include/Device.h"
 
 TEST(testIniParser, parseFile)
 {

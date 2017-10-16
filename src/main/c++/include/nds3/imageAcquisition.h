@@ -190,7 +190,6 @@ public:
      */
     void push(const timespec& timestamp, const T& data);
 
-
     /**
      * @ingroup
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -201,6 +200,7 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+
 };
 
 }

@@ -122,11 +122,11 @@ imageAcquisitionImpl<T>::imageAcquisitionImpl(  const std::string& name,
 {
 
 	// Add the children PVs
-    m_imagePV.reset(new PVVariableInImpl<T>("image"));
-    m_imagePV->setMaxElements(maxElements);
-    m_imagePV->setDescription("Image");
-    m_imagePV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_imagePV);
+    m_image_PV.reset(new PVVariableInImpl<T>("image"));
+    m_image_PV->setMaxElements(maxElements);
+    m_image_PV->setDescription("Image");
+    m_image_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_image_PV);
 
     m_imageSourceType_PV.reset(new PVVariableInImpl<std::string>("imageSourceType"));
     m_imageSourceType_PV->setDescription("Image Source Type");
@@ -665,6 +665,12 @@ imageAcquisitionImpl<T>::imageAcquisitionImpl(  const std::string& name,
 	addChild(m_ActualTemperature_RBVPV);
 
 
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
+
     // Add state machine
     m_stateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
@@ -675,13 +681,6 @@ imageAcquisitionImpl<T>::imageAcquisitionImpl(  const std::string& name,
                                    allowStateChangeFunction));
     addChild(m_stateMachine);
 }
-
-//writerInt32_t PVnonImplementedGetterSetter()
-//{
-//
-//	return 0;
-//}
-
 
 template<typename T>
 timespec imageAcquisitionImpl<T>::getStartTimestamp() const
@@ -698,18 +697,16 @@ void imageAcquisitionImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t tim
 template<typename T>
 void imageAcquisitionImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_imagePV->push(timestamp, data);
+    m_image_PV->push(timestamp, data);
 }
 
 template<typename T>
 void imageAcquisitionImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_image_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
-
-
 
 template class imageAcquisitionImpl<std::int32_t>;
 template class imageAcquisitionImpl<double>;

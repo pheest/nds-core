@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <thread>
 
-#include "../include/Device_Vector_DBL.h"
+#include "../include/Device.h"
 
 
 void logPV(std::vector<nds::PVBase>& pvs, nds::logLevel_t severity)

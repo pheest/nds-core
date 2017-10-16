@@ -61,6 +61,12 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 	m_data_AWG->setScanType(scanType_t::passive, 0);
     addChild(m_data_AWG);
 
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
+
     m_frequency_RBVPV.reset(new PVVariableInImpl<double>("Frequency_RBV"));
 	m_frequency_RBVPV->setDescription("Generation frequency ReadBack");
 	m_frequency_RBVPV->setScanType(scanType_t::interrupt, 0);
@@ -526,7 +532,7 @@ template<typename T>
 void DataGenerationImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_data_PV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
 

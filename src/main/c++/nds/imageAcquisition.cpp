@@ -241,54 +241,7 @@ void imageAcquisition<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<imageAcquisitionImpl<T> >(m_pImplementation)->push(timestamp, data);
 }
-//
-//template <typename T>
-//double DataAcquisition<T>::getFrequencyHz()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getFrequencyHz();
-//}
-//
-//template <typename T>
-//double DataAcquisition<T>::getDurationSeconds()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDurationSeconds();
-//}
-//
-//template <typename T>
-//double DataAcquisition<T>::getAmplitude()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)-> getAmplitude();
-//}
-//
-//template <typename T>
-//double DataAcquisition<T>::getOffset()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)-> getOffset();
-//}
-//
-//template <typename T>
-//size_t DataAcquisition<T>::getMaxElements()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
-//}
-//
-//template <typename T>
-//size_t DataAcquisition<T>::getDecimation()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDecimation();
-//}
-//
-//template <typename T>
-//size_t DataAcquisition<T>::getSamplingMode()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)-> getSamplingMode();
-//}
 
-//template <typename T>
-//size_t DataAcquisition<T>::getGround()
-//{
-//    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)-> getGround();
-//}
 template<typename T>
 void imageAcquisitionImpl<T>::onStart()
 {

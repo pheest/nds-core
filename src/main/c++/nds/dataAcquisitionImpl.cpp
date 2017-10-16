@@ -53,12 +53,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_decimation_PV->setDescription("Decimation");
     m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
     addChild(m_decimation_PV);
-
-    m_decimation_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Decimation_RBV"));
-    m_decimation_RBVPV->setDescription("Decimation");
-    m_decimation_RBVPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_decimation_RBVPV);
 
     m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
@@ -244,6 +240,18 @@ size_t DataAcquisitionImpl<T>::getGround()
 }
 
 template<typename T>
+size_t DataAcquisitionImpl<T>::getMaxElements()
+{
+    return m_data_PV->getMaxElements();
+}
+
+template<typename T>
+timespec DataAcquisitionImpl<T>::getStartTimestamp() const
+{
+    return m_startTime;
+}
+
+template<typename T>
 void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
@@ -292,27 +300,6 @@ void DataAcquisitionImpl<T>::setGround(const timespec& timestamp, const std::int
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getMaxElements()
-{
-    return m_data_PV->getMaxElements();
-}
-
-template<typename T>
-size_t DataAcquisitionImpl<T>::getDecimation()
-{
-    std::int32_t decimation;
-    timespec timestamp;
-    m_decimation_RBVPV->read(&timestamp, &decimation);
-    return (size_t)decimation;
-}
-
-template<typename T>
-timespec DataAcquisitionImpl<T>::getStartTimestamp() const
-{
-    return m_startTime;
-}
-
-template<typename T>
 void DataAcquisitionImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
     m_startTimestampFunction = timestampDelegate;
@@ -327,14 +314,14 @@ void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timesta
 template<typename T>
 void DataAcquisitionImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_data_PV->push(timestamp, data);
+	m_data_PV->push(timestamp, data);
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    m_data_PV->setDecimation((std::uint32_t)(m_decimation_PV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
 

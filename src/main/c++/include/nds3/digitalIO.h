@@ -109,7 +109,51 @@ public:
      */
     void push(const timespec& timestamp, const T& data);
 
-
+    /**
+     * @brief Retrieve the maximum number of elements that can be stored in the
+     *        pushed array. This number is set in the DigitalIO constructor.
+     *
+     * @return the maximum number of elements that can be stored in the pushed array
+     */
+    size_t getMaxElements();
+    /**
+     * @brief Retrieve the voltLevelHigh
+     *
+     * @return the voltLevelHigh value
+     */
+    size_t getVoltLevelHigh();
+    /**
+     * @brief Retrieve the voltLevelLow.
+     *
+     * @return the voltLevelLow value
+     */
+    size_t getVoltLevelLow();
+    /**
+     * @brief Retrieve the ChannelDir.
+     *
+     * @return the ChannelDir value
+     */
+    size_t getChannelDir();
+    /**
+     * @brief Sets the value of the m_NumberOfPushedDataBocks.
+     *
+     */
+    void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_voltLevelHigh_RBV.
+     *
+     */
+    void setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_voltLevelLow_RBV.
+     *
+     */
+    void setVoltLevelLow(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_channelDir_RBV.
+     *
+     */
+    void setChannelDir(const timespec& timestamp, const std::int32_t& value);
     /**
      * @ingroup timing
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -120,6 +164,7 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+
 };
 
 }

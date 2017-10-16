@@ -137,6 +137,18 @@ size_t DataAcquisition<T>::getGround()
 }
 
 template <typename T>
+size_t DataAcquisition<T>::getMaxElements()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
+timespec DataAcquisition<T>::getStartTimestamp() const
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
 void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
@@ -188,24 +200,6 @@ template <typename T>
 void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
-}
-
-template <typename T>
-size_t DataAcquisition<T>::getMaxElements()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
-}
-
-template <typename T>
-size_t DataAcquisition<T>::getDecimation()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDecimation();
-}
-
-template <typename T>
-timespec DataAcquisition<T>::getStartTimestamp() const
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
 
 template class DataAcquisition<std::int32_t>;

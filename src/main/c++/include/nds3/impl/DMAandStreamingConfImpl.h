@@ -102,7 +102,10 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+
     std::shared_ptr<PVDelegateInImpl<double> > m_BufferSize_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableDMA_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableDMA_RBVPV;
@@ -194,11 +197,13 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
     std::shared_ptr<PVDelegateInImpl<double> > m_BufferSize_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_StreamingType_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_StreamingType_RBVPV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_StreamingDataFormat_PV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
 
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 

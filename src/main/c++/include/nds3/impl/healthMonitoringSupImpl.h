@@ -142,6 +142,8 @@ protected:
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQualityFlag_PV;
     std::shared_ptr<PVDelegateInImpl<double> > m_SignalQualityFlagLevel_PV;
 
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
 

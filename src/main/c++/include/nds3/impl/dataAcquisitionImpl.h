@@ -62,7 +62,6 @@ public:
 
 
     size_t getMaxElements();
-    size_t getDecimation();
     size_t getGain();
     size_t getOffset();
     size_t getBandwidth();
@@ -128,7 +127,6 @@ protected:
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_decimation_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_offset_RBVPV;

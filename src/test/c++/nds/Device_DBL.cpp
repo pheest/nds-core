@@ -331,8 +331,6 @@ void DeviceDBL::DataAcquisition_thread_body(){
 
 		// Push the vector to the control system
 		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
-		std::cout<<"outputData="<<outputData<<std::endl;
-
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while

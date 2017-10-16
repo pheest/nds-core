@@ -121,7 +121,10 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableFilter_PV;
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableFilter_RBVPV;
 

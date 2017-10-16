@@ -94,6 +94,7 @@ timespec DMASupport<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<DMASupportImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
+
 template <typename T>
 StreamingConf<T>::StreamingConf(): Node()
 {

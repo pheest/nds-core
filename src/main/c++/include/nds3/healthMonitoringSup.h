@@ -83,7 +83,6 @@ public:
      * @param timestampDelegate the function that returns the exact starting time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
-
     /**
      * @ingroup
      * @brief Returns the timestamp at start.
@@ -91,6 +90,7 @@ public:
      * @return the time when started.
      */
     timespec getStartTimestamp() const;
+
 };
 
 }

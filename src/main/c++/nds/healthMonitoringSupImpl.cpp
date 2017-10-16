@@ -171,6 +171,12 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 	m_SignalQualityFlagLevel_PV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_SignalQualityFlagLevel_PV);
 
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
+
     // Add state machine
     m_stateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
@@ -199,7 +205,6 @@ template<typename T>
 void HealthMonitSupImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
     m_onStartDelegate();
 }
 

@@ -75,9 +75,57 @@ void DigitalIO<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
+size_t DigitalIO<T>::getMaxElements()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
 timespec DigitalIO<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getVoltLevelHigh()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelHigh();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getVoltLevelLow()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelLow();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getChannelDir()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getChannelDir();
+}
+
+template <typename T>
+void DigitalIO<T>::setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelHigh(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelLow(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setChannelDir(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setChannelDir(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
 }
 
 /*

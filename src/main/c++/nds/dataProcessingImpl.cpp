@@ -62,11 +62,17 @@ DataProcessingImpl<T>::DataProcessingImpl( const std::string& name,
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+    m_data_PV.reset(new PVVariableInImpl<T>("Data"));
+    m_data_PV->setMaxElements(maxElements);
+    m_data_PV->setDescription("Acquired data");
+    m_data_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_data_PV);
+
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
 
 	//add enumeration
 	enumerationStrings_t enableFiterEnumeratorStrings;
@@ -300,20 +306,20 @@ void DataProcessingImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t times
 template<typename T>
 void DataProcessingImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_dataPV->push(timestamp, data);
+    m_data_PV->push(timestamp, data);
 }
 
 template<typename T>
 size_t DataProcessingImpl<T>::getMaxElements()
 {
-    return m_dataPV->getMaxElements();
+    return m_data_PV->getMaxElements();
 }
 
 template<typename T>
 void DataProcessingImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
 

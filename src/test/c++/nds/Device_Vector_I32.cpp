@@ -333,11 +333,6 @@ void DeviceVectorI32::DataAcquisition_thread_body(){
 
 		// Push the vector to the control system
 		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
-		std::cout<<"outputData=";
-		for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-			std::cout<<outputData[scanVector];
-		}
-		std::cout<<std::endl;
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while

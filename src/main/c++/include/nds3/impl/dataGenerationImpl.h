@@ -140,6 +140,8 @@ protected:
     std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
     std::shared_ptr<PVVariableOutImpl<T> > m_data_AWG;
 
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+
     std::shared_ptr<PVDelegateOutImpl<double> > m_frequency_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_frequency_RBVPV;
 

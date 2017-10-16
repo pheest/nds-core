@@ -1,5 +1,5 @@
-#ifndef DEVICEVECTORDBL_H_
-#define DEVICEVECTORDBL_H_
+#ifndef DEVICE_H_
+#define DEVICE_H_
 
 #include <memory>
 
@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceVectorDBL
+class Device
 {
 public:
 	/**
@@ -28,8 +28,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceVectorDBL(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceVectorDBL();
+	Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~Device();
 
 	/*
 	 * Allocation/deallocation
@@ -42,7 +42,7 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceVectorDBL* getInstance(const std::string& deviceName);
+	static Device* getInstance(const std::string& deviceName);
 
 
 private:
@@ -71,20 +71,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief DeviceVectorDBL state machine
+	 * @brief Device state machine
 	 */
-	nds::StateMachine m_DeviceVectorDBL_stateMachine;
+	nds::StateMachine m_Device_stateMachine;
 
 	/**
-	 * Methods to control DeviceVectorDBL state machine
+	 * Methods to control Device state machine
 	 */
-	void switchOn_DeviceVectorDBL();  ///< Called to switch on the DeviceVectorDBL (rootnode).
-	void switchOff_DeviceVectorDBL(); ///< Called to switch off the DeviceVectorDBL (rootnode).
-	void start_DeviceVectorDBL();     ///< Called to start the DeviceVectorDBL (rootnode).
-	void stop_DeviceVectorDBL();      ///< Called to stop the DeviceVectorDBL (rootnode).
-	void recover_DeviceVectorDBL();   ///< Called to recover the DeviceVectorDBL (rootnode) from a failure.
+	void switchOn_Device();  ///< Called to switch on the Device (rootnode).
+	void switchOff_Device(); ///< Called to switch off the Device (rootnode).
+	void start_Device();     ///< Called to start the Device (rootnode).
+	void stop_Device();      ///< Called to stop the Device (rootnode).
+	void recover_Device();   ///< Called to recover the Device (rootnode) from a failure.
 
-	bool allow__DeviceVectorDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow__Device_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION
@@ -285,9 +285,9 @@ private:
 	 /**
 	  * DigitalIO setters
 	  */
-	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-	 void PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value);
+	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value);
+	 void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int32_t& value);
 
 	 /**
 	  * @brief Function that continuously acquires digital IO data.
@@ -732,4 +732,4 @@ private:
 
 };
 
-#endif // DEVICEVECTORDBL_H_
+#endif // DEVICE_H_

@@ -180,7 +180,7 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_imagePV;
+    std::shared_ptr<PVVariableInImpl<T> > m_image_PV;
 
     std::shared_ptr<PVVariableInImpl<std::string>> m_imageSourceType_PV;
 
@@ -320,7 +320,7 @@ protected:
 	std::shared_ptr<PVDelegateInImpl<double>> m_Temperature_RBVPV;
 	std::shared_ptr<PVDelegateInImpl<double>> m_ActualTemperature_RBVPV;
 
-
+	std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
 
 };
 

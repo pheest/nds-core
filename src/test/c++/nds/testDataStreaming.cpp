@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/Device_Vector_DBL.h"
+#include "../include/Device.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
@@ -13,8 +13,8 @@ TEST(testStreamingConfNode, testStateMachine)
     //Create factory
     nds::Factory factory("test");
 
-    // Create test device of type DeviceVectorDBL and named rootNode
-    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
+    // Create test device of type Device and named rootNode
+    factory.createDevice("Device", "rootNode", nds::namedParameters_t());
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");

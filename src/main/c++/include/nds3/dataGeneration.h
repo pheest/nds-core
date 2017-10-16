@@ -223,7 +223,6 @@ public:
       * @return the Ground value
       */
      size_t getGround();
-
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
@@ -305,6 +304,7 @@ public:
      *
      */
     void setGround(const timespec& timestamp, const std::int32_t& value);
+
 
 };
 

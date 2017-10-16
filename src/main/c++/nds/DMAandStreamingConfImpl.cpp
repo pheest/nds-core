@@ -41,11 +41,17 @@ DMASupportImpl<T>::DMASupportImpl( const std::string& name,
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+    m_data_PV.reset(new PVVariableInImpl<T>("Data"));
+    m_data_PV->setMaxElements(maxElements);
+    m_data_PV->setDescription("Acquired data");
+    m_data_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_data_PV);
+
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
 
 	m_BufferSize_PV.reset(new PVDelegateInImpl<double>("BufferSize",PV_BufferSize_Reader));
 	m_BufferSize_PV->setDescription("Internal Buffer Filter Size");
@@ -109,20 +115,20 @@ void DMASupportImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestamp
 template<typename T>
 void DMASupportImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_dataPV->push(timestamp, data);
+	m_data_PV->push(timestamp, data);
 }
 
 template<typename T>
 size_t DMASupportImpl<T>::getMaxElements()
 {
-    return m_dataPV->getMaxElements();
+    return m_data_PV->getMaxElements();
 }
 
 template<typename T>
 void DMASupportImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
 
@@ -153,11 +159,11 @@ StreamingConfImpl<T>::StreamingConfImpl( const std::string& name,
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_dataPV.reset(new PVVariableInImpl<T>("Data"));
-    m_dataPV->setMaxElements(maxElements);
-    m_dataPV->setDescription("Acquired data");
-    m_dataPV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_dataPV);
+	m_data_PV.reset(new PVVariableInImpl<T>("Data"));
+	m_data_PV->setMaxElements(maxElements);
+	m_data_PV->setDescription("Acquired data");
+	m_data_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_data_PV);
 
 	m_StreamingDataFormat_PV.reset(new PVDelegateInImpl<std::int32_t>("StreamingDataFormat",PV_StreamingDataFormat_Reader));
 	m_StreamingDataFormat_PV->setDescription("Streaming Data Format: Binary or ASCII");
@@ -178,6 +184,12 @@ StreamingConfImpl<T>::StreamingConfImpl( const std::string& name,
 	m_StreamingType_RBVPV->setDescription("Streaming Type ReadBack");
 	m_StreamingType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_StreamingType_RBVPV);
+
+    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_decimation_PV->setDescription("Decimation");
+    m_decimation_PV->setScanType(scanType_t::passive, 0);
+    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_decimation_PV);
 
     // Add state machine
     m_stateMachine.reset(new StateMachineImpl(true,
@@ -208,20 +220,20 @@ void StreamingConfImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timest
 template<typename T>
 void StreamingConfImpl<T>::push(const timespec& timestamp, const T& data)
 {
-    m_dataPV->push(timestamp, data);
+	m_data_PV->push(timestamp, data);
 }
 
 template<typename T>
 size_t StreamingConfImpl<T>::getMaxElements()
 {
-    return m_dataPV->getMaxElements();
+    return m_data_PV->getMaxElements();
 }
 
 template<typename T>
 void StreamingConfImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
-    //m_dataPV->setDecimation((std::uint32_t)(m_decimationPV->getValue()));
+    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
     m_onStartDelegate();
 }
 

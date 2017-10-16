@@ -55,6 +55,15 @@ public:
 
     void push(const timespec& timestamp, const T& data);
 
+    size_t getMaxElements();
+    size_t getVoltLevelHigh();
+    size_t getVoltLevelLow();
+    size_t getChannelDir();
+
+    void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelLow(const timespec& timestamp, const std::int32_t& value);
+    void setChannelDir(const timespec& timestamp, const std::int32_t& value);
 
     /**
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -98,8 +107,10 @@ protected:
     timespec m_startTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataInPV;
-    std::shared_ptr<PVVariableOutImpl<T> > m_dataOutPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_dataIn_PV;
+    std::shared_ptr<PVVariableOutImpl<T> > m_dataOut_PV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
 
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
@@ -109,6 +120,9 @@ protected:
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_voltLevelLow_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_channelDir_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_channelDir_RBVPV;
+
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
+
 
 };
 

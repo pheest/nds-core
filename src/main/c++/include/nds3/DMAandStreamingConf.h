@@ -95,7 +95,6 @@ public:
      * @return the maximum number of elements that can be stored in the pushed array
      */
     size_t getMaxElements();
-
     /**
      * @ingroup
      * @brief Push data to the control system.
@@ -119,6 +118,7 @@ public:
      */
     //TODO: Discuss if necessary
     timespec getStartTimestamp() const;
+
 };
 
 template <typename T>
@@ -197,6 +197,7 @@ public:
      */
     //TODO: Discuss if necessary
     timespec getStartTimestamp() const;
+
 };
 
 

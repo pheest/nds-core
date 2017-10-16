@@ -201,7 +201,6 @@ size_t DataGeneration<T>::getGround()
     return std::static_pointer_cast<DataGenerationImpl<T> >(m_pImplementation)->getGround();
 }
 
-
 template <typename T>
 void DataGeneration<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
@@ -297,7 +296,6 @@ void DataGeneration<T>::setGround(const timespec& timestamp, const std::int32_t&
 {
     return std::static_pointer_cast<DataGenerationImpl<T> >(m_pImplementation)->setGround(timestamp, value);
 }
-
 
 template class DataGeneration<std::int32_t>;
 template class DataGeneration<double>;

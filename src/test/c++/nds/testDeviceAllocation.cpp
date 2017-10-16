@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/Device_Vector_DBL.h"
+#include "../include/Device.h"
 #include "../include/ndsTestInterface.h"
 
 TEST(testDeviceAllocation, testAllocationMissingDevice)
@@ -11,7 +11,7 @@ TEST(testDeviceAllocation, testAllocationMissingDevice)
     //testDev1 does not exist, so a testDevice object called rootNode can not be created. Error should be raised
     EXPECT_THROW(factory.createDevice("testDev1", "rootNode", nds::namedParameters_t()), nds::DriverNotFound);
     //testDevice object called rootNode does not exist
-    EXPECT_EQ((void*)0, DeviceVectorDBL::getInstance("rootNode"));
+    EXPECT_EQ((void*)0, Device::getInstance("rootNode"));
 }
 
 /*
@@ -21,20 +21,20 @@ TEST(testDeviceAllocation, testDoubleAllocation)
 {
     nds::Factory factory("test");
 
-    // First allocation, DeviceVectorDBL exists because has been loaded in the main program, so a testDevice object called rootNode can be created.
-    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
+    // First allocation, Device exists because has been loaded in the main program, so a testDevice object called rootNode can be created.
+    factory.createDevice("Device", "rootNode", nds::namedParameters_t());
 
     // The port should have been allocated
-    EXPECT_NE((void*)0, DeviceVectorDBL::getInstance("rootNode"));
+    EXPECT_NE((void*)0, Device::getInstance("rootNode"));
 
     // 2nd allocation of a testDevice object with the same name (rootNode). Error should be raised
-    EXPECT_THROW(factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t()), nds::DeviceAlreadyCreated);
+    EXPECT_THROW(factory.createDevice("Device", "rootNode", nds::namedParameters_t()), nds::DeviceAlreadyCreated);
 
     // Destroy the first allocated testDevice.
     factory.destroyDevice("rootNode");
 
     // The port should have been deallocated
-    EXPECT_EQ((void*)0, DeviceVectorDBL::getInstance("rootNode"));
+    EXPECT_EQ((void*)0, Device::getInstance("rootNode"));
 
     // Try to destroy again the same device. Error should be raised
     EXPECT_THROW(factory.destroyDevice("rootNode"), nds::DeviceNotAllocated);
@@ -48,7 +48,7 @@ TEST(testDeviceAllocation, testInitDeinit)
 {
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
+    factory.createDevice("Device", "rootNode", nds::namedParameters_t());
 
     //factory.subscribe("rootNode-Channel1-variableIn0", "rootNode-Channel1-numAcquisitions");
 
@@ -66,11 +66,11 @@ TEST(testDeviceAllocation, testTwoAllocations)
 {
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorDBL", "rootNode0", nds::namedParameters_t());
-    EXPECT_NE((void*)0, DeviceVectorDBL::getInstance("rootNode0"));
+    factory.createDevice("Device", "rootNode0", nds::namedParameters_t());
+    EXPECT_NE((void*)0, Device::getInstance("rootNode0"));
 
-    factory.createDevice("DeviceVectorDBL", "rootNode1", nds::namedParameters_t());
-    EXPECT_NE((void*)0, DeviceVectorDBL::getInstance("rootNode1"));
+    factory.createDevice("Device", "rootNode1", nds::namedParameters_t());
+    EXPECT_NE((void*)0, Device::getInstance("rootNode1"));
 
     //factory.subscribe("rootNode0-Channel1-data-StateMachine-getState", "rootNode1-Channel1-numAcquisitions");
 
@@ -95,8 +95,8 @@ TEST(testDeviceAllocation, testTwoAllocations)
     factory.destroyDevice("rootNode0");
     factory.destroyDevice("rootNode1");
 
-    EXPECT_EQ((void*)0, DeviceVectorDBL::getInstance("rootNode0"));
-    EXPECT_EQ((void*)0, DeviceVectorDBL::getInstance("rootNode1"));
+    EXPECT_EQ((void*)0, Device::getInstance("rootNode0"));
+    EXPECT_EQ((void*)0, Device::getInstance("rootNode1"));
 
     EXPECT_THROW(factory.destroyDevice("rootNode0"), nds::DeviceNotAllocated);
     EXPECT_THROW(factory.destroyDevice("rootNode1"), nds::DeviceNotAllocated);

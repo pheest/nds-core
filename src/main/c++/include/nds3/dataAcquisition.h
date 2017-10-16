@@ -176,14 +176,6 @@ public:
      * @return the maximum number of elements that can be stored in the pushed array
      */
     size_t getMaxElements();
-
-    /**
-     * @brief Retrieve the desidered decimation value.
-     *
-     * @return the decimation value
-     */
-    size_t getDecimation();
-
     /**
      * @ingroup timing
      * @brief Returns the timestamp at the moment of the start of the acquisition.
