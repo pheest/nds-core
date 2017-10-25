@@ -40,6 +40,6 @@
 #include "nds3/factory.h"
 #include "nds3/stateMachine.h"
 #include "nds3/thread.h"
-
+#include "nds3/firmwareSup.h"
 
 #endif // NDS3_H

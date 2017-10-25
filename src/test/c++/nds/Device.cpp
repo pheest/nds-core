@@ -499,6 +499,18 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 
 	    m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
+	    /**
+	     * Add FirmwareSup node
+	     */
+	    m_firmwareSup = rootNode.addChild(nds::FirmwareSup<std::string>("FirmwareNode",
+	    		std::bind(&Device::PVFirmwareVersionReader, this, std::placeholders::_1, std::placeholders::_2),
+	    		std::bind(&Device::PVFirmwareStatusReader, this, std::placeholders::_1, std::placeholders::_2),
+	    		std::bind(&Device::PVHardwareRevisionReader, this, std::placeholders::_1, std::placeholders::_2),
+	    		std::bind(&Device::PVDeviceSerialNumberReader, this, std::placeholders::_1, std::placeholders::_2),
+	    		std::bind(&Device::PVDeviceModelReader, this, std::placeholders::_1, std::placeholders::_2),
+	    		std::bind(&Device::PVDeviceTypeReader, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PVFirmwarePathWriter, this, std::placeholders::_1, std::placeholders::_2)));
+
 	    rootNode.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    rootNode.setLogLevel(nds::logLevel_t::debug);
 
@@ -1893,5 +1905,47 @@ timespec Device::getCurrentTime()
     time.tv_sec = m_setCurrentTime.getValue();
     time.tv_nsec = time.tv_sec + 10;
     return time;
+}
+
+
+/**
+ * Firmware support getters
+ */
+
+void Device::PVFirmwareVersionReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test version";
+	*timestamp=timestamp_device;
+}
+void Device::PVFirmwareStatusReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test status";
+	*timestamp=timestamp_device;
+}
+void Device::PVHardwareRevisionReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test hardware";
+	*timestamp=timestamp_device;
+}
+void Device::PVDeviceSerialNumberReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test serial number";
+	*timestamp=timestamp_device;
+}
+void Device::PVDeviceModelReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test device model";
+	*timestamp=timestamp_device;
+}
+void Device::PVDeviceTypeReader(timespec* timestamp, std::string* value){
+	*value = "Firmware test device type";
+	*timestamp=timestamp_device;
+}
+
+/*
+* Firmware support setters
+*/
+void Device::PVFirmwarePathWriter(const timespec& timestamp, const std::string& value){
+	std::string firmwarePath;
+	//firmwarePath has the firmware path to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real firmware path programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  firmwarePath are equal.
+	firmwarePath=value;
+	m_firmwareSup.setFirmwarePath(timestamp,firmwarePath);
 }
 

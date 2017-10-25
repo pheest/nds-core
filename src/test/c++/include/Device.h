@@ -728,7 +728,21 @@ private:
 	   nds::PVVariableOut<std::int32_t> m_setCurrentTime;
 	   timespec getCurrentTime();
 
+	   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	   //  FIRMWARE SUPPORT DATA
+	   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	   nds::FirmwareSup<std::string > m_firmwareSup;
+	   /**
+	   * FirmwareSup getters
+	   */
+	   void PVFirmwareVersionReader(timespec* /*timestamp*/, std::string* value);
+	   void PVFirmwareStatusReader(timespec* /*timestamp*/, std::string* value);
+	   void PVHardwareRevisionReader(timespec* /*timestamp*/, std::string* value);
+	   void PVDeviceSerialNumberReader(timespec* /*timestamp*/, std::string* value);
+	   void PVDeviceModelReader(timespec* /*timestamp*/, std::string* value);
+	   void PVDeviceTypeReader(timespec* /*timestamp*/, std::string* value);
+	   void PVFirmwarePathWriter(const timespec& timestamp, const std::string& value);
 
 };
 
