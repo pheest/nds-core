@@ -62,7 +62,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
     m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
 	m_Gain_RBVPV->setDescription("Gain of the Channel");
-	m_Gain_RBVPV-> setScanType(scanType_t::passive,0);
+	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
 
 	m_offset_PV.reset(new PVDelegateOutImpl<double>("Offset",PV_Offset_Writer));
@@ -71,7 +71,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_offset_RBVPV.reset(new PVVariableInImpl<double>("Offset_RBV"));
 	m_offset_RBVPV->setDescription("Offset ReadBack");
-	m_offset_RBVPV->setScanType(scanType_t::passive, 0);
+	m_offset_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_offset_RBVPV);
 
 	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
@@ -80,17 +80,17 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_Bandwidth_RBVPV.reset(new PVVariableInImpl<double>("BandWidth_RBV"));
 	m_Bandwidth_RBVPV->setDescription("BandWidth ReadBack");
-	m_Bandwidth_RBVPV->setScanType(scanType_t::passive, 0);
+	m_Bandwidth_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Bandwidth_RBVPV);
 
 
 	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
-	m_Resolution_PV->setDescription("Resolution: Number of Bits per Sample");
+	m_Resolution_PV->setDescription("Number of Bits per Sample");
 	addChild(m_Resolution_PV);
 
 	m_Resolution_RBVPV.reset(new PVVariableInImpl<double>("Resolution_RBV"));
-	m_Resolution_RBVPV->setDescription("Resolution: Number of Bits per Sample ReadBack");
-	m_Resolution_RBVPV->setScanType(scanType_t::passive, 0);
+	m_Resolution_RBVPV->setDescription("Number of Bits per Sample ReadBack");
+	m_Resolution_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Resolution_RBVPV);
 
 	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
@@ -99,7 +99,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_Impedance_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Impedance_RBV"));
 	m_Impedance_RBVPV->setDescription("Impedance ReadBack");
-	m_Impedance_RBVPV->setScanType(scanType_t::passive, 0);
+	m_Impedance_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Impedance_RBVPV);
 
     //add enumeration for Signal Reference type
@@ -108,12 +108,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     CouplingEnumeratorStrings.push_back("DC");
 
 	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",PV_Coupling_Writer));
-	m_Coupling_PV->setDescription("Coupling: AC or DC");
+	m_Coupling_PV->setDescription("AC or DC");
 	m_Coupling_PV->setEnumeration(CouplingEnumeratorStrings);
 	addChild(m_Coupling_PV);
 
 	m_Coupling_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Coupling_RBV"));
-	m_Coupling_RBVPV->setDescription("Coupling: AC or DC ReadBack");
+	m_Coupling_RBVPV->setDescription("AC or DC ReadBack");
 	m_Coupling_RBVPV->setEnumeration(CouplingEnumeratorStrings);
 	m_Coupling_RBVPV->setScanType(scanType_t::interrupt,0);
 	addChild(m_Coupling_RBVPV);
@@ -124,12 +124,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     SignalRefTypeEnumeratorStrings.push_back("Differential");
 
 	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalRef_Writer));
-	m_SignalRefType_PV->setDescription("Type of input: Differential or Single Ended");
+	m_SignalRefType_PV->setDescription("Differential or Single Ended");
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	addChild(m_SignalRefType_PV);
 
 	m_SignalRefType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SignalRefType_RBV"));
-	m_SignalRefType_RBVPV->setDescription("Type of input: Differential or Single Ended");
+	m_SignalRefType_RBVPV->setDescription("Differential or Single Ended");
 	m_SignalRefType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	m_SignalRefType_RBVPV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	addChild(m_SignalRefType_RBVPV);
@@ -252,9 +252,19 @@ timespec DataAcquisitionImpl<T>::getStartTimestamp() const
 }
 
 template<typename T>
+size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
+{
+       std::int32_t NumberOfPushedDataBlocks;
+    timespec timestamp;
+    m_NumberOfPushedDataBlocks->read(&timestamp, &NumberOfPushedDataBlocks);
+    return (std::int32_t)NumberOfPushedDataBlocks;
+}
+
+template<typename T>
 void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
+	m_Gain_RBVPV->push(timestamp, value);
 }
 
 template<typename T>

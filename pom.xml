@@ -106,11 +106,11 @@
                                 <properties>
                                     <SORT_MEMBER_DOCS>NO</SORT_MEMBER_DOCS>
                                     <HIDE_UNDOC_CLASSES>NO</HIDE_UNDOC_CLASSES>
-                                    <EXTRACT_ALL>NO</EXTRACT_ALL>
+                                    <EXTRACT_ALL>YES</EXTRACT_ALL>
                                     <HIDE_UNDOC_MEMBERS>NO</HIDE_UNDOC_MEMBERS>
-                                    <EXTRACT_PRIVATE>NO</EXTRACT_PRIVATE>
+                                    <EXTRACT_PRIVATE>YES</EXTRACT_PRIVATE>
                                     <SOURCE_BROWSER>YES</SOURCE_BROWSER>
-                                    <SHOW_FILE>NO</SHOW_FILE>
+                                    <SHOW_FILE>YES</SHOW_FILE>
                                     <HAVE_DOT>YES</HAVE_DOT>
                                     <DOT_FONTNAME>FreeSans</DOT_FONTNAME>
                                     <DOT_FONTSIZE>10</DOT_FONTSIZE>
@@ -124,6 +124,7 @@
                                     <GRAPHICAL_HIERARCHY>YES</GRAPHICAL_HIERARCHY>
                                     <DIRECTORY_GRAPH>YES</DIRECTORY_GRAPH>
                                     <DOT_IMAGE_FORMAT>png</DOT_IMAGE_FORMAT>
+                                    <EXTRACT_STATIC>YES</EXTRACT_STATIC>
                                 </properties>
                             </include>
                         </package>

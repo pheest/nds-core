@@ -186,6 +186,12 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+    /**
+     * @brief Retrieve the Number Of Pushed Data Blocks by the acquisition thread to the control system
+     *
+     * @return the Number Of Pushed Data Blocks
+     */
+    size_t getNumberOfPushedDataBlocks();
 
     /**
      * @brief Sets the value of the m_Gain_RBV.

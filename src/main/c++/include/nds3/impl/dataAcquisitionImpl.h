@@ -70,6 +70,7 @@ public:
     size_t getCoupling();
     size_t getSignalRef();
     size_t getGround();
+    size_t getNumberOfPushedDataBlocks();
 
     void setGain(const timespec& timestamp, const double& value);
     void setOffset(const timespec& timestamp, const double& value);
