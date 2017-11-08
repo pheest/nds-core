@@ -7,14 +7,13 @@
  * file included in the distribution.
  */
 
-#ifndef NDSPVDELEGATEOUT_H
-#define NDSPVDELEGATEOUT_H
+#ifndef NDSPVACTION_H
+#define NDSPVACTION_H
 
 /**
- * @file pvDelegateOut.h
+ * @file pvAction.h
  *
- * @brief Defines the nds::PVDelegateOut class, an output PV that delegates the write
- *        operation to an user defined function.
+ * @brief Defines the nds::PVAction class, an output PV that simulate an action.
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
  * necessary header files (including this one).
@@ -23,7 +22,7 @@
 #include "nds3/definitions.h"
 #include "nds3/pvBaseOut.h"
 
-#ifndef SWIG // PVDelegate will not be present in SWIG generated files
+#ifndef SWIG // PVAction will not be present in SWIG generated files
 
 namespace nds
 {
@@ -32,29 +31,12 @@ namespace nds
  * @brief An output PV that delegates the read and write operations to two external
  *        functions.
  *
- * Calling PVDelegateOut::read() or PVDelegate::write() will result in a call
+ * Calling PVAction::read() or PVDelegate::write() will result in a call
  *  to the delegated functions.
  *
- * @warning for all the vector data types and for std::string remember to call
- *          setMaxElements() to specify the maximum size of the vector or string.
- *
- * @tparam T  the PV data type.
- *            The following data types are supported:
- *            - std::int32_t
- *            - std::double
- *            - std::vector<std::int8_t>
- *            - std::vector<std::uint8_t>
- *            - std::vector<std::int32_t>
- *            - std::vector<double>
- *            - std::string
- *
  */
-template <typename T>
-class NDS3_API PVDelegateOut: public PVBaseOut
+class NDS3_API PVAction: public PVBaseOut
 {
-protected:
-    PVDelegateOut();
-
 public:
     /**
      * @ingroup datareadwrite
@@ -64,16 +46,23 @@ public:
      *  that the function will have to fill with proper data.
      *
      */
-    typedef std::function<void (timespec*, T*)> initValue_t;
+    typedef std::function<void (timespec*, std::int32_t*)> initValue_t;
 
     /**
      * @ingroup datareadwrite
      * @brief Definition of the method used to write.
      */
-    typedef std::function<void (const timespec&, const T&)> write_t;
+    typedef std::function<void (const timespec&, const std::int32_t&)> write_t;
 
     /**
-     * @brief Construct the PVDelegateOut object and specifies the external functions
+     * @brief Initializes an empty PVAction PV.
+     *
+     * You must assign a valid PVAction PV before calling Node::initialize() on the root node.
+     */
+    PVAction();
+
+    /**
+     * @brief Construct the PVAction object and specifies the external functions
      *        that must be called to write the data and to retrieve the initial value.
      *
      * The constructor also call processAtInit(true) in order to cause the call to
@@ -83,16 +72,24 @@ public:
      * @param writeFunction  function to be used to write the value
      * @param initValueFunction function to be used for reading the initial value
      */
-    PVDelegateOut(const std::string& name, write_t writeFunction, initValue_t initValueFunction);
+    PVAction(const std::string& name, write_t writeFunction, initValue_t initValueFunction);
 
     /**
-     * @brief Construct the PVDelegateOut object and specifies the external function
+     * @brief Construct the PVAction object and specifies the external function
      *        that must be called to write the data.
      *
      * @param name          name of the PV
      * @param writeFunction function to be used to write the value
      */
-    PVDelegateOut(const std::string& name, write_t writeFunction);
+    PVAction(const std::string& name, write_t writeFunction);
+
+    /**
+     * @brief Function to set the value back to the control system.
+     *
+     * @param timestamp         timestamp related to the new value
+     * @param value 			value to set back
+     */
+    void setValueBack(const timespec& timestamp, const std::int32_t& value);
 
 #ifndef SWIG
 private:
@@ -104,4 +101,4 @@ private:
 }
 
 #endif // SWIG
-#endif // NDSPVDELEGATEIN_H
+#endif // NDSPVACTION_H

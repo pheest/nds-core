@@ -17,7 +17,7 @@ class Channel; // Forward declaration
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few manadatory parameters and should register the root node via Node::initialize().
  */
-class OscilloscopeMultiChannel
+class Oscilloscope
 {
 public:
     /**
@@ -27,7 +27,7 @@ public:
      * @param device     the name given to the device
      * @param parameters optional parameters passed to the device
      */
-    OscilloscopeMultiChannel(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
+    Oscilloscope(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
 
 private:
     std::vector<std::shared_ptr<Channel> > m_channels;
@@ -101,7 +101,7 @@ public:
 //  (which in turn register all its children).
 //
 ////////////////////////////////////////////////////////////////////////////////
-OscilloscopeMultiChannel::OscilloscopeMultiChannel(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & /* parameters */)
+Oscilloscope::Oscilloscope(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & /* parameters */)
 {
     // Here we declare the root node.
     // It is a good practice to name it with the device name.
@@ -289,4 +289,4 @@ void Channel::acquisitionLoop()
 // The following MACRO defines the function to be exported in order
 //  to allow the dynamic loading of the shared module
 ///////////////////////////////////////////////////////////////////
-NDS_DEFINE_DRIVER("OscilloscopeMultiChannel", OscilloscopeMultiChannel)
+NDS_DEFINE_DRIVER(OscilloscopeMultiChannel, Oscilloscope)

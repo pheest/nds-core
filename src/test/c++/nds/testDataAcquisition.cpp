@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/testDevice.h"
-#include "../include/ndsTestInterface.h"
-#include "../include/ndsTestFactory.h"
+#include "testDevice.h"
+#include "ndsTestInterface.h"
+#include "ndsTestFactory.h"
 
 TEST(testDataAcquisition, testPushData)
 {
@@ -115,7 +115,7 @@ TEST(testDataAcquisition, testDecimation)
 
     // Start the data acquisition
     /////////////////////////////
-    pInterface->writeCSValue("/rootNode-Channel1.data.decimation", timestamp, (std::int32_t)2);
+    pInterface->writeCSValue("/rootNode-Channel1.data.Decimation", timestamp, (std::int32_t)2);
     pInterface->writeCSValue("/rootNode-Channel1.numAcquisitions", timestamp, (std::int32_t)100);
 
     // Start the acquisition via node command

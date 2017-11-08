@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -82,6 +82,18 @@ double DataAcquisition<T>::getDurationSeconds()
 }
 
 template <typename T>
+double DataAcquisition<T>::getAmplitude()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getAmplitude();
+}
+
+template <typename T>
+double DataAcquisition<T>::getOffset()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getOffset();
+}
+
+template <typename T>
 size_t DataAcquisition<T>::getMaxElements()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
@@ -91,6 +103,18 @@ template <typename T>
 size_t DataAcquisition<T>::getDecimation()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDecimation();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getSamplingMode()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSamplingMode();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getGround()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGround();
 }
 
 template <typename T>
