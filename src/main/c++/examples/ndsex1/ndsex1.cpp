@@ -1,0 +1,256 @@
+//+======================================================================
+// $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-codac-unit-templates/tags/CODAC-CORE-5.4.0/templates/cpp/main/c++/prog/prog.cpp.template $
+// $Id: prog.cpp.template 75208 2017-02-03 09:19:23Z cesnikt $
+//
+// Project       : CODAC Core System
+//
+// Description   : ndsex1 program
+//
+// Author        : codac-dev
+//
+// Copyright (c) : 2010-2017 ITER Organization,
+//                 CS 90 046
+//                 13067 St. Paul-lez-Durance Cedex
+//                 France
+//
+// This file is part of ITER CODAC software.
+// For the terms and conditions of redistribution or use of this software
+// refer to the file ITER-LICENSE.TXT located in the top level directory
+// of the distribution package.
+//
+//-======================================================================
+#include "ndsex1.h"
+#include <iostream>
+#include <nds3/nds.h>
+#include <mutex>
+#include <unistd.h>
+#include <functional>
+#include <vector>
+#include <map>
+#include <cstddef>
+using namespace std;
+static std::map<std::string, Device*> m_DevicesMap;
+
+static std::mutex m_lockDevicesMap;
+
+//Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+m_name(DeviceName)
+
+{
+	{
+		std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+		if(m_DevicesMap.find(DeviceName) != m_DevicesMap.end())
+		{
+			throw std::logic_error("Device with the same name already allocated. This should not happen");
+		}
+		m_DevicesMap[DeviceName] = this;
+	}
+	nds::Port rootNode(DeviceName);
+
+	m_VarIn_vDBL=nds::PVVariableIn<std::vector<double>>("VarIn_vDBL");
+	m_VarIn_vDBL.setMaxElements(2); //initializing the PV with 2 elements
+	m_VarIn_vDBL.setValue(std::vector<double>(2,0));
+	rootNode.addChild(m_VarIn_vDBL);
+	m_VarOut_vDBL=nds::PVVariableOut<std::vector<double>>("VarOut_vDBL");
+	rootNode.addChild(m_VarOut_vDBL);
+	//adding a state machine node
+	m_Device_stateMachine=rootNode.addChild(nds::StateMachine(true,\
+			std::bind(&Device::switchOn_Device, this),\
+			std::bind(&Device::switchOff_Device,this),\
+			std::bind(&Device::start_Device,this),\
+			std::bind(&Device::stop_Device,this),\
+			std::bind(&Device::recover_Device,this),\
+			std::bind(&Device::allow_Device_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3)\
+	));
+	m_DataAcquisition=rootNode.addChild(nds::DataAcquisition<std::vector<double>>\
+			("DataAcquisitionNode",\
+					128,
+					std::bind(&Device::switchOn_DataAcquisition, this),\
+					std::bind(&Device::switchOff_DataAcquisition,this),\
+					std::bind(&Device::start_DataAcquisition,this),\
+					std::bind(&Device::stop_DataAcquisition,this),\
+					std::bind(&Device::recover_DataAcquisition,this),\
+					std::bind(&Device::allow_DataAcquisition_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3),\
+					std::bind(&Device::PV_DataAcquisition_Bandwidth_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Gain_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Ground_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Offset_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this,std::placeholders::_1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2)
+			));
+
+	rootNode.initialize(this,factory);
+}
+Device::~Device()
+{
+
+}
+
+Device* Device::getInstance(const std::string& DeviceName)
+{
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+
+    std::map<std::string, Device*>::const_iterator findDevice = m_DevicesMap.find(DeviceName);
+    if(findDevice == m_DevicesMap.end())
+    {
+        return 0;
+    }
+    return findDevice->second;
+}
+
+/*
+ * Allocation function
+ *********************/
+void* Device::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
+{
+    return new Device(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void Device::deallocateDevice(void* DeviceName)
+{
+    delete (Device*)DeviceName;
+}
+
+void Device::switchOn_Device() {
+}
+
+void Device::switchOff_Device() {
+}
+
+void Device::start_Device() {
+}
+
+void Device::stop_Device() {
+}
+
+void Device::recover_Device() {
+}
+
+bool Device::allow_Device_Change(const nds::state_t state_t,
+		const nds::state_t state_t1, const nds::state_t state_t2) {
+}
+
+void Device::switchOn_DataAcquisition() {
+}
+
+void Device::switchOff_DataAcquisition() {
+}
+
+void Device::start_DataAcquisition() {
+	m_bStop_DataAcquisition=false;
+	m_DataAcquisition_Thread=std::thread(std::bind(&Device::DataAcquisition_thread_body,this));
+}
+
+void Device::stop_DataAcquisition() {
+	m_bStop_DataAcquisition=true;
+	m_DataAcquisition_Thread.join();
+}
+
+void Device::recover_DataAcquisition() {
+	throw nds::StateMachineRollBack("Cannot recover");
+}
+
+bool Device::allow_DataAcquisition_Change(const nds::state_t state_t,
+		const nds::state_t state_t1, const nds::state_t state_t2) {
+	return true;
+}
+
+
+
+void Device::DataAcquisition_thread_body() {
+
+
+	/**
+	      * Let's allocate a vector that will contain the data that we
+	      * will push to the control system or to the data acquisition
+	      * node*/
+	std::vector<double> outputData(m_DataAcquisition.getMaxElements(),0);
+
+		double counter(0);
+
+		//Counter for number of pushed data blocks
+		std::int32_t NumberOfPushedDataBlocks(0);
+
+		// Get Gain
+		double Gain = m_DataAcquisition.getGain();
+		// Get Bandwidth
+		double Bandwidth = m_DataAcquisition.getBandwidth();
+		// Get Resolution
+		double Resolution = m_DataAcquisition.getResolution();
+		// Get Coupling
+		double Coupling = m_DataAcquisition.getCoupling();
+		// Get SignalRef
+		double SignalRef = m_DataAcquisition.getSignalRef();
+		// Get Ground
+		double Ground = m_DataAcquisition.getGround();
+		// Get offset
+		double Offset = m_DataAcquisition.getOffset();
+		// Get impedance
+		std::int32_t Impedance = m_DataAcquisition.getImpedance();
+
+		std::cout<<"\tGain = "<<Gain<<std::endl;
+		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
+		std::cout<<"\tResolution = "<<Resolution<<std::endl;
+		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
+		std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
+		std::cout<<"\tGround = "<<Ground<<std::endl;
+		std::cout<<"\tOffset = "<<Offset<<std::endl;
+		std::cout<<"\tImpedance = "<<Impedance<<std::endl;
+		// Run until the state machine stops us
+		while(!m_bStop_DataAcquisition){
+
+			size_t scanVector(0);
+			for(scanVector=0; scanVector != outputData.size(); ++scanVector){
+				outputData[scanVector] = counter;
+			}
+			++counter;
+
+			// Push the vector to the control system
+			m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+			++NumberOfPushedDataBlocks;
+			// Rest for a while
+			::usleep(100000);
+		}
+		m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
+}
+void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp,
+		const double& value) {
+	double HW_value;
+	HW_value=value;
+	m_DataAcquisition.setGain(timestamp,HW_value);
+}
+
+void Device::PV_DataAcquisition_Offset_Writer(const timespec& timestamp,
+		const double& value) {
+}
+
+void Device::PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp,
+		const double& value) {
+}
+
+void Device::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp,
+		const double& value) {
+}
+
+void Device::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp,
+		const double& value) {
+}
+
+void Device::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+
+void Device::PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+void Device::PV_DataAcquisition_Ground_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+
+

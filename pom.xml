@@ -49,7 +49,13 @@
             </roles>
         </developer>
         <developer>
-            <id>ebernal</id>
+            <id>bernale</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+	<developer>
+            <id>ruizm</id>
             <roles>
                 <role>developer</role>
             </roles>
@@ -83,6 +89,9 @@
                         <package unitPrefix="false" name="nds3-examples">
                             <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
                             <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
+			    <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include"/>
+			    <include type="source" source="src/test/c++/ndsex1" target="examples/nds3/src/test/c++/ndsex1"/>
+			    <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile"/>
                             <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
                             <requires codac="true">nds3-core-devel</requires>
                         </package>

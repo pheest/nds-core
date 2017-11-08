@@ -20,8 +20,7 @@
 #
 #-======================================================================
 
-SUBDIRS := \
-	nds
+SUBDIRS=$(dir $(wildcard */Makefile))
 
 %:
 	@set -e; for ii in $(SUBDIRS); do \
