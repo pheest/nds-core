@@ -23,10 +23,11 @@
     <groupId>org.iter.codac.units</groupId>
     <artifactId>nds3-core</artifactId>
     <packaging>codac</packaging>
-    <version>3.0.2.0</version>
-    <name>CODAC Core System nds-core (v3) module</name>
-    <description>CODAC Core System nds-core (v3) module</description>
-    <url>http://www.iter.org/</url>
+    <version>3.1.0.0</version>
+    <name>CODAC Core System NDS-Core (v3) module</name>
+    <description>NDS (Nominal Device Support) is a library that allows to write
+    device support, hiding control system details and focusing on device functionalities.</description>
+    <url>https://github.com/Cosylab/nds3</url>
  
     <!-- project properties -->
     <properties>
@@ -68,24 +69,48 @@
                 <extensions>true</extensions>
                 <configuration>
                     <packaging>
+
                         <package>
                             <include type="library" name="nds3" />
                         </package>
+
                         <package develof="">
                             <include type="file" source="main/c++/include/nds3" target="include/">
                                 <include>*.h</include>
                             </include>
                         </package>
+
                         <package name="impl-devel">
                             <include type="file" source="main/c++/include/nds3/impl" target="include/nds3/" />
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
+
+                        <package name="doc">
+                            <include type="doxygen">
+                                <filepattern>*.dox</filepattern>
+                                <filepattern>*.h</filepattern>
+                                <filepattern>*.cpp</filepattern>
+                                <outputformat>html</outputformat>
+                                <outputformat>pdf</outputformat>
+                                <input>main/c++/doc</input>
+                                <input>main/c++/include</input>
+                                <input>main/c++/nds</input>
+                                <examplepath>main/c++/examples</examplepath>
+                                <properties>
+                                    <HIDE_UNDOC_MEMBERS>YES</HIDE_UNDOC_MEMBERS>
+                                    <HIDE_UNDOC_CLASSES>YES</HIDE_UNDOC_CLASSES>
+                                    <RECURSIVE>YES</RECURSIVE>
+                                </properties>
+                            </include>
+                        </package>
+
                         <package unitPrefix="false" name="nds3-examples">
                             <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
                             <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
                             <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
+
                     </packaging>
                 </configuration>
              </plugin>
