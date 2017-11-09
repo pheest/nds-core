@@ -22,7 +22,8 @@ namespace nds
  ********************************************/
 template <typename T>
 PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction, initValue_t initValueFunction):
-    PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction, initValueFunction))){}
+    PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction, initValueFunction)))
+{}
 
 
 /*
@@ -31,7 +32,8 @@ PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction, 
  ***********************************************/
 template <typename T>
 PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction):
-    PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction))){}
+    PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction)))
+{}
 
 
 // Instantiate all the needed data types
@@ -42,5 +44,8 @@ template class PVDelegateOut<std::vector<std::int8_t> >;
 template class PVDelegateOut<std::vector<std::uint8_t> >;
 template class PVDelegateOut<std::vector<std::int32_t> >;
 template class PVDelegateOut<std::vector<double> >;
-template class PVDelegateOut<std::string>;}
+template class PVDelegateOut<std::string>;
+
+
+}
 

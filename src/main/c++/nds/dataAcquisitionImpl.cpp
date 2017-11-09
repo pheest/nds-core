@@ -5,9 +5,6 @@
  *
  * For more information about the license please refer to the license.txt
  * file included in the distribution.
- *
- * Modified by GMV & UPM
- *
  */
 
 
