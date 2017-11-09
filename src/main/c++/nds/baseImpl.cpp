@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -7,13 +7,13 @@
  * file included in the distribution.
  */
 
+#include <stdexcept>
+
 #include "nds3/impl/baseImpl.h"
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/factoryBaseImpl.h"
 #include "nds3/impl/logStreamGetterImpl.h"
 #include "nds3/impl/threadBaseImpl.h"
-
-#include <stdexcept>
 
 namespace nds
 {
@@ -63,6 +63,11 @@ const std::string& BaseImpl::getComponentName() const
 std::shared_ptr<NodeImpl> BaseImpl::getParent() const
 {
     return m_pParent.lock();
+}
+
+std::uint32_t BaseImpl::getNodeLevel() const
+{
+    return m_nodeLevel;
 }
 
 std::string BaseImpl::buildFullName(const FactoryBaseImpl& controlSystem) const

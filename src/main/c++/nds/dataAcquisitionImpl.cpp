@@ -7,7 +7,6 @@
  * file included in the distribution.
  */
 
-
 #include "nds3/definitions.h"
 #include "nds3/impl/dataAcquisitionImpl.h"
 #include "nds3/impl/stateMachineImpl.h"

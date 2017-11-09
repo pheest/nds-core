@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -31,7 +31,7 @@ namespace nds
  *            - std::string
  */
 template <typename T>
-class PVVariableInImpl: public PVBaseInImpl
+class NDS3_API PVVariableInImpl: public PVBaseInImpl
 {
 public:
     /**

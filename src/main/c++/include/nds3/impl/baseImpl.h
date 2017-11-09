@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -76,6 +76,7 @@ public:
 
     std::shared_ptr<NodeImpl> getParent() const;
 
+    std::uint32_t getNodeLevel() const;
 
     /**
      * @brief Return the full node's name, prepending the parents' names if necessary

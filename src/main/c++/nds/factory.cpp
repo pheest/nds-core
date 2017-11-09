@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -12,7 +12,6 @@
 #include "nds3/impl/factoryBaseImpl.h"
 #include "nds3/impl/ndsFactoryImpl.h"
 #include "nds3/impl/threadBaseImpl.h"
-
 
 namespace nds
 {

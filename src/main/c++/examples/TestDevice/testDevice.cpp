@@ -1738,7 +1738,7 @@ void testDevice::readTestVariableOut(timespec* pTimestamp, std::string* pValue)
 }
 
 
-NDS_DEFINE_DRIVER("testDevice", testDevice);
+NDS_DEFINE_DRIVER(testDevice, testDevice);
 
 
 

@@ -5,7 +5,6 @@
 #include <thread>
 
 #include <nds3/nds.h>
-//#define DAQ
 
 /**
  * @brief Class that declares and implement a fictional Oscilloscope device.
@@ -27,7 +26,7 @@ public:
      * @param device     the name given to the device
      * @param parameters optional parameters passed to the device
      */
-    Oscilloscope(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& /*parameters*/);
+    Oscilloscope(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
 
 private:
     /**
@@ -556,4 +555,4 @@ void Oscilloscope::acquireSquareWave()
 #endif
 }
 
-NDS_DEFINE_DRIVER("Oscilloscope", Oscilloscope)
+NDS_DEFINE_DRIVER(Oscilloscope, Oscilloscope)

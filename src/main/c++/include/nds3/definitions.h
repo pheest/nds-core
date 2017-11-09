@@ -1,5 +1,5 @@
 /*
- * Nominal Device Support v.3 (NDS3)
+ * Nominal Device Support v3 (NDS3)
  *
  * Copyright (c) 2015 Cosylab d.d.
  *
@@ -303,7 +303,7 @@ typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> rea
  * @brief Defines the global functions that are called by NDS when the device class needs
  *        to be allocated.
  *
- * @param driverName   a string that specifies the driver name
+ * @param driverName   a token that specifies the driver name (input has to be valid c symbol name)
  * @param className    the name of the class that implements the driver
  */
 #define NDS_DEFINE_DRIVER(driverName, className)\
@@ -319,8 +319,9 @@ void deallocateDevice(void* device) \
 } \
 const char* getDeviceName() \
 { \
-    return driverName; \
+    return #driverName; \
 } \
+nds::RegisterDevice<className> registerDevice##driverName(#driverName); \
 } // extern "C"
 
 // Generic helper definitions for shared library support
