@@ -7,7 +7,7 @@
  */
 
 #include "nds3/definitions.h"
-#include "nds3/impl/dataGenerationImpl.h"
+#include "nds3/impl/waveformGenerationImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
 #include "nds3/impl/pvVariableOutImpl.h"
@@ -20,7 +20,7 @@ namespace nds
 {
 
 template<typename T>
-DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
+WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
                                           size_t maxElements,
                                           stateChange_t switchOnFunction,
                                           stateChange_t switchOffFunction,
@@ -50,7 +50,7 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 
 	// Add the children PVs
     m_data_PV.reset(new PVVariableInImpl<T>("data"));
-    m_data_PV->setDescription("Data Generated");
+    m_data_PV->setDescription("Waveform Generated");
 	m_data_PV->setMaxElements(maxElements);
     m_data_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_data_PV);
@@ -265,7 +265,7 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
     m_stateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
                                    switchOffFunction,
-                                   std::bind(&DataGenerationImpl::onStart, this),
+                                   std::bind(&WaveformGenerationImpl::onStart, this),
                                    stopFunction,
                                    recoverFunction,
                                    allowStateChangeFunction));
@@ -274,31 +274,31 @@ DataGenerationImpl<T>::DataGenerationImpl(const std::string& name,
 
 
 template<typename T>
-void DataGenerationImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+void WaveformGenerationImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
     m_startTimestampFunction = timestampDelegate;
 }
 
 template<typename T>
-timespec DataGenerationImpl<T>::getStartTimestamp() const
+timespec WaveformGenerationImpl<T>::getStartTimestamp() const
 {
     return m_startTime;
 }
 
 template<typename T>
-void DataGenerationImpl<T>::push(const timespec& timestamp, const T& data)
+void WaveformGenerationImpl<T>::push(const timespec& timestamp, const T& data)
 {
     m_data_PV->push(timestamp,data);
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getMaxElements()
+size_t WaveformGenerationImpl<T>::getMaxElements()
 {
     return m_data_PV->getMaxElements();
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getSignalType()
+size_t WaveformGenerationImpl<T>::getSignalType()
 {
 	std::int32_t signalType;
 	timespec timestamp;
@@ -307,7 +307,7 @@ size_t DataGenerationImpl<T>::getSignalType()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getAmplitude()
+size_t WaveformGenerationImpl<T>::getAmplitude()
 {
 	double amplitude;
 	timespec timestamp;
@@ -316,7 +316,7 @@ size_t DataGenerationImpl<T>::getAmplitude()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getFrequency()
+size_t WaveformGenerationImpl<T>::getFrequency()
 {
 	double frequency;
 	timespec timestamp;
@@ -325,7 +325,7 @@ size_t DataGenerationImpl<T>::getFrequency()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getUpdateRate()
+size_t WaveformGenerationImpl<T>::getUpdateRate()
 {
 	double updateRate;
 	timespec timestamp;
@@ -334,7 +334,7 @@ size_t DataGenerationImpl<T>::getUpdateRate()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getOffset()
+size_t WaveformGenerationImpl<T>::getOffset()
 {
 	double offset;
 	timespec timestamp;
@@ -343,7 +343,7 @@ size_t DataGenerationImpl<T>::getOffset()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getPhase()
+size_t WaveformGenerationImpl<T>::getPhase()
 {
 	double phase;
 	timespec timestamp;
@@ -352,7 +352,7 @@ size_t DataGenerationImpl<T>::getPhase()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getImpedance()
+size_t WaveformGenerationImpl<T>::getImpedance()
 {
 	std::int32_t impedance;
 	timespec timestamp;
@@ -361,7 +361,7 @@ size_t DataGenerationImpl<T>::getImpedance()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getRefFrequency()
+size_t WaveformGenerationImpl<T>::getRefFrequency()
 {
 	double RefFrequency;
 	timespec timestamp;
@@ -370,7 +370,7 @@ size_t DataGenerationImpl<T>::getRefFrequency()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getDutyCycle()
+size_t WaveformGenerationImpl<T>::getDutyCycle()
 {
 	double DutyCycle;
 	timespec timestamp;
@@ -379,7 +379,7 @@ size_t DataGenerationImpl<T>::getDutyCycle()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getGain()
+size_t WaveformGenerationImpl<T>::getGain()
 {
 	double Gain;
 	timespec timestamp;
@@ -388,7 +388,7 @@ size_t DataGenerationImpl<T>::getGain()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getBandwidth()
+size_t WaveformGenerationImpl<T>::getBandwidth()
 {
 	double Bandwidth;
 	timespec timestamp;
@@ -397,7 +397,7 @@ size_t DataGenerationImpl<T>::getBandwidth()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getResolution()
+size_t WaveformGenerationImpl<T>::getResolution()
 {
 	double Resolution;
 	timespec timestamp;
@@ -406,7 +406,7 @@ size_t DataGenerationImpl<T>::getResolution()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getCoupling()
+size_t WaveformGenerationImpl<T>::getCoupling()
 {
 	std::int32_t Coupling;
 	timespec timestamp;
@@ -415,7 +415,7 @@ size_t DataGenerationImpl<T>::getCoupling()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getSignalRef()
+size_t WaveformGenerationImpl<T>::getSignalRef()
 {
 	std::int32_t SignalRef;
 	timespec timestamp;
@@ -424,7 +424,7 @@ size_t DataGenerationImpl<T>::getSignalRef()
 }
 
 template<typename T>
-size_t DataGenerationImpl<T>::getGround()
+size_t WaveformGenerationImpl<T>::getGround()
 {
 	std::int32_t Ground;
 	timespec timestamp;
@@ -433,103 +433,103 @@ size_t DataGenerationImpl<T>::getGround()
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
 	m_NumberOfPushedDataBlocks->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setAmplitude(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setAmplitude(const timespec& timestamp, const double& value)
 {
 	m_amplitude_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setSignalType(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setSignalType(const timespec& timestamp, const std::int32_t& value)
 {
 	m_signalType_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setFrequency(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setFrequency(const timespec& timestamp, const double& value)
 {
 	m_frequency_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setUpdateRate(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setUpdateRate(const timespec& timestamp, const double& value)
 {
 	m_updateRate_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setOffset(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setOffset(const timespec& timestamp, const double& value)
 {
 	m_offset_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setPhase(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setPhase(const timespec& timestamp, const double& value)
 {
 	m_phase_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Impedance_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setRefFrequency(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setRefFrequency(const timespec& timestamp, const double& value)
 {
 	m_RefFrequency_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setDutyCycle(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setDutyCycle(const timespec& timestamp, const double& value)
 {
 	m_DutyCycle_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setGain(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setGain(const timespec& timestamp, const double& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setBandwidth(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setBandwidth(const timespec& timestamp, const double& value)
 {
 	m_Bandwidth_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setResolution(const timespec& timestamp, const double& value)
+void WaveformGenerationImpl<T>::setResolution(const timespec& timestamp, const double& value)
 {
 	m_Resolution_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Coupling_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
 {
 	m_SignalRefType_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::setGround(const timespec& timestamp, const std::int32_t& value)
+void WaveformGenerationImpl<T>::setGround(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Ground_RBVPV->setValue(timestamp, value);
 }
 
 template<typename T>
-void DataGenerationImpl<T>::onStart()
+void WaveformGenerationImpl<T>::onStart()
 {
     m_startTime = m_startTimestampFunction();
     m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
@@ -537,12 +537,12 @@ void DataGenerationImpl<T>::onStart()
 }
 
 
-template class DataGenerationImpl<std::int32_t>;
-template class DataGenerationImpl<double>;
-template class DataGenerationImpl<std::vector<std::int8_t> >;
-template class DataGenerationImpl<std::vector<std::uint8_t> >;
-template class DataGenerationImpl<std::vector<std::int32_t> >;
-template class DataGenerationImpl<std::vector<double> >;
+template class WaveformGenerationImpl<std::int32_t>;
+template class WaveformGenerationImpl<double>;
+template class WaveformGenerationImpl<std::vector<std::int8_t> >;
+template class WaveformGenerationImpl<std::vector<std::uint8_t> >;
+template class WaveformGenerationImpl<std::vector<std::int32_t> >;
+template class WaveformGenerationImpl<std::vector<double> >;
 
 
 }

@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef NDSDATAGENERATIONIMPL_H
-#define NDSDATAGENERATIONIMPL_H
+#ifndef NDSWAVEFORMGENERATIONIMPL_H
+#define NDSWAVEFORMGENERATIONIMPL_H
 
 #include <memory>
 #include "nds3/definitions.h"
@@ -20,10 +20,10 @@ template <typename T> class PVVariableInImpl;
 template <typename T> class PVVariableOutImpl;
 
 template<typename T>
-class DataGenerationImpl: public NodeImpl
+class WaveformGenerationImpl: public NodeImpl
 {
 public:
-    DataGenerationImpl( const std::string& name,
+    WaveformGenerationImpl( const std::string& name,
 						size_t maxElements,
 						stateChange_t switchOnFunction,
 						stateChange_t switchOffFunction,
@@ -60,12 +60,12 @@ public:
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @brief Returns the timestamp at the moment of the start of the acquisition.
+     * @brief Returns the timestamp at the moment of the start of the waveform generation.
      *
      * This value is set by the state machine when the state switches to running.
      * If a timing plugin is active then the timestamp is taken from the plugin.
      *
-     * @return the time when the acquisition started.
+     * @return the time when the waveform generation started.
      */
     timespec getStartTimestamp() const;
 
@@ -194,5 +194,5 @@ protected:
 };
 
 }
-#endif // NDSDATAGENERATIONIMPL_H
+#endif // NDSWAVEFORMGENERATIONIMPL_H
 

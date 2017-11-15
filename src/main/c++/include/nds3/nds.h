@@ -32,7 +32,7 @@
 #include "nds3/pvVariableIn.h"
 #include "nds3/pvVariableOut.h"
 #include "nds3/dataAcquisition.h"
-#include "nds3/dataGeneration.h"
+#include "nds3/waveformGeneration.h"
 #include "nds3/dataProcessing.h"
 #include "nds3/DMAandStreamingConf.h"
 #include "nds3/healthMonitoringSup.h"

@@ -4,12 +4,12 @@
  * By GMV & UPM
  */
 
-#ifndef NDSDATAGENERATION_H
-#define NDSDATAGENERATION_H
+#ifndef NDSWAVEFORMGENERATION_H
+#define NDSWAVEFORMGENERATION_H
 
 /**
- * @file dataGeneration.h
- * @brief Defines the nds::DataGeneration node, which provides basic services for
+ * @file waveformGeneration.h
+ * @brief Defines the nds::WaveformGeneration node, which provides basic services for
  *  AWG support.
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
@@ -23,12 +23,12 @@ namespace nds
 {
 
 /**
- * This is a node that supplies data generation PVs and few control
+ * This is a node that supplies waveform generation PVs and few control
  * PVs configure and control an standard AWG.
  *
- * It also provides a state machine that allows to start/stop the data generation.
+ * It also provides a state machine that allows to start/stop the waveform generation.
  *
- * The user of a DataGeneration class must declare few delegate functions that
+ * The user of a WaveformGeneration class must declare few delegate functions that
  *  specify the actions to perform when the AWG node's state changes.
  *
  * @tparam T  the PV data type.
@@ -43,36 +43,36 @@ namespace nds
  *
  */
 template <typename T>
-class NDS3_API DataGeneration: public Node
+class NDS3_API WaveformGeneration: public Node
 {
 public:
     /**
-     * @brief Initializes an empty data generation node.
+     * @brief Initializes an empty waveform generation node.
      *
-     * You must assign a valid DataGeneration node before calling initialize().
+     * You must assign a valid WaveformGeneration node before calling initialize().
      */
-    DataGeneration();
+    WaveformGeneration();
 
     /**
-     * @brief Copies a data generation reference from another object.
+     * @brief Copies a waveform generation reference from another object.
      *
-     * @param right a data generation holder from which the reference to
+     * @param right a waveform generation holder from which the reference to
      *        the generation object implementation is copied
      */
-    DataGeneration(const DataGeneration<T>& right);
+    WaveformGeneration(const WaveformGeneration<T>& right);
 
-    DataGeneration& operator=(const DataGeneration<T>& right);
+    WaveformGeneration& operator=(const WaveformGeneration<T>& right);
 
     /**
-     * @brief Constructs the data generation node which generates vector of values
+     * @brief Constructs the waveform generation node which generates vector of values
      *
      */
-    DataGeneration( const std::string& name,                  ///< The node's name
+    WaveformGeneration( const std::string& name,                  ///< The node's name
 					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
 					stateChange_t switchOnFunction,           ///< Delegate function that performs the actions to switch the node on
 					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node off
-					stateChange_t startFunction,              ///< Delegate function that performs the actions to start the data generation (usually launches the gneration thread)
-					stateChange_t stopFunction,               ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
+					stateChange_t startFunction,              ///< Delegate function that performs the actions to start the waveform generation (usually launches the generation thread)
+					stateChange_t stopFunction,               ///< Delegate function that performs the actions to stop the waveform generation(usually stops the generation thread)
 					stateChange_t recoverFunction,            ///< Delegate function to execute to recover from an error state
 					allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
 					writerDouble_t PV_Frequency_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -93,7 +93,7 @@ public:
 
     /**
      * @ingroup timing
-     * @brief Set the function that retrieves the exact start time when the data Generation starts.
+     * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
      * @param
      *
@@ -115,10 +115,10 @@ public:
 
     /**
      * @ingroup datareadwrite
-     * @brief Push acquired data to the control system.
+     * @brief Push waveform generated data to the control system.
      *
      * Usually your device implementation will call this function from the
-     *  data acquisition thread in order to push the acquired data.
+     *  waveform generation thread in order to push the acquired data.
      *
      * @param timestamp the timestamp for the data
      * @param data      the data to push to the control system
@@ -127,7 +127,7 @@ public:
 
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the
-     *        pushed array. This number is set in the DataAcquisition constructor.
+     *        pushed array. This number is set in the WaveformAcquisition constructor.
      *
      * @return the maximum number of elements that can be stored in the pushed array
      */
