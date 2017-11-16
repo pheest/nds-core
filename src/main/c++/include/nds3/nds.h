@@ -43,6 +43,7 @@
 #include "nds3/stateMachine.h"
 #include "nds3/thread.h"
 #include "nds3/registerDevice.h"
+#include "nds3/filtering.h"
 
 
 #endif // NDS3_H
