@@ -29,6 +29,7 @@
 #include <map>
 #include <cstddef>
 using namespace std;
+using namespace std::placeholders;
 static std::map<std::string, Device*> m_DevicesMap;
 
 static std::mutex m_lockDevicesMap;
@@ -66,7 +67,7 @@ m_name(DeviceName)
 	m_DataAcquisition=rootNode.addChild(nds::DataAcquisition<std::vector<double>>\
 			("DataAcquisitionNode",\
 					128,
-					std::bind(&Device::switchOn_DataAcquisition, this),\
+					bind(&Device::switchOn_DataAcquisition, this),\
 					std::bind(&Device::switchOff_DataAcquisition,this),\
 					std::bind(&Device::start_DataAcquisition,this),\
 					std::bind(&Device::stop_DataAcquisition,this),\
@@ -79,7 +80,14 @@ m_name(DeviceName)
 					std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,std::placeholders::_1,std::placeholders::_2),\
 					std::bind(&Device::PV_DataAcquisition_Offset_Writer,this,std::placeholders::_1,std::placeholders::_2),\
 					std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2)
+					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2), \
+					std::bind(&Device::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+					std::bind(&Device::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)\
 			));
 
 	rootNode.initialize(this,factory);
@@ -161,7 +169,33 @@ bool Device::allow_DataAcquisition_Change(const nds::state_t state_t,
 	return true;
 }
 
+void Device::PV_DataAcquisition_BufferSize_Reader(timespec* timestamp,
+		double* value) {
+}
 
+void Device::PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+
+void Device::PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void Device::PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void Device::PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void Device::PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void Device::PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
 
 void Device::DataAcquisition_thread_body() {
 

@@ -89,7 +89,14 @@ public:
 					writerDouble_t PV_Impedance_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalRef_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer);        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Ground_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerDouble_t PV_BufferSize_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_EnableDMA_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_EnableDMA_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_NumDMAChannels_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_DMAFrameType_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_DMASampleSize_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_DMASamplingRate_Reader);  ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing

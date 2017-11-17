@@ -65,7 +65,15 @@ DeviceVectorUI8::DeviceVectorUI8(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceVectorUI8::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorUI8::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorUI8::PV_DataAcquisition_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceVectorUI8::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorUI8::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
+
 	));
 
 
@@ -286,6 +294,34 @@ void DeviceVectorUI8::PV_DataAcquisition_Ground_Writer(const timespec& timestamp
 	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
+
+void DeviceVectorUI8::PV_DataAcquisition_BufferSize_Reader(timespec* timestamp,
+		double* value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void DeviceVectorUI8::PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
 /*
 * Body of function to acquire data
 */

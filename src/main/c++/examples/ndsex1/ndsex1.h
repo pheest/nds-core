@@ -72,6 +72,15 @@ nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 	void PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_DataAcquisition_BufferSize_Reader(timespec* timestamp, double* value);
+	void PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp, std::int32_t* value);
+	void PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp, std::int32_t* value);
+	void PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp, std::int32_t* value);
+	void PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp, std::int32_t* value);
+	void PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp, std::int32_t* value);
+
+
 
 //Function that continuously acquires data. It is launched by
 //start_DataAcquisition() in a separate thread.

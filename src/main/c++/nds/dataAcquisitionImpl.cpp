@@ -34,7 +34,15 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerDouble_t PV_Impedance_Writer,
 											writerInt32_t PV_Coupling_Writer,
 											writerInt32_t PV_SignalRef_Writer,
-											writerInt32_t PV_Ground_Writer):
+											writerInt32_t PV_Ground_Writer,
+											readerDouble_t PV_BufferSize_Reader,
+										   writerInt32_t PV_EnableDMA_Writer,
+										   readerInt32_t PV_EnableDMA_Reader,
+										   readerInt32_t PV_NumDMAChannels_Reader,
+										   readerInt32_t PV_DMAFrameType_Reader,
+										   readerInt32_t PV_DMASampleSize_Reader,
+										   readerInt32_t PV_DMASamplingRate_Reader
+):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -151,6 +159,41 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_NumberOfPushedDataBlocks->setDescription("Number Of Pushed Data Blocks");
 	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
 	addChild(m_NumberOfPushedDataBlocks);
+
+	m_BufferSize_PV.reset(new PVDelegateInImpl<double>("BufferSize",PV_BufferSize_Reader));
+	m_BufferSize_PV->setDescription("Internal Buffer Filter Size");
+	m_BufferSize_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_BufferSize_PV);
+
+	m_EnableDMA_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableDMA",PV_EnableDMA_Writer));
+	m_EnableDMA_PV->setDescription("Enable DMA");
+	m_EnableDMA_PV->write(getTimestamp(), (std::int32_t)1);
+	addChild(m_EnableDMA_PV);
+
+	m_EnableDMA_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableDMA_RBV",PV_EnableDMA_Reader));
+	m_EnableDMA_RBVPV->setDescription("Enable DMA ReadBack");
+	m_EnableDMA_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_EnableDMA_RBVPV);
+
+	m_NumDMAChannels_PV.reset(new PVDelegateInImpl<std::int32_t>("NumDMAChannels",PV_NumDMAChannels_Reader));
+	m_NumDMAChannels_PV->setDescription("Number of DMA Channels");
+	m_NumDMAChannels_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_NumDMAChannels_PV);
+
+	m_DMAFrameType_PV.reset(new PVDelegateInImpl<std::int32_t>("DMAFrameType",PV_DMAFrameType_Reader));
+	m_DMAFrameType_PV->setDescription("DMA Frame Type");
+	m_DMAFrameType_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMAFrameType_PV);
+
+	m_DMASampleSize_PV.reset(new PVDelegateInImpl<std::int32_t>("DMASampleSize",PV_DMASampleSize_Reader));
+	m_DMASampleSize_PV->setDescription("DMA Sample Size");
+	m_DMASampleSize_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMASampleSize_PV);
+
+	m_DMASamplingRate_PV.reset(new PVDelegateInImpl<std::int32_t>("DMASamplingRate",PV_DMASamplingRate_Reader));
+	m_DMASamplingRate_PV->setDescription("DMA Sampling Rate");
+	m_DMASamplingRate_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMASamplingRate_PV);
 
     // Add state machine
     m_stateMachine.reset(new StateMachineImpl(true,

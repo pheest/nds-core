@@ -5,8 +5,8 @@
  * by GMV & UPM
  */
 
-#ifndef NDSDATAPROCESSINGIMPL_H
-#define NDSDATAPROCESSINGIMPL_H
+#ifndef NDSFFTIMPL_H
+#define NDSFFTIMPL_H
 
 #include <memory>
 #include "nds3/definitions.h"
@@ -22,17 +22,30 @@ template <typename T> class PVVariableOutImpl;
 
 
 template<typename T>
-class DataProcessingImpl: public NodeImpl
+class FFFImpl: public NodeImpl
 {
 public:
-    DataProcessingImpl( const std::string& name,
+    FFFImpl( const std::string& name,
 						size_t maxElements,
 						stateChange_t switchOnFunction,
 						stateChange_t switchOffFunction,
 						stateChange_t startFunction,
 						stateChange_t stopFunction,
 						stateChange_t recoverFunction,
-						allowChange_t allowStateChangeFunction
+						allowChange_t allowStateChangeFunction,
+						size_t 		maxFFTElements,
+						writerInt32_t PV_EnableFFT_Writer,
+						readerInt32_t PV_EnableFFT_Reader,
+						writerInt32_t PV_EnableSwFFT_Writer,
+						readerInt32_t PV_EnableSwFFT_Reader,
+						writerInt32_t PV_FFTwindowType_Writer,
+						readerInt32_t PV_FFTwindowType_Reader,
+						writerInt32_t PV_FFTOverlap_Writer,
+						readerInt32_t PV_FFTOverlap_Reader,
+						writerInt32_t PV_FFTFrameSize_Writer,
+						readerInt32_t PV_FFTFrameSize_Reader,
+						writerInt32_t PV_FFTSmooth_Writer,
+						readerInt32_t PV_FFTSmooth_Reader
 						);
 
 
@@ -72,8 +85,6 @@ public:
 
 protected:
 
-
-    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
     /**
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
@@ -98,6 +109,27 @@ protected:
 
     // PVs
 
+    std::shared_ptr<PVVariableInImpl<T> > m_FFTdataPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableFFT_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableFFT_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableSwFFT_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableSwFFT_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTWindowType_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTWindowType_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTFrameOverlap_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTFrameOverlap_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTFrameSize_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTFrameSize_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTSmoothFactor_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTSmoothFactor_RBVPV;
+
+
 
     std::shared_ptr<StateMachineImpl> m_stateMachine;
 
@@ -105,5 +137,5 @@ protected:
 };
 
 }
-#endif // NDSDATAPROCESSINGIMPL_H
+#endif // NDSFFTIMPL_H
 

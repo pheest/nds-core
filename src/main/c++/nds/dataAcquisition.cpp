@@ -41,7 +41,14 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerDouble_t PV_Impedance_Writer,
 									writerInt32_t PV_Coupling_Writer,
 									writerInt32_t PV_SignalRef_Writer,
-									writerInt32_t PV_Ground_Writer):
+									writerInt32_t PV_Ground_Writer,
+									readerDouble_t PV_BufferSize_Reader,
+									writerInt32_t PV_EnableDMA_Writer,
+								    readerInt32_t PV_EnableDMA_Reader,
+								    readerInt32_t PV_NumDMAChannels_Reader,
+								    readerInt32_t PV_DMAFrameType_Reader,
+								    readerInt32_t PV_DMASampleSize_Reader,
+								    readerInt32_t PV_DMASamplingRate_Reader):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -57,7 +64,14 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_Impedance_Writer,
 																	 		 PV_Coupling_Writer,
 																	 		 PV_SignalRef_Writer,
-																	 		 PV_Ground_Writer)))
+																	 		 PV_Ground_Writer,
+																			 PV_BufferSize_Reader,
+																			 PV_EnableDMA_Writer,
+																			 PV_EnableDMA_Reader,
+																			 PV_NumDMAChannels_Reader,
+																			 PV_DMAFrameType_Reader,
+																			 PV_DMASampleSize_Reader,
+																			 PV_DMASamplingRate_Reader)))
 {
 }
 

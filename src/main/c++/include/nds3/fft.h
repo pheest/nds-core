@@ -7,12 +7,12 @@
  * file included in the distribution.
  */
 
-#ifndef NDSDATAPROCESSING_H
-#define NDSDATAPROCESSING_H
+#ifndef NDSFFT_H
+#define NDSFFT_H
 
 /**
- * @file dataProcessing.h
- * @brief Defines the nds::DataProcessing node, which provides basic services
+ * @file FFT.h
+ * @brief Defines the nds::FFT node, which provides basic services
  * for data processing.
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
@@ -41,7 +41,7 @@ namespace nds
  *
  */
 template <typename T>
-class NDS3_API DataProcessing: public Node
+class NDS3_API FFT: public Node
 {
 public:
     /**
@@ -49,7 +49,7 @@ public:
      *
      * You must assign a valid node before calling initialize().
      */
-    DataProcessing();
+    FFT();
 
     /**
      * @brief Copies a reference from another object.
@@ -57,22 +57,34 @@ public:
      * @param right a data holder from which the reference to
      *        the object implementation is copied
      */
-    DataProcessing(const DataProcessing<T>& right);
+    FFT(const FFT<T>& right);
 
-    DataProcessing& operator=(const DataProcessing<T>& right);
+    FFT& operator=(const FFT<T>& right);
 
     /**
      * @brief Constructs the node.
      *
      */
-    DataProcessing( const std::string& name,                  	   ///< The node's name
+    FFT( const std::string& name,                  	   ///< The node's name
 					size_t maxElements,                            ///< Maximum size of the array. Set to 1 for scalar values
 					stateChange_t switchOnFunction,                ///< Delegate function that performs the actions to switch the node on
 					stateChange_t switchOffFunction,               ///< Delegate function that performs the actions to switch the node off
 					stateChange_t startFunction,                   ///< Delegate function that performs the actions to start the data generation (usually launches the gneration thread)
 					stateChange_t stopFunction,                    ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
 					stateChange_t recoverFunction,                 ///< Delegate function to execute to recover from an error state
-					allowChange_t allowStateChangeFunction        ///< Delegate function that can deny a state change. Usually just returns true
+					allowChange_t allowStateChangeFunction,        ///< Delegate function that can deny a state change. Usually just returns true
+					size_t 		maxFFTElements,                    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_EnableFFT_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_EnableFFT_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_EnableSwFFT_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_EnableSwFFT_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTwindowType_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FFTwindowType_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTOverlap_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FFTOverlap_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTFrameSize_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerInt32_t PV_FFTFrameSize_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTSmooth_Writer             ///< Delegate function setter/getter to interact to the Low Level Driver API
 					);              ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
@@ -117,5 +129,5 @@ public:
 };
 
 }
-#endif // NDSDATAPROCESSING_H
+#endif // NDSFFT_H
 

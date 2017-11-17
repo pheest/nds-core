@@ -42,7 +42,15 @@ public:
     		writerDouble_t PV_Impedance_Writer,
     		writerInt32_t PV_Coupling_Writer,
     		writerInt32_t PV_SignalRef_Writer,
-    		writerInt32_t PV_Ground_Writer);
+    		writerInt32_t PV_Ground_Writer,
+			readerDouble_t PV_BufferSize_Reader,
+			writerInt32_t PV_EnableDMA_Writer,
+			readerInt32_t PV_EnableDMA_Reader,
+			readerInt32_t PV_NumDMAChannels_Reader,
+			readerInt32_t PV_DMAFrameType_Reader,
+			readerInt32_t PV_DMASampleSize_Reader,
+			readerInt32_t PV_DMASamplingRate_Reader
+			);
 
     /**
      * @brief Specifies the function to call to get the acquisition start timestamp.
@@ -146,6 +154,15 @@ protected:
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ground_RBVPV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
+
+    std::shared_ptr<PVDelegateInImpl<double> > m_BufferSize_PV;
+	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableDMA_PV;
+	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableDMA_RBVPV;
+	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_NumDMAChannels_PV;
+	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMAFrameType_PV;
+	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASampleSize_PV;
+	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASamplingRate_PV;
+
 
 };
 

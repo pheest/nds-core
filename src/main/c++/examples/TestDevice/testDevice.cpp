@@ -100,7 +100,14 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DataAcquisition_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-		    std::bind(&testDevice::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2)
+		    std::bind(&testDevice::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&testDevice::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&testDevice::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
     ));
 
     /**
@@ -144,34 +151,8 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
  			std::bind(&testDevice::start_DataProcessing, this),
  			std::bind(&testDevice::stop_DataProcessing, this),
  			std::bind(&testDevice::recover_DataProcessing, this),
- 			std::bind(&testDevice::allow_DataProcessing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
- 			std::bind(&testDevice::PV_DataProcessing_EnableFilter_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableFilter_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FilterType_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FilterType_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FilterParams_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FilterParams_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			128,
- 			std::bind(&testDevice::PV_DataProcessing_EnableFFT_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableFFT_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableSwFFT_Writer,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableSwFFT_Reader,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTwindowType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTwindowType_Reader,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTOverlap_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTOverlap_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTFrameSize_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTFrameSize_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTSmooth_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_FFTSmooth_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableDecimation_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_EnableDecimation_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_DecimationType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_DecimationType_Reader,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_DecimationOffset_Writer,this,   std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_DecimationOffset_Reader,this,   std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_RAW2Eng_Writer,this,  std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DataProcessing_RAW2Eng_Reader,this,  std::placeholders::_1, std::placeholders::_2)
+ 			std::bind(&testDevice::allow_DataProcessing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+
      ));
 
     /**
@@ -190,27 +171,6 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
-
-    /**
-      * Add a DMA Support node:
-      */
-    m_DMASupport = rootNode.addChild(nds::DMASupport<std::vector<int32_t> >(
-     		"DMASupportNode",
- 			128,
- 			std::bind(&testDevice::switchOn_DMASupport, this),
- 			std::bind(&testDevice::switchOff_DMASupport, this),
- 			std::bind(&testDevice::start_DMASupport, this),
- 			std::bind(&testDevice::stop_DMASupport, this),
- 			std::bind(&testDevice::recover_DMASupport, this),
- 			std::bind(&testDevice::allow_DMASupport_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
- 			std::bind(&testDevice::PV_DMASupport_BufferSize_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DMASupport_EnableDMA_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DMASupport_EnableDMA_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DMASupport_NumDMAChannels_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DMASupport_DMAFrameType_Reader,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&testDevice::PV_DMASupport_DMASampleSize_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&testDevice::PV_DMASupport_DMASamplingRate_Reader,this, std::placeholders::_1, std::placeholders::_2)
-     ));
 
     /**
       * Add a Streaming Config node:
@@ -625,6 +585,34 @@ void testDevice::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, con
 	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
+void testDevice::PV_DataAcquisition_BufferSize_Reader(timespec* timestamp,
+		double* value) {
+}
+
+void testDevice::PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+}
+
+void testDevice::PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void testDevice::PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void testDevice::PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void testDevice::PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
+void testDevice::PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp,
+		std::int32_t* value) {
+}
+
 /*
 * Body of function to acquire data
 */
@@ -1003,91 +991,7 @@ bool testDevice::allow_DataProcessing_Change(const nds::state_t, const nds::stat
 	return true;
 }
 
-/**
-* DataProcessing setters
-*/
-void testDevice::PV_DataProcessing_EnableFilter_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
-}
-void testDevice::PV_DataProcessing_FilterType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FilterParams_Writer(const timespec& /*timestamp*/, const std::vector<std::int32_t>& /*params*/){
-
-}
-void testDevice::PV_DataProcessing_EnableFFT_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_EnableSwFFT_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTwindowType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTOverlap_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTFrameSize_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTSmooth_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_EnableDecimation_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_DecimationType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_DecimationOffset_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-void testDevice::PV_DataProcessing_RAW2Eng_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-
-/**
-* DataProcessing getters
-*/
-void testDevice::PV_DataProcessing_EnableFilter_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FilterType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FilterParams_Reader(timespec* /*timestamp*/, std::vector<std::int32_t>* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_EnableFFT_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_EnableSwFFT_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTwindowType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTOverlap_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTFrameSize_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_FFTSmooth_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_EnableDecimation_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_DecimationType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_DecimationOffset_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DataProcessing_RAW2Eng_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //  DIGITAL I/O
@@ -1129,61 +1033,6 @@ void testDevice::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, c
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//  DMA support
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Methods to control DMASupport state machine
- */
-void testDevice::switchOn_DMASupport(){
-
-}
-void testDevice::switchOff_DMASupport(){
-
-}
-void testDevice::start_DMASupport(){
-
-}
-void testDevice::stop_DMASupport(){
-
-}
-void testDevice::recover_DMASupport(){
-
-}
-
-bool testDevice::allow_DMASupport_Change(const nds::state_t, const nds::state_t, const nds::state_t){
-	return true;
-}
-
-/**
- * DMASupport setters
- */
-void testDevice::PV_DMASupport_EnableDMA_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
-
-}
-
-/**
- * DMASupport getters
- */
-void testDevice::PV_DMASupport_BufferSize_Reader(timespec* /*timestamp*/, double* /*value*/){
-
-}
-void testDevice::PV_DMASupport_EnableDMA_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DMASupport_NumDMAChannels_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DMASupport_DMAFrameType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DMASupport_DMASampleSize_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void testDevice::PV_DMASupport_DMASamplingRate_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //  STREAMING CONFIGURATION
