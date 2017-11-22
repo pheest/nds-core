@@ -72,25 +72,30 @@ m_name(DeviceName)
 					std::bind(&Device::start_DataAcquisition,this),\
 					std::bind(&Device::stop_DataAcquisition,this),\
 					std::bind(&Device::recover_DataAcquisition,this),\
-					std::bind(&Device::allow_DataAcquisition_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3),\
-					std::bind(&Device::PV_DataAcquisition_Bandwidth_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Gain_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Ground_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Offset_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this,std::placeholders::_1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2), \
-					std::bind(&Device::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
-					std::bind(&Device::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)\
+					std::bind(&Device::allow_DataAcquisition_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3),
+					std::bind(&Device::PV_DataAcquisition_Bandwidth_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Gain_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Ground_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Offset_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+					//std::bind(&Device::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+					//std::bind(&Device::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
 			));
 
 	rootNode.initialize(this,factory);
+	timespec timest;
+	timest.tv_nsec=5; timest.tv_sec=50;
+	int nDChannels=4;
+
+	m_DataAcquisition.setNumDMAChannels(timest,nDChannels );
 }
 Device::~Device()
 {

@@ -37,8 +37,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_Ground_Writer,
 											readerDouble_t PV_BufferSize_Reader,
 										   writerInt32_t PV_EnableDMA_Writer,
-										   readerInt32_t PV_EnableDMA_Reader,
-										   readerInt32_t PV_NumDMAChannels_Reader,
+										   //readerInt32_t PV_EnableDMA_Reader,
+										   //readerInt32_t PV_NumDMAChannels_Reader,
 										   readerInt32_t PV_DMAFrameType_Reader,
 										   readerInt32_t PV_DMASampleSize_Reader,
 										   readerInt32_t PV_DMASamplingRate_Reader
@@ -170,12 +170,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_EnableDMA_PV->write(getTimestamp(), (std::int32_t)1);
 	addChild(m_EnableDMA_PV);
 
-	m_EnableDMA_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableDMA_RBV",PV_EnableDMA_Reader));
+	m_EnableDMA_RBVPV.reset(new PVVariableInImpl<std::int32_t>("EnableDMA_RBV"));
 	m_EnableDMA_RBVPV->setDescription("Enable DMA ReadBack");
 	m_EnableDMA_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_EnableDMA_RBVPV);
 
-	m_NumDMAChannels_PV.reset(new PVDelegateInImpl<std::int32_t>("NumDMAChannels",PV_NumDMAChannels_Reader));
+	m_NumDMAChannels_PV.reset(new PVVariableInImpl<std::int32_t>("NumDMAChannels"));
 	m_NumDMAChannels_PV->setDescription("Number of DMA Channels");
 	m_NumDMAChannels_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_NumDMAChannels_PV);
@@ -300,6 +300,24 @@ size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
 }
 
 template<typename T>
+size_t DataAcquisitionImpl<T>::getEnableDMA()
+{
+       std::int32_t EnableDMA;
+    timespec timestamp;
+    m_EnableDMA_RBVPV->read(&timestamp, &EnableDMA);
+    return (std::int32_t)EnableDMA;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getNumDMAChannels()
+{
+       std::int32_t NumDMAChannels;
+    timespec timestamp;
+    m_NumDMAChannels_PV->read(&timestamp, &NumDMAChannels);
+    return (std::int32_t)NumDMAChannels;
+}
+
+template<typename T>
 void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
@@ -358,6 +376,18 @@ template<typename T>
 void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
 	m_NumberOfPushedDataBlocks->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setEnableDMA(const timespec& timestamp, const std::int32_t& value)
+{
+	m_EnableDMA_RBVPV->setValue(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setNumDMAChannels(const timespec& timestamp, const std::int32_t& value)
+{
+	m_NumDMAChannels_PV->setValue(timestamp, value);
 }
 
 template<typename T>

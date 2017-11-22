@@ -66,12 +66,12 @@ DeviceVectorI32::DeviceVectorI32(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),\
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),\
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),\
+			std::bind(&DeviceVectorI32::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+			std::bind(&DeviceVectorI32::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+			//std::bind(&DeviceVectorI32::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+			//std::bind(&DeviceVectorI32::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),
+			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),
+			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
 	));
 

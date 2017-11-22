@@ -44,8 +44,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_Ground_Writer,
 									readerDouble_t PV_BufferSize_Reader,
 									writerInt32_t PV_EnableDMA_Writer,
-								    readerInt32_t PV_EnableDMA_Reader,
-								    readerInt32_t PV_NumDMAChannels_Reader,
+								    //readerInt32_t PV_EnableDMA_Reader,
+								    //readerInt32_t PV_NumDMAChannels_Reader,
 								    readerInt32_t PV_DMAFrameType_Reader,
 								    readerInt32_t PV_DMASampleSize_Reader,
 								    readerInt32_t PV_DMASamplingRate_Reader):
@@ -67,8 +67,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_Ground_Writer,
 																			 PV_BufferSize_Reader,
 																			 PV_EnableDMA_Writer,
-																			 PV_EnableDMA_Reader,
-																			 PV_NumDMAChannels_Reader,
+																			 //PV_EnableDMA_Reader,
+																			 //PV_NumDMAChannels_Reader,
 																			 PV_DMAFrameType_Reader,
 																			 PV_DMASampleSize_Reader,
 																			 PV_DMASamplingRate_Reader)))
@@ -167,6 +167,17 @@ size_t DataAcquisition<T>::getNumberOfPushedDataBlocks()
 }
 
 template <typename T>
+size_t DataAcquisition<T>::getEnableDMA()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getEnableDMA();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getNumDMAChannels()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getNumDMAChannels();
+}
+template <typename T>
 void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
@@ -218,6 +229,18 @@ template <typename T>
 void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setEnableDMA(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setEnableDMA(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setNumDMAChannels(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumDMAChannels(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;

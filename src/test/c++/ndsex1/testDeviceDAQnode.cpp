@@ -3,6 +3,7 @@
 #include <ndsex1/ndsex1.h>
 #include "../include/ndsTestInterface.h"
 
+
 TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 {
 
@@ -146,7 +147,9 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 //	EXPECT_EQ(startTimestamp, pTime->tv_sec);
 //	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
 //	//++startTimestamp;
-
+	std::int32_t NumDMAChannels;
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.NumDMAChannels",&readTimestamp,&NumDMAChannels);
+	//std::cerr<< "Dato de NumDMAChannels"<<NumDMAChannels;
 	factory.destroyDevice("rootNode");
 
 }

@@ -45,8 +45,8 @@ public:
     		writerInt32_t PV_Ground_Writer,
 			readerDouble_t PV_BufferSize_Reader,
 			writerInt32_t PV_EnableDMA_Writer,
-			readerInt32_t PV_EnableDMA_Reader,
-			readerInt32_t PV_NumDMAChannels_Reader,
+			//readerInt32_t PV_EnableDMA_Reader,
+			//readerInt32_t PV_NumDMAChannels_Reader,
 			readerInt32_t PV_DMAFrameType_Reader,
 			readerInt32_t PV_DMASampleSize_Reader,
 			readerInt32_t PV_DMASamplingRate_Reader
@@ -77,6 +77,8 @@ public:
     size_t getSignalRef();
     size_t getGround();
     size_t getNumberOfPushedDataBlocks();
+    size_t getEnableDMA();
+    size_t getNumDMAChannels();
 
     void setGain(const timespec& timestamp, const double& value);
     void setOffset(const timespec& timestamp, const double& value);
@@ -87,6 +89,8 @@ public:
     void setSignalRef(const timespec& timestamp, const std::int32_t& value);
     void setGround(const timespec& timestamp, const std::int32_t& value);
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    void setEnableDMA(const timespec& timestamp, const std::int32_t& value);
+    void setNumDMAChannels(const timespec& timestamp, const std::int32_t& value);
 
     /**
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -157,12 +161,11 @@ protected:
 
     std::shared_ptr<PVDelegateInImpl<double> > m_BufferSize_PV;
 	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableDMA_PV;
-	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableDMA_RBVPV;
-	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_NumDMAChannels_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_EnableDMA_RBVPV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumDMAChannels_PV;
 	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMAFrameType_PV;
 	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASampleSize_PV;
 	std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_DMASamplingRate_PV;
-
 
 };
 

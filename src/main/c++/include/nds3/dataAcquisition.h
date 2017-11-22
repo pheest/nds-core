@@ -92,8 +92,8 @@ public:
 					writerInt32_t PV_Ground_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerDouble_t PV_BufferSize_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_EnableDMA_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_EnableDMA_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_NumDMAChannels_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					//readerInt32_t PV_EnableDMA_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					//readerInt32_t PV_NumDMAChannels_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_DMAFrameType_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_DMASampleSize_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_DMASamplingRate_Reader);  ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -197,6 +197,18 @@ public:
      * @return the Number Of Pushed Data Blocks
      */
     size_t getNumberOfPushedDataBlocks();
+    /**
+     * @brief Retrieve the EnableDMA status
+     *
+     * @return the EnableDMA status
+     */
+    size_t getEnableDMA();
+     /**
+     * @brief Retrieve the Number of DMA channels used by the DAQ node
+     *
+     * @return the NumDMAChannels status
+     */
+    size_t getNumDMAChannels();
 
     /**
      * @brief Sets the value of the m_Gain_RBV.
@@ -244,6 +256,17 @@ public:
      *
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_EnableDMA_RBVPV.
+     *
+     */
+    void setEnableDMA(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+	 * @brief Sets the value of the m_NumDMAChannels_RBVPV.
+	 *
+	 */
+	void setNumDMAChannels(const timespec& timestamp, const std::int32_t& value);
 
 };
 
