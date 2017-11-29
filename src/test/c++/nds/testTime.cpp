@@ -29,7 +29,7 @@ TEST(testTime, testDelegate)
 
     // Wait for the switch on state (it should take one second)
     ///////////////////////////////////////////////////////////
-    ::sleep(2);
+    ::sleep(10);
     pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 

@@ -4,11 +4,11 @@
  *
  */
 
-#ifndef NDSDMAANDSTREAMINGCONF_H
-#define NDSDMAANDSTREAMINGCONF_H
+#ifndef NDSSTREAMING_H
+#define NDSSTREAMING_H
 
 /**
- * @file DMAandStreamingConf.h
+ * @file Streaming.h
  * @brief TBD
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
@@ -23,7 +23,7 @@ namespace nds
 
 
 template <typename T>
-class NDS3_API StreamingConf: public Node
+class NDS3_API Streaming: public Node
 {
 public:
     /**
@@ -31,7 +31,7 @@ public:
      *
      * You must assign a valid node before calling initialize().
      */
-	StreamingConf();
+	Streaming();
 
     /**
      * @brief Copies a reference from another object.
@@ -39,15 +39,15 @@ public:
      * @param right a holder from which the reference to
      *        the object implementation is copied
      */
-	StreamingConf(const StreamingConf<T>& right);
+	Streaming(const Streaming<T>& right);
 
-	StreamingConf& operator=(const StreamingConf<T>& right);
+	Streaming& operator=(const Streaming<T>& right);
 
     /**
      * @brief Constructs the node.
      *
      */
-	StreamingConf( const std::string& name,                       ///< The node's name
+	Streaming( const std::string& name,                       ///< The node's name
 				   size_t maxElements,                           ///< Maximum size of the acquired array. Set to 1 for scalar values
                    stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
                    stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
@@ -55,9 +55,9 @@ public:
                    stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                    stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
                    allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
-				   readerInt32_t PV_StreamingDataFormat_Reader,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-				   writerInt32_t PV_StreamingType_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-				   readerInt32_t PV_StreamingType_Reader);       ///< Delegate function setter/getter to interact to the Low Level Driver API
+				   writerInt32_t PV_BufferSize_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
+				   writerInt32_t PV_StreamingDataFormat_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+				   writerInt32_t PV_StreamingType_Writer);       ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
     /**
@@ -99,9 +99,45 @@ public:
     //TODO: Discuss if necessary
     timespec getStartTimestamp() const;
 
+    /**
+     * @brief Retrieve the buffer size
+     *
+     * @return the buffer size value
+     */
+    size_t getBufferSize();
+    /**
+     * @brief Retrieve the streaming type
+     *
+     * @return the streaming type value: Continuous / On-demand
+     */
+    size_t getStreamingType();
+    /**
+     * @brief Retrieve the Streaming data format
+     *
+     * @return the Streaming data format value: Binary/ASCII
+     */
+    size_t getStreamingDataFormat();
+
+    /**
+     * @brief Sets the value of the buffer size
+     *
+     */
+    void setBufferSize(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Sets the value of the Streaming Type: Continuous / On-demand
+     *
+     */
+    void setStreamingType(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Sets the value of the streaming data format: Binary/ASCII
+     */
+    void setStreamingDataFormat(const timespec& timestamp, const std::int32_t& value);
+
 };
 
 
 }
-#endif // NDSDMAANDSTREAMINGCONF_H
+#endif // NDSSTREAMING_H
 

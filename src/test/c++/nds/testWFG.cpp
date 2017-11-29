@@ -293,7 +293,7 @@ TEST(testWFG, testPushDataGeneratedVDBL)
 			}
 			last_sample+=scanVector;
 
-			pInterface->getPushedVectorDouble("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorDouble("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -306,7 +306,7 @@ TEST(testWFG, testPushDataGeneratedVDBL)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 		EXPECT_EQ(startTimestamp, pTime->tv_sec);
 		EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
@@ -537,7 +537,7 @@ TEST(testWFG, testPushDataGeneratedVI8)
 			}
 			last_sample+=scanVector;
 
-			pInterface->getPushedVectorInt8("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorInt8("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -549,7 +549,7 @@ TEST(testWFG, testPushDataGeneratedVI8)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 
     factory.destroyDevice("rootNode");
@@ -778,7 +778,7 @@ TEST(testWFG, testPushDataGeneratedVUI8)
 			}
 			last_sample+=scanVector;
 
-			pInterface->getPushedVectorUint8("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorUint8("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -790,7 +790,7 @@ TEST(testWFG, testPushDataGeneratedVUI8)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 
     factory.destroyDevice("rootNode");
@@ -1019,7 +1019,7 @@ TEST(testWFG, testPushDataGeneratedVI32)
 			}
 			last_sample+=scanVector;
 
-			pInterface->getPushedVectorInt32("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorInt32("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -1031,7 +1031,7 @@ TEST(testWFG, testPushDataGeneratedVI32)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 
     factory.destroyDevice("rootNode");
@@ -1244,7 +1244,7 @@ TEST(testWFG, testPushDataGeneratedDBL)
 			}
 			last_sample++;
 
-			pInterface->getPushedDouble("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedDouble("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			EXPECT_EQ(pushData, (*pRetrievedPushedValues));
 		}
@@ -1252,7 +1252,7 @@ TEST(testWFG, testPushDataGeneratedDBL)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 
     factory.destroyDevice("rootNode");
@@ -1465,7 +1465,7 @@ TEST(testWFG, testPushDataGeneratedI32)
 			}
 			last_sample++;
 
-			pInterface->getPushedInt32("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedInt32("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			EXPECT_EQ(pushData, (*pRetrievedPushedValues));
 		}
@@ -1473,7 +1473,7 @@ TEST(testWFG, testPushDataGeneratedI32)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 
     factory.destroyDevice("rootNode");
@@ -1714,7 +1714,7 @@ TEST(testWFG, testdecimation)
 			}
 			last_sample+=scanVector;
 			if((std::int32_t)(decimationCounter+1) % decimation ==0){
-				pInterface->getPushedVectorDouble("/rootNode-WFGNode.data", pTime, pRetrievedPushedValues);
+				pInterface->getPushedVectorDouble("/rootNode-WFGNode.Data", pTime, pRetrievedPushedValues);
 				++pushCounter;
 				ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 				for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -1728,7 +1728,7 @@ TEST(testWFG, testdecimation)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 		EXPECT_EQ(startTimestamp, pTime->tv_sec);
 		EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);

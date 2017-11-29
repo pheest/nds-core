@@ -75,20 +75,20 @@ TEST(testDigitalIO, testPushData)
 
 	// Set/Get voltLevelHigh
 	std::int32_t voltLevelHigh;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.voltLevelHigh", timestamp, (std::int32_t)0);
-	pInterface->readCSValue("/rootNode-DigitalIONode.voltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelHigh", timestamp, (std::int32_t)0);
+	pInterface->readCSValue("/rootNode-DigitalIONode.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, voltLevelHigh);
 
 	// Set/Get voltLevelLow
 	std::int32_t voltLevelLow;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.voltLevelLow", timestamp, (std::int32_t)0);
-	pInterface->readCSValue("/rootNode-DigitalIONode.voltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelLow", timestamp, (std::int32_t)0);
+	pInterface->readCSValue("/rootNode-DigitalIONode.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, voltLevelLow);
 
 	// Set/Get channelDir
 	std::int32_t channelDir;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.channelDir", timestamp, (std::int32_t)0);
-	pInterface->readCSValue("/rootNode-DigitalIONode.channelDir_RBV",&readTimestamp,&channelDir); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIONode.ChannelDir", timestamp, (std::int32_t)0);
+	pInterface->readCSValue("/rootNode-DigitalIONode.ChannelDir_RBV",&readTimestamp,&channelDir); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, channelDir);
 
 	// Check initial state (OFF)
@@ -164,7 +164,7 @@ TEST(testDigitalIO, testPushData)
 	catch(const std::runtime_error& e)
 	{
 
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
+		std::cout << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
 	}
 	EXPECT_EQ(startTimestamp, pTime->tv_sec);
 	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);

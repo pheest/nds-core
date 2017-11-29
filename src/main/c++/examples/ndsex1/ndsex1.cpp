@@ -56,22 +56,22 @@ m_name(DeviceName)
 	m_VarOut_vDBL=nds::PVVariableOut<std::vector<double>>("VarOut_vDBL");
 	rootNode.addChild(m_VarOut_vDBL);
 	//adding a state machine node
-	m_Device_stateMachine=rootNode.addChild(nds::StateMachine(true,\
-			std::bind(&Device::switchOn_Device, this),\
-			std::bind(&Device::switchOff_Device,this),\
-			std::bind(&Device::start_Device,this),\
-			std::bind(&Device::stop_Device,this),\
-			std::bind(&Device::recover_Device,this),\
-			std::bind(&Device::allow_Device_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3)\
+	m_Device_stateMachine=rootNode.addChild(nds::StateMachine(true,
+			std::bind(&Device::switchOn_Device, this),
+			std::bind(&Device::switchOff_Device,this),
+			std::bind(&Device::start_Device,this),
+			std::bind(&Device::stop_Device,this),
+			std::bind(&Device::recover_Device,this),
+			std::bind(&Device::allow_Device_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3)
 	));
-	m_DataAcquisition=rootNode.addChild(nds::DataAcquisition<std::vector<double>>\
-			("DataAcquisitionNode",\
+	m_DataAcquisition=rootNode.addChild(nds::DataAcquisition<std::vector<double>>
+			("DataAcquisitionNode",
 					128,
-					bind(&Device::switchOn_DataAcquisition, this),\
-					std::bind(&Device::switchOff_DataAcquisition,this),\
-					std::bind(&Device::start_DataAcquisition,this),\
-					std::bind(&Device::stop_DataAcquisition,this),\
-					std::bind(&Device::recover_DataAcquisition,this),\
+					bind(&Device::switchOn_DataAcquisition, this),
+					std::bind(&Device::switchOff_DataAcquisition,this),
+					std::bind(&Device::start_DataAcquisition,this),
+					std::bind(&Device::stop_DataAcquisition,this),
+					std::bind(&Device::recover_DataAcquisition,this),
 					std::bind(&Device::allow_DataAcquisition_Change,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3),
 					std::bind(&Device::PV_DataAcquisition_Bandwidth_Writer,this,std::placeholders::_1,std::placeholders::_2),
 					std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,std::placeholders::_1,std::placeholders::_2),
@@ -80,22 +80,16 @@ m_name(DeviceName)
 					std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,std::placeholders::_1,std::placeholders::_2),
 					std::bind(&Device::PV_DataAcquisition_Offset_Writer,this,std::placeholders::_1,std::placeholders::_2),
 					std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this,std::placeholders::_1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,std::placeholders::_1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-					//std::bind(&Device::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-					//std::bind(&Device::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),
-					std::bind(&Device::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
-			));
+					std::bind(&Device::PV_DataAcquisition_SignalRefType_Writer,this,std::placeholders::_1,std::placeholders::_2),
+					std::bind(&Device::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2)
+));
 
 	rootNode.initialize(this,factory);
 	timespec timest;
 	timest.tv_nsec=5; timest.tv_sec=50;
 	int nDChannels=4;
 
-	m_DataAcquisition.setNumDMAChannels(timest,nDChannels );
+	m_DataAcquisition.setDMANumChannels(timest,nDChannels );
 }
 Device::~Device()
 {
@@ -145,8 +139,7 @@ void Device::stop_Device() {
 void Device::recover_Device() {
 }
 
-bool Device::allow_Device_Change(const nds::state_t state_t,
-		const nds::state_t state_t1, const nds::state_t state_t2) {
+bool Device::allow_Device_Change(const nds::state_t , const nds::state_t , const nds::state_t) {
 }
 
 void Device::switchOn_DataAcquisition() {
@@ -169,37 +162,8 @@ void Device::recover_DataAcquisition() {
 	throw nds::StateMachineRollBack("Cannot recover");
 }
 
-bool Device::allow_DataAcquisition_Change(const nds::state_t state_t,
-		const nds::state_t state_t1, const nds::state_t state_t2) {
+bool Device::allow_DataAcquisition_Change(const nds::state_t , const nds::state_t , const nds::state_t ) {
 	return true;
-}
-
-void Device::PV_DataAcquisition_BufferSize_Reader(timespec* timestamp,
-		double* value) {
-}
-
-void Device::PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp,
-		const std::int32_t& value) {
-}
-
-void Device::PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp,
-		std::int32_t* value) {
 }
 
 void Device::DataAcquisition_thread_body() {
@@ -224,8 +188,8 @@ void Device::DataAcquisition_thread_body() {
 		double Resolution = m_DataAcquisition.getResolution();
 		// Get Coupling
 		double Coupling = m_DataAcquisition.getCoupling();
-		// Get SignalRef
-		double SignalRef = m_DataAcquisition.getSignalRef();
+		// Get SignalRefType
+		double SignalRefTYpe = m_DataAcquisition.getSignalRefType();
 		// Get Ground
 		double Ground = m_DataAcquisition.getGround();
 		// Get offset
@@ -237,7 +201,7 @@ void Device::DataAcquisition_thread_body() {
 		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 		std::cout<<"\tResolution = "<<Resolution<<std::endl;
 		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
-		std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
+		std::cout<<"\tSignalRefType = "<<SignalRefTYpe<<std::endl;
 		std::cout<<"\tGround = "<<Ground<<std::endl;
 		std::cout<<"\tOffset = "<<Offset<<std::endl;
 		std::cout<<"\tImpedance = "<<Impedance<<std::endl;
@@ -267,29 +231,80 @@ void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp,
 
 void Device::PV_DataAcquisition_Offset_Writer(const timespec& timestamp,
 		const double& value) {
+	double HW_value;
+	//Value has the Offset to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Offset programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setOffset(timestamp,HW_value);
 }
 
 void Device::PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp,
 		const double& value) {
+	double HW_value;
+	//Value has the Bandwidth to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Bandwidth programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setBandwidth(timestamp,HW_value);
 }
 
 void Device::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp,
 		const double& value) {
+	double HW_value;
+	//Value has the Resolution to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Resolution programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setResolution(timestamp,HW_value);
 }
 
 void Device::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp,
 		const double& value) {
+	double HW_value;
+	//Value has the Impedance to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Impedance programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setImpedance(timestamp,HW_value);
 }
 
 void Device::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp,
 		const std::int32_t& value) {
+	std::int32_t HW_value;
+	//Value has the Coupling to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Coupling programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setCoupling(timestamp,HW_value);
 }
 
-void Device::PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp,
+void Device::PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp,
 		const std::int32_t& value) {
+	std::int32_t HW_value;
+	//Value has the SignalRefType to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real SignalRefType programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setSignalRefType(timestamp,HW_value);
 }
 void Device::PV_DataAcquisition_Ground_Writer(const timespec& timestamp,
 		const std::int32_t& value) {
+	std::int32_t HW_value;
+	//Value has the Ground to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real Ground programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
 
+void Device::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp,
+		const std::int32_t& value) {
+	std::int32_t HW_value;
+	//Value has the DMAEnable value to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DMAEnable value programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
+}

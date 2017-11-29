@@ -42,13 +42,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_Coupling_Writer,
 									writerInt32_t PV_SignalRef_Writer,
 									writerInt32_t PV_Ground_Writer,
-									readerDouble_t PV_BufferSize_Reader,
-									writerInt32_t PV_EnableDMA_Writer,
-								    //readerInt32_t PV_EnableDMA_Reader,
-								    //readerInt32_t PV_NumDMAChannels_Reader,
-								    readerInt32_t PV_DMAFrameType_Reader,
-								    readerInt32_t PV_DMASampleSize_Reader,
-								    readerInt32_t PV_DMASamplingRate_Reader):
+									writerInt32_t PV_DMAEnable_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -65,13 +59,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_Coupling_Writer,
 																	 		 PV_SignalRef_Writer,
 																	 		 PV_Ground_Writer,
-																			 PV_BufferSize_Reader,
-																			 PV_EnableDMA_Writer,
-																			 //PV_EnableDMA_Reader,
-																			 //PV_NumDMAChannels_Reader,
-																			 PV_DMAFrameType_Reader,
-																			 PV_DMASampleSize_Reader,
-																			 PV_DMASamplingRate_Reader)))
+																			 PV_DMAEnable_Writer)))
 {
 }
 
@@ -137,9 +125,9 @@ size_t DataAcquisition<T>::getCoupling()
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getSignalRef()
+size_t DataAcquisition<T>::getSignalRefType()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSignalRef();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSignalRefType();
 }
 
 template <typename T>
@@ -167,16 +155,41 @@ size_t DataAcquisition<T>::getNumberOfPushedDataBlocks()
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getEnableDMA()
+size_t DataAcquisition<T>::getDMABufferSize()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getEnableDMA();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMABufferSize();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getNumDMAChannels()
+size_t DataAcquisition<T>::getDMAEnable()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getNumDMAChannels();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAEnable();
 }
+
+template <typename T>
+size_t DataAcquisition<T>::getDMANumChannels()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMANumChannels();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMAFrameType()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAFrameType();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMASampleSize()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASampleSize();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMASamplingRate()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASamplingRate();
+}
+
 template <typename T>
 void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
 {
@@ -214,9 +227,9 @@ void DataAcquisition<T>::setCoupling(const timespec& timestamp, const std::int32
 }
 
 template <typename T>
-void DataAcquisition<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setSignalRefType(const timespec& timestamp, const std::int32_t& value)
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSignalRef(timestamp, value);
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSignalRefType(timestamp, value);
 }
 
 template <typename T>
@@ -232,15 +245,39 @@ void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, 
 }
 
 template <typename T>
-void DataAcquisition<T>::setEnableDMA(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const double& value)
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setEnableDMA(timestamp, value);
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMABufferSize(timestamp, value);
 }
 
 template <typename T>
-void DataAcquisition<T>::setNumDMAChannels(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setDMAEnable(const timespec& timestamp, const std::int32_t& value)
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumDMAChannels(timestamp, value);
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMAEnable(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMANumChannels(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMANumChannels(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMAFrameType(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMAFrameType(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMASampleSize(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMASampleSize(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMASamplingRate(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;

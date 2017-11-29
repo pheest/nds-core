@@ -7,13 +7,13 @@
  * file included in the distribution.
  */
 
-#ifndef FILTERING_H
-#define FILTERING_H
+#ifndef NDSFFT_H
+#define NDSFFT_H
 
 /**
- * @file FILTERING.h
- * @brief Defines the nds::filtering node, which provides basic services
- * for digital filtering.
+ * @file FFT.h
+ * @brief Defines the nds::FFT node, which provides basic services
+ * for data processing.
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
  * necessary header files (including this one).
@@ -26,8 +26,8 @@ namespace nds
 {
 
 /**
- * This is a node that supplies a data PV and few control
- * PV that specifies how the filtering should be performed.
+ * This is a node that supplies a data acquisition PV and few control
+ * PV that specifies how the acquisition should be performed.
  *
  * @tparam T  the PV data type.
  *            The following data types are supported:
@@ -41,7 +41,7 @@ namespace nds
  *
  */
 template <typename T>
-class NDS3_API Filtering: public Node
+class NDS3_API FFT: public Node
 {
 public:
     /**
@@ -49,7 +49,7 @@ public:
      *
      * You must assign a valid node before calling initialize().
      */
-    Filtering();
+    FFT();
 
     /**
      * @brief Copies a reference from another object.
@@ -57,15 +57,15 @@ public:
      * @param right a data holder from which the reference to
      *        the object implementation is copied
      */
-    Filtering(const Filtering<T>& right);
+    FFT(const FFT<T>& right);
 
-    Filtering& operator=(const Filtering<T>& right);
+    FFT& operator=(const FFT<T>& right);
 
     /**
      * @brief Constructs the node.
      *
      */
-    Filtering( const std::string& name,                  	   ///< The node's name
+    FFT( const std::string& name,                  	   ///< The node's name
 					size_t maxElements,                            ///< Maximum size of the array. Set to 1 for scalar values
 					stateChange_t switchOnFunction,                ///< Delegate function that performs the actions to switch the node on
 					stateChange_t switchOffFunction,               ///< Delegate function that performs the actions to switch the node off
@@ -73,9 +73,11 @@ public:
 					stateChange_t stopFunction,                    ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
 					stateChange_t recoverFunction,                 ///< Delegate function to execute to recover from an error state
 					allowChange_t allowStateChangeFunction,        ///< Delegate function that can deny a state change. Usually just returns true
-					writerInt32_t PV_EnableFilter_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_FilterType_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerVectorInt32_t PV_FilterParams_Writer    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTEnable_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTWindowType_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTFrameOverlap_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTFrameSize_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_FFTSmoothFactor_Writer             ///< Delegate function setter/getter to interact to the Low Level Driver API
 					);
 
     /**
@@ -118,40 +120,64 @@ public:
     timespec getStartTimestamp() const;
 
     /**
-     * @brief Retrieve the state of the Filter Enable/Disable
+     * @brief Retrieve the FFT status Enable/Disable
      *
-     * @return the state of the Filter Enable/Disable
+     * @return the FFTEnable value
      */
-    size_t getEnableFilter();
+    size_t getFFTEnable();
     /**
-     * @brief Retrieve the Filter type
+     * @brief Retrieve the Window type
      *
-     * @return the Filter type
+     * @return the Window type
      */
-    size_t getFilterType();
+    size_t getFFTWindowType();
     /**
-     * @brief Retrieve the vector of polynomial Coefficients
+     * @brief Retrieve the Frame overlap
      *
-     * @return the vector of polynomial Coefficients
+     * @return the Frame overlap value
      */
-    std::vector<std::int32_t> getFilterParams();
+    size_t getFFTFrameOverlap();
     /**
-     * @brief Sets the state of the Filter Enable/Disable
+     * @brief Retrieve the Frame size
      *
+     * @return the Frame size value
      */
-    void setEnableFilter(const timespec& timestamp, const std::int32_t& value);
+    size_t getFFTFrameSize();
     /**
-     * @brief Sets the value of the Filter type
+     * @brief Retrieve the smoothing factor
      *
+     * @return the smoothing factor value
      */
-    void setFilterType(const timespec& timestamp, const std::int32_t& value);
+    size_t getFFTSmoothFactor();
     /**
-     * @brief Sets the vector of polynomial Coefficients
+     * @brief Sets the status of the FFT Enable / Disable
      *
      */
-    void setFilterParams(const timespec& timestamp, const std::vector<std::int32_t>& value);
+    void setFFTEnable(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the status of the FFT Enable / Disable
+     *
+     */
+    void setFFTWindowType(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the FFT frame overlap
+     *
+     */
+    void setFFTFrameOverlap(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the FFT frame size
+     *
+     */
+    void setFFTFrameSize(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the FFT smoothing factor
+     *
+     */
+    void setFFTSmoothFactor(const timespec& timestamp, const std::int32_t& value);
+
+
 };
 
 }
-#endif // FILTERING_H
+#endif // NDSFFT_H
 

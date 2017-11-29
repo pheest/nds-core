@@ -35,11 +35,8 @@ Filtering<T>::Filtering( const std::string& name,
 							       stateChange_t recoverFunction,
 								   allowChange_t allowStateChangeFunction,
 		                           writerInt32_t PV_EnableFilter_Writer,
-		                           readerInt32_t PV_EnableFilter_Reader,
 		                           writerInt32_t PV_FilterType_Writer,
-		                           readerInt32_t PV_FilterType_Reader,
-		                           writerVectorInt32_t PV_FilterParams_Writer,
-		                           readerVectorInt32_t PV_FilterParams_Reader
+		                           writerVectorInt32_t PV_FilterParams_Writer
 		             		                           ):
     Node(std::shared_ptr<FilteringImpl<T> >(new FilteringImpl<T>( name,
 																			maxElements,
@@ -50,11 +47,8 @@ Filtering<T>::Filtering( const std::string& name,
 																		    recoverFunction,
 																			allowStateChangeFunction,
 																			PV_EnableFilter_Writer,
-																			PV_EnableFilter_Reader,
 																			PV_FilterType_Writer,
-																			PV_FilterType_Reader,
-																			PV_FilterParams_Writer,
-																			PV_FilterParams_Reader
+																			PV_FilterParams_Writer
 																			)))
 {
 }
@@ -95,13 +89,48 @@ timespec Filtering<T>::getStartTimestamp() const
     return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
 
+template <typename T>
+size_t Filtering<T>::getEnableFilter()
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->getEnableFilter();
+}
+
+template <typename T>
+size_t Filtering<T>::getFilterType()
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->getFilterType();
+}
+
+template <typename T>
+std::vector<std::int32_t> Filtering<T>::getFilterParams()
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->getFilterParams();
+}
+
+template <typename T>
+void Filtering<T>::setEnableFilter(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->setEnableFilter(timestamp, value);
+}
+
+template <typename T>
+void Filtering<T>::setFilterType(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->setFilterType(timestamp, value);
+}
+
+template <typename T>
+void Filtering<T>::setFilterParams(const timespec& timestamp, const std::vector<std::int32_t>& value)
+{
+    return std::static_pointer_cast<FilteringImpl<T> >(m_pImplementation)->setFilterParams(timestamp, value);
+}
+
 template class Filtering<std::int32_t>;
 template class Filtering<double>;
 template class Filtering<std::vector<std::int8_t> >;
 template class Filtering<std::vector<std::uint8_t> >;
 template class Filtering<std::vector<std::int32_t> >;
 template class Filtering<std::vector<double> >;
-template class Filtering<std::string >;
 
 
 }

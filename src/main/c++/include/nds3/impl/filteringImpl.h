@@ -34,11 +34,8 @@ public:
 						stateChange_t recoverFunction,
 						allowChange_t allowStateChangeFunction,
 						writerInt32_t PV_EnableFilter_Writer,
-						readerInt32_t PV_EnableFilter_Reader,
 						writerInt32_t PV_FilterType_Writer,
-						readerInt32_t PV_FilterType_Reader,
-						writerVectorInt32_t PV_FilterParams_Writer,
-						readerVectorInt32_t PV_FilterParams_Reader
+						writerVectorInt32_t PV_FilterParams_Writer
 						);
 
 
@@ -67,7 +64,15 @@ public:
      * @return the time when started.
      */
     timespec getStartTimestamp() const;
+
     size_t getMaxElements();
+    size_t getEnableFilter();
+    size_t getFilterType();
+    std::vector<std::int32_t> getFilterParams();
+
+    void setEnableFilter(const timespec& timestamp, const std::int32_t& value);
+    void setFilterType(const timespec& timestamp, const std::int32_t& value);
+    void setFilterParams(const timespec& timestamp, const std::vector<std::int32_t>& value);
 
     /**
      * @brief Called by the state machine. Store the current timestamp and then calls the
@@ -82,7 +87,7 @@ protected:
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
      */
-    stateChange_t m_onStartDelegate;
+    stateChange_t m_OnStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time. Executed
@@ -92,31 +97,33 @@ protected:
      *
      * Use setStartTimestampDelegate() to change the delegate function.
      */
-    getTimestampPlugin_t m_startTimestampFunction;
+    getTimestampPlugin_t m_StartTimestampFunction;
 
     /**
      * @brief Acquisition start time. Retrieved during onStart() via the delegate
      *        function declared in  m_startTimestampFunction.
      */
-    timespec m_startTime;
+    timespec m_StartTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
+    std::shared_ptr<PVVariableInImpl<T> > m_DataIn_PV;
+    std::shared_ptr<PVVariableInImpl<T> > m_DataOut_PV;
 
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableFilter_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableFilter_RBVPV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableFilter_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_EnableFilter_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FilterType_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FilterType_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FilterType_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::vector<std::int32_t> > > m_FilterParams_PV;
-    std::shared_ptr<PVDelegateInImpl<std::vector<std::int32_t> > > m_FilterParams_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::vector<std::int32_t> > > m_FilterParams_RBVPV;
 
 
 
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 
 };

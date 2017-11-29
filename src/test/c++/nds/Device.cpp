@@ -104,15 +104,9 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 			std::bind(&Device::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+			std::bind(&Device::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_BufferSize_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_EnableDMA_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-			//std::bind(&Device::PV_DataAcquisition_EnableDMA_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-			//std::bind(&Device::PV_DataAcquisition_NumDMAChannels_Reader,this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_DMAFrameType_Reader, this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_DMASampleSize_Reader, this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_DMASamplingRate_Reader,this,std::placeholders:: _1,std::placeholders::_2)
+			std::bind(&Device::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2)
 	));
 	m_DataAcquisition.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	m_DataAcquisition.getStartTimestamp();
@@ -190,21 +184,21 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	      * Add a Streaming Config node:
 	      */
-	    m_StreamingConf = rootNode.addChild(nds::StreamingConf<std::vector<int32_t> >(
-	     		"StreamingConfNode",
+	    m_Streaming = rootNode.addChild(nds::Streaming<std::vector<int32_t> >(
+	     		"StreamingNode",
 	 			128,
-	 			std::bind(&Device::switchOn_StreamingConf, this),
-	 			std::bind(&Device::switchOff_StreamingConf, this),
-	 			std::bind(&Device::start_StreamingConf, this),
-	 			std::bind(&Device::stop_StreamingConf, this),
-	 			std::bind(&Device::recover_StreamingConf, this),
-	 			std::bind(&Device::allow_StreamingConf_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-	 			std::bind(&Device::PV_StreamingConf_StreamingDataFormat_Reader,this, std::placeholders::_1, std::placeholders::_2),
-	 			std::bind(&Device::PV_StreamingConf_StreamingType_Writer,this, std::placeholders::_1, std::placeholders::_2),
-	 			std::bind(&Device::PV_StreamingConf_StreamingType_Reader,this, std::placeholders::_1, std::placeholders::_2)
+	 			std::bind(&Device::switchOn_Streaming, this),
+	 			std::bind(&Device::switchOff_Streaming, this),
+	 			std::bind(&Device::start_Streaming, this),
+	 			std::bind(&Device::stop_Streaming, this),
+	 			std::bind(&Device::recover_Streaming, this),
+	 			std::bind(&Device::allow_Streaming_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&Device::PV_Streaming_BufferSize_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_Streaming_Type_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_Streaming_DataFormat_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	     ));
-	    m_StreamingConf.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
-	    m_StreamingConf.getStartTimestamp();
+	    m_Streaming.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_Streaming.getStartTimestamp();
 
 	    /**
 	     * Add a HealthMonitSup node.
@@ -485,12 +479,12 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
     bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
     timespec rootNodetime = rootNode.getTimestamp();
 
-    std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
-    std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
-    std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
-    std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
-    std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
-    std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
+    //std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
+    //std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
+    //std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
+    //std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
+    //std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
+    //std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
 
     rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
     ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
@@ -542,6 +536,22 @@ void Device::deallocateDevice(void* DeviceName)
  * Methods to control Device state machine
  */
 void Device::switchOn_Device(){
+	// Call HW initialization function here,
+		//HW_CALL_INIT_FUNCTION
+	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
+	// As an example:
+		// Call API HW to retrieve DMABufferSize -> (ex: DMABufferSize=4194304 (4096*1024) )
+		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(double)4194304);
+		// Call API HW to retrieve DMAEnable -> (ex: DMAEnable initial status OFF (0))
+		m_DataAcquisition.setDMAEnable(getCurrentTime(),(std::int32_t)0);
+		// Call API HW to retrieve DMAFrameType -> (ex: DMAFrameType=0)
+		m_DataAcquisition.setDMAFrameType(getCurrentTime(),(std::int32_t)1);
+		// Call API HW to retrieve DMANumChannels -> (ex: DMANumChannels=4)
+		m_DataAcquisition.setDMANumChannels(getCurrentTime(),(std::int32_t)4);
+		// Call API HW to retrieve DMASampleSize -> (ex: DMASampleSize=49
+		m_DataAcquisition.setDMASampleSize(getCurrentTime(),(std::int32_t)4);
+		// Call API HW to retrieve DMASamplingRate -> (ex: DMASamplingRate=1000)
+		m_DataAcquisition.setDMASamplingRate(getCurrentTime(),(std::int32_t)1000);
 
 }
 void Device::switchOff_Device(){
@@ -662,13 +672,13 @@ void Device::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const
 	HW_value=value;
 	m_DataAcquisition.setCoupling(timestamp,HW_value);
 }
-void Device::PV_DataAcquisition_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value){
+void Device::PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
-	//Value has the SignalRef to be programmed on the hardware.
-	//Call to function programming the hardware. This function should return the real SignalRef programmed. This value has to be set to the readback attribute.
+	//Value has the SignalRefType to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real SignalRefType programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
-	m_DataAcquisition.setSignalRef(timestamp,HW_value);
+	m_DataAcquisition.setSignalRefType(timestamp,HW_value);
 }
 void Device::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
@@ -679,34 +689,15 @@ void Device::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const s
 	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
-
-void Device::PV_DataAcquisition_BufferSize_Reader(timespec* timestamp,
-		double* value) {
+void Device::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp,	const std::int32_t& value) {
+	std::int32_t HW_value;
+	//Value has the DMAEnable value to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DMAEnable value programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
 }
 
-void Device::PV_DataAcquisition_EnableDMA_Writer(const timespec& timestamp,
-		const std::int32_t& value) {
-}
-
-void Device::PV_DataAcquisition_EnableDMA_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_NumDMAChannels_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMAFrameType_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMASampleSize_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
-
-void Device::PV_DataAcquisition_DMASamplingRate_Reader(timespec* timestamp,
-		std::int32_t* value) {
-}
 /*
 * Body of function to acquire data
 */
@@ -727,23 +718,43 @@ void Device::DataAcquisition_thread_body(){
 	double Resolution = m_DataAcquisition.getResolution();
 	// Get Coupling
 	double Coupling = m_DataAcquisition.getCoupling();
-	// Get SignalRef
-	double SignalRef = m_DataAcquisition.getSignalRef();
+	// Get SignalRefType
+	double SignalRefType = m_DataAcquisition.getSignalRefType();
 	// Get Ground
 	double Ground = m_DataAcquisition.getGround();
 	// Get offset
 	double Offset = m_DataAcquisition.getOffset();
 	// Get impedance
 	std::int32_t Impedance = m_DataAcquisition.getImpedance();
+	// Get DMABufferSize
+	double DMABufferSize = m_DataAcquisition.getDMABufferSize();
+	// Get DMANumChannels
+	std::int32_t DMANumChannels = m_DataAcquisition.getDMANumChannels();
+	// Get DMAFrametype
+	std::int32_t DMAFrameType = m_DataAcquisition.getDMAFrameType();
+	// Get DMASampleSize
+	std::int32_t DMASampleSize = m_DataAcquisition.getDMASampleSize();
+	// Get DMASamplingRate
+	std::int32_t DMASamplingRate = m_DataAcquisition.getDMASamplingRate();
+	// Get DMAEnable
+	std::int32_t DMAEnable = m_DataAcquisition.getDMAEnable();
+
 
 	std::cout<<"\tGain = "<<Gain<<std::endl;
 	std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 	std::cout<<"\tResolution = "<<Resolution<<std::endl;
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
-	std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
+	std::cout<<"\tSignalRefType = "<<SignalRefType<<std::endl;
 	std::cout<<"\tGround = "<<Ground<<std::endl;
 	std::cout<<"\tOffset = "<<Offset<<std::endl;
 	std::cout<<"\tImpedance = "<<Impedance<<std::endl;
+	std::cout<<"\tDMABufferSize = "<<DMABufferSize<<std::endl;
+	std::cout<<"\tDMANumChannels = "<<DMANumChannels<<std::endl;
+	std::cout<<"\tDMAFrameType = "<<DMAFrameType<<std::endl;
+	std::cout<<"\tDMASampleSize = "<<DMASampleSize<<std::endl;
+	std::cout<<"\tDMASamplingRate = "<<DMASamplingRate<<std::endl;
+	std::cout<<"\tDMAEnable = "<<DMAEnable<<std::endl;
+
 	// Run until the state machine stops us
 	while(!m_bStop_DataAcquisition){
 
@@ -1199,44 +1210,41 @@ void Device::DigitalIO_thread_body(){
 
 
 /**
-* Methods to control StreamingConf state machine
+* Methods to control Streaming state machine
 */
-void Device::switchOn_StreamingConf(){
+void Device::switchOn_Streaming(){
 
 }
-void Device::switchOff_StreamingConf(){
+void Device::switchOff_Streaming(){
 
 }
-void Device::start_StreamingConf(){
+void Device::start_Streaming(){
 
 }
-void Device::stop_StreamingConf(){
+void Device::stop_Streaming(){
 
 }
-void Device::recover_StreamingConf(){
+void Device::recover_Streaming(){
 
 }
 
-bool Device::allow_StreamingConf_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool Device::allow_Streaming_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /**
- * StreamingConf setters
+ * Streaming setters
  */
-void Device::PV_StreamingConf_StreamingType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void Device::PV_Streaming_BufferSize_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+
+}
+void Device::PV_Streaming_Type_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+
+}
+void Device::PV_Streaming_DataFormat_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
 
-/**
- * StreamingConf getters
- */
-void Device::PV_StreamingConf_StreamingDataFormat_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_StreamingConf_StreamingType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

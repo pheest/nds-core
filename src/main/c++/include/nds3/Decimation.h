@@ -7,13 +7,13 @@
  * file included in the distribution.
  */
 
-#ifndef NDSFFT_H
-#define NDSFFT_H
+#ifndef NDSDECIMATION_H
+#define NDSDECIMATION_H
 
 /**
- * @file FFT.h
- * @brief Defines the nds::FFT node, which provides basic services
- * for data processing.
+ * @file Decimation.h
+ * @brief Defines the nds::Decimation node, which provides basic services
+ * for decimation processing.
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
  * necessary header files (including this one).
@@ -26,7 +26,7 @@ namespace nds
 {
 
 /**
- * This is a node that supplies a data acquisition PV and few control
+ * This is a node that supplies a decimation node PV and few control
  * PV that specifies how the acquisition should be performed.
  *
  * @tparam T  the PV data type.
@@ -41,7 +41,7 @@ namespace nds
  *
  */
 template <typename T>
-class NDS3_API FFT: public Node
+class NDS3_API Decimation: public Node
 {
 public:
     /**
@@ -49,7 +49,7 @@ public:
      *
      * You must assign a valid node before calling initialize().
      */
-    FFT();
+    Decimation();
 
     /**
      * @brief Copies a reference from another object.
@@ -57,15 +57,15 @@ public:
      * @param right a data holder from which the reference to
      *        the object implementation is copied
      */
-    FFT(const FFT<T>& right);
+    Decimation(const Decimation<T>& right);
 
-    FFT& operator=(const FFT<T>& right);
+    Decimation& operator=(const Decimation<T>& right);
 
     /**
      * @brief Constructs the node.
      *
      */
-    FFT( const std::string& name,                  	   ///< The node's name
+    Decimation( const std::string& name,                  	   ///< The node's name
 					size_t maxElements,                            ///< Maximum size of the array. Set to 1 for scalar values
 					stateChange_t switchOnFunction,                ///< Delegate function that performs the actions to switch the node on
 					stateChange_t switchOffFunction,               ///< Delegate function that performs the actions to switch the node off
@@ -73,19 +73,11 @@ public:
 					stateChange_t stopFunction,                    ///< Delegate function that performs the actions to stop the data generation(usually stops the generation thread)
 					stateChange_t recoverFunction,                 ///< Delegate function to execute to recover from an error state
 					allowChange_t allowStateChangeFunction,        ///< Delegate function that can deny a state change. Usually just returns true
-					size_t 		maxFFTElements,                    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_EnableFFT_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_EnableFFT_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_EnableSwFFT_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_EnableSwFFT_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_FFTwindowType_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_FFTwindowType_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_FFTOverlap_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_FFTOverlap_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_FFTFrameSize_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_FFTFrameSize_Reader,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_FFTSmooth_Writer             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					);              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationEnable_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationType_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationFactor_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DecimationOffset_Writer             ///< Delegate function setter/getter to interact to the Low Level Driver API
+					);
 
     /**
      * @ingroup timing
@@ -126,8 +118,53 @@ public:
      */
     timespec getStartTimestamp() const;
 
+    /**
+     * @brief Retrieve the decimation status Enable/Disable
+     *
+     * @return the DecimationEnable value
+     */
+    size_t getDecimationEnable();
+    /**
+     * @brief Retrieve the decimation type
+     *
+     * @return the decimation type
+     */
+    size_t getDecimationType();
+    /**
+     * @brief Retrieve the decimation factor
+     *
+     * @return the decimation factor value
+     */
+    size_t getDecimationFactor();
+    /**
+     * @brief Retrieve the decimation offset
+     *
+     * @return the decimation offset value
+     */
+    size_t getDecimationOffset();
+    /**
+     * @brief Sets the status of the Decimation Enable / Disable
+     *
+     */
+    void setDecimationEnable(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the decimation type
+     *
+     */
+    void setDecimationType(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the decimation factor
+     *
+     */
+    void setDecimationFactor(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the decimation offset
+     *
+     */
+    void setDecimationOffset(const timespec& timestamp, const std::int32_t& value);
+
+
 };
 
 }
-#endif // NDSFFT_H
-
+#endif // NDSDECIMATION_H

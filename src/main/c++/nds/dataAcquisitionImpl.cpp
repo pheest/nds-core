@@ -33,35 +33,30 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerDouble_t PV_Resolution_Writer,
 											writerDouble_t PV_Impedance_Writer,
 											writerInt32_t PV_Coupling_Writer,
-											writerInt32_t PV_SignalRef_Writer,
+											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
-											readerDouble_t PV_BufferSize_Reader,
-										   writerInt32_t PV_EnableDMA_Writer,
-										   //readerInt32_t PV_EnableDMA_Reader,
-										   //readerInt32_t PV_NumDMAChannels_Reader,
-										   readerInt32_t PV_DMAFrameType_Reader,
-										   readerInt32_t PV_DMASampleSize_Reader,
-										   readerInt32_t PV_DMASamplingRate_Reader
+										    writerInt32_t PV_DMAEnable_Writer
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
-    m_onStartDelegate(startFunction),
-    m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+    m_OnStartDelegate(startFunction),
+    m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
     // Add the children PVs
-    m_data_PV.reset(new PVVariableInImpl<T>("data"));
-    m_data_PV->setMaxElements(maxElements);
-    m_data_PV->setDescription("Acquired data");
-    m_data_PV->setScanType(scanType_t::interrupt, 0);
-    addChild(m_data_PV);
+    m_Data_PV.reset(new PVVariableInImpl<T>("Data"));
+    m_Data_PV->setMaxElements(maxElements);
+    m_Data_PV->setDescription("Data Acquired");
+    m_Data_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_Data_PV);
 
-    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
-    m_decimation_PV->setDescription("Decimation");
-    m_decimation_PV->setScanType(scanType_t::passive, 0);
-    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
-    addChild(m_decimation_PV);
+    m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_Decimation_PV->setDescription("Decimation");
+    m_Decimation_PV->setScanType(scanType_t::passive, 0);
+    m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
+    addChild(m_Decimation_PV);
 
     m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
+    m_Gain_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Gain_PV);
 
     m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
@@ -69,17 +64,19 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
 
-	m_offset_PV.reset(new PVDelegateOutImpl<double>("Offset",PV_Offset_Writer));
-	m_offset_PV->setDescription("Offset");
-	addChild(m_offset_PV);
+	m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",PV_Offset_Writer));
+	m_Offset_PV->setDescription("Offset");
+    m_Offset_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_Offset_PV);
 
-	m_offset_RBVPV.reset(new PVVariableInImpl<double>("Offset_RBV"));
-	m_offset_RBVPV->setDescription("Offset ReadBack");
-	m_offset_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_offset_RBVPV);
+	m_Offset_RBVPV.reset(new PVVariableInImpl<double>("Offset_RBV"));
+	m_Offset_RBVPV->setDescription("Offset ReadBack");
+	m_Offset_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_Offset_RBVPV);
 
 	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
 	m_Bandwidth_PV->setDescription("BandWidth");
+    m_Bandwidth_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Bandwidth_PV);
 
 	m_Bandwidth_RBVPV.reset(new PVVariableInImpl<double>("BandWidth_RBV"));
@@ -90,6 +87,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
 	m_Resolution_PV->setDescription("Number of Bits per Sample");
+    m_Resolution_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Resolution_PV);
 
 	m_Resolution_RBVPV.reset(new PVVariableInImpl<double>("Resolution_RBV"));
@@ -99,6 +97,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
 	m_Impedance_PV->setDescription("Impedance");
+    m_Impedance_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Impedance_PV);
 
 	m_Impedance_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Impedance_RBV"));
@@ -113,6 +112,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
 	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",PV_Coupling_Writer));
 	m_Coupling_PV->setDescription("AC or DC");
+    m_Coupling_PV->setScanType(scanType_t::passive, 0);
 	m_Coupling_PV->setEnumeration(CouplingEnumeratorStrings);
 	addChild(m_Coupling_PV);
 
@@ -127,8 +127,9 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     SignalRefTypeEnumeratorStrings.push_back("SingleEnded");
     SignalRefTypeEnumeratorStrings.push_back("Differential");
 
-	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalRef_Writer));
+	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalRefType_Writer));
 	m_SignalRefType_PV->setDescription("Differential or Single Ended");
+    m_SignalRefType_PV->setScanType(scanType_t::passive, 0);
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	addChild(m_SignalRefType_PV);
 
@@ -144,66 +145,67 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     groundEnumeratorStrings.push_back("On");
     groundEnumeratorStrings.push_back("Off");
 
-    m_ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
-    m_ground_PV->setDescription("Ground State");
-    m_ground_PV->setEnumeration(groundEnumeratorStrings);
-    addChild(m_ground_PV);
+    m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
+    m_Ground_PV->setDescription("Ground State");
+    m_Ground_PV->setScanType(scanType_t::passive, 0);
+    m_Ground_PV->setEnumeration(groundEnumeratorStrings);
+    addChild(m_Ground_PV);
 
-    m_ground_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Ground_RBV"));
-    m_ground_RBVPV->setDescription("Ground State ReadBack");
-    m_ground_RBVPV->setEnumeration(groundEnumeratorStrings);
-    m_ground_RBVPV->setScanType(scanType_t::interrupt,0);
-    addChild(m_ground_RBVPV);
+    m_Ground_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Ground_RBV"));
+    m_Ground_RBVPV->setDescription("Ground State ReadBack");
+    m_Ground_RBVPV->setEnumeration(groundEnumeratorStrings);
+    m_Ground_RBVPV->setScanType(scanType_t::interrupt,0);
+    addChild(m_Ground_RBVPV);
 
 	m_NumberOfPushedDataBlocks.reset(new PVVariableInImpl<std::int32_t>("NumberOfPushedDataBlocks"));
 	m_NumberOfPushedDataBlocks->setDescription("Number Of Pushed Data Blocks");
 	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
 	addChild(m_NumberOfPushedDataBlocks);
 
-	m_BufferSize_PV.reset(new PVDelegateInImpl<double>("BufferSize",PV_BufferSize_Reader));
-	m_BufferSize_PV->setDescription("Internal Buffer Filter Size");
-	m_BufferSize_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_BufferSize_PV);
+	m_DMABufferSize_PV.reset(new PVVariableInImpl<double>("DMABufferSize"));
+	m_DMABufferSize_PV->setDescription("Internal DMA Buffer Size");
+	m_DMABufferSize_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMABufferSize_PV);
 
-	m_EnableDMA_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableDMA",PV_EnableDMA_Writer));
-	m_EnableDMA_PV->setDescription("Enable DMA");
-	m_EnableDMA_PV->write(getTimestamp(), (std::int32_t)1);
-	addChild(m_EnableDMA_PV);
+	m_DMAEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("DMAEnable",PV_DMAEnable_Writer));
+	m_DMAEnable_PV->setDescription("Enable DMA");
+	m_DMAEnable_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_DMAEnable_PV);
 
-	m_EnableDMA_RBVPV.reset(new PVVariableInImpl<std::int32_t>("EnableDMA_RBV"));
-	m_EnableDMA_RBVPV->setDescription("Enable DMA ReadBack");
-	m_EnableDMA_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_EnableDMA_RBVPV);
+	m_DMAEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("DMAEnable_RBV"));
+	m_DMAEnable_RBVPV->setDescription("Enable DMA ReadBack Value");
+	m_DMAEnable_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMAEnable_RBVPV);
 
-	m_NumDMAChannels_PV.reset(new PVVariableInImpl<std::int32_t>("NumDMAChannels"));
-	m_NumDMAChannels_PV->setDescription("Number of DMA Channels");
-	m_NumDMAChannels_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_NumDMAChannels_PV);
+	m_DMANumChannels_PV.reset(new PVVariableInImpl<std::int32_t>("DMANumChannels"));
+	m_DMANumChannels_PV->setDescription("Number of DMA Channels");
+	m_DMANumChannels_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DMANumChannels_PV);
 
-	m_DMAFrameType_PV.reset(new PVDelegateInImpl<std::int32_t>("DMAFrameType",PV_DMAFrameType_Reader));
+	m_DMAFrameType_PV.reset(new PVVariableInImpl<std::int32_t>("DMAFrameType"));
 	m_DMAFrameType_PV->setDescription("DMA Frame Type");
 	m_DMAFrameType_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMAFrameType_PV);
 
-	m_DMASampleSize_PV.reset(new PVDelegateInImpl<std::int32_t>("DMASampleSize",PV_DMASampleSize_Reader));
+	m_DMASampleSize_PV.reset(new PVVariableInImpl<std::int32_t>("DMASampleSize"));
 	m_DMASampleSize_PV->setDescription("DMA Sample Size");
 	m_DMASampleSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASampleSize_PV);
 
-	m_DMASamplingRate_PV.reset(new PVDelegateInImpl<std::int32_t>("DMASamplingRate",PV_DMASamplingRate_Reader));
+	m_DMASamplingRate_PV.reset(new PVVariableInImpl<std::int32_t>("DMASamplingRate"));
 	m_DMASamplingRate_PV->setDescription("DMA Sampling Rate");
 	m_DMASamplingRate_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASamplingRate_PV);
 
     // Add state machine
-    m_stateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
                                    switchOffFunction,
                                    std::bind(&DataAcquisitionImpl::onStart, this),
                                    stopFunction,
                                    recoverFunction,
                                    allowStateChangeFunction));
-    addChild(m_stateMachine);
+    addChild(m_StateMachine);
 }
 
 template<typename T>
@@ -220,7 +222,7 @@ size_t DataAcquisitionImpl<T>::getOffset()
 {
     double Offset;
     timespec timestamp;
-    m_offset_RBVPV->read(&timestamp, &Offset);
+    m_Offset_RBVPV->read(&timestamp, &Offset);
     return (double)Offset;
 }
 
@@ -261,12 +263,12 @@ size_t DataAcquisitionImpl<T>::getCoupling()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getSignalRef()
+size_t DataAcquisitionImpl<T>::getSignalRefType()
 {
-	std::int32_t SignalRef;
+	std::int32_t SignalRefTYpe;
     timespec timestamp;
-    m_SignalRefType_RBVPV->read(&timestamp, &SignalRef);
-    return (std::int32_t)SignalRef;
+    m_SignalRefType_RBVPV->read(&timestamp, &SignalRefTYpe);
+    return (std::int32_t)SignalRefTYpe;
 }
 
 template<typename T>
@@ -274,20 +276,20 @@ size_t DataAcquisitionImpl<T>::getGround()
 {
 	std::int32_t Ground;
     timespec timestamp;
-    m_ground_RBVPV->read(&timestamp, &Ground);
+    m_Ground_RBVPV->read(&timestamp, &Ground);
     return (std::int32_t)Ground;
 }
 
 template<typename T>
 size_t DataAcquisitionImpl<T>::getMaxElements()
 {
-    return m_data_PV->getMaxElements();
+    return m_Data_PV->getMaxElements();
 }
 
 template<typename T>
 timespec DataAcquisitionImpl<T>::getStartTimestamp() const
 {
-    return m_startTime;
+    return m_StartTime;
 }
 
 template<typename T>
@@ -300,21 +302,57 @@ size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getEnableDMA()
+size_t DataAcquisitionImpl<T>::getDMABufferSize()
 {
-       std::int32_t EnableDMA;
+       double DMABufferSize;
     timespec timestamp;
-    m_EnableDMA_RBVPV->read(&timestamp, &EnableDMA);
-    return (std::int32_t)EnableDMA;
+    m_DMABufferSize_PV->read(&timestamp, &DMABufferSize);
+    return (double)DMABufferSize;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getNumDMAChannels()
+size_t DataAcquisitionImpl<T>::getDMAEnable()
 {
-       std::int32_t NumDMAChannels;
+       std::int32_t DMAEnable;
     timespec timestamp;
-    m_NumDMAChannels_PV->read(&timestamp, &NumDMAChannels);
-    return (std::int32_t)NumDMAChannels;
+    m_DMAEnable_RBVPV->read(&timestamp, &DMAEnable);
+    return (std::int32_t)DMAEnable;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getDMANumChannels()
+{
+       std::int32_t DMANumChannels;
+    timespec timestamp;
+    m_DMANumChannels_PV->read(&timestamp, &DMANumChannels);
+    return (std::int32_t)DMANumChannels;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getDMAFrameType()
+{
+       std::int32_t DMAFrameType;
+    timespec timestamp;
+    m_DMAFrameType_PV->read(&timestamp, &DMAFrameType);
+    return (std::int32_t)DMAFrameType;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getDMASampleSize()
+{
+       std::int32_t DMASampleSize;
+    timespec timestamp;
+    m_DMASampleSize_PV->read(&timestamp, &DMASampleSize);
+    return (std::int32_t)DMASampleSize;
+}
+
+template<typename T>
+size_t DataAcquisitionImpl<T>::getDMASamplingRate()
+{
+       std::int32_t DMASamplingRate;
+    timespec timestamp;
+    m_DMASamplingRate_PV->read(&timestamp, &DMASamplingRate);
+    return (std::int32_t)DMASamplingRate;
 }
 
 template<typename T>
@@ -327,81 +365,127 @@ void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& va
 template<typename T>
 void DataAcquisitionImpl<T>::setOffset(const timespec& timestamp, const double& value)
 {
-	m_offset_RBVPV->setValue(timestamp, value);
+	m_Offset_RBVPV->setValue(timestamp, value);
+	m_Offset_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setBandwidth(const timespec& timestamp, const double& value)
 {
 	m_Bandwidth_RBVPV->setValue(timestamp, value);
+	m_Bandwidth_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setResolution(const timespec& timestamp, const double& value)
 {
 	m_Resolution_RBVPV->setValue(timestamp, value);
+	m_Resolution_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Impedance_RBVPV->setValue(timestamp, value);
+	m_Impedance_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Coupling_RBVPV->setValue(timestamp, value);
+	m_Coupling_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setSignalRef(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setSignalRefType(const timespec& timestamp, const std::int32_t& value)
 {
 	m_SignalRefType_RBVPV->setValue(timestamp, value);
+	m_SignalRefType_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setGround(const timespec& timestamp, const std::int32_t& value)
 {
-	m_ground_RBVPV->setValue(timestamp, value);
+	m_Ground_RBVPV->setValue(timestamp, value);
+	m_Ground_RBVPV->push(timestamp, value);
+
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
-    m_startTimestampFunction = timestampDelegate;
+    m_StartTimestampFunction = timestampDelegate;
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
 	m_NumberOfPushedDataBlocks->setValue(timestamp, value);
+	m_NumberOfPushedDataBlocks->push(timestamp, value);
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setEnableDMA(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setDMABufferSize(const timespec& timestamp, const double& value)
 {
-	m_EnableDMA_RBVPV->setValue(timestamp, value);
+	m_DMABufferSize_PV->setValue(timestamp, value);
+	m_DMABufferSize_PV->push(timestamp, value);
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setNumDMAChannels(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setDMAEnable(const timespec& timestamp, const std::int32_t& value)
 {
-	m_NumDMAChannels_PV->setValue(timestamp, value);
+	m_DMAEnable_RBVPV->setValue(timestamp, value);
+	m_DMAEnable_RBVPV->push(timestamp, value);
+
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setDMANumChannels(const timespec& timestamp, const std::int32_t& value)
+{
+	m_DMANumChannels_PV->setValue(timestamp, value);
+	m_DMANumChannels_PV->push(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setDMAFrameType(const timespec& timestamp, const std::int32_t& value)
+{
+	m_DMAFrameType_PV->setValue(timestamp, value);
+	m_DMAFrameType_PV->push(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setDMASampleSize(const timespec& timestamp, const std::int32_t& value)
+{
+	m_DMASampleSize_PV->setValue(timestamp, value);
+	m_DMASampleSize_PV->push(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+{
+	m_DMASamplingRate_PV->setValue(timestamp, value);
+	m_DMASamplingRate_PV->push(timestamp, value);
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::push(const timespec& timestamp, const T& data)
 {
-	m_data_PV->push(timestamp, data);
+	m_Data_PV->push(timestamp, data);
 }
 
 template<typename T>
 void DataAcquisitionImpl<T>::onStart()
 {
-    m_startTime = m_startTimestampFunction();
-    m_data_PV->setDecimation((std::uint32_t)m_decimation_PV->getValue());
-    m_onStartDelegate();
+    m_StartTime = m_StartTimestampFunction();
+    m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    m_OnStartDelegate();
 }
 
 

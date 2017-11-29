@@ -88,15 +88,9 @@ public:
 					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Impedance_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalRef_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_SignalRefType_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Ground_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_BufferSize_Reader,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_EnableDMA_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					//readerInt32_t PV_EnableDMA_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					//readerInt32_t PV_NumDMAChannels_Reader,    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_DMAFrameType_Reader,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_DMASampleSize_Reader,     ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_DMASamplingRate_Reader);  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DMAEnable_Writer);         ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
      * @ingroup timing
@@ -166,7 +160,7 @@ public:
      *
      * @return the SignalRef value
      */
-    size_t getSignalRef();
+    size_t getSignalRefType();
 
     /**
      * @brief Retrieve the Ground
@@ -198,17 +192,42 @@ public:
      */
     size_t getNumberOfPushedDataBlocks();
     /**
-     * @brief Retrieve the EnableDMA status
+     * @brief Retrieve the DMA Buffer size value
      *
-     * @return the EnableDMA status
+     * @return the m_DMABufferSize_PV value
      */
-    size_t getEnableDMA();
+    size_t getDMABufferSize();
+    /**
+     * @brief Retrieve the DMAEnable status
+     *
+     * @return the m_DMAEnable_PV value
+     */
+    size_t getDMAEnable();
      /**
      * @brief Retrieve the Number of DMA channels used by the DAQ node
      *
-     * @return the NumDMAChannels status
+     * @return the m_DMANumChannels_PV value
      */
-    size_t getNumDMAChannels();
+    size_t getDMANumChannels();
+    /**
+    * @brief Retrieve the DMA Frame Type
+    *
+    * @return the m_DMAFrameType_PV value
+    */
+    size_t getDMAFrameType();
+    /**
+    * @brief Retrieve the DMA sample size
+    *
+    * @return the m_DMASampleSize_PV value
+    */
+    size_t getDMASampleSize();
+    /**
+    * @brief Retrieve the DMA sampling rate
+    *
+    * @return the m_DMASamplingRate_PV value
+    */
+    size_t getDMASamplingRate();
+
 
     /**
      * @brief Sets the value of the m_Gain_RBV.
@@ -245,7 +264,7 @@ public:
      * @brief Sets the value of the m_SignalRef_RBV.
      *
      */
-    void setSignalRef(const timespec& timestamp, const std::int32_t& value);
+    void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_Ground_RBV.
      *
@@ -257,17 +276,35 @@ public:
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_EnableDMA_RBVPV.
+     * @brief Sets the value of the m_DMABufferSize_PV.
      *
      */
-    void setEnableDMA(const timespec& timestamp, const std::int32_t& value);
-
+    void setDMABufferSize(const timespec& timestamp, const double& value);
     /**
-	 * @brief Sets the value of the m_NumDMAChannels_RBVPV.
-	 *
-	 */
-	void setNumDMAChannels(const timespec& timestamp, const std::int32_t& value);
-
+     * @brief Sets the value of the m_DMAEnable_PV.
+     *
+     */
+    void setDMAEnable(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_DMANumChannels_PV.
+     *
+     */
+    void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_DMAFrameType_PV.
+     *
+     */
+    void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_DMASampleSize_PV.
+     *
+     */
+    void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_DMASamplingRate_PV.
+     *
+     */
+    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
 };
 
 }

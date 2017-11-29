@@ -44,7 +44,9 @@
 #include "nds3/thread.h"
 #include "nds3/registerDevice.h"
 #include "nds3/filtering.h"
-#include "nds3/fft.h"
+#include "nds3/FFT.h"
+#include "nds3/Decimation.h"
+
 
 
 #endif // NDS3_H

@@ -4,7 +4,7 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
-TEST(testStreamingConfNode, testStateMachine)
+TEST(testStreamingNode, testStateMachine)
 {
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
@@ -20,39 +20,39 @@ TEST(testStreamingConfNode, testStateMachine)
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
     // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-StreamingConfNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-StreamingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-StreamingConfNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-StreamingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
     //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-StreamingConfNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-StreamingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-StreamingConfNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-StreamingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StreamingConfNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-StreamingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     // Destroy test device

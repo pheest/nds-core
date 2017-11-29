@@ -88,7 +88,7 @@ protected:
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
      */
-    stateChange_t m_onStartDelegate;
+    stateChange_t m_OnStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time. Executed
@@ -98,28 +98,28 @@ protected:
      *
      * Use setStartTimestampDelegate() to change the delegate function.
      */
-    getTimestampPlugin_t m_startTimestampFunction;
+    getTimestampPlugin_t m_StartTimestampFunction;
 
     /**
      * @brief Acquisition start time. Retrieved during onStart() via the delegate
      *        function declared in  m_startTimestampFunction.
      */
-    timespec m_startTime;
+    timespec m_StartTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataIn_PV;
-    std::shared_ptr<PVVariableOutImpl<T> > m_dataOut_PV;
+    std::shared_ptr<PVVariableInImpl<T> > m_DataIn_PV;
+    std::shared_ptr<PVVariableOutImpl<T> > m_DataOut_PV;
 
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_voltLevelHigh_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_voltLevelHigh_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_voltLevelLow_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_voltLevelLow_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_channelDir_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_channelDir_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_VoltLevelHigh_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_VoltLevelHigh_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_VoltLevelLow_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_VoltLevelLow_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ChannelDir_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ChannelDir_RBVPV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 

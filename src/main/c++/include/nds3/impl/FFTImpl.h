@@ -22,10 +22,10 @@ template <typename T> class PVVariableOutImpl;
 
 
 template<typename T>
-class FFFImpl: public NodeImpl
+class FFTImpl: public NodeImpl
 {
 public:
-    FFFImpl( const std::string& name,
+    FFTImpl( const std::string& name,
 						size_t maxElements,
 						stateChange_t switchOnFunction,
 						stateChange_t switchOffFunction,
@@ -33,19 +33,11 @@ public:
 						stateChange_t stopFunction,
 						stateChange_t recoverFunction,
 						allowChange_t allowStateChangeFunction,
-						size_t 		maxFFTElements,
-						writerInt32_t PV_EnableFFT_Writer,
-						readerInt32_t PV_EnableFFT_Reader,
-						writerInt32_t PV_EnableSwFFT_Writer,
-						readerInt32_t PV_EnableSwFFT_Reader,
-						writerInt32_t PV_FFTwindowType_Writer,
-						readerInt32_t PV_FFTwindowType_Reader,
-						writerInt32_t PV_FFTOverlap_Writer,
-						readerInt32_t PV_FFTOverlap_Reader,
+						writerInt32_t PV_FFTEnable_Writer,
+						writerInt32_t PV_FFTWindowType_Writer,
+						writerInt32_t PV_FFTFrameOverlap_Writer,
 						writerInt32_t PV_FFTFrameSize_Writer,
-						readerInt32_t PV_FFTFrameSize_Reader,
-						writerInt32_t PV_FFTSmooth_Writer,
-						readerInt32_t PV_FFTSmooth_Reader
+						writerInt32_t PV_FFTSmoothFactor_Writer
 						);
 
 
@@ -82,6 +74,18 @@ public:
      */
     void onStart();
 
+    size_t getFFTEnable();
+    size_t getFFTWindowType();
+    size_t getFFTFrameOverlap();
+    size_t getFFTFrameSize();
+    size_t getFFTSmoothFactor();
+
+    void setFFTEnable(const timespec& timestamp, const std::int32_t& value);
+    void setFFTWindowType(const timespec& timestamp, const std::int32_t& value);
+    void setFFTFrameOverlap(const timespec& timestamp, const std::int32_t& value);
+    void setFFTFrameSize(const timespec& timestamp, const std::int32_t& value);
+    void setFFTSmoothFactor(const timespec& timestamp, const std::int32_t& value);
+
 
 protected:
 
@@ -89,7 +93,7 @@ protected:
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
      */
-    stateChange_t m_onStartDelegate;
+    stateChange_t m_OnStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time. Executed
@@ -99,39 +103,39 @@ protected:
      *
      * Use setStartTimestampDelegate() to change the delegate function.
      */
-    getTimestampPlugin_t m_startTimestampFunction;
+    getTimestampPlugin_t m_StartTimestampFunction;
 
     /**
      * @brief Acquisition start time. Retrieved during onStart() via the delegate
      *        function declared in  m_startTimestampFunction.
      */
-    timespec m_startTime;
+    timespec m_StartTime;
 
     // PVs
 
-    std::shared_ptr<PVVariableInImpl<T> > m_FFTdataPV;
+    std::shared_ptr<PVVariableInImpl<T> > m_DataIn_PV;
+    std::shared_ptr<PVVariableInImpl<T> > m_DataOut_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableFFT_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableFFT_RBVPV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_enableSwFFT_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_enableSwFFT_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FFTEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTWindowType_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTWindowType_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FFTWindowType_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTFrameOverlap_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTFrameOverlap_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FFTFrameOverlap_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTFrameSize_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTFrameSize_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FFTFrameSize_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_FFTSmoothFactor_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_FFTSmoothFactor_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FFTSmoothFactor_RBVPV;
 
 
 
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 
 };

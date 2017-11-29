@@ -87,7 +87,7 @@ public:
     size_t getCoupling();
     size_t getSignalRef();
     size_t getGround();
-
+    size_t getNumberOfPushedDataBlocks();
 
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     void setAmplitude(const timespec& timestamp, const double& value);
@@ -118,7 +118,7 @@ protected:
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
      */
-    stateChange_t m_onStartDelegate;
+    stateChange_t m_OnStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time. Executed
@@ -128,34 +128,34 @@ protected:
      *
      * Use setStartTimestampDelegate() to change the delegate function.
      */
-    getTimestampPlugin_t m_startTimestampFunction;
+    getTimestampPlugin_t m_StartTimestampFunction;
 
     /**
      * @brief Generation start time. Retrieved during onStart() via the delegate
      *        function declared in  m_startTimestampFunction.
      */
-    timespec m_startTime;
+    timespec m_StartTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_data_PV;
-    std::shared_ptr<PVVariableOutImpl<T> > m_data_AWG;
+    std::shared_ptr<PVVariableInImpl<T> > m_Data_PV;
+    std::shared_ptr<PVVariableOutImpl<T> > m_DataAWG_PV;
 
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_frequency_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_frequency_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Frequency_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Frequency_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_RefFrequency_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_RefFrequency_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_amplitude_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_amplitude_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Amplitude_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Amplitude_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_phase_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_phase_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Phase_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Phase_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_updateRate_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_updateRate_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_UpdateRate_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_UpdateRate_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_DutyCycle_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_DutyCycle_RBVPV;
@@ -163,8 +163,8 @@ protected:
     std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Gain_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_offset_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_offset_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_Bandwidth_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
@@ -181,15 +181,15 @@ protected:
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalRefType_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SignalRefType_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_signalType_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_signalType_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalType_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SignalType_RBVPV;
 
 	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Ground_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Ground_RBVPV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 };
 
