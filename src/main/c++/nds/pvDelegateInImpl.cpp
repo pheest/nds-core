@@ -55,7 +55,8 @@ template class PVDelegateInImpl<std::vector<std::uint8_t> >;
 template class PVDelegateInImpl<std::vector<std::int32_t> >;
 template class PVDelegateInImpl<std::vector<double> >;
 template class PVDelegateInImpl<std::string>;
-
+template class PVDelegateInImpl<timespec>;
+template class PVDelegateInImpl<std::vector<timespec>>;
 }
 
 

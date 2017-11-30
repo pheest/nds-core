@@ -14,6 +14,8 @@
 namespace nds
 {
 
+///////////////////////////////////////// TIME SUPPORT /////////////////////////////////////////
+
 template <typename T>
 TimeSupp<T>::TimeSupp(): Node()
 {
@@ -29,42 +31,189 @@ TimeSupp<T>::TimeSupp(): Node()
 template <typename T>
 TimeSupp<T>::TimeSupp(
         const std::string& name,
+		size_t maxElements,
+        stateChange_t switchOnFunction,
+        stateChange_t switchOffFunction,
+        stateChange_t startFunction,
+        stateChange_t stopFunction,
+        stateChange_t recoverFunction,
+        allowChange_t allowStateChangeFunction,
 		writerInt32_t PV_clkSrc_Writer,
-		readerInt32_t PV_clkSrc_Reader,
 		writerDouble_t PV_clkFreq_Writer,
-		readerDouble_t PV_clkFreq_Reader,
-		writerDouble_t PV_clkMult_Writer,
-		readerDouble_t PV_clkMult_Reader,
-		readerDouble_t PV_SyncStatus_Reader,
-		readerDouble_t PV_SecsSinceSync_Reader,
-		readerInt32_t PV_MaxSchFTEs_Reader,
-		readerInt32_t PV_PendingFTEs_Reader,
-		readerVectorInt32_t  PV_FTElevels_Reader,
-		size_t MaxElements,
+		writerInt32_t PV_clkMult_Writer,
+		writerInt32_t PV_MaxSchFTEs_Writer,
 		writerInt32_t PV_AbortAllFTEs_Writer,
-		readerInt32_t PV_AbortAllFTEs_Reader,
-		readerInt32_t PV_refTimeBase_Reader,
-		readerDouble_t PV_Time_Reader):
-    Node(std::shared_ptr<TimeSuppImpl<T> >(new TimeSuppImpl<T>(	name,
-															PV_clkSrc_Writer,
-															PV_clkSrc_Reader,
-															PV_clkFreq_Writer,
-															PV_clkFreq_Reader,
-															PV_clkMult_Writer,
-															PV_clkMult_Reader,
-															PV_SyncStatus_Reader,
-															PV_SecsSinceSync_Reader,
-															PV_MaxSchFTEs_Reader,
-															PV_PendingFTEs_Reader,
-															PV_FTElevels_Reader,
-															MaxElements,
-															PV_AbortAllFTEs_Writer,
-															PV_AbortAllFTEs_Reader,
-															PV_refTimeBase_Reader,
-															PV_Time_Reader)))
+		readerTime_t PV_Time_Reader):
+						Node(std::shared_ptr<TimeSuppImpl<T> >(new TimeSuppImpl<T>(	name,
+																maxElements,
+																switchOnFunction,
+																switchOffFunction,
+																startFunction,
+																stopFunction,
+																recoverFunction,
+																allowStateChangeFunction,
+																PV_clkSrc_Writer,
+																PV_clkFreq_Writer,
+																PV_clkMult_Writer,
+																PV_MaxSchFTEs_Writer,
+																PV_AbortAllFTEs_Writer,
+																PV_Time_Reader)))
 {
 }
 
+template <typename T>
+TimeSupp<T>::TimeSupp(const TimeSupp<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+{
+}
+
+template <typename T>
+TimeSupp<T>& TimeSupp<T>::operator=(const TimeSupp<T>& right)
+{
+    m_pImplementation = right.m_pImplementation;
+    return *this;
+}
+
+template <typename T>
+void TimeSupp<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+}
+
+template <typename T>
+void TimeSupp<T>::push(const timespec& timestamp, const T& data)
+{
+    std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+size_t TimeSupp<T>::getMaxElements()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
+timespec TimeSupp<T>::getStartTimestamp() const
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+std::vector<timespec> TimeSupp<T>::getDataFTEs()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getDataFTEs();
+}
+template <typename T>
+size_t TimeSupp<T>::getClkSrc()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getClkSrc();
+}
+template <typename T>
+size_t TimeSupp<T>::getClkFreq()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getClkFreq();
+}
+template <typename T>
+size_t TimeSupp<T>::getClkMult()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getClkMult();
+}
+template <typename T>
+size_t TimeSupp<T>::getSyncStatus()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getSyncStatus();
+}
+template <typename T>
+size_t TimeSupp<T>::getSecsSinceSync()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getSecsSinceSync();
+}
+template <typename T>
+size_t TimeSupp<T>::getMaxSchFTEs()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getMaxSchFTEs();
+}
+template <typename T>
+size_t TimeSupp<T>::getPendingFTEs()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getPendingFTEs();
+}
+template <typename T>
+std::vector<std::int32_t> TimeSupp<T>::getFTEsLevels()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getFTEsLevels();
+}
+template <typename T>
+size_t TimeSupp<T>::getAbortAllFTEs()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getAbortAllFTEs();
+}
+template <typename T>
+timespec TimeSupp<T>::getRefTimeBase()
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getRefTimeBase();
+}
+
+template <typename T>
+void TimeSupp<T>::setDataFTEs(const timespec& timestamp, const std::vector<timespec>& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setDataFTEs(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setClkSrc(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setClkSrc(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setClkFreq(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setClkFreq(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setClkMult(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setClkMult(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setSyncStatus(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setSyncStatus(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setSecsSinceSync(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setSecsSinceSync(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setMaxSchFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setMaxSchFTEs(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setPendingFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setPendingFTEs(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setFTEsLevels(const timespec& timestamp, const std::vector<std::int32_t>& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setFTEsLevels(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setAbortAllFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setAbortAllFTEs(timestamp, value);
+}
+template <typename T>
+void TimeSupp<T>::setRefTimeBase(const timespec& timestamp, const timespec& value)
+{
+    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setRefTimeBase(timestamp, value);
+}
+
+template class TimeSupp<timespec>;
+
+///////////////////////////////////////// END TIME SUPPORT /////////////////////////////////////////
+
+///////////////////////////////////////// TIMESTAMP SUPPORT /////////////////////////////////////////
 
 template <typename T>
 TimeStampSupp<T>::TimeStampSupp(): Node()
@@ -80,11 +229,25 @@ TimeStampSupp<T>::TimeStampSupp(): Node()
 template <typename T>
 TimeStampSupp<T>::TimeStampSupp(
 		 const std::string& name,
+			size_t maxElements,
+	        stateChange_t switchOnFunction,
+	        stateChange_t switchOffFunction,
+	        stateChange_t startFunction,
+	        stateChange_t stopFunction,
+	        stateChange_t recoverFunction,
+	        allowChange_t allowStateChangeFunction,
 		writerInt32_t PV_EnableTimeStamp_Writer,
 		readerInt32_t PV_EnableTimeStamp_Reader,
 		writerDouble_t PV_TimeStampEdge_Writer,
 		readerDouble_t PV_TimeStampEdge_Reader):
     Node(std::shared_ptr<TimeStampSuppImpl<T> >(new TimeStampSuppImpl<T>(name,
+																	maxElements,
+																	switchOnFunction,
+																	switchOffFunction,
+																	startFunction,
+																	stopFunction,
+																	recoverFunction,
+																	allowStateChangeFunction,
 																		PV_EnableTimeStamp_Writer,
 																		PV_EnableTimeStamp_Reader,
 																		 PV_TimeStampEdge_Writer,
@@ -92,6 +255,25 @@ TimeStampSupp<T>::TimeStampSupp(
 {
 }
 
+template <typename T>
+TimeStampSupp<T>::TimeStampSupp(const TimeStampSupp<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+{
+}
+
+template <typename T>
+TimeStampSupp<T>& TimeStampSupp<T>::operator=(const TimeStampSupp<T>& right)
+{
+    m_pImplementation = right.m_pImplementation;
+    return *this;
+}
+
+
+
+template class TimeStampSupp<std::vector<timespec>>;
+
+///////////////////////////////////////// END TIMESTAMP SUPPORT /////////////////////////////////////////
+
+///////////////////////////////////////// TRIGGER SUPPORT /////////////////////////////////////////
 
 template <typename T>
 TriggerSup<T>::TriggerSup(): Node()
@@ -169,60 +351,9 @@ TriggerSup<T>& TriggerSup<T>::operator=(const TriggerSup<T>& right)
     return *this;
 }
 
-template <typename T>
-TimeSupp<T>::TimeSupp(const TimeSupp<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
-{
-}
+template class TriggerSup<std::vector<timespec>>;
 
-template <typename T>
-TimeSupp<T>& TimeSupp<T>::operator=(const TimeSupp<T>& right)
-{
-    m_pImplementation = right.m_pImplementation;
-    return *this;
-}
+///////////////////////////////////////// END TRIGGER SUPPORT /////////////////////////////////////////
 
-template <typename T>
-void TimeSupp<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
-{
-    std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
-}
-
-
-template <typename T>
-timespec TimeSupp<T>::getStartTimestamp() const
-{
-    return std::static_pointer_cast<TimeSuppImpl<T> >(m_pImplementation)->getStartTimestamp();
-}
-
-
-template <typename T>
-TimeStampSupp<T>::TimeStampSupp(const TimeStampSupp<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
-{
-}
-
-template <typename T>
-TimeStampSupp<T>& TimeStampSupp<T>::operator=(const TimeStampSupp<T>& right)
-{
-    m_pImplementation = right.m_pImplementation;
-    return *this;
-}
-
-
-
-template class TimeSupp<std::int32_t>;
-template class TimeSupp<double>;
-template class TimeSupp<std::vector<std::int8_t> >;
-template class TimeSupp<std::vector<std::uint8_t> >;
-template class TimeSupp<std::vector<std::int32_t> >;
-template class TimeSupp<std::vector<double> >;
-template class TimeSupp<std::string >;
-
-template class TimeStampSupp<std::int32_t>;
-template class TimeStampSupp<double>;
-template class TimeStampSupp<std::vector<std::int8_t> >;
-template class TimeStampSupp<std::vector<std::uint8_t> >;
-template class TimeStampSupp<std::vector<std::int32_t> >;
-template class TimeStampSupp<std::vector<double> >;
-template class TimeStampSupp<std::string >;
 
 }

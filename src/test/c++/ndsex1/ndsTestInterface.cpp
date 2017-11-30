@@ -93,7 +93,14 @@ void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& 
 {
     storePushedData(pv.getFullExternalName(), m_pushedString, timestamp, value);
 }
-
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value)
+{
+    storePushedData(pv.getFullExternalName(), m_pushedTimespec, timestamp, value);
+}
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value)
+{
+    storePushedData(pv.getFullExternalName(), m_pushedVectorTimespec, timestamp, value);
+}
 
 
 template<typename T>
@@ -114,6 +121,8 @@ template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint8
 template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int32_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int32_t>* value);
 template void TestControlSystemInterfaceImpl::readCSValue<std::vector<double> >(const std::string& pvName, timespec* timestamp, std::vector<double>* value);
 template void TestControlSystemInterfaceImpl::readCSValue<std::string>(const std::string& pvName, timespec* timestamp, std::string* value);
+template void TestControlSystemInterfaceImpl::readCSValue<timespec>(const std::string& pvName, timespec* timestamp, timespec* value);
+template void TestControlSystemInterfaceImpl::readCSValue<std::vector<timespec>>(const std::string& pvName, timespec* timestamp, std::vector<timespec>* value);
 
 
 template<typename T>
@@ -134,6 +143,8 @@ template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint
 template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int32_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int32_t>& value);
 template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<double> >(const std::string& pvName, const timespec& timestamp, const std::vector<double>& value);
 template void TestControlSystemInterfaceImpl::writeCSValue<std::string>(const std::string& pvName, const timespec& timestamp, const std::string& value);
+template void TestControlSystemInterfaceImpl::writeCSValue<timespec>(const std::string& pvName, const timespec& timestamp, const timespec& value);
+template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<timespec>>(const std::string& pvName, const timespec& timestamp, const std::vector<timespec>& value);
 
 
 void TestControlSystemInterfaceImpl::getPushedInt32(const std::string& pvName, const timespec*& pTime, const std::int32_t*& pValue)
@@ -169,6 +180,16 @@ void TestControlSystemInterfaceImpl::getPushedVectorDouble(const std::string& pv
 void TestControlSystemInterfaceImpl::getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue)
 {
     return getPushedData(pvName, m_pushedString, pTime, pValue);
+}
+
+void TestControlSystemInterfaceImpl::getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue)
+{
+    return getPushedData(pvName, m_pushedTimespec, pTime, pValue);
+}
+
+void TestControlSystemInterfaceImpl::getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue)
+{
+    return getPushedData(pvName, m_pushedVectorTimespec, pTime, pValue);
 }
 
 }

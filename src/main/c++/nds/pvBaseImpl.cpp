@@ -71,7 +71,14 @@ void PVBaseImpl::read(timespec* /* pTimestamp */, std::string* /* pValue */) con
 {
     throw;
 }
-
+void PVBaseImpl::read(timespec* /* pTimestamp */, timespec* /* pValue */) const
+{
+    throw;
+}
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<timespec>* /* pValue */) const
+{
+    throw;
+}
 
 /*
  * Write functions for all the supported data types
@@ -115,7 +122,14 @@ void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::string& /* v
 {
     throw;
 }
-
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const timespec& /* value */)
+{
+    throw;
+}
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<timespec>& /* value */)
+{
+    throw;
+}
 
 /*
  * Set the description for the PV

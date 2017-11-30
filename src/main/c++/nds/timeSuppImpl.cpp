@@ -22,113 +22,351 @@ namespace nds
 {
 
 template<typename T>
-TimeSuppImpl<T>::TimeSuppImpl(
-        const std::string& name,
-		writerInt32_t PV_clkSrc_Writer,
-		readerInt32_t PV_clkSrc_Reader,
-		writerDouble_t PV_clkFreq_Writer,
-		readerDouble_t PV_clkFreq_Reader,
-		writerDouble_t PV_clkMult_Writer,
-		readerDouble_t PV_clkMult_Reader,
-		readerDouble_t PV_SyncStatus_Reader,
-		readerDouble_t PV_SecsSinceSync_Reader,
-		readerInt32_t PV_MaxSchFTEs_Reader,
-		readerInt32_t PV_PendingFTEs_Reader,
-		readerVectorInt32_t  PV_FTElevels_Reader,
-		size_t MaxElements,
-		writerInt32_t PV_AbortAllFTEs_Writer,
-		readerInt32_t PV_AbortAllFTEs_Reader,
-		readerInt32_t PV_refTimeBase_Reader,
-		readerDouble_t PV_Time_Reader):
+TimeSuppImpl<T>::TimeSuppImpl(	const std::string& name,
+								size_t maxElements,
+								stateChange_t switchOnFunction,
+								stateChange_t switchOffFunction,
+								stateChange_t startFunction,
+								stateChange_t stopFunction,
+								stateChange_t recoverFunction,
+								allowChange_t allowStateChangeFunction,
+								writerInt32_t PV_clkSrc_Writer,
+								writerDouble_t PV_clkFreq_Writer,
+								writerInt32_t PV_clkMult_Writer,
+								writerInt32_t PV_MaxSchFTEs_Writer,
+								writerInt32_t PV_AbortAllFTEs_Writer,
+								readerTime_t PV_Time_Reader):
     NodeImpl(name, nodeType_t::dataSourceChannel),
-    m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+	m_OnStartDelegate(startFunction),
+    m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-	m_clkSrc_PV.reset(new PVDelegateOutImpl<std::int32_t>("clkSrc",PV_clkSrc_Writer));
-	m_clkSrc_PV->setDescription("Clock Source");
-	addChild(m_clkSrc_PV);
+	m_Time_PV.reset(new PVDelegateInImpl<T>("Time",PV_Time_Reader));
+	m_Time_PV->setDescription("Time provided by the timing board");
+	m_Time_PV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_Time_PV);
 
-	m_clkSrc_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("clkSrc_RBV",PV_clkSrc_Reader));
-	m_clkSrc_RBVPV->setDescription("Clock Source ReadBack");
-	m_clkSrc_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_clkSrc_RBVPV);
+    m_DataFTEs_PV.reset(new PVVariableOutImpl<std::vector<T>>("DataFTEs"));
+	m_DataFTEs_PV->setDescription("DataFTEs");
+	m_DataFTEs_PV->setScanType(scanType_t::passive, 0);
+	m_DataFTEs_PV->setMaxElements(maxElements);
+    addChild(m_DataFTEs_PV);
 
-	m_clkFreq_PV.reset(new PVDelegateOutImpl<double>("clkFreq",PV_clkFreq_Writer));
-	m_clkFreq_PV->setDescription("Clock Freq");
-	addChild(m_clkFreq_PV);
+    m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_Decimation_PV->setDescription("Decimation");
+    m_Decimation_PV->setScanType(scanType_t::passive, 0);
+    m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_Decimation_PV);
 
-	m_clkFreq_RBVPV.reset(new PVDelegateInImpl<double>("clkFreq_RBV",PV_clkFreq_Reader));
-	m_clkFreq_RBVPV->setDescription("Clock Freq ReadBack");
-	m_clkFreq_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_clkFreq_RBVPV);
+	m_ClkSrc_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkSrc",PV_clkSrc_Writer));
+	m_ClkSrc_PV->setDescription("Clock Source");
+	m_ClkSrc_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_ClkSrc_PV);
 
-	m_clkMult_PV.reset(new PVDelegateOutImpl<double>("clkMult",PV_clkMult_Writer));
-	m_clkMult_PV->setDescription("Clock Multiplier");
-	addChild(m_clkMult_PV);
+	m_ClkSrc_RBVPV.reset(new PVVariableInImpl<std::int32_t>("clkSrc_RBV"));
+	m_ClkSrc_RBVPV->setDescription("Clock Source ReadBack");
+	m_ClkSrc_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkSrc_RBVPV);
 
-	m_clkMult_RBVPV.reset(new PVDelegateInImpl<double>("clkMult_RBV",PV_clkMult_Reader));
-	m_clkMult_RBVPV->setDescription("Clock Multiplier ReadBack");
-	m_clkMult_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_clkMult_RBVPV);
+	m_ClkFreq_PV.reset(new PVDelegateOutImpl<double>("ClkFreq",PV_clkFreq_Writer));
+	m_ClkFreq_PV->setDescription("Clock Frequency");
+	m_ClkFreq_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_ClkFreq_PV);
 
-	m_SyncStatus_PV.reset(new PVDelegateInImpl<double>("SyncStatus",PV_SyncStatus_Reader));
+	m_ClkFreq_RBVPV.reset(new PVVariableInImpl<double>("ClkFreq_RBV"));
+	m_ClkFreq_RBVPV->setDescription("Clock Freq ReadBack");
+	m_ClkFreq_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkFreq_RBVPV);
+
+	m_ClkMult_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkMult",PV_clkMult_Writer));
+	m_ClkMult_PV->setDescription("Clock Multiplier");
+	m_ClkMult_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_ClkMult_PV);
+
+	m_ClkMult_RBVPV.reset(new PVVariableInImpl<std::int32_t>("clkMult_RBV"));
+	m_ClkMult_RBVPV->setDescription("Clock Multiplier ReadBack");
+	m_ClkMult_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkMult_RBVPV);
+
+	m_SyncStatus_PV.reset(new PVVariableInImpl<std::int32_t>("SyncStatus"));
 	m_SyncStatus_PV->setDescription("Sync Status");
 	m_SyncStatus_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SyncStatus_PV);
 
-	m_SecsSinceSync_PV.reset(new PVDelegateInImpl<double>("SecsSinceSync",PV_SecsSinceSync_Reader));
+	m_SecsSinceSync_PV.reset(new PVVariableInImpl<std::int32_t>("SecsSinceSync"));
 	m_SecsSinceSync_PV->setDescription("Seconds Since last Sync");
 	m_SecsSinceSync_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SecsSinceSync_PV);
 
-	m_MaxSchFTEs_PV.reset(new PVDelegateInImpl<std::int32_t>("MaxSchFTEs",PV_MaxSchFTEs_Reader));
+	m_MaxSchFTEs_PV.reset(new PVDelegateOutImpl<std::int32_t>("MaxSchFTEs",PV_MaxSchFTEs_Writer));
 	m_MaxSchFTEs_PV->setDescription("Max Scheduled FTEs");
-	m_MaxSchFTEs_PV->setScanType(scanType_t::interrupt, 0);
+	m_MaxSchFTEs_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_MaxSchFTEs_PV);
 
-	m_PendingFTEs_PV.reset(new PVDelegateInImpl<std::int32_t>("PendingFTEs",PV_PendingFTEs_Reader));
+	m_MaxSchFTEs_RBVPV.reset(new PVVariableInImpl<std::int32_t>("MaxSchFTEs_RBV"));
+	m_MaxSchFTEs_RBVPV->setDescription("Max Scheduled FTEs Readback");
+	m_MaxSchFTEs_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_MaxSchFTEs_RBVPV);
+
+	m_PendingFTEs_PV.reset(new PVVariableInImpl<std::int32_t>("PendingFTEs"));
 	m_PendingFTEs_PV->setDescription("Pending Number of FTEs");
 	m_PendingFTEs_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_PendingFTEs_PV);
 
-	m_FTElevels_PV.reset(new PVDelegateInImpl<std::vector<std::int32_t>>("FTElevels",PV_FTElevels_Reader));
-	m_FTElevels_PV->setDescription("FTE Levels");
-	m_FTElevels_PV->setScanType(scanType_t::interrupt, 0);
-	m_FTElevels_PV->setMaxElements(MaxElements);
-	addChild(m_FTElevels_PV);
+	m_FTEsLevels_PV.reset(new PVVariableOutImpl<std::vector<std::int32_t>>("FTEslevels"));
+	m_FTEsLevels_PV->setDescription("FTEs Levels");
+	m_FTEsLevels_PV->setScanType(scanType_t::passive, 0);
+	m_FTEsLevels_PV->setMaxElements(maxElements);
+	addChild(m_FTEsLevels_PV);
 
 	m_AbortAllFTEs_PV.reset(new PVDelegateOutImpl<std::int32_t>("AbortAllFTEs",PV_AbortAllFTEs_Writer));
 	m_AbortAllFTEs_PV->setDescription("Abort All FTEs");
+	m_AbortAllFTEs_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_AbortAllFTEs_PV);
 
-	m_AbortAllFTEs_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("AbortAllFTEs_RBV",PV_AbortAllFTEs_Reader));
-	m_AbortAllFTEs_RBVPV->setDescription("Abort All FTEs");
+	m_AbortAllFTEs_RBVPV.reset(new PVVariableInImpl<std::int32_t>("AbortAllFTEs_RBV"));
+	m_AbortAllFTEs_RBVPV->setDescription("Abort All FTEs Readback");
 	m_AbortAllFTEs_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_AbortAllFTEs_RBVPV);
 
-	m_refTimeBase_PV.reset(new PVDelegateInImpl<std::int32_t>("refTimeBase",PV_refTimeBase_Reader));
-	m_refTimeBase_PV->setDescription("Reference Time Base");
-	m_refTimeBase_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_refTimeBase_PV);
+	m_RefTimeBase_PV.reset(new PVVariableInImpl<timespec>("refTimeBase"));
+	m_RefTimeBase_PV->setDescription("Reference Time Base");
+	m_RefTimeBase_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_RefTimeBase_PV);
 
-	m_Time_PV.reset(new PVDelegateInImpl<double>("Time",PV_Time_Reader));
-	m_Time_PV->setDescription("Retrieve Time");
-	m_Time_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_Time_PV);
-
+    // Add state machine
+    m_StateMachine.reset(new StateMachineImpl(true,
+                                   switchOnFunction,
+                                   switchOffFunction,
+                                   std::bind(&TimeSuppImpl::onStart, this),
+                                   stopFunction,
+                                   recoverFunction,
+                                   allowStateChangeFunction));
+    addChild(m_StateMachine);
 }
 
 template<typename T>
-TimeStampSuppImpl<T>::TimeStampSuppImpl(
-		 const std::string& name,
-		writerInt32_t PV_EnableTimeStamp_Writer,
-		readerInt32_t PV_EnableTimeStamp_Reader,
-		writerDouble_t PV_TimeStampEdge_Writer,
-		readerDouble_t PV_TimeStampEdge_Reader):
-    NodeImpl(name, nodeType_t::dataSourceChannel)
+timespec TimeSuppImpl<T>::getStartTimestamp() const
+{
+    return m_StartTime;
+}
+
+template<typename T>
+void TimeSuppImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    m_StartTimestampFunction = timestampDelegate;
+}
+
+template<typename T>
+void TimeSuppImpl<T>::push(const timespec& timestamp, const T& data)
+{
+	m_Time_PV->push(timestamp, data);
+}
+
+template<typename T>
+size_t TimeSuppImpl<T>::getMaxElements()
+{
+    return m_DataFTEs_PV->getMaxElements();
+}
+
+template<typename T>
+void TimeSuppImpl<T>::onStart()
+{
+    m_StartTime = m_StartTimestampFunction();
+    m_Time_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    m_OnStartDelegate();
+}
+
+template<typename T>
+std::vector<timespec> TimeSuppImpl<T>::getDataFTEs()
+{
+	std::vector<timespec> DataFTEs;
+	timespec timestamp;
+	m_DataFTEs_PV->read(&timestamp, &DataFTEs);
+	return (std::vector<timespec>)DataFTEs;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getClkSrc()
+{
+	std::int32_t ClkSrc;
+	timespec timestamp;
+	m_ClkSrc_RBVPV->read(&timestamp, &ClkSrc);
+	return (std::int32_t)ClkSrc;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getClkFreq()
+{
+	double ClkFreq;
+	timespec timestamp;
+	m_ClkFreq_RBVPV->read(&timestamp, &ClkFreq);
+	return (double)ClkFreq;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getClkMult()
+{
+	std::int32_t ClkMult;
+	timespec timestamp;
+	m_ClkMult_RBVPV->read(&timestamp, &ClkMult);
+	return (std::int32_t)ClkMult;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getSyncStatus()
+{
+	std::int32_t SyncStatus;
+	timespec timestamp;
+	m_SyncStatus_PV->read(&timestamp, &SyncStatus);
+	return (std::int32_t)SyncStatus;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getSecsSinceSync()
+{
+	std::int32_t SecsSinceSync;
+	timespec timestamp;
+	m_SecsSinceSync_PV->read(&timestamp, &SecsSinceSync);
+	return (std::int32_t)SecsSinceSync;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getMaxSchFTEs()
+{
+	std::int32_t MaxSchFTEs;
+	timespec timestamp;
+	m_MaxSchFTEs_RBVPV->read(&timestamp, &MaxSchFTEs);
+	return (std::int32_t)MaxSchFTEs;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getPendingFTEs()
+{
+	std::int32_t PendingFTEs;
+	timespec timestamp;
+	m_PendingFTEs_PV->read(&timestamp, &PendingFTEs);
+	return (std::int32_t)PendingFTEs;
+}
+template<typename T>
+std::vector<std::int32_t> TimeSuppImpl<T>::getFTEsLevels()
+{
+	std::vector<std::int32_t> FTEsLevels;
+	timespec timestamp;
+	m_FTEsLevels_PV->read(&timestamp, &FTEsLevels);
+	return (std::vector<std::int32_t>)FTEsLevels;
+}
+template<typename T>
+size_t TimeSuppImpl<T>::getAbortAllFTEs()
+{
+	std::int32_t AbortAllFTEs;
+	timespec timestamp;
+	m_AbortAllFTEs_RBVPV->read(&timestamp, &AbortAllFTEs);
+	return (std::int32_t)AbortAllFTEs;
+}
+template<typename T>
+timespec TimeSuppImpl<T>::getRefTimeBase()
+{
+	timespec RefTimeBase;
+	timespec timestamp;
+	m_RefTimeBase_PV->read(&timestamp, &RefTimeBase);
+	return (timespec)RefTimeBase;
+}
+template<typename T>
+void TimeSuppImpl<T>::setDataFTEs(const timespec& timestamp, const std::vector<timespec>& value)
+{
+	//m_DataFTEs_PV->setValue(timestamp, value);
+	//m_DataFTEs_PV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setClkSrc(const timespec& timestamp, const std::int32_t& value)
+{
+	m_ClkSrc_RBVPV->setValue(timestamp, value);
+	m_ClkSrc_RBVPV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setClkFreq(const timespec& timestamp, const double& value)
+{
+	m_ClkFreq_RBVPV->setValue(timestamp, value);
+	m_ClkFreq_RBVPV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setClkMult(const timespec& timestamp, const std::int32_t& value)
+{
+	m_ClkMult_RBVPV->setValue(timestamp, value);
+	m_ClkMult_RBVPV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setSyncStatus(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SyncStatus_PV->setValue(timestamp, value);
+	m_SyncStatus_PV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setSecsSinceSync(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SecsSinceSync_PV->setValue(timestamp, value);
+	m_SecsSinceSync_PV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setMaxSchFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+	m_MaxSchFTEs_RBVPV->setValue(timestamp, value);
+	m_MaxSchFTEs_RBVPV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setPendingFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+	m_PendingFTEs_PV->setValue(timestamp, value);
+	m_PendingFTEs_PV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setFTEsLevels(const timespec& timestamp, const std::vector<std::int32_t>& value)
+{
+	//m_FTEsLevels_PV->setValue(timestamp, value);
+	//m_FTEsLevels_PV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setAbortAllFTEs(const timespec& timestamp, const std::int32_t& value)
+{
+	m_AbortAllFTEs_RBVPV->setValue(timestamp, value);
+	m_AbortAllFTEs_RBVPV->push(timestamp, value);
+}
+template<typename T>
+void TimeSuppImpl<T>::setRefTimeBase(const timespec& timestamp, const timespec& value)
+{
+	m_RefTimeBase_PV->setValue(timestamp, value);
+	m_RefTimeBase_PV->push(timestamp, value);
+}
+
+template class TimeSuppImpl<timespec> ;
+
+
+template<typename T>
+TimeStampSuppImpl<T>::TimeStampSuppImpl( 	const std::string& name,
+											size_t maxElements,
+											stateChange_t switchOnFunction,
+											stateChange_t switchOffFunction,
+											stateChange_t startFunction,
+											stateChange_t stopFunction,
+											stateChange_t recoverFunction,
+											allowChange_t allowStateChangeFunction,
+											writerInt32_t PV_EnableTimeStamp_Writer,
+											readerInt32_t PV_EnableTimeStamp_Reader,
+											writerDouble_t PV_TimeStampEdge_Writer,
+											readerDouble_t PV_TimeStampEdge_Reader):
+    NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(startFunction),
+    m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_EnableTimeStamp_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableTimeStamp",PV_EnableTimeStamp_Writer));
+	m_DataTimeStamps_PV.reset(new PVVariableInImpl<T>("DataTimeStamps"));
+	m_DataTimeStamps_PV->setMaxElements(maxElements);
+	m_DataTimeStamps_PV->setDescription("Data timestamps acquired");
+	m_DataTimeStamps_PV->setScanType(scanType_t::passive, 0);
+    addChild(m_DataTimeStamps_PV);
+
+    m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_Decimation_PV->setDescription("Decimation");
+    m_Decimation_PV->setScanType(scanType_t::passive, 0);
+    m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_Decimation_PV);
+
+
+	m_EnableTimeStamp_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableTimeStamp",PV_EnableTimeStamp_Writer));
     m_EnableTimeStamp_PV->setDescription("Enable TimeStamp");
 	addChild(m_EnableTimeStamp_PV);
 
@@ -146,7 +384,51 @@ TimeStampSuppImpl<T>::TimeStampSuppImpl(
 	m_TimeStampEdge_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TimeStampEdge_RBVPV);
 
+	// Add state machine
+	    m_StateMachine.reset(new StateMachineImpl(true,
+	                                   switchOnFunction,
+	                                   switchOffFunction,
+	                                   std::bind(&TimeStampSuppImpl::onStart, this),
+	                                   stopFunction,
+	                                   recoverFunction,
+	                                   allowStateChangeFunction));
+	    addChild(m_StateMachine);
+
 }
+
+template<typename T>
+timespec TimeStampSuppImpl<T>::getStartTimestamp() const
+{
+    return m_StartTime;
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    m_StartTimestampFunction = timestampDelegate;
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::push(const timespec& timestamp, const T& data)
+{
+	m_DataTimeStamps_PV->push(timestamp, data);
+}
+
+template<typename T>
+size_t TimeStampSuppImpl<T>::getMaxElements()
+{
+    return m_DataTimeStamps_PV->getMaxElements();
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::onStart()
+{
+    m_StartTime = m_StartTimestampFunction();
+    m_DataTimeStamps_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    m_OnStartDelegate();
+}
+
+template class TimeStampSuppImpl<std::vector<timespec>>;
 
 template<typename T>
 TriggerSuppImpl<T>::TriggerSuppImpl(
@@ -300,43 +582,7 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 
 }
 
+template class TriggerSuppImpl<std::vector<timespec>>;
 
-template<typename T>
-timespec TimeSuppImpl<T>::getStartTimestamp() const
-{
-    return m_startTime;
-}
-
-template<typename T>
-void TimeSuppImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
-{
-    m_startTimestampFunction = timestampDelegate;
-}
-
-
-template class TimeSuppImpl<std::int32_t>;
-template class TimeSuppImpl<double>;
-template class TimeSuppImpl<std::vector<std::int8_t> >;
-template class TimeSuppImpl<std::vector<std::uint8_t> >;
-template class TimeSuppImpl<std::vector<std::int32_t> >;
-template class TimeSuppImpl<std::vector<double> >;
-template class TimeSuppImpl<std::string >;
-
-
-template class TimeStampSuppImpl<std::int32_t>;
-template class TimeStampSuppImpl<double>;
-template class TimeStampSuppImpl<std::vector<std::int8_t> >;
-template class TimeStampSuppImpl<std::vector<std::uint8_t> >;
-template class TimeStampSuppImpl<std::vector<std::int32_t> >;
-template class TimeStampSuppImpl<std::vector<double> >;
-template class TimeStampSuppImpl<std::string >;
-
-template class TriggerSuppImpl<std::int32_t>;
-template class TriggerSuppImpl<double>;
-template class TriggerSuppImpl<std::vector<std::int8_t> >;
-template class TriggerSuppImpl<std::vector<std::uint8_t> >;
-template class TriggerSuppImpl<std::vector<std::int32_t> >;
-template class TriggerSuppImpl<std::vector<double> >;
-template class TriggerSuppImpl<std::string >;
 
 }

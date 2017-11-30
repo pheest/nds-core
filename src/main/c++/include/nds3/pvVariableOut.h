@@ -45,6 +45,8 @@ namespace nds
  *            - std::vector<std::int32_t>
  *            - std::vector<double>
  *            - std::string
+ *            - timespec
+ *            - std::vector<timespec>
  */
 template <typename T>
 class NDS3_API PVVariableOut: public PVBaseOut

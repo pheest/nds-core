@@ -86,6 +86,16 @@ void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::string* /* pValue */) 
     throw;
 }
 
+void PVBaseOutImpl::read(timespec* /* pTimestamp */, timespec* /* pValue */) const
+{
+    throw;
+}
+
+void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<timespec>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::int32_t& /* value */)
 {
     throw;
@@ -126,6 +136,15 @@ void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<do
 }
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::string& /* value */)
+{
+    throw;
+}
+
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const timespec& /* value */)
+{
+    throw;
+}
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<timespec>& /* value */)
 {
     throw;
 }

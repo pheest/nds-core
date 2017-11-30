@@ -152,7 +152,7 @@ TEST(testDigitalIO, testPushData)
 				pushData[scanVector] = readCount;
 			}
 
-			pInterface->getPushedVectorUint8("/rootNode-DigitalIONode.dataIn", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorUint8("/rootNode-DigitalIONode.DataIn", pTime, pRetrievedPushedValues);
 			++readCount;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)

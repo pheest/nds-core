@@ -52,6 +52,8 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
+    virtual void read(timespec* pTimestamp, timespec* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<timespec>* pValue) const;
 
     virtual void write(const timespec& timestamp, const std::int32_t& value);
     virtual void write(const timespec& timestamp, const double& value);
@@ -60,6 +62,8 @@ public:
     virtual void write(const timespec& timestamp, const std::vector<std::int32_t>& value);
     virtual void write(const timespec& timestamp, const std::vector<double>& value);
     virtual void write(const timespec& timestamp, const std::string& value);
+    virtual void write(const timespec& timestamp, const timespec& value);
+    virtual void write(const timespec& timestamp, const std::vector<timespec>& value);
 
     virtual dataDirection_t getDataDirection() const;
 

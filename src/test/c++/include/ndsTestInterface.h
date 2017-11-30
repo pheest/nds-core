@@ -36,6 +36,9 @@ public:
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value);
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value);
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value);
+
 
     template<typename T>
     void readCSValue(const std::string& pvName, timespec* pTimestamp, T* pValue);
@@ -50,6 +53,8 @@ public:
     void getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue);
     void getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue);
     void getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue);
+    void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue);
+    void getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue);
 
 private:
     const std::string m_name;
@@ -100,6 +105,9 @@ private:
     std::map<std::string, PushedValues<std::vector<std::int32_t> > >m_pushedVectorInt32;
     std::map<std::string, PushedValues<std::vector<double> > >m_pushedVectorDouble;
     std::map<std::string, PushedValues<std::string> >m_pushedString;
+    std::map<std::string, PushedValues<timespec> >m_pushedTimespec;
+    std::map<std::string, PushedValues<std::vector<timespec>> >m_pushedVectorTimespec;
+
 
     template <typename T>
     void storePushedData(const std::string& pvName,
