@@ -1,19 +1,20 @@
 CXX = g++
  
-CXXFLAGS = -std=c++0x -g -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/opt/codac/include -I/usr/include/boost/regex
+CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/opt/codac/include
 LDFLAGS = -L../../../../lib -L/opt/codac/lib
 
 TARGETDIR = ../../../../lib
+# Flags passed to gcc during linking
 LINK = -shared -fPIC -Wl,-as-needed
-
-# Name of the device library
-TARGET = libnds3-dev-devicesimulator.so
-
+ 
+# Name of the nds library
+TARGET = libnds3-dev-testDevice.so
+ 
 # Additional linker libraries
-LIBS = -lnds3  -lboost_regex
+LIBS = -lnds3
  
 # Source code files used in this project
-SRCS = DeviceSimulator.cpp
+SRCS = testDevice.cpp 
  
 OBJS = $(SRCS:.cpp=.o)
 
@@ -23,8 +24,8 @@ all: $(TARGETDIR)/$(TARGET)
 $(TARGETDIR)/$(TARGET): $(OBJS)
 	mkdir -p $(TARGETDIR)
 	$(CXX) $(LINK) $(LDFLAGS) -o $@ $^ $(LIBS)
-
+ 
 .PHONY: clean
 clean:
 	$(RM) $(TARGET) $(OBJS)
-
+ 

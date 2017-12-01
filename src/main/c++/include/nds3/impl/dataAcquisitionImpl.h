@@ -13,6 +13,8 @@
 #include <memory>
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
+#include "nds3/impl/pvDelegateOutImpl.h"
+#include "nds3/impl/pvDelegateInImpl.h"
 
 namespace nds
 {
@@ -26,13 +28,23 @@ class DataAcquisitionImpl: public NodeImpl
 {
 public:
     DataAcquisitionImpl(const std::string& name,
-                    size_t maxElements,
-                    stateChange_t switchOnFunction,
-                    stateChange_t switchOffFunction,
-                    stateChange_t startFunction,
-                    stateChange_t stopFunction,
-                    stateChange_t recoverFunction,
-                    allowChange_t allowStateChangeFunction);
+            size_t maxElements,
+            stateChange_t switchOnFunction,
+            stateChange_t switchOffFunction,
+            stateChange_t startFunction,
+            stateChange_t stopFunction,
+            stateChange_t recoverFunction,
+            allowChange_t allowStateChangeFunction,
+    		writerDouble_t PV_Gain_Writer,
+    		writerDouble_t PV_Offset_Writer,
+    		writerDouble_t PV_Bandwidth_Writer,
+    		writerDouble_t PV_Resolution_Writer,
+    		writerDouble_t PV_Impedance_Writer,
+    		writerInt32_t PV_Coupling_Writer,
+    		writerInt32_t PV_SignalRefType_Writer,
+    		writerInt32_t PV_Ground_Writer,
+			writerInt32_t PV_DMAEnable_Writer
+			);
 
     /**
      * @brief Specifies the function to call to get the acquisition start timestamp.
@@ -48,14 +60,40 @@ public:
 
     void push(const timespec& timestamp, const T& data);
 
-    double getFrequencyHz();
-    double getDurationSeconds();
-    double getAmplitude();
-    double getOffset();
+
     size_t getMaxElements();
-    size_t getDecimation();
-    size_t getSamplingMode();
+    size_t getGain();
+    size_t getOffset();
+    size_t getBandwidth();
+    size_t getResolution();
+    size_t getImpedance();
+    size_t getCoupling();
+    size_t getSignalRefType();
     size_t getGround();
+    size_t getNumberOfPushedDataBlocks();
+    size_t getDMABufferSize();
+    size_t getDMAEnable();
+    size_t getDMANumChannels();
+    size_t getDMAFrameType();
+    size_t getDMASampleSize();
+    size_t getDMASamplingRate();
+
+    void setGain(const timespec& timestamp, const double& value);
+    void setOffset(const timespec& timestamp, const double& value);
+    void setBandwidth(const timespec& timestamp, const double& value);
+    void setResolution(const timespec& timestamp, const double& value);
+    void setImpedance(const timespec& timestamp, const std::int32_t& value);
+    void setCoupling(const timespec& timestamp, const std::int32_t& value);
+    void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
+    void setGround(const timespec& timestamp, const std::int32_t& value);
+    void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    void setDMABufferSize(const timespec& timestamp, const double& value);
+    void setDMAEnable(const timespec& timestamp, const std::int32_t& value);
+    void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
+    void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
+    void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
+    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
+
 
     /**
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -79,7 +117,7 @@ protected:
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
      */
-    stateChange_t m_onStartDelegate;
+    stateChange_t m_OnStartDelegate;
 
     /**
      * @brief Delegate function that retrieves the start time. Executed
@@ -89,26 +127,49 @@ protected:
      *
      * Use setStartTimestampDelegate() to change the delegate function.
      */
-    getTimestampPlugin_t m_startTimestampFunction;
+    getTimestampPlugin_t m_StartTimestampFunction;
 
     /**
      * @brief Acquisition start time. Retrieved during onStart() via the delegate
      *        function declared in  m_startTimestampFunction.
      */
-    timespec m_startTime;
+    timespec m_StartTime;
 
     // PVs
-    std::shared_ptr<PVVariableInImpl<T> > m_dataPV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_frequencyPV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_durationPV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_amplitudePV;
-    std::shared_ptr<PVVariableOutImpl<double> > m_offsetPV;
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimationPV;
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_samplingmodePV;
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_groundPV;
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
 
+    std::shared_ptr<PVVariableInImpl<T> > m_Data_PV;
 
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Gain_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Bandwidth_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Resolution_RBVPV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Impedance_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Impedance_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Coupling_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Coupling_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalRefType_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SignalRefType_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Ground_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Ground_RBVPV;
+
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
+
+    std::shared_ptr<PVVariableInImpl<double> > m_DMABufferSize_PV;
+	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_DMAEnable_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAEnable_RBVPV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMANumChannels_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAFrameType_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASampleSize_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASamplingRate_PV;
 
 };
 

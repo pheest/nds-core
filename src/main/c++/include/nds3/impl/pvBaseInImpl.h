@@ -47,6 +47,8 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
+    virtual void read(timespec* pTimestamp, timespec* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<timespec>* pValue) const;
 
     /**
      * @brief Pushes data to the control system and to the subscribed PVs.

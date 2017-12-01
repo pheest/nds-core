@@ -27,13 +27,22 @@ DataAcquisition<T>::DataAcquisition(): Node()
  */
 template <typename T>
 DataAcquisition<T>::DataAcquisition(const std::string& name,
-                size_t maxElements,
-                stateChange_t switchOnFunction,
-                stateChange_t switchOffFunction,
-                stateChange_t startFunction,
-                stateChange_t stopFunction,
-                stateChange_t recoverFunction,
-                allowChange_t allowStateChangeFunction):
+									size_t maxElements,
+									stateChange_t switchOnFunction,
+									stateChange_t switchOffFunction,
+									stateChange_t startFunction,
+									stateChange_t stopFunction,
+									stateChange_t recoverFunction,
+									allowChange_t allowStateChangeFunction,
+									writerDouble_t PV_Gain_Writer,
+									writerDouble_t PV_Offset_Writer,
+									writerDouble_t PV_Bandwidth_Writer,
+									writerDouble_t PV_Resolution_Writer,
+									writerDouble_t PV_Impedance_Writer,
+									writerInt32_t PV_Coupling_Writer,
+									writerInt32_t PV_SignalRef_Writer,
+									writerInt32_t PV_Ground_Writer,
+									writerInt32_t PV_DMAEnable_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -41,7 +50,16 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
                                                                              startFunction,
                                                                              stopFunction,
                                                                              recoverFunction,
-                                                                             allowStateChangeFunction)))
+                                                                             allowStateChangeFunction,
+																			 PV_Gain_Writer,
+																	 	 	 PV_Offset_Writer,
+																	 		 PV_Bandwidth_Writer,
+																	 		 PV_Resolution_Writer,
+																	 		 PV_Impedance_Writer,
+																	 		 PV_Coupling_Writer,
+																	 		 PV_SignalRef_Writer,
+																	 		 PV_Ground_Writer,
+																			 PV_DMAEnable_Writer)))
 {
 }
 
@@ -57,6 +75,7 @@ DataAcquisition<T>& DataAcquisition<T>::operator=(const DataAcquisition<T>& righ
     return *this;
 }
 
+
 template <typename T>
 void DataAcquisition<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
@@ -70,45 +89,46 @@ void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
-double DataAcquisition<T>::getFrequencyHz()
+size_t DataAcquisition<T>::getGain()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getFrequencyHz();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGain();
 }
 
 template <typename T>
-double DataAcquisition<T>::getDurationSeconds()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDurationSeconds();
-}
-
-template <typename T>
-double DataAcquisition<T>::getAmplitude()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getAmplitude();
-}
-
-template <typename T>
-double DataAcquisition<T>::getOffset()
+size_t DataAcquisition<T>::getOffset()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getOffset();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getMaxElements()
+
+size_t DataAcquisition<T>::getBandwidth()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getBandwidth();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDecimation()
+size_t DataAcquisition<T>::getResolution()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDecimation();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getResolution();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getSamplingMode()
+size_t DataAcquisition<T>::getImpedance()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSamplingMode();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getImpedance();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getCoupling()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getCoupling();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getSignalRefType()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSignalRefType();
 }
 
 template <typename T>
@@ -118,9 +138,147 @@ size_t DataAcquisition<T>::getGround()
 }
 
 template <typename T>
+size_t DataAcquisition<T>::getMaxElements()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
 timespec DataAcquisition<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getNumberOfPushedDataBlocks()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getNumberOfPushedDataBlocks();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMABufferSize()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMABufferSize();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMAEnable()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAEnable();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMANumChannels()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMANumChannels();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMAFrameType()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAFrameType();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMASampleSize()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASampleSize();
+}
+
+template <typename T>
+size_t DataAcquisition<T>::getDMASamplingRate()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASamplingRate();
+}
+
+template <typename T>
+void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setOffset(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setOffset(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setBandwidth(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setBandwidth(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setResolution(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setResolution(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setImpedance(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setCoupling(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setCoupling(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setSignalRefType(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSignalRefType(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setGround(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGround(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const double& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMABufferSize(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMAEnable(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMAEnable(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMANumChannels(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMANumChannels(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMAFrameType(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMAFrameType(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMASampleSize(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMASampleSize(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMASamplingRate(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;
@@ -129,7 +287,6 @@ template class DataAcquisition<std::vector<std::int8_t> >;
 template class DataAcquisition<std::vector<std::uint8_t> >;
 template class DataAcquisition<std::vector<std::int32_t> >;
 template class DataAcquisition<std::vector<double> >;
-template class DataAcquisition<std::string >;
 
 
 }

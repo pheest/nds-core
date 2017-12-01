@@ -54,6 +54,8 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
+    virtual void read(timespec* pTimestamp, timespec* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<timespec>* pValue) const;
 
     /**
      * @brief Called when the control system wants to write a value.
@@ -70,6 +72,8 @@ public:
     virtual void write(const timespec& timestamp, const std::vector<std::int32_t>& value);
     virtual void write(const timespec& timestamp, const std::vector<double>& value);
     virtual void write(const timespec& timestamp, const std::string& value);
+    virtual void write(const timespec& timestamp, const timespec& value);
+    virtual void write(const timespec& timestamp, const std::vector<timespec>& value);
 
     /**
      * @brief Retrieve the data direction.
@@ -197,7 +201,9 @@ public:
                 int(std::is_same<T, std::vector<std::uint8_t> >::value) * (int)dataType_t::dataUint8Array +
                 int(std::is_same<T, std::vector<std::int32_t> >::value) * (int)dataType_t::dataInt32Array +
                 int(std::is_same<T, std::vector<double> >::value) * (int)dataType_t::dataFloat64Array +
-                int(std::is_same<T, std::string>::value) * (int)dataType_t::dataString;
+                int(std::is_same<T, std::string>::value) * (int)dataType_t::dataString +
+                int(std::is_same<T, timespec>::value) * (int)dataType_t::dataTimespec +
+                int(std::is_same<T, std::vector<timespec>>::value) * (int)dataType_t::dataTimespecArray;
 
         static_assert(type != 0, "Undefined data type");
         return(dataType_t)type;

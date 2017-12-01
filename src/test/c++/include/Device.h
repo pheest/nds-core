@@ -1,0 +1,812 @@
+#ifndef DEVICE_H_
+#define DEVICE_H_
+
+#include <memory>
+
+#include <functional>
+#include <math.h>
+#include <unistd.h>
+#include <iostream>
+#include <thread>
+
+#include <nds3/nds.h>
+
+/**
+ * @brief Class that declares and implement a fictional device for testing purposes of nds-core V3.
+ *
+ *
+ * The class does not need to be derived from any special class, but its constructor must
+ *  accept few mandatory parameters and should register the root node via Node::initialize().
+ */
+class Device
+{
+public:
+	/**
+	 * @brief Constructor.
+	 *
+	 * @param factory    the control system factory that requested the creation of the device
+	 * @param device     the name given to the device
+	 * @param parameters optional parameters passed to the device
+	 */
+	Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~Device();
+
+	/*
+	 * Allocation/deallocation
+	 *
+	 *******************************************************/
+	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
+	static void deallocateDevice(void* deviceName);
+
+	/*
+	 * For test purposes we make it possible to retrieve running instances of
+	 *  the device
+	 */
+	static Device* getInstance(const std::string& deviceName);
+
+
+private:
+
+	/*
+	 * @brief name of the device
+	 */
+	std::string m_name;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	/// Variables to store simulated data
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	std::int32_t PVVariable_value_I32, PVDelegate_value_I32;
+	double  PVVariable_value_DBL, PVDelegate_value_DBL;
+	std::vector<std::int8_t> PVVariable_vector_I8, PVDelegate_vector_I8;
+	std::vector<std::uint8_t> PVVariable_vector_UI8, PVDelegate_vector_UI8;
+	std::vector<std::int32_t> PVVariable_vector_I32, PVDelegate_vector_I32;
+	std::vector<double> PVVariable_vector_DBL, PVDelegate_vector_DBL;
+	std::string PVVariable_value_string, PVDelegate_value_string;
+
+	timespec timestamp_device, readtimeStamp;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  TEST DEVICE STATE MACHINE
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief Device state machine
+	 */
+	nds::StateMachine m_Device_stateMachine;
+
+	/**
+	 * Methods to control Device state machine
+	 */
+	void switchOn_Device();  ///< Called to switch on the Device (rootnode).
+	void switchOff_Device(); ///< Called to switch off the Device (rootnode).
+	void start_Device();     ///< Called to start the Device (rootnode).
+	void stop_Device();      ///< Called to stop the Device (rootnode).
+	void recover_Device();   ///< Called to recover the Device (rootnode) from a failure.
+
+	bool allow__Device_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DATA ACQUISITION
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief DataAcquisition node
+	 */
+	nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
+
+	/**
+	 * Methods to control DataAcquisition state machine
+	 */
+	void switchOn_DataAcquisition();  ///< Called to switch on the DataAcquisition node.
+	void switchOff_DataAcquisition(); ///< Called to switch off the DataAcquisition node.
+	void start_DataAcquisition();     ///< Called to start the DataAcquisition node.
+	void stop_DataAcquisition();      ///< Called to stop the DataAcquisition node.
+	void recover_DataAcquisition();   ///< Called to recover the DataAcquisition node from a failure.
+
+	bool allow_DataAcquisition_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * DataAcquisition setters
+	 */
+	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Function that continuously acquires data generated by m_WaveformGeneration.
+	 *        It is launched by start_DataAcquisition() in a separate thread.
+	 */
+	void DataAcquisition_thread_body();
+
+	/**
+	 * @brief A thread that runs DataAcquisition_thread_body().
+	 */
+	std::thread m_DataAcquisition_Thread;
+
+	/**
+	 * @brief A boolean flag that stop the DataAcquisition loop in DataAcquisition_thread_body()
+	 *        when true.
+	 */
+	volatile bool m_bStop_DataAcquisition;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DATA GENERATION
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief WaveformGeneration node
+	 */
+	nds::WaveformGeneration<std::vector<double>> m_WaveformGeneration;
+
+	/**
+	 * Methods to control WaveformGeneration state machine
+	 */
+	void switchOn_WaveformGeneration();  ///< Called to switch on the WaveformGeneration node.
+	void switchOff_WaveformGeneration(); ///< Called to switch off the WaveformGeneration node.
+	void start_WaveformGeneration();     ///< Called to start the WaveformGeneration node.
+	void stop_WaveformGeneration();      ///< Called to stop the WaveformGeneration node.
+	void recover_WaveformGeneration();   ///< Called to recover the WaveformGeneration node from a failure.
+
+	bool allow_WaveformGeneration_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * WaveformGeneration setters
+	 */
+	void PV_WaveformGeneration_Frequency_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_RefFrequency_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Amp_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Phase_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_UpdateRate_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_DutyCycle_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Gain_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Offset_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Bandwidth_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Resolution_Writer(const timespec& timestamp, const double& value);
+	void PV_WaveformGeneration_Impedance_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_WaveformGeneration_Coupling_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_WaveformGeneration_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_WaveformGeneration_SignalType_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_WaveformGeneration_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
+
+	 /**
+	  * @brief Function that continuously generates a sinusoidal wave to m_WaveformGeneration.
+	  *        It is launched by start_WaveformGeneration() in a separate thread.
+	  */
+	 void WaveformGeneration_thread_body();
+
+	 /**
+	  * @brief A thread that runs WaveformGeneration_thread_body().
+	  */
+	 std::thread m_WaveformGeneration_Thread;
+
+	 /**
+	  * @brief A boolean flag that stop the WaveformGeneration loop in WaveformGeneration_thread_body()
+	  *        when true.
+	  */
+	 volatile bool m_bStop_WaveformGeneration;
+
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 //  DATA PROCESSING
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	 /**
+	  * @brief DataProcessing node
+	  */
+	 nds::DataProcessing<std::vector<std::int32_t> > m_DataProcessing;
+
+	 /**
+	  * Methods to control DataProcessing state machine
+	  */
+	 void switchOn_DataProcessing();  ///< Called to switch on the DataProcessing node.
+	 void switchOff_DataProcessing(); ///< Called to switch off the DataProcessing node.
+	 void start_DataProcessing();     ///< Called to start the DataProcessing node.
+	 void stop_DataProcessing();      ///< Called to stop the DataProcessing node.
+	 void recover_DataProcessing();   ///< Called to recover the DataProcessing node from a failure.
+
+	 bool allow_DataProcessing_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	 /**
+	  * DataProcessing setters
+	  */
+	 void PV_DataProcessing_EnableFilter_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FilterType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FilterParams_Writer(const timespec& /*timestamp*/, const std::vector<std::int32_t>& params);
+	 void PV_DataProcessing_EnableFFT_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_EnableSwFFT_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FFTwindowType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FFTOverlap_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FFTFrameSize_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_FFTSmooth_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_EnableDecimation_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_DecimationType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_DecimationOffset_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_DataProcessing_RAW2Eng_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+
+	 /**
+	  * DataProcessing getters
+	  */
+	 void PV_DataProcessing_EnableFilter_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FilterType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FilterParams_Reader(timespec* /*timestamp*/, std::vector<std::int32_t>* /*value*/);
+	 void PV_DataProcessing_EnableFFT_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_EnableSwFFT_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FFTwindowType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FFTOverlap_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FFTFrameSize_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_FFTSmooth_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_EnableDecimation_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_DecimationType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_DecimationOffset_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	 void PV_DataProcessing_RAW2Eng_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+
+	 /**
+	  * @brief Function that continuously proccess data.
+	  *        It is launched by start_DataProcessing() in a separate thread.
+	  */
+	 void DataProcessing_thread_body();
+
+	 /**
+	  * @brief A thread that runs DataProcessing_thread_body().
+	  */
+	 std::thread m_DataProcessing_Thread;
+
+	 /**
+	  * @brief A boolean flag that stop the DataProcessing loop in DataProcessing_thread_body()
+	  *        when true.
+	  */
+	 volatile bool m_bStop_DataProcessing;
+
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 //  DIGITAL I/O
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	 /**
+	  * @brief DigitalIO node
+	  */
+	 nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO;
+
+	 /**
+	  * Methods to control DigitalIO state machine
+	  */
+	 void switchOn_DigitalIO();  ///< Called to switch on the DigitalIO node.
+	 void switchOff_DigitalIO(); ///< Called to switch off the DigitalIO node.
+	 void start_DigitalIO();     ///< Called to start the DigitalIO node.
+	 void stop_DigitalIO();      ///< Called to stop the DigitalIO node.
+	 void recover_DigitalIO();   ///< Called to recover the DigitalIO node from a failure.
+
+	 bool allow_DigitalIO_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	 /**
+	  * DigitalIO setters
+	  */
+	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value);
+	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value);
+	 void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int32_t& value);
+
+	 /**
+	  * @brief Function that continuously acquires digital IO data.
+	  *        It is launched by start_DigitalIO() in a separate thread.
+	  */
+	 void DigitalIO_thread_body();
+
+	 /**
+	  * @brief A thread that runs DataProcessing_thread_body().
+	  */
+	 std::thread m_DigitalIO_Thread;
+
+	 /**
+	  * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	  *        when true.
+	  */
+	 volatile bool m_bStop_DigitalIO;
+
+
+
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 //  STREAMING CONFIGURATION
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	 /**
+	  * @brief Streaming node
+	  */
+	 nds::Streaming<std::vector<std::int32_t> > m_Streaming;
+
+	 /**
+	  * Methods to control Streaming state machine
+	  */
+	 void switchOn_Streaming();  ///< Called to switch on the Streaming node.
+	 void switchOff_Streaming(); ///< Called to switch off the Streaming node.
+	 void start_Streaming();     ///< Called to start the Streaming node.
+	 void stop_Streaming();      ///< Called to stop the Streaming node.
+	 void recover_Streaming();   ///< Called to recover the Streaming node from a failure.
+
+	 bool allow_Streaming_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	 /**
+	  * Streaming setters
+	  */
+	 void PV_Streaming_BufferSize_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_Streaming_Type_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_Streaming_DataFormat_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 /**
+	  * @brief Function that continuously streams data generated.
+	  *        It is launched by start_Streaming() in a separate thread.
+	  */
+	 void Streaming_thread_body();
+
+	 /**
+	  * @brief A thread that runs Streaming_thread_body().
+	  */
+	 std::thread m_Streaming_Thread;
+
+	 /**
+	  * @brief A boolean flag that stop the Streaming loop in Streaming_thread_body()
+	  *        when true.
+	  */
+	 volatile bool m_bStop_Streaming;
+
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 //  IMAGE ACQUISITION
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	 /**
+	  * imageAcquisition node
+	  */
+	 nds::imageAcquisition<std::vector<double> > m_imageAcquisition;
+
+	 /**
+	  * Methods to control imageAcquisition state machine
+	  */
+	 void switchOn_imageAcquisition();  ///< Called to switch on the imageAcquisition node.
+	 void switchOff_imageAcquisition(); ///< Called to switch off the imageAcquisition node.
+	 void start_imageAcquisition();     ///< Called to start the imageAcquisition node.
+	 void stop_imageAcquisition();      ///< Called to stop the imageAcquisition node.
+	 void recover_imageAcquisition();   ///< Called to recover the imageAcquisition node from a failure.
+
+	 bool allow_imageAcquisition_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	 /**
+	  * imageAcquisition setters
+	  */
+	 void PV_imageAcquisition_BinX_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_BinY_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_MinX_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_MinY_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_SizeX_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_SizeY_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ReverseX_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ReverseY_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_Resolution_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_SamplesPerPixel_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_AcquireTime_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_AcquirePeriod_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_Gain_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_FrameType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_LostFrames_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ImageMode_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_TriggerMode_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_NumExposures_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_Exposure_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_minExposure_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_maxExposure_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ExposureStep_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_BlackLevel_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_NumImages_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_Acquire_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ReadStatus_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ShutterMode_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ShutterControlMode_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_DelayStep_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	 void PV_imageAcquisition_ShutterOpenDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_ShutterMinOpenDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_ShutterMaxOpenDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_ShutterCloseDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_ShutterMinCloseDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_ShutterMaxCloseDelay_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+	 void PV_imageAcquisition_HotPixels_Writer(const timespec& /*timestamp*/, const std::vector<std::int32_t>& /*value*/);
+	 void PV_imageAcquisition_HotPixelsCorr_Writer(const timespec& /*timestamp*/, const std::vector<std::int32_t>& /*value*/);
+	 void PV_imageAcquisition_Temperature_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+
+	 /**
+	  * imageAcquisition getters
+	  */
+	  void PV_imageAcquisition_MaxSizeX_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_MaxSizeY_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_BinX_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_BinY_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_MinX_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_MinY_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_SizeX_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_SizeY_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ReverseX_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ReverseY_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_Resolution_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_SamplesPerPixel_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_AcquireTime_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_AcquirePeriod_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_TimeRemaining_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_Gain_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_FrameType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_LostFrames_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ImageMode_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_TriggerMode_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_NumExposures_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_NumExposuresCounter_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_Exposure_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_minExposure_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_maxExposure_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ExposureStep_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_BlackLevel_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_NumImages_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_NumImagesCounter_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_Acquire_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_DetectorState_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_StatusMessage_Reader(timespec* /*timestamp*/, std::string* /*value*/);
+	  void PV_imageAcquisition_StringToServer_Reader(timespec* /*timestamp*/, std::string* /*value*/);
+	  void PV_imageAcquisition_StringFromServer_Reader(timespec* /*timestamp*/, std::string* /*value*/);
+	  void PV_imageAcquisition_ShutterMode_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ShutterControlMode_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ShutterStatus_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_DelayStep_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_imageAcquisition_ShutterOpenDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ShutterMinOpenDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ShutterMaxOpenDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ShutterCloseDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ShutterMinCloseDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ShutterMaxCloseDelay_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_HotPixels_Reader(timespec* /*timestamp*/, std::vector<std::int32_t>* /*value*/);
+	  void PV_imageAcquisition_HotPixelsCorr_Reader(timespec* /*timestamp*/, std::vector<std::int32_t>* /*value*/);
+	  void PV_imageAcquisition_Temperature_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_imageAcquisition_ActualTemperature_Reader(timespec* /*timestamp*/, double* /*value*/);
+
+	  /**
+	   * @brief Function that continuously acquires image data.
+	   *        It is launched by start_imageAcquisition() in a separate thread.
+	   */
+	  void imageAcquisition_thread_body();
+
+	  /**
+	   * @brief A thread that runs imageAcquisition_thread_body().
+	   */
+	  std::thread m_imageAcquisition_Thread;
+
+	  /**
+	   * @brief A boolean flag that stop the imageAcquisition loop in imageAcquisition_thread_body()
+	   *        when true.
+	   */
+	  volatile bool m_bStop_imageAcquisition;
+
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	  //  HEALTH MONITORING SUPPORT
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	  /**
+	   * @brief HealthMonitSup node
+	   */
+	  nds::HealthMonitSup<std::vector<std::int32_t> > m_HealthMonitSup;
+
+	  /**
+	   * Methods to control HealthMonitSup state machine
+	   */
+	  void switchOn_HealthMonitSup();  ///< Called to switch on the HealthMonitSup node.
+	  void switchOff_HealthMonitSup(); ///< Called to switch off the HealthMonitSup node.
+	  void start_HealthMonitSup();     ///< Called to start the HealthMonitSup node.
+	  void stop_HealthMonitSup();      ///< Called to stop the HealthMonitSup node.
+	  void recover_HealthMonitSup();   ///< Called to recover the HealthMonitSup node from a failure.
+
+	  bool allow_HealthMonitSup_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	  /**
+	   * HealthMonitSup setters
+	   */
+	  void PV_HealthMonitSup_EnableSEU_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_EnableMonitorDAQ_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_ShelfTestType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_VerboseShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+
+	  /**
+	   * HealthMonitSup getters
+	   */
+	  void PV_HealthMonitSup_DevicePower_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_HealthMonitSup_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/);
+	  void PV_HealthMonitSup_EnableSEU_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_EnableMonitorDAQ_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_ShelfTestType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_VerboseShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTestId_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_EnableShelfTestText_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+	  void PV_HealthMonitSup_SignalQualityFlagLevel_Reader(timespec* /*timestamp*/, double* /*value*/);
+
+	  /**
+	   * @brief Function that continuously acquires data related with health monitoring.
+	   *        It is launched by start_HealthMonitSup() in a separate thread.
+	   */
+	  void HealthMonitSup_thread_body();
+
+	  /**
+	   * @brief A thread that runs HealthMonitSup_thread_body().
+	   */
+	  std::thread m_HealthMonitSup_Thread;
+
+	  /**
+	   * @brief A boolean flag that stop the HealthMonitSup loop in HealthMonitSup_thread_body()
+	   *        when true.
+	   */
+	  volatile bool m_bStop_HealthMonitSup;
+
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	  //  EXTRA PVs for testing purposes
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	  /**
+	   * PVVariables In and Out for testing purposes
+	   *      - std::int32_t
+	   *      - double
+	   *      - std::vector<std::int8_t>
+	   *      - std::vector<std::uint8_t>
+	   *      - std::vector<std::int32_t>
+	   *      - std::vector<double>
+	   *      - std::string
+	   */
+	   nds::PVVariableIn<std::int32_t> m_int32_VariableIn;
+	   nds::PVVariableOut<std::int32_t> m_int32_VariableOut;
+
+	   nds::PVVariableIn<double> m_double_VariableIn;
+	   nds::PVVariableOut<double> m_double_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::int8_t>> m_vectorI8_VariableIn;
+	   nds::PVVariableOut<std::vector<std::int8_t>> m_vectorI8_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::uint8_t>> m_vectorUI8_VariableIn;
+	   nds::PVVariableOut<std::vector<std::uint8_t>> m_vectorUI8_VariableOut;
+
+	   nds::PVVariableIn<std::vector<std::int32_t>> m_vectorI32_VariableIn;
+	   nds::PVVariableOut<std::vector<std::int32_t>> m_vectorI32_VariableOut;
+
+	   nds::PVVariableIn<std::vector<double>> m_vectorDBL_VariableIn;
+	   nds::PVVariableOut<std::vector<double>> m_vectorDBL_VariableOut;
+
+	   nds::PVVariableIn<std::string> m_string_VariableIn;
+	   nds::PVVariableOut<std::string> m_string_VariableOut;
+
+	   /**
+	    * PVDelegates In and Out for testing purposes
+	    *      - std::int32_t
+	    *      - double
+	    *      - std::vector<std::int8_t>
+	    *      - std::vector<std::uint8_t>
+	    *      - std::vector<std::int32_t>
+	    *      - std::vector<double>
+	    *      - std::string
+	    */
+	   nds::PVDelegateIn<std::int32_t> m_int32_DelegateIn;
+	   nds::PVDelegateOut<std::int32_t> m_int32_DelegateOut;
+	   nds::PVDelegateOut<std::int32_t> m_int32_DelegateOut_init;
+
+	   nds::PVDelegateIn<double> m_double_DelegateIn;
+	   nds::PVDelegateOut<double> m_double_DelegateOut;
+	   nds::PVDelegateOut<double> m_double_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::int8_t>> m_vectorI8_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::int8_t>> m_vectorI8_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::int8_t>> m_vectorI8_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::uint8_t>> m_vectorUI8_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::uint8_t>> m_vectorUI8_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::uint8_t>> m_vectorUI8_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<std::int32_t>> m_vectorI32_DelegateIn;
+	   nds::PVDelegateOut<std::vector<std::int32_t>> m_vectorI32_DelegateOut;
+	   nds::PVDelegateOut<std::vector<std::int32_t>> m_vectorI32_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::vector<double>> m_vectorDBL_DelegateIn;
+	   nds::PVDelegateOut<std::vector<double>> m_vectorDBL_DelegateOut;
+	   nds::PVDelegateOut<std::vector<double>> m_vectorDBL_DelegateOut_init;
+
+	   nds::PVDelegateIn<std::string> m_string_DelegateIn;
+	   nds::PVDelegateOut<std::string> m_string_DelegateOut;
+	   nds::PVDelegateOut<std::string> m_string_DelegateOut_init;
+
+	   /*
+	    * Setters and getters
+	    */
+
+	   void read_I32_DelegateIn(timespec* timestamp, std::int32_t* value);
+	   void read_DBL_DelegateIn(timespec* timestamp, double* value);
+	   void read_vectorI8_DelegateIn(timespec* timestamp, std::vector<std::int8_t>* value);
+	   void read_vectorUI8_DelegateIn(timespec* timestamp, std::vector<std::uint8_t>* value);
+	   void read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int32_t>* value);
+	   void read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value);
+	   void read_string_DelegateIn(timespec* timestamp, std::string* value);
+
+	   void write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value);
+	   void write_DBL_DelegateOut(const timespec& timestamp,const double& value);
+	   void write_vectorI8_DelegateOut(const timespec& timestamp,const std::vector<std::int8_t>& value);
+	   void write_vectorUI8_DelegateOut(const timespec& timestamp,const std::vector<std::uint8_t>& value);
+	   void write_vectorI32_DelegateOut(const timespec& timestamp,const std::vector<std::int32_t>& value);
+	   void write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value);
+	   void write_string_DelegateOut(const timespec& timestamp,const std::string& value);
+
+	   void init_I32_DelegateOut(timespec* timestamp, std::int32_t* value);
+	   void init_DBL_DelegateOut(timespec* timestamp, double* value);
+	   void init_vectorI8_DelegateOut(timespec* timestamp, std::vector<std::int8_t>* value);
+	   void init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::uint8_t>* value);
+	   void init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value);
+	   void init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value);
+	   void init_string_DelegateOut(timespec* timestamp, std::string* value);
+
+	   /*
+	    * PVs to test subscription, replication and decimation.
+	    */
+
+	   nds::PVVariableIn<std::string> m_testVariableIn;
+	   nds::PVVariableOut<std::string> m_testVariableOut;
+
+	   nds::PVDelegateIn<std::string> m_delegateIn;
+	   nds::PVDelegateOut<std::string> m_delegateOut;
+	   nds::PVDelegateOut<std::string>	m_writeTestVariableIn;
+	   nds::PVDelegateOut<std::string>	m_pushTestVariableIn;
+	   nds::PVDelegateIn<std::string>	m_readTestVariableOut;
+
+	   void readDelegate(timespec* pTimestamp, std::string* pValue);
+	   void writeDelegate(const timespec& timestamp, const std::string& value);
+
+	   void writeTestVariableIn(const timespec& timestamp, const std::string& value);
+	   void pushTestVariableIn(const timespec& timestamp, const std::string& value);
+	   void readTestVariableOut(timespec* pTimestamp, std::string* pValue);
+
+	   std::string m_writtenByDelegate;
+
+	   nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	   timespec getCurrentTime();
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//  FIRMWARE SUPPORT
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * @brief FirmwareSup node
+		 */
+		nds::FirmwareSup<std::string > m_FirmwareSup;
+
+		/**
+		 * Methods to control FirmwareSup state machine
+		 */
+		void switchOn_FirmwareSup();  ///< Called to switch on the FirmwareSup node.
+		void switchOff_FirmwareSup(); ///< Called to switch off the FirmwareSup node.
+		void start_FirmwareSup();     ///< Called to start the FirmwareSup node.
+		void stop_FirmwareSup();      ///< Called to stop the FirmwareSup node.
+		void recover_FirmwareSup();   ///< Called to recover the FirmwareSup node from a failure.
+
+		bool allow_FirmwareSup_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+		/**
+		 * FirmwareSup setters
+		 */
+		void PV_FirmwareSup_Path_Writer(const timespec& timestamp, const std::string& value);
+
+		/**
+		 * @brief Function that continuously acquires data generated by m_WaveformGeneration.
+		 *        It is launched by start_FirmwareSup() in a separate thread.
+		 */
+		void FirmwareSup_thread_body();
+
+		/**
+		 * @brief A thread that runs FirmwareSup_thread_body().
+		 */
+		std::thread m_FirmwareSup_Thread;
+
+		/**
+		 * @brief A boolean flag that stop the FirmwareSup loop in FirmwareSup_thread_body()
+		 *        when true.
+		 */
+		volatile bool m_bStop_FirmwareSup;
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//  DECIMATION SUPPORT
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * @brief Decimation node
+		 */
+		nds::Decimation<std::vector<double>> m_Decimation;
+
+		/**
+		 * Methods to control Decimation state machine
+		 */
+		void switchOn_Decimation();  ///< Called to switch on the Decimation node.
+		void switchOff_Decimation(); ///< Called to switch off the Decimation node.
+		void start_Decimation();     ///< Called to start the Decimation node.
+		void stop_Decimation();      ///< Called to stop the Decimation node.
+		void recover_Decimation();   ///< Called to recover the Decimation node from a failure.
+
+		bool allow_Decimation_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+		/**
+		 * Decimation setters
+		 */
+		void PV_Decimation_Enable_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_Decimation_Type_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_Decimation_Factor_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_Decimation_Offset_Writer(const timespec& timestamp, const std::int32_t& value);
+
+		/**
+		 * @brief Function that continuously acquires data generated by m_WaveformGeneration.
+		 *        It is launched by start_Decimation() in a separate thread.
+		 */
+		void Decimation_thread_body();
+
+		/**
+		 * @brief A thread that runs Decimation_thread_body().
+		 */
+		std::thread m_Decimation_Thread;
+
+		/**
+		 * @brief A boolean flag that stop the Decimation loop in Decimation_thread_body()
+		 *        when true.
+		 */
+		volatile bool m_bStop_Decimation;
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//  FFT SUPPORT
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * @brief FFT node
+		 */
+		nds::FFT<std::vector<double>> m_FFT;
+
+		/**
+		 * Methods to control FFT state machine
+		 */
+		void switchOn_FFT();  ///< Called to switch on the FFT node.
+		void switchOff_FFT(); ///< Called to switch off the FFT node.
+		void start_FFT();     ///< Called to start the FFT node.
+		void stop_FFT();      ///< Called to stop the FFT node.
+		void recover_FFT();   ///< Called to recover the FFT node from a failure.
+
+		bool allow_FFT_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+		/**
+		 * FFT setters
+		 */
+		void PV_FFT_Enable_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_FFT_WindowType_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_FFT_FrameOverlap_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_FFT_FrameSize_Writer(const timespec& timestamp, const std::int32_t& value);
+		void PV_FFT_SmoothFactor_Writer(const timespec& timestamp, const std::int32_t& value);
+
+		/**
+		 * @brief Function that continuously acquires data generated by m_WaveformGeneration.
+		 *        It is launched by start_FFT() in a separate thread.
+		 */
+		void FFT_thread_body();
+
+		/**
+		 * @brief A thread that runs FFT_thread_body().
+		 */
+		std::thread m_FFT_Thread;
+
+		/**
+		 * @brief A boolean flag that stop the FFT loop in FFT_thread_body()
+		 *        when true.
+		 */
+		volatile bool m_bStop_FFT;
+
+};
+
+#endif // DEVICE_H_

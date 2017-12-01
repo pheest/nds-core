@@ -59,7 +59,10 @@ enum class dataType_t
     dataUint8Array,   ///< Array of unsigned 8 bit integers
     dataInt32Array,   ///< Array of signed 32 bit integers
     dataFloat64Array, ///< Array of 64 bit floats
-    dataString        ///< String
+    dataString,       ///< String
+	dataTimespec,	  ///< Timespec
+	dataTimespecArray ///< Array of timespec
+
 };
 
 /**
@@ -259,11 +262,11 @@ typedef std::function<void ()> stateChange_t;
  *
  * The function receives 3 parameters:
  * - the first one represents the current state
- * - the secont one represents the current global state
- * - the last one represents the desidered state
+ * - the second one represents the current global state
+ * - the last one represents the desired state
  *
  * The function must return true if the transition from the current state to
- *  the desidered state is allowed, or false otherwise.
+ *  the desired state is allowed, or false otherwise.
  *
  * This function is called only after the state machine has verified that
  *  the requested transition is legal.
@@ -286,6 +289,18 @@ typedef std::function<void ()> threadFunction_t;
  *        the enumeration field.
  */
 typedef std::list<std::string> enumerationStrings_t;
+
+typedef std::function<void (const timespec&, const double&)> writerDouble_t;
+typedef std::function<void (const timespec&, const std::int32_t&)> writerInt32_t;
+typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;
+typedef std::function<void (const timespec&, const std::string&)> writerString_t;
+typedef std::function<void (const timespec&, const timespec&)> writerTime_t;
+
+typedef std::function<void (timespec* time, std::string* val)> readerString_t;
+typedef std::function<void (timespec* time, std::int32_t* val)> readerInt32_t;
+typedef std::function<void (timespec* time, double* val)> readerDouble_t;
+typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
+typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
 
 
 } // namespace nds

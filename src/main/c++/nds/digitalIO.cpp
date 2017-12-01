@@ -1,0 +1,145 @@
+/*
+ * Nominal Device Support v.3 (NDS3)
+ *
+ * By GMV & UPM
+ *
+ */
+
+#include "nds3/digitalIO.h"
+#include "nds3/impl/digitalIOImpl.h"
+
+namespace nds
+{
+
+template <typename T>
+DigitalIO<T>::DigitalIO(): Node()
+{
+}
+
+/**
+ * @brief Constructs the DigitalIO node.
+ *
+ * @param name        the node name
+ * @param maxElements if the data type is an array, then indicated
+ *                    the maximum size (in elements) of the acquired array
+ */
+template <typename T>
+DigitalIO<T>::DigitalIO( const std::string& name,
+						 size_t maxElements,
+						 stateChange_t switchOnFunction,
+						 stateChange_t switchOffFunction,
+						 stateChange_t startFunction,
+						 stateChange_t stopFunction,
+						 stateChange_t recoverFunction,
+						 allowChange_t allowStateChangeFunction,
+						 writerInt32_t PV_voltLevelHigh_Writer,
+						 writerInt32_t PV_voltLevelLow_Writer,
+						 writerInt32_t PV_ChannelDir_Writer):
+
+    Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
+																  maxElements,
+																  switchOnFunction,
+																  switchOffFunction,
+																  startFunction,
+																  stopFunction,
+																  recoverFunction,
+																  allowStateChangeFunction,
+																  PV_voltLevelHigh_Writer,
+																  PV_voltLevelLow_Writer,
+																  PV_ChannelDir_Writer)))
+{
+}
+
+template <typename T>
+DigitalIO<T>::DigitalIO(const DigitalIO<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+{
+}
+
+template <typename T>
+DigitalIO<T>& DigitalIO<T>::operator=(const DigitalIO<T>& right)
+{
+    m_pImplementation = right.m_pImplementation;
+    return *this;
+}
+
+template <typename T>
+void DigitalIO<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+}
+
+template <typename T>
+void DigitalIO<T>::push(const timespec& timestamp, const T& data)
+{
+    std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+size_t DigitalIO<T>::getMaxElements()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
+timespec DigitalIO<T>::getStartTimestamp() const
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getVoltLevelHigh()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelHigh();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getVoltLevelLow()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelLow();
+}
+
+template <typename T>
+size_t DigitalIO<T>::getChannelDir()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getChannelDir();
+}
+
+template <typename T>
+void DigitalIO<T>::setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelHigh(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelLow(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setChannelDir(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setChannelDir(timestamp, value);
+}
+
+template <typename T>
+void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
+}
+
+/*
+ * TODO: Major modifications must be done to include this new data types.
+ */
+//template class DigitalIO<bool>;
+//template class DigitalIO<std::uint8_t>;
+//template class DigitalIO<std::uint16_t>;
+//template class DigitalIO<std::uint32_t>;
+
+//template class DigitalIO<std::vector<bool>>;
+template class DigitalIO<std::vector<std::uint8_t>>;
+//template class DigitalIO<std::vector<std::uint16_t>>;
+//template class DigitalIO<std::vector<std::uint32_t>>;
+
+
+}

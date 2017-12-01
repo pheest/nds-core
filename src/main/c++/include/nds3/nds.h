@@ -32,10 +32,21 @@
 #include "nds3/pvVariableIn.h"
 #include "nds3/pvVariableOut.h"
 #include "nds3/dataAcquisition.h"
+#include "nds3/waveformGeneration.h"
+#include "nds3/dataProcessing.h"
+#include "nds3/Streaming.h"
+#include "nds3/healthMonitoringSup.h"
+#include "nds3/imageAcquisition.h"
+#include "nds3/digitalIO.h"
+#include "nds3/firmwareSup.h"
 #include "nds3/factory.h"
 #include "nds3/stateMachine.h"
 #include "nds3/thread.h"
 #include "nds3/registerDevice.h"
+#include "nds3/filtering.h"
+#include "nds3/FFT.h"
+#include "nds3/Decimation.h"
+
 
 
 #endif // NDS3_H

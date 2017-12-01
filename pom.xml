@@ -50,7 +50,13 @@
             </roles>
         </developer>
         <developer>
-            <id>ebernal</id>
+            <id>bernale</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+	<developer>
+            <id>ruizm</id>
             <roles>
                 <role>developer</role>
             </roles>
@@ -85,29 +91,54 @@
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
 
-                        <package name="doc">
-                            <include type="doxygen">
-                                <filepattern>*.dox</filepattern>
+                        
+			<package name="doc">
+                            <include type="doxygen" name="NDS3" project="${project.name}" version="${project.version}" optimize="c">
+				<filepattern>*.dox</filepattern>
                                 <filepattern>*.h</filepattern>
-                                <filepattern>*.cpp</filepattern>
-                                <outputformat>html</outputformat>
+                                <filepattern>*.cpp</filepattern>                             
+				<outputformat>html</outputformat>
                                 <outputformat>pdf</outputformat>
                                 <input>main/c++/doc</input>
                                 <input>main/c++/include</input>
-                                <input>main/c++/nds</input>
-                                <examplepath>main/c++/examples</examplepath>
+				<input>main/c++/nds</input>
+                                <input>test/c++/nds</input>
+                                <input>test/c++/include</input>
+				<examplepath>main/c++/examples</examplepath>
                                 <properties>
-                                    <HIDE_UNDOC_MEMBERS>YES</HIDE_UNDOC_MEMBERS>
-                                    <HIDE_UNDOC_CLASSES>YES</HIDE_UNDOC_CLASSES>
-                                    <RECURSIVE>YES</RECURSIVE>
+                                	<SORT_MEMBER_DOCS>NO</SORT_MEMBER_DOCS>
+                                	<HIDE_UNDOC_CLASSES>YES</HIDE_UNDOC_CLASSES>
+					<RECURSIVE>YES</RECURSIVE>
+                                	<EXTRACT_ALL>YES</EXTRACT_ALL>
+                                	<HIDE_UNDOC_MEMBERS>NO</HIDE_UNDOC_MEMBERS>
+                                	<EXTRACT_PRIVATE>YES</EXTRACT_PRIVATE>
+                                	<SOURCE_BROWSER>YES</SOURCE_BROWSER>
+                                	<SHOW_FILE>YES</SHOW_FILE>
+                                	<HAVE_DOT>YES</HAVE_DOT>
+                                	<DOT_FONTNAME>FreeSans</DOT_FONTNAME>
+                                	<DOT_FONTSIZE>10</DOT_FONTSIZE>
+                                	<CLASS_GRAPH>YES</CLASS_GRAPH>
+                                	<COLLABORATION_GRAPH>YES</COLLABORATION_GRAPH>
+                                	<GROUP_GRAPHS>YES</GROUP_GRAPHS>
+                                	<INCLUDE_GRAPH>YES</INCLUDE_GRAPH>
+                                	<INCLUDED_BY_GRAPH>YES</INCLUDED_BY_GRAPH>
+                                	<CALL_GRAPH>YES</CALL_GRAPH>
+                                	<CALLER_GRAPH>YES</CALLER_GRAPH>
+                                	<GRAPHICAL_HIERARCHY>YES</GRAPHICAL_HIERARCHY>
+                                	<DIRECTORY_GRAPH>YES</DIRECTORY_GRAPH>
+                                	<DOT_IMAGE_FORMAT>png</DOT_IMAGE_FORMAT>
+                                	<EXTRACT_STATIC>YES</EXTRACT_STATIC>
                                 </properties>
                             </include>
                         </package>
+			<package unitPrefix="false" name="nds3-examples">
 
-                        <package unitPrefix="false" name="nds3-examples">
                             <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
                             <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
-                            <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
+			    <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
+		            <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include"/>
+			    <include type="source" source="src/test/c++/ndsex1" target="examples/nds3/src/test/c++/ndsex1"/>
+			    <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile"/>
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
 

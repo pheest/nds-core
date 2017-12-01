@@ -1,6 +1,6 @@
 #include <nds3/nds.h>
 
-// This class declares our device in the contructor and supplies the functionalities to support it
+// This class declares our device in the constructor and supplies the functionalities to support it
 //////////////////////////////////////////////////////////////////////////////////////////////////
 class Thermometer
 {
