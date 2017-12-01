@@ -265,7 +265,80 @@ public:
 			writerDouble_t PV_TimeStampEdge_Writer,
 			readerDouble_t PV_TimeStampEdge_Reader);
 
+	/**
+	     * @ingroup
+	     * @brief Set the function that retrieves the exact start time when starts.
+	     *
+	     * @param
+	     *
+	     */
+	    //TODO: Discuss if necessary
+	    void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+	    /**
+	     * @brief Retrieve the maximum number of elements that can be stored in the
+	     *        pushed array. This number is set in the constructor.
+	     *
+	     * @return the maximum number of elements that can be stored in the pushed array
+	     */
+	    size_t getMaxElements();
+
+	    /**
+	     * @ingroup
+	     * @brief Push data to the control system.
+	     *
+	     * Usually your device implementation will call this function from the
+	     *  data thread in order to push the data.
+	     *
+	     * @param timestamp the timestamp for the data
+	     * @param data      the data to push to the control system
+	     */
+	    void push(const timespec& timestamp, const T& data);
+
+	    /**
+	     * @ingroup
+	     * @brief Returns the timestamp at start.
+	     *
+	     * @return the time when started.
+	     */
+	    //TODO: Discuss if necessary
+	    timespec getStartTimestamp() const;
+	    /**
+	     * @brief Retrieve the timestamp source
+	     *
+	     * @return the timestamp source
+	     */
+	    size_t getTimeStampSrc();
+	    /**
+	     * @brief Retrieve the status of the timestamp node Enable/Disable
+	     *
+	     * @return the the status of the timestamp node Enable/Disable
+	     */
+	    size_t getEnableTimeStamp();
+	    /**
+	     * @brief Retrieve the timestamp edge
+	     *
+	     * @return the timestamp edge
+	     */
+	    size_t getTimeStampEdge();
+	    /**
+	     * @brief Sets the value of the timestamp source
+	     *
+	     */
+	    void setTimeStampSrc(const timespec& timestamp, const std::int32_t& value);
+	    /**
+	     * @brief Sets the status of the timestamp node to Enable/Disable
+	     *
+	     */
+	    void setEnableTimeStamp(const timespec& timestamp, const std::int32_t& value);
+	    /**
+	     * @brief Sets the value of the timestamp edge
+	     *
+	     */
+	    void setTimeStampEdge(const timespec& timestamp, const std::int32_t& value);
+
 };
+
 
 template <typename T>
 class NDS3_API TriggerSup: public Node

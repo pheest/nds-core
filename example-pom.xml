@@ -79,7 +79,7 @@
                             <include type="library" name="nds3-dev-oscilloscopemultichannel" />
                             <include type="library" name="nds3-dev-thermometer" />
                             <include type="library" name="nds3-dev-devicesimulator" />
-			    <include type="library" name="nds3-dev-ndsex1" />
+			    			<include type="library" name="nds3-dev-ndsex1" />
                             <requires codac="true">nds3-core</requires>
                         </package>
                     </packaging>

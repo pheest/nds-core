@@ -455,17 +455,56 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	     * Add FirmwareSup node
 	     */
-	    m_firmwareSup = rootNode.addChild(nds::FirmwareSup<std::string>("FirmwareNode",
-	    		std::bind(&Device::PVFirmwareVersionReader, this, std::placeholders::_1, std::placeholders::_2),
-	    		std::bind(&Device::PVFirmwareStatusReader, this, std::placeholders::_1, std::placeholders::_2),
-	    		std::bind(&Device::PVHardwareRevisionReader, this, std::placeholders::_1, std::placeholders::_2),
-	    		std::bind(&Device::PVDeviceSerialNumberReader, this, std::placeholders::_1, std::placeholders::_2),
-	    		std::bind(&Device::PVDeviceModelReader, this, std::placeholders::_1, std::placeholders::_2),
-	    		std::bind(&Device::PVDeviceTypeReader, this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PVFirmwarePathWriter, this, std::placeholders::_1, std::placeholders::_2)));
+	    m_FirmwareSup = rootNode.addChild(nds::FirmwareSup<std::string>("FirmwareNode",
+				std::bind(&Device::switchOn_FirmwareSup, this),
+				std::bind(&Device::switchOff_FirmwareSup, this),
+				std::bind(&Device::start_FirmwareSup, this),
+				std::bind(&Device::stop_FirmwareSup, this),
+				std::bind(&Device::recover_FirmwareSup, this),
+				std::bind(&Device::allow_FirmwareSup_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_FirmwareSup_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
 
-	    rootNode.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
-	    rootNode.setLogLevel(nds::logLevel_t::debug);
+	    m_FirmwareSup.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_FirmwareSup.setLogLevel(nds::logLevel_t::debug);
+
+	    /**
+	     * Add Decimation node
+	     */
+	    m_Decimation = rootNode.addChild(nds::Decimation<std::vector<double>>("DecimationNode",
+	    		128,
+				std::bind(&Device::switchOn_Decimation, this),
+				std::bind(&Device::switchOff_Decimation, this),
+				std::bind(&Device::start_Decimation, this),
+				std::bind(&Device::stop_Decimation, this),
+				std::bind(&Device::recover_Decimation, this),
+				std::bind(&Device::allow_Decimation_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_Decimation_Enable_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_Decimation_Type_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_Decimation_Factor_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_Decimation_Offset_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+
+	    m_Decimation.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_Decimation.setLogLevel(nds::logLevel_t::debug);
+
+	    /**
+	     * Add FFT node
+	     */
+	    m_FFT = rootNode.addChild(nds::FFT<std::vector<double>>("FFTNode",
+	    		128,
+				std::bind(&Device::switchOn_FFT, this),
+				std::bind(&Device::switchOff_FFT, this),
+				std::bind(&Device::start_FFT, this),
+				std::bind(&Device::stop_FFT, this),
+				std::bind(&Device::recover_FFT, this),
+				std::bind(&Device::allow_FFT_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_FFT_Enable_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_FFT_WindowType_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_FFT_FrameOverlap_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_FFT_FrameSize_Writer, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_FFT_SmoothFactor_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+
+	    m_FFT.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_FFT.setLogLevel(nds::logLevel_t::debug);
 
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
@@ -485,6 +524,9 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
     //std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
     //std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
     //std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
+
+    rootNode.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+    rootNode.setLogLevel(nds::logLevel_t::debug);
 
     rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
     ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
@@ -552,6 +594,21 @@ void Device::switchOn_Device(){
 		m_DataAcquisition.setDMASampleSize(getCurrentTime(),(std::int32_t)4);
 		// Call API HW to retrieve DMASamplingRate -> (ex: DMASamplingRate=1000)
 		m_DataAcquisition.setDMASamplingRate(getCurrentTime(),(std::int32_t)1000);
+
+		// Call API HW to retrieve FirmwareVersion
+		m_FirmwareSup.setFirmwareVersion(getCurrentTime(),"Firmware test version");
+		// Call API HW to retrieve FirmwareStatus
+		m_FirmwareSup.setFirmwareStatus(getCurrentTime(),"Firmware test status");
+		// Call API HW to retrieve HardwareRevision
+		m_FirmwareSup.setHardwareRevision(getCurrentTime(),"Firmware test hardware revision");
+		// Call API HW to retrieve SerialNumber
+		m_FirmwareSup.setSerialNumber(getCurrentTime(),"Firmware test serial number");
+		// Call API HW to retrieve DeviceModel
+		m_FirmwareSup.setDeviceModel(getCurrentTime(),"Firmware test device model");
+		// Call API HW to retrieve DeviceType
+		m_FirmwareSup.setDeviceType(getCurrentTime(),"Firmware test device type");
+		// Call API HW to retrieve FirmwarePath
+		m_FirmwareSup.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
 
 }
 void Device::switchOff_Device(){
@@ -1764,44 +1821,292 @@ timespec Device::getCurrentTime()
 }
 
 
-/**
- * Firmware support getters
- */
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// FIRMWARE SUPPORT NODE*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Device::PVFirmwareVersionReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test version";
-	*timestamp=timestamp_device;
+/*
+* FirmwareSup State Machine
+*/
+
+// Called when the FirmwareSup node has to be switched on.
+void Device::switchOn_FirmwareSup(){
+
 }
-void Device::PVFirmwareStatusReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test status";
-	*timestamp=timestamp_device;
+
+// Called when the FirmwareSup node has to be switched off.
+void Device::switchOff_FirmwareSup(){
+
 }
-void Device::PVHardwareRevisionReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test hardware";
-	*timestamp=timestamp_device;
+
+// Called when the FirmwareSup node has to start acquiring. We start the FirmwareSup thread.
+void Device::start_FirmwareSup(){
+
+	m_bStop_FirmwareSup = false; //< We will set to true to stop the FirmwareSup thread
+	/**
+	 *   Start the FirmwareSup thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_FirmwareSup_Thread = std::thread(std::bind(&Device::FirmwareSup_thread_body, this));
 }
-void Device::PVDeviceSerialNumberReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test serial number";
-	*timestamp=timestamp_device;
+
+// Stop the DataAcquisition node thread
+void Device::stop_FirmwareSup(){
+	m_bStop_FirmwareSup = true;
+	m_FirmwareSup_Thread.join();
 }
-void Device::PVDeviceModelReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test device model";
-	*timestamp=timestamp_device;
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+void Device::recover_FirmwareSup(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
-void Device::PVDeviceTypeReader(timespec* timestamp, std::string* value){
-	*value = "Firmware test device type";
-	*timestamp=timestamp_device;
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+bool Device::allow_FirmwareSup_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
 }
 
 /*
 * Firmware support setters
 */
-void Device::PVFirmwarePathWriter(const timespec& timestamp, const std::string& value){
+void Device::PV_FirmwareSup_Path_Writer(const timespec& timestamp, const std::string& value){
 	std::string firmwarePath;
 	//firmwarePath has the firmware path to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real firmware path programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  firmwarePath are equal.
 	firmwarePath=value;
-	m_firmwareSup.setFirmwarePath(timestamp,firmwarePath);
+	m_FirmwareSup.setFirmwarePath(timestamp,firmwarePath);
+}
+
+void Device::FirmwareSup_thread_body(){
+
+	// Get FirmwareVersion
+	std::string FirmwareVersion = m_FirmwareSup.getFirmwareVersion();
+	// Get FirmwareStatus
+	std::string FirmwareStatus = m_FirmwareSup.getFirmwareStatus();
+	// Get HardwareRevision
+	std::string HardwareRevision = m_FirmwareSup.getHardwareRevision();
+	// Get SerialNumber
+	std::string SerialNumber = m_FirmwareSup.getSerialNumber();
+	// Get DeviceModel
+	std::string DeviceModel = m_FirmwareSup.getDeviceModel();
+	// Get DeviceType
+	std::string DeviceType = m_FirmwareSup.getDeviceType();
+	// Get FirmwarePath
+	std::string FirmwarePath = m_FirmwareSup.getFirmwarePath();
+	std::string FirmwarePathOld=m_FirmwareSup.getFirmwarePath();
+
+
+	std::cout<<"Firmware support information:"<<std::endl;
+	std::cout<<"\tFirmwareVersion = "<<FirmwareVersion<<std::endl;
+	std::cout<<"\tFirmwareStatus = "<<FirmwareStatus<<std::endl;
+	std::cout<<"\tHardwareRevision = "<<HardwareRevision<<std::endl;
+	std::cout<<"\tSerialNumber = "<<SerialNumber<<std::endl;
+	std::cout<<"\tDeviceModel = "<<DeviceModel<<std::endl;
+	std::cout<<"\tDeviceType = "<<DeviceType<<std::endl;
+	std::cout<<"\tFirmwarePath = "<<FirmwarePath<<std::endl;
+
+	// Run until the state machine stops us
+	while(!m_bStop_FirmwareSup){
+
+
+		// Get FirmwarePath
+		std::string FirmwarePath = m_FirmwareSup.getFirmwarePath();
+		if(FirmwarePath.compare(FirmwarePathOld)!=0){
+			// Push the FirmwarePath to the control system
+			m_FirmwareSup.push(m_FirmwareSup.getTimestamp(), FirmwarePath);
+			FirmwarePathOld=FirmwarePath;
+		}
+		// Rest for a while
+		::usleep(1000000);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// DECIMATION  NODE*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+* Decimation State Machine
+*/
+
+// Called when the Decimation node has to be switched on.
+void Device::switchOn_Decimation(){
+
+}
+
+// Called when the Decimation node has to be switched off.
+void Device::switchOff_Decimation(){
+
+}
+
+// Called when the Decimation node has to start acquiring. We start the Decimation thread.
+void Device::start_Decimation(){
+
+	m_bStop_Decimation = false; //< We will set to true to stop the Decimation thread
+	/**
+	 *   Start the Decimation thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_Decimation_Thread = std::thread(std::bind(&Device::Decimation_thread_body, this));
+}
+
+// Stop the DataAcquisition node thread
+void Device::stop_Decimation(){
+	m_bStop_Decimation = true;
+	m_Decimation_Thread.join();
+}
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+void Device::recover_Decimation(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+bool Device::allow_Decimation_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/*
+* Decimation setters
+*/
+void Device::PV_Decimation_Enable_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t DecimationEnable;
+	//DecimationEnable has the value to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DecimationEnable programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  DecimationEnable are equal.
+	DecimationEnable=value;
+	m_Decimation.setDecimationEnable(timestamp,DecimationEnable);
+}
+void Device::PV_Decimation_Type_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t DecimationType;
+	//DecimationType has the DecimationType to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DecimationType programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  DecimationType are equal.
+	DecimationType=value;
+	m_Decimation.setDecimationType(timestamp,DecimationType);
+}
+void Device::PV_Decimation_Factor_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t DecimationFactor;
+	//DecimationFactor has the DecimationFactor to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DecimationFactor programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  DecimationFactor are equal.
+	DecimationFactor=value;
+	m_Decimation.setDecimationFactor(timestamp,DecimationFactor);
+}
+void Device::PV_Decimation_Offset_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t DecimationOffset;
+	//DecimationOffset has the DecimationOffset to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real DecimationOffset programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  DecimationOffset are equal.
+	DecimationOffset=value;
+	m_Decimation.setDecimationOffset(timestamp,DecimationOffset);
+}
+
+
+void Device::Decimation_thread_body(){
+	//TODO
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// FFT  NODE*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+* FFT State Machine
+*/
+
+// Called when the FFT node has to be switched on.
+void Device::switchOn_FFT(){
+
+}
+
+// Called when the FFT node has to be switched off.
+void Device::switchOff_FFT(){
+
+}
+
+// Called when the FFT node has to start acquiring. We start the FFT thread.
+void Device::start_FFT(){
+
+	m_bStop_FFT = false; //< We will set to true to stop the FFT thread
+	/**
+	 *   Start the FFT thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_FFT_Thread = std::thread(std::bind(&Device::FFT_thread_body, this));
+}
+
+// Stop the DataAcquisition node thread
+void Device::stop_FFT(){
+	m_bStop_FFT = true;
+	m_FFT_Thread.join();
+}
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+void Device::recover_FFT(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+bool Device::allow_FFT_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/*
+* FFT setters
+*/
+void Device::PV_FFT_Enable_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FFTEnable;
+	//FFTEnable has the value to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real FFTEnable programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  FFTEnable are equal.
+	FFTEnable=value;
+	m_FFT.setFFTEnable(timestamp,FFTEnable);
+}
+void Device::PV_FFT_WindowType_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FFTWindowType;
+	//FFTWindowType has the FFTWindowType to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real FFTWindowType programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  FFTWindowType are equal.
+	FFTWindowType=value;
+	m_FFT.setFFTWindowType(timestamp,FFTWindowType);
+}
+void Device::PV_FFT_FrameOverlap_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FFTFrameOverlap;
+	//FFTFrameOverlap has the FFTFrameOverlap to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real FFTFrameOverlap programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  FFTFrameOverlap_ are equal.
+	FFTFrameOverlap=value;
+	m_FFT.setFFTFrameOverlap(timestamp,FFTFrameOverlap);
+}
+void Device::PV_FFT_FrameSize_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FFTFrameSize;
+	//FFTFrameSize has the FFTFrameSize to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real FFTFrameSize programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  FFTFrameSize are equal.
+	FFTFrameSize=value;
+	m_FFT.setFFTFrameSize(timestamp,FFTFrameSize);
+}
+void Device::PV_FFT_SmoothFactor_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FFTSmoothFactor;
+	//FFTSmoothFactor has the FFTSmoothFactor to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real FFTSmoothFactor programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  FFTSmoothFactor are equal.
+	FFTSmoothFactor=value;
+	m_FFT.setFFTSmoothFactor(timestamp,FFTSmoothFactor);
+}
+
+void Device::FFT_thread_body(){
+	//TODO
 }
 

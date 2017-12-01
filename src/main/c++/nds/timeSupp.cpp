@@ -267,7 +267,65 @@ TimeStampSupp<T>& TimeStampSupp<T>::operator=(const TimeStampSupp<T>& right)
     return *this;
 }
 
+template <typename T>
+void TimeStampSupp<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+}
 
+template <typename T>
+void TimeStampSupp<T>::push(const timespec& timestamp, const T& data)
+{
+    std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+size_t TimeStampSupp<T>::getMaxElements()
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->getMaxElements();
+}
+
+template <typename T>
+timespec TimeStampSupp<T>::getStartTimestamp() const
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+size_t TimeStampSupp<T>::getTimeStampSrc()
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->getTimeStampSrc();
+}
+
+template <typename T>
+size_t TimeStampSupp<T>::getEnableTimeStamp()
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->getEnableTimeStamp();
+}
+
+template <typename T>
+size_t TimeStampSupp<T>::getTimeStampEdge()
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->getTimeStampEdge();
+}
+
+template <typename T>
+void TimeStampSupp<T>::setTimeStampSrc(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->setTimeStampSrc(timestamp, value);
+}
+
+template <typename T>
+void TimeStampSupp<T>::setEnableTimeStamp(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->setEnableTimeStamp(timestamp, value);
+}
+
+template <typename T>
+void TimeStampSupp<T>::setTimeStampEdge(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TimeStampSuppImpl<T> >(m_pImplementation)->setTimeStampEdge(timestamp, value);
+}
 
 template class TimeStampSupp<std::vector<timespec>>;
 

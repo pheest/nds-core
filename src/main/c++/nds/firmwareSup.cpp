@@ -25,22 +25,22 @@ FirmwareSup<T>::FirmwareSup(): Node()
  * @param name        the node name
  */
 template <typename T>
-FirmwareSup<T>::FirmwareSup(const std::string& name,  ///< The node's name
-							readerString_t PV_FirmwareVersion_Reader, ///< Delegate function that performs the actions to get the firmware version
-							readerString_t PV_FirmwareStatus_Reader, ///< Delegate function that performs the actions to get the firmware status
-							readerString_t PV_HardwareRevision_Reader, ///< Delegate function that performs the actions to get the hardware revision id
-							readerString_t PV_SerialNumber_Reader, ///< Delegate function that performs the actions to get the device serial number
-							readerString_t PV_DeviceModel_Reader, ///< Delegate function that performs the actions to get the device model
-							readerString_t PV_DeviceType_Reader, ///< Delegate function that performs the actions to get the device type (DAQ/IMAQ)
-							writerString_t PV_FirmwarePath_Writer) : ///< Delegate function that performs the actions to set the firmware path
-						Node(std::shared_ptr<FirmwareSupImpl<T> >(new FirmwareSupImpl<T>(name,
-										PV_FirmwareVersion_Reader,
-										PV_FirmwareStatus_Reader,
-										PV_HardwareRevision_Reader,
-										PV_SerialNumber_Reader,
-										PV_DeviceModel_Reader,
-										PV_DeviceType_Reader,
-										PV_FirmwarePath_Writer)))
+FirmwareSup<T>::FirmwareSup(const std::string& name,
+		stateChange_t switchOnFunction,
+		stateChange_t switchOffFunction,
+		stateChange_t startFunction,
+		stateChange_t stopFunction,
+		stateChange_t recoverFunction,
+		allowChange_t allowStateChangeFunction,
+		writerString_t PV_FirmwarePath_Writer):
+						Node(std::shared_ptr<FirmwareSupImpl<T> >(new FirmwareSupImpl<T>(	name,
+																							switchOnFunction,
+																							switchOffFunction,
+																							startFunction,
+																							stopFunction,
+																							recoverFunction,
+																							allowStateChangeFunction,
+																							PV_FirmwarePath_Writer)))
 {
 }
 template <typename T>
@@ -56,24 +56,96 @@ FirmwareSup<T>& FirmwareSup<T>::operator=(const FirmwareSup<T>& right)
 }
 
 template <typename T>
+void FirmwareSup<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+}
+
+template <typename T>
+void FirmwareSup<T>::push(const timespec& timestamp, const T& data)
+{
+    std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+timespec FirmwareSup<T>::getStartTimestamp() const
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+std::string FirmwareSup<T>::getFirmwareVersion()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getFirmwareVersion();
+}
+template <typename T>
+std::string FirmwareSup<T>::getFirmwareStatus()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getFirmwareStatus();
+}
+template <typename T>
+std::string FirmwareSup<T>::getHardwareRevision()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getHardwareRevision();
+}
+template <typename T>
+std::string FirmwareSup<T>::getSerialNumber()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getSerialNumber();
+}
+template <typename T>
+std::string FirmwareSup<T>::getDeviceModel()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getDeviceModel();
+}
+template <typename T>
+std::string FirmwareSup<T>::getDeviceType()
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getDeviceType();
+}
+template <typename T>
 std::string FirmwareSup<T>::getFirmwarePath()
 {
     return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->getFirmwarePath();
 }
-
+template <typename T>
+void FirmwareSup<T>::setFirmwareVersion(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setFirmwareVersion(timestamp, value);
+}
+template <typename T>
+void FirmwareSup<T>::setFirmwareStatus(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setFirmwareStatus(timestamp, value);
+}
+template <typename T>
+void FirmwareSup<T>::setHardwareRevision(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setHardwareRevision(timestamp, value);
+}
+template <typename T>
+void FirmwareSup<T>::setSerialNumber(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setSerialNumber(timestamp, value);
+}
+template <typename T>
+void FirmwareSup<T>::setDeviceModel(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setDeviceModel(timestamp, value);
+}
+template <typename T>
+void FirmwareSup<T>::setDeviceType(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setDeviceType(timestamp, value);
+}
 template <typename T>
 void FirmwareSup<T>::setFirmwarePath(const timespec& timestamp, const std::string& value)
 {
     return std::static_pointer_cast<FirmwareSupImpl<T> >(m_pImplementation)->setFirmwarePath(timestamp, value);
 }
 
-template class FirmwareSup<std::int32_t>;
 template class FirmwareSup<std::string>;
-template class FirmwareSup<double>;
-template class FirmwareSup<std::vector<std::int8_t> >;
-template class FirmwareSup<std::vector<std::uint8_t> >;
-template class FirmwareSup<std::vector<std::int32_t> >;
-template class FirmwareSup<std::vector<double> >;
+
 
 
 }

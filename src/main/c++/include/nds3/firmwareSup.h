@@ -73,23 +73,120 @@ public:
      *
      */
     FirmwareSup(const std::string& name,  ///< The node's name
-    				readerString_t PV_FirmwareVersion_Reader, ///< Delegate function that performs the actions to get the firmware version
-    				readerString_t PV_FirmwareStatus_Reader, ///< Delegate function that performs the actions to get the firmware status
-    				readerString_t PV_HardwareRevision_Reader, ///< Delegate function that performs the actions to get the hardware revision id
-    				readerString_t PV_SerialNumber_Reader, ///< Delegate function that performs the actions to get the device serial number
-    				readerString_t PV_DeviceModel_Reader, ///< Delegate function that performs the actions to get the device model
-    				readerString_t PV_DeviceType_Reader, ///< Delegate function that performs the actions to get the device type (DAQ/IMAQ)
-    				writerString_t PV_FirmwarePath_Writer); ///< Delegate function that performs the actions to set the firmware path
+			stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
+			stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
+			stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+			stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+			stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
+			allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
+			writerString_t PV_FirmwarePath_Writer); 	  ///< Delegate function that performs the actions to set the firmware path
 
+
+    /**
+     * @ingroup
+     * @brief Set the function that retrieves the exact start time when starts.
+     *
+     * @param
+     *
+     */
+    //TODO: Discuss if necessary
+    void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @ingroup
+     * @brief Push data to the control system.
+     *
+     * Usually your device implementation will call this function from the
+     *  data thread in order to push the data.
+     *
+     * @param timestamp the timestamp for the data
+     * @param data      the data to push to the control system
+     */
+    void push(const timespec& timestamp, const T& data);
+
+    /**
+     * @ingroup
+     * @brief Returns the timestamp at start.
+     *
+     * @return the time when started.
+     */
+    //TODO: Discuss if necessary
+    timespec getStartTimestamp() const;
+
+    /**
+     * @brief Retrieve the Firmware Version
+     *
+     * @return the Firmware Version
+     */
+    std::string getFirmwareVersion();
+    /**
+     * @brief Retrieve the Firmware Status
+     *
+     * @return the Firmware Status
+     */
+    std::string getFirmwareStatus();
+    /**
+     * @brief Retrieve the Hardware Revision
+     *
+     * @return the Hardware Revision
+     */
+    std::string getHardwareRevision();
+    /**
+     * @brief Retrieve the Serial Number
+     *
+     * @return the Serial Number
+     */
+    std::string getSerialNumber();
+    /**
+     * @brief Retrieve the Device Model
+     *
+     * @return the Device Model
+     */
+    std::string getDeviceModel();
+    /**
+     * @brief Retrieve the Device Type
+     *
+     * @return the Device Type
+     */
+    std::string getDeviceType();
     /**
      * @brief Retrieve the Firmware Path
      *
-     * @return the firmware path
+     * @return the Firmware Path
      */
     std::string getFirmwarePath();
-
     /**
-     * @brief Sets the value of the m_FirmwarePath_RBV.
+     * @brief Sets the value of the Firmware Version
+     *
+     */
+    void setFirmwareVersion(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Firmware Status
+     *
+     */
+    void setFirmwareStatus(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Hardware Revision
+     *
+     */
+    void setHardwareRevision(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Serial Number
+     *
+     */
+    void setSerialNumber(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Device Model
+     *
+     */
+    void setDeviceModel(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Device Type
+     *
+     */
+    void setDeviceType(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Firmware Path
      *
      */
     void setFirmwarePath(const timespec& timestamp, const std::string& value);

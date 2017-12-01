@@ -108,7 +108,7 @@ size_t FFT<T>::getFFTWindowType()
 template <typename T>
 size_t FFT<T>::getFFTFrameOverlap()
 {
-    return std::static_pointer_cast<FFTImpl<T> >(m_pImplementation)->FFTFrameOverlap();
+    return std::static_pointer_cast<FFTImpl<T> >(m_pImplementation)->getFFTFrameOverlap();
 }
 
 template <typename T>
@@ -154,12 +154,12 @@ void FFT<T>::setFFTSmoothFactor(const timespec& timestamp, const std::int32_t& v
 }
 
 
-template class FFTImpl<std::int32_t>;
-template class FFTImpl<double>;
-template class FFTImpl<std::vector<std::int8_t> >;
-template class FFTImpl<std::vector<std::uint8_t> >;
-template class FFTImpl<std::vector<std::int32_t> >;
-template class FFTImpl<std::vector<double> >;
+template class FFT<std::int32_t>;
+template class FFT<double>;
+template class FFT<std::vector<std::int8_t> >;
+template class FFT<std::vector<std::uint8_t> >;
+template class FFT<std::vector<std::int32_t> >;
+template class FFT<std::vector<double> >;
 
 
 }

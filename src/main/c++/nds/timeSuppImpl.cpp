@@ -356,7 +356,7 @@ TimeStampSuppImpl<T>::TimeStampSuppImpl( 	const std::string& name,
 	m_DataTimeStamps_PV.reset(new PVVariableInImpl<T>("DataTimeStamps"));
 	m_DataTimeStamps_PV->setMaxElements(maxElements);
 	m_DataTimeStamps_PV->setDescription("Data timestamps acquired");
-	m_DataTimeStamps_PV->setScanType(scanType_t::passive, 0);
+	m_DataTimeStamps_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_DataTimeStamps_PV);
 
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
@@ -365,34 +365,45 @@ TimeStampSuppImpl<T>::TimeStampSuppImpl( 	const std::string& name,
     m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
     addChild(m_Decimation_PV);
 
+    m_TimeStampSrc_PV.reset(new PVDelegateOutImpl<std::int32_t>("TimeStampSrc",PV_TimeStampEdge_Writer));
+    m_TimeStampSrc_PV->setDescription("TimeStamp Source");
+    m_TimeStampSrc_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_TimeStampSrc_PV);
+
+	m_TimeStampSrc_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TimeStampSrc_RBV"));
+	m_TimeStampSrc_RBVPV->setDescription("TimeStamp Source ReadBack");
+	m_TimeStampSrc_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TimeStampSrc_RBVPV);
 
 	m_EnableTimeStamp_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableTimeStamp",PV_EnableTimeStamp_Writer));
     m_EnableTimeStamp_PV->setDescription("Enable TimeStamp");
+    m_EnableTimeStamp_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_EnableTimeStamp_PV);
 
-	m_EnableTimeStamp_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableTimeStamp_RBV",PV_EnableTimeStamp_Reader));
+	m_EnableTimeStamp_RBVPV.reset(new PVVariableInImpl<std::int32_t>("EnableTimeStamp_RBV"));
 	m_EnableTimeStamp_RBVPV->setDescription("Enable TimeStamp ReadBack");
 	m_EnableTimeStamp_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_EnableTimeStamp_RBVPV);
 
-	m_TimeStampEdge_PV.reset(new PVDelegateOutImpl<double>("TimeStampEdge",PV_TimeStampEdge_Writer));
+	m_TimeStampEdge_PV.reset(new PVDelegateOutImpl<std::int32_t>("TimeStampEdge",PV_TimeStampEdge_Writer));
 	m_TimeStampEdge_PV->setDescription("TimeStamp Edge");
+	m_TimeStampEdge_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_TimeStampEdge_PV);
 
-	m_TimeStampEdge_RBVPV.reset(new PVDelegateInImpl<double>("TimeStampEdge_RBV",PV_TimeStampEdge_Reader));
+	m_TimeStampEdge_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TimeStampEdge_RBV"));
 	m_TimeStampEdge_RBVPV->setDescription("TimeStamp Edge ReadBack");
 	m_TimeStampEdge_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TimeStampEdge_RBVPV);
 
 	// Add state machine
-	    m_StateMachine.reset(new StateMachineImpl(true,
-	                                   switchOnFunction,
-	                                   switchOffFunction,
-	                                   std::bind(&TimeStampSuppImpl::onStart, this),
-	                                   stopFunction,
-	                                   recoverFunction,
-	                                   allowStateChangeFunction));
-	    addChild(m_StateMachine);
+	m_StateMachine.reset(new StateMachineImpl(true,
+			switchOnFunction,
+			switchOffFunction,
+			std::bind(&TimeStampSuppImpl::onStart, this),
+			stopFunction,
+			recoverFunction,
+			allowStateChangeFunction));
+	addChild(m_StateMachine);
 
 }
 
@@ -428,6 +439,53 @@ void TimeStampSuppImpl<T>::onStart()
     m_OnStartDelegate();
 }
 
+template<typename T>
+size_t TimeStampSuppImpl<T>::getTimeStampSrc()
+{
+	std::int32_t TimeStampSrc;
+	timespec timestamp;
+	m_TimeStampSrc_RBVPV->read(&timestamp, &TimeStampSrc);
+	return (std::int32_t)TimeStampSrc;
+}
+
+template<typename T>
+size_t TimeStampSuppImpl<T>::getEnableTimeStamp()
+{
+	std::int32_t EnableTimeStamp;
+	timespec timestamp;
+	m_EnableTimeStamp_RBVPV->read(&timestamp, &EnableTimeStamp);
+	return (std::int32_t)EnableTimeStamp;
+}
+
+template<typename T>
+size_t TimeStampSuppImpl<T>::getTimeStampEdge()
+{
+	std::int32_t TimeStampEdge;
+	timespec timestamp;
+	m_TimeStampEdge_RBVPV->read(&timestamp, &TimeStampEdge);
+	return (std::int32_t)TimeStampEdge;
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::setTimeStampSrc(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TimeStampSrc_RBVPV->setValue(timestamp, value);
+	m_TimeStampSrc_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::setEnableTimeStamp(const timespec& timestamp, const std::int32_t& value)
+{
+	m_EnableTimeStamp_RBVPV->setValue(timestamp, value);
+	m_EnableTimeStamp_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void TimeStampSuppImpl<T>::setTimeStampEdge(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TimeStampEdge_RBVPV->setValue(timestamp, value);
+	m_TimeStampEdge_RBVPV->push(timestamp, value);
+}
 template class TimeStampSuppImpl<std::vector<timespec>>;
 
 template<typename T>
@@ -489,12 +547,12 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	m_TriggPeriodType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TriggPeriodType_RBVPV);
 
-    m_EnableSWTrigg_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggPeriodType",PV_EnableSWTrigg_Writer));
-    m_EnableSWTrigg_PV->setDescription("Enable SW Trigg");
+    m_EnableSWTrigg_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableSWTrigg",PV_EnableSWTrigg_Writer));
+    m_EnableSWTrigg_PV->setDescription("Enable SW Trigger");
 	addChild(m_EnableSWTrigg_PV);
 
-	m_EnableSWTrigg_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TriggPeriodType_RBV",PV_EnableSWTrigg_Reader));
-	m_EnableSWTrigg_RBVPV->setDescription("Enable SW Trigg ReadBack");
+	m_EnableSWTrigg_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableSWTrigg_RBV",PV_EnableSWTrigg_Reader));
+	m_EnableSWTrigg_RBVPV->setDescription("Enable SW Trigger ReadBack");
 	m_EnableSWTrigg_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_EnableSWTrigg_RBVPV);
 
@@ -503,15 +561,15 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	addChild(m_TriggPeriod_PV);
 
 	m_TriggPeriod_RBVPV.reset(new PVDelegateInImpl<double>("TriggPeriod_RBV",PV_TriggPeriod_Reader));
-	m_TriggPeriod_RBVPV->setDescription("Trigg Period ReadBack");
+	m_TriggPeriod_RBVPV->setDescription("Trigger Period ReadBack");
 	m_TriggPeriod_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TriggPeriod_RBVPV);
 
-    m_TriggEventType_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggPeriod",PV_TriggEventType_Writer));
+    m_TriggEventType_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggEventType",PV_TriggEventType_Writer));
     m_TriggEventType_PV->setDescription("Trigger Event Type");
 	addChild(m_TriggEventType_PV);
 
-	m_TriggEventType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TriggPeriod_RBV",PV_TriggEventType_Reader));
+	m_TriggEventType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TriggEventType_RBV",PV_TriggEventType_Reader));
 	m_TriggEventType_RBVPV->setDescription("Trigg Event Type ReadBack");
 	m_TriggEventType_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TriggEventType_RBVPV);
@@ -521,7 +579,7 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	addChild(m_LevelTrigg_PV);
 
 	m_LevelTrigg_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("LevelTrigg_RBV",PV_LevelTrigg_Reader));
-	m_LevelTrigg_RBVPV->setDescription("Trigg Level ReadBack");
+	m_LevelTrigg_RBVPV->setDescription("Trigger Level ReadBack");
 	m_LevelTrigg_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_LevelTrigg_RBVPV);
 
@@ -530,7 +588,7 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	addChild(m_EdgeTrigg_PV);
 
 	m_EdgeTrigg_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EdgeTrigg_RBV",PV_EdgeTrigg_Reader));
-	m_EdgeTrigg_RBVPV->setDescription("Trigg Edge ReadBack");
+	m_EdgeTrigg_RBVPV->setDescription("Trigger Edge ReadBack");
 	m_EdgeTrigg_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_EdgeTrigg_RBVPV);
 
@@ -544,15 +602,15 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	addChild(m_CombineTrigg_RBVPV);
 
     m_TriggDelay_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggDelay",PV_TriggDelay_Writer));
-    m_TriggDelay_PV->setDescription("Combine Trigger ");
+    m_TriggDelay_PV->setDescription("Trigger Delay ");
 	addChild(m_TriggDelay_PV);
 
 	m_TriggDelay_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TriggDelay_RBV",PV_TriggDelay_Reader));
-	m_TriggDelay_RBVPV->setDescription("Combine Trigger ReadBack");
+	m_TriggDelay_RBVPV->setDescription("Trigger Delay ReadBack");
 	m_TriggDelay_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TriggDelay_RBVPV);
 
-    m_PreTrigg_PV.reset(new PVDelegateOutImpl<std::int32_t>("TriggDelay",PV_PreTrigg_Writer));
+    m_PreTrigg_PV.reset(new PVDelegateOutImpl<std::int32_t>("PreTrigg",PV_PreTrigg_Writer));
     m_PreTrigg_PV->setDescription("PreTrigger ");
 	addChild(m_PreTrigg_PV);
 
@@ -562,20 +620,20 @@ TriggerSuppImpl<T>::TriggerSuppImpl(
 	addChild(m_PreTrigg_RBVPV);
 
     m_SamplesToACQwhenTrigg_PV.reset(new PVDelegateOutImpl<double>("SamplesToACQwhenTrigg",PV_SamplesToACQwhenTrigg_Writer));
-    m_SamplesToACQwhenTrigg_PV->setDescription("Samples To ACQ when Trigg");
+    m_SamplesToACQwhenTrigg_PV->setDescription("Samples To ACQ when Trigger");
 	addChild(m_SamplesToACQwhenTrigg_PV);
 
 	m_SamplesToACQwhenTrigg_RBVPV.reset(new PVDelegateInImpl<double>("SamplesToACQwhenTrigg_RBV",PV_SamplesToACQwhenTrigg_Reader));
-	m_SamplesToACQwhenTrigg_RBVPV->setDescription("Samples To ACQ when Trigg ReadBack");
+	m_SamplesToACQwhenTrigg_RBVPV->setDescription("Samples To ACQ when Trigger ReadBack");
 	m_SamplesToACQwhenTrigg_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SamplesToACQwhenTrigg_RBVPV);
 
     m_SecondsToACQwhenTrigg_PV.reset(new PVDelegateOutImpl<double>("SecondsToACQwhenTrigg",PV_SecondsToACQwhenTrigg_Writer));
-    m_SecondsToACQwhenTrigg_PV->setDescription("Samples To ACQ when Trigg");
+    m_SecondsToACQwhenTrigg_PV->setDescription("Samples To ACQ when Trigger");
 	addChild(m_SecondsToACQwhenTrigg_PV);
 
 	m_SecondsToACQwhenTrigg_RBVPV.reset(new PVDelegateInImpl<double>("SecondsToACQwhenTrigg_RBV",PV_SecondsToACQwhenTrigg_Reader));
-	m_SecondsToACQwhenTrigg_RBVPV->setDescription("Samples To ACQ when Trigg ReadBack");
+	m_SecondsToACQwhenTrigg_RBVPV->setDescription("Samples To ACQ when Trigger ReadBack");
 	m_SecondsToACQwhenTrigg_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SecondsToACQwhenTrigg_RBVPV);
 

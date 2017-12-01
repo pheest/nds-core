@@ -106,7 +106,7 @@ size_t Decimation<T>::getDecimationType()
 template <typename T>
 size_t Decimation<T>::getDecimationFactor()
 {
-    return std::static_pointer_cast<DecimationImpl<T> >(m_pImplementation)->DecimationFactor();
+    return std::static_pointer_cast<DecimationImpl<T> >(m_pImplementation)->getDecimationFactor();
 }
 
 template <typename T>
@@ -140,12 +140,12 @@ void Decimation<T>::setDecimationOffset(const timespec& timestamp, const std::in
 }
 
 
-template class DecimationImpl<std::int32_t>;
-template class DecimationImpl<double>;
-template class DecimationImpl<std::vector<std::int8_t> >;
-template class DecimationImpl<std::vector<std::uint8_t> >;
-template class DecimationImpl<std::vector<std::int32_t> >;
-template class DecimationImpl<std::vector<double> >;
+template class Decimation<std::int32_t>;
+template class Decimation<double>;
+template class Decimation<std::vector<std::int8_t> >;
+template class Decimation<std::vector<std::uint8_t> >;
+template class Decimation<std::vector<std::int32_t> >;
+template class Decimation<std::vector<double> >;
 
 
 }

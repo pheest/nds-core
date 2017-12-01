@@ -333,45 +333,77 @@ public:
 	     *        delegated onStart function.
 	     */
 	    void onStart();
-
+	    /**
+	     * @brief Retrieve the timestamp source
+	     *
+	     * @return the timestamp source
+	     */
+	    size_t getTimeStampSrc();
+	    /**
+	     * @brief Retrieve the status of the timestamp node Enable/Disable
+	     *
+	     * @return the the status of the timestamp node Enable/Disable
+	     */
+	    size_t getEnableTimeStamp();
+	    /**
+	     * @brief Retrieve the timestamp edge
+	     *
+	     * @return the timestamp edge
+	     */
+	    size_t getTimeStampEdge();
+	    /**
+	     * @brief Sets the value of the timestamp source
+	     *
+	     */
+	    void setTimeStampSrc(const timespec& timestamp, const std::int32_t& value);
+	    /**
+	     * @brief Sets the status of the timestamp node to Enable/Disable
+	     *
+	     */
+	    void setEnableTimeStamp(const timespec& timestamp, const std::int32_t& value);
+	    /**
+	     * @brief Sets the value of the timestamp edge
+	     *
+	     */
+	    void setTimeStampEdge(const timespec& timestamp, const std::int32_t& value);
 
 protected:
 	    /**
-	         * @brief In the state machine we set the start function to onStart(), so we
-	         *        remember here what to call from onStart().
-	         */
-	        stateChange_t m_OnStartDelegate;
-	        /**
-	         * @brief Delegate function that retrieves the start time.
-	         *
-	         * By default points to BaseImpl::getTimestamp().
-	         *
-	         * Use setStartTimestampDelegate() to change the delegate function.
-	         */
-	        getTimestampPlugin_t m_StartTimestampFunction;
+	     * @brief In the state machine we set the start function to onStart(), so we
+	     *        remember here what to call from onStart().
+	     */
+	    stateChange_t m_OnStartDelegate;
+	    /**
+	     * @brief Delegate function that retrieves the start time.
+	     *
+	     * By default points to BaseImpl::getTimestamp().
+	     *
+	     * Use setStartTimestampDelegate() to change the delegate function.
+	     */
+	    getTimestampPlugin_t m_StartTimestampFunction;
 
-	        /**
-	         * @brief Start time. Retrieved via the delegate
-	         *        function declared in  m_startTimestampFunction.
-	         */
-	        timespec m_StartTime;
+	    /**
+	     * @brief Start time. Retrieved via the delegate
+	     *        function declared in  m_startTimestampFunction.
+	     */
+	    timespec m_StartTime;
 
 
-    // PVs
-	std::shared_ptr<PVVariableInImpl<std::vector<timespec>> > m_DataTimeStamps_PV;
+	    // PVs
+	    std::shared_ptr<PVVariableInImpl<std::vector<timespec>> > m_DataTimeStamps_PV;
 
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+	    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TimeStampSrc_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TimeStampSrc_RBVPV;
+	    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TimeStampSrc_PV;
+	    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TimeStampSrc_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableTimeStamp_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableTimeStamp_RBVPV;
+	    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableTimeStamp_PV;
+	    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_EnableTimeStamp_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<double> > m_TimeStampEdge_PV;
-    std::shared_ptr<PVDelegateInImpl<double> > m_TimeStampEdge_RBVPV;
+	    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TimeStampEdge_PV;
+	    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TimeStampEdge_RBVPV;
 
-    std::shared_ptr<StateMachineImpl> m_StateMachine;
+	    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 
 };
