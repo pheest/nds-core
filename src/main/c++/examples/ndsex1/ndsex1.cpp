@@ -140,6 +140,7 @@ void Device::recover_Device() {
 }
 
 bool Device::allow_Device_Change(const nds::state_t , const nds::state_t , const nds::state_t) {
+	return true;
 }
 
 void Device::switchOn_DataAcquisition() {
@@ -308,3 +309,5 @@ void Device::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp,
 	HW_value=value;
 	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
 }
+
+NDS_DEFINE_DRIVER(Device, Device)

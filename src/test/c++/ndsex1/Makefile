@@ -60,7 +60,7 @@ endif
 
 CXXFLAGS += -I$(GTEST_DIR) -I$(GTEST_DIR)/include
 
-LDFLAGS += -lpthread -lnds3 -ldl -lrt -lndsex1 
+LDFLAGS += -lpthread -lnds3 -ldl -lrt -lnds3-dev-ndsex1 
 
 GTEST_HEADERS_ := $(GTEST_DIR)/include/gtest/*.h \
                   $(GTEST_DIR)/include/gtest/internal/*.h

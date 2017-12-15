@@ -8,7 +8,7 @@ TARGETDIR = ../../../../lib
 LINK = -shared -fPIC -Wl,-as-needed
  
 # Name of the nds library
-TARGET = libndsex1.so
+TARGET = libnds3-dev-ndsex1.so
  
 # Additional linker libraries
 LIBS = -lnds3
