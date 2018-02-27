@@ -34,43 +34,43 @@ FirmwareSupImpl<T>::FirmwareSupImpl(const std::string& name,
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-	m_FirmwareVersion_PV.reset(new PVVariableInImpl<std::string>("FirmwareVersion"));
+	m_FirmwareVersion_PV.reset(new PVVariableInImpl<std::string>("Version"));
 	m_FirmwareVersion_PV->setDescription("Firmware version");
 	m_FirmwareVersion_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_FirmwareVersion_PV);
 
-	m_FirmwareStatus_PV.reset(new PVVariableInImpl<std::string>("FirmwareStatus"));
+	m_FirmwareStatus_PV.reset(new PVVariableInImpl<std::string>("Status"));
 	m_FirmwareStatus_PV->setDescription("Firmware status");
 	m_FirmwareStatus_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_FirmwareStatus_PV);
 
-	m_HardwareRevision_PV.reset(new PVVariableInImpl<std::string>("HardwareRevision"));
-	m_HardwareRevision_PV->setDescription("Hardware revision");
-	m_HardwareRevision_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_HardwareRevision_PV);
+	m_HWRevision_PV.reset(new PVVariableInImpl<std::string>("HWRevision"));
+	m_HWRevision_PV->setDescription("Hardware revision");
+	m_HWRevision_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_HWRevision_PV);
 
 	m_SerialNumber_PV.reset(new PVVariableInImpl<std::string>("SerialNumber"));
 	m_SerialNumber_PV->setDescription("Serial number");
 	m_SerialNumber_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SerialNumber_PV);
 
-	m_DeviceModel_PV.reset(new PVVariableInImpl<std::string>("DeviceModel"));
+	m_DeviceModel_PV.reset(new PVVariableInImpl<std::string>("Model"));
 	m_DeviceModel_PV->setDescription("Device model");
 	m_DeviceModel_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DeviceModel_PV);
 
-	m_DeviceType_PV.reset(new PVVariableInImpl<std::string>("DeviceType"));
+	m_DeviceType_PV.reset(new PVVariableInImpl<std::string>("Type"));
 	m_DeviceType_PV->setDescription("Device type");
 	m_DeviceType_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DeviceType_PV);
 
-	m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FirmwarePath",PV_FirmwarePath_Writer));
-	m_FirmwarePath_PV->setDescription("Firmware path");
+	m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",PV_FirmwarePath_Writer));
+	m_FirmwarePath_PV->setDescription("Path to the firmware file to load");
 	m_FirmwarePath_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_FirmwarePath_PV);
 
-	m_FirmwarePath_RBVPV.reset(new PVVariableInImpl<std::string>("FirmwarePath_RBV"));
-	m_FirmwarePath_RBVPV->setDescription("Firmware path ReadBack");
+	m_FirmwarePath_RBVPV.reset(new PVVariableInImpl<std::string>("FilePath_RBV"));
+	m_FirmwarePath_RBVPV->setDescription("Readback PV of the firmware file");
 	m_FirmwarePath_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_FirmwarePath_RBVPV);
 
@@ -133,7 +133,7 @@ std::string FirmwareSupImpl<T>::getHardwareRevision()
 {
     std::string HardwareRevision;
     timespec timestamp;
-    m_HardwareRevision_PV->read(&timestamp, &HardwareRevision);
+    m_HWRevision_PV->read(&timestamp, &HardwareRevision);
     return (std::string)HardwareRevision;
 }
 template <typename T>
@@ -183,8 +183,8 @@ void FirmwareSupImpl<T>::setFirmwareStatus(const timespec& timestamp, const std:
 template<typename T>
 void FirmwareSupImpl<T>::setHardwareRevision(const timespec& timestamp, const std::string& value)
 {
-    m_HardwareRevision_PV->setValue(timestamp, value);
-    m_HardwareRevision_PV->push(timestamp, value);
+    m_HWRevision_PV->setValue(timestamp, value);
+    m_HWRevision_PV->push(timestamp, value);
 }
 template<typename T>
 void FirmwareSupImpl<T>::setSerialNumber(const timespec& timestamp, const std::string& value)

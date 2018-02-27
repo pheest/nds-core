@@ -171,16 +171,52 @@ protected:
      *        function declared in  m_startTimestampFunction.
      */
     timespec m_StartTime;
+
 	// PVs
+
+    /**
+	 * @brief Input PV that provides the version of the firmware with a string
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_FirmwareVersion_PV;
+
+    /**
+	 * @brief Input PV that provides the status of the firmware with a string
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_FirmwareStatus_PV;
-	std::shared_ptr<PVVariableInImpl<std::string> > m_HardwareRevision_PV;
+
+    /**
+	 * @brief Input PV that provides the hardware revision with a string
+	 */
+	std::shared_ptr<PVVariableInImpl<std::string> > m_HWRevision_PV;
+
+    /**
+	 * @brief Input PV that provides the serial number of the device with a string
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_SerialNumber_PV;
+
+    /**
+	 * @brief Input PV that provides the device model with a string
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_DeviceModel_PV;
+
+    /**
+	 * @brief Input PV that provides the type of device with a string
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_DeviceType_PV;
+
+    /**
+	 * @brief Output PV to set the path of the firmware to be loaded
+	 */
 	std::shared_ptr<PVDelegateOutImpl<std::string> > m_FirmwarePath_PV;
+
+    /**
+	 * @brief Readback PV to get the path to the firmware file
+	 */
 	std::shared_ptr<PVVariableInImpl<std::string> > m_FirmwarePath_RBVPV;
 
+	/**
+	 * @brief State machine to handle the status of the node
+	 */
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 };
