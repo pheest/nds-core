@@ -98,7 +98,7 @@ void FirmwareSupImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestam
 }
 
 template<typename T>
-void FirmwareSupImpl<T>::push(const timespec& timestamp, const T& data)
+void FirmwareSupImpl<T>::push(const timespec& /*timestamp*/, const T& /*data*/)
 {
 	//TODO
 }
