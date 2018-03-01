@@ -55,9 +55,12 @@ enum class dataType_t
     /* The value zero is reserved to static asserts to verify that the correct cpp types are being used */
     dataInt32 = 1,    ///< Signed integer, 32 bits
     dataFloat64,      ///< Float, 64 bits
-    dataInt8Array,    ///< Array of signed 8 bit integers
+	dataBoolArray,	  ///< Array of Bool
+	dataInt8Array,    ///< Array of signed 8 bit integers
     dataUint8Array,   ///< Array of unsigned 8 bit integers
-    dataInt32Array,   ///< Array of signed 32 bit integers
+	dataUint16Array,   ///< Array of unsigned 8 bit integers
+	dataUint32Array,   ///< Array of unsigned 8 bit integers
+	dataInt32Array,   ///< Array of signed 32 bit integers
     dataFloat64Array, ///< Array of 64 bit floats
     dataString,       ///< String
 	dataTimespec,	  ///< Timespec

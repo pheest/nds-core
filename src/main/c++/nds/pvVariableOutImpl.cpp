@@ -91,9 +91,12 @@ void PVVariableOutImpl<T>::getValue(timespec* pTime, T* pValue) const
 ////////////////////////////////////////
 template class PVVariableOutImpl<std::int32_t>;
 template class PVVariableOutImpl<double>;
-template class PVVariableOutImpl<std::vector<std::int8_t> >;
-template class PVVariableOutImpl<std::vector<std::uint8_t> >;
-template class PVVariableOutImpl<std::vector<std::int32_t> >;
+template class PVVariableOutImpl<std::vector<bool> >;
+template class PVVariableOutImpl<std::vector<std::uint8_t>>;
+template class PVVariableOutImpl<std::vector<std::uint16_t>>;
+template class PVVariableOutImpl<std::vector<std::uint32_t>>;
+template class PVVariableOutImpl<std::vector<std::int8_t>>;
+template class PVVariableOutImpl<std::vector<std::int32_t>>;
 template class PVVariableOutImpl<std::vector<double> >;
 template class PVVariableOutImpl<std::string>;
 template class PVVariableOutImpl<timespec>;

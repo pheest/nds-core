@@ -53,14 +53,11 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
     throw;
 }
 
-void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<bool>* /* pValue */) const
 {
-    // TODO
-    // Epics calls this also for unsigned-int and strings
-    // If we arrive here maybe we really wanted to call the unsigned int function.
-    // This is as ugly as it can get: consider modifying this
-    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
+    throw;
 }
+
 
 void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue) const
 {
@@ -72,6 +69,25 @@ void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue)
     read(pTimestamp, &temporaryValue);
     pValue->resize(temporaryValue.size());
     ::memcpy(pValue->data(), temporaryValue.data(), temporaryValue.size());
+}
+
+void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint16_t>* pValue) const
+{
+    throw;
+}
+
+void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint32_t>* pValue) const
+{
+    throw;
+}
+
+void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
+{
+    // TODO
+    // Epics calls this also for unsigned-int and strings
+    // If we arrive here maybe we really wanted to call the unsigned int function.
+    // This is as ugly as it can get: consider modifying this
+    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
 }
 
 void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* pValue */) const
@@ -246,8 +262,11 @@ std::string PVBaseInImpl::buildFullExternalName(const FactoryBaseImpl& controlSy
 
 template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&);
 template void PVBaseInImpl::push<double>(const timespec&, const double&);
-template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&);
+template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&);
 template void PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&);
+template void PVBaseInImpl::push<std::vector<std::uint16_t> >(const timespec&, const std::vector<std::uint16_t>&);
+template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, const std::vector<std::uint32_t>&);
+template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&);
 template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&);
 template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&);
 template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&);

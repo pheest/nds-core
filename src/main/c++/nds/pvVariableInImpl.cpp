@@ -92,8 +92,11 @@ dataType_t PVVariableInImpl<T>::getDataType() const
 ////////////////////////////////////////
 template class PVVariableInImpl<std::int32_t>;
 template class PVVariableInImpl<double>;
-template class PVVariableInImpl<std::vector<std::int8_t> >;
+template class PVVariableInImpl<std::vector<bool> >;
 template class PVVariableInImpl<std::vector<std::uint8_t> >;
+template class PVVariableInImpl<std::vector<std::uint16_t> >;
+template class PVVariableInImpl<std::vector<std::uint32_t> >;
+template class PVVariableInImpl<std::vector<std::int8_t> >;
 template class PVVariableInImpl<std::vector<std::int32_t> >;
 template class PVVariableInImpl<std::vector<double> >;
 template class PVVariableInImpl<std::string>;
