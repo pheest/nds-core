@@ -8,6 +8,7 @@
 #include "../include/Device_Vector_I32.h"
 #include "../include/Device_Vector_I8.h"
 #include "../include/Device_Vector_UI8.h"
+#include "../include/DeviceFIRM.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -37,6 +38,15 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceVectorUI8",
                            std::bind(&DeviceVectorUI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceVectorUI8::deallocateDevice, std::placeholders::_1));
+
+
+
+    //Devices which have been created for testing isolated nodes
+
+    nds::Factory::registerDriver("DeviceFIRM",
+                           std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceFirmware::deallocateDevice, std::placeholders::_1));
+
 
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
