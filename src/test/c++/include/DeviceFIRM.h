@@ -79,7 +79,7 @@ private:
 	/**
 	 * @brief Firmware node
 	 */
-	nds::FirmwareSup<std::string > m_Firmware;
+	nds::FirmwareSup m_Firmware;
 
 	/**
 	 * Methods to control the Firmware state machine

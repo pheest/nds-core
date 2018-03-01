@@ -19,9 +19,6 @@
 namespace nds
 {
 
-//template <typename T> class PVDelegateInImpl;
-
-template <typename T>
 class FirmwareSupImpl: public NodeImpl
 {
 public:
@@ -54,7 +51,7 @@ public:
      * @param timestamp the timestamp for the data
      * @param data      the data to push to the control system
      */
-    void push(const timespec& timestamp, const T& data);
+    void push(const timespec& timestamp, const std::string& data);
 
     /**
      * @ingroup

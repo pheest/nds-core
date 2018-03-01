@@ -36,18 +36,8 @@ namespace nds
  * the firmware status, the hardware version id, the device serial number, the
  * device model, and the device type DAQ/IMAQ
  *
- * @tparam T  the PV data type.
- *            The following data types are supported:
- *            - std::int32_t
- *            - std::double
- *            - std::vector<std::int8_t>
- *            - std::vector<std::uint8_t>
- *            - std::vector<std::int32_t>
- *            - std::vector<double>
- *            - std::string
- *
  */
-template <typename T>
+
 class NDS3_API FirmwareSup: public Node
 {
 public:
@@ -64,9 +54,9 @@ public:
      * @param right a firmware support holder from which the reference to
      *        the firmware object implementation is copied
      */
-    FirmwareSup(const FirmwareSup<T>& right);
+    FirmwareSup(const FirmwareSup& right);
 
-    FirmwareSup& operator=(const FirmwareSup<T>& right);
+    FirmwareSup& operator=(const FirmwareSup& right);
 
     /**
      * @brief Constructs the firmware support device node.
@@ -102,7 +92,7 @@ public:
      * @param timestamp the timestamp for the data
      * @param data      the data to push to the control system
      */
-    void push(const timespec& timestamp, const T& data);
+    void push(const timespec& timestamp, const std::string& data);
 
     /**
      * @ingroup

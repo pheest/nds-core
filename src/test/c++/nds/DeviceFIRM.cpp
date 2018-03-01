@@ -52,7 +52,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 			std::bind(&DeviceFirmware::allow_Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
 	// Add Firmware node
-	m_Firmware = rootNode.addChild(nds::FirmwareSup<std::string>("Firm",
+	m_Firmware = rootNode.addChild(nds::FirmwareSup("Firm",
 				std::bind(&DeviceFirmware::switchOn_Firmware, this),
 				std::bind(&DeviceFirmware::switchOff_Firmware, this),
 				std::bind(&DeviceFirmware::start_Firmware, this),

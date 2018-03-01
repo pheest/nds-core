@@ -455,7 +455,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	     * Add FirmwareSup node
 	     */
-	    m_FirmwareSup = rootNode.addChild(nds::FirmwareSup<std::string>("Firm",
+	    m_FirmwareSup = rootNode.addChild(nds::FirmwareSup("Firm",
 				std::bind(&Device::switchOn_FirmwareSup, this),
 				std::bind(&Device::switchOff_FirmwareSup, this),
 				std::bind(&Device::start_FirmwareSup, this),

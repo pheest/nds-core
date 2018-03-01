@@ -20,8 +20,7 @@
 namespace nds
 {
 
-template<typename T>
-FirmwareSupImpl<T>::FirmwareSupImpl(const std::string& name,
+FirmwareSupImpl::FirmwareSupImpl(const std::string& name,
 									stateChange_t switchOnFunction,
 									stateChange_t switchOffFunction,
 									stateChange_t startFunction,
@@ -85,136 +84,125 @@ FirmwareSupImpl<T>::FirmwareSupImpl(const std::string& name,
     addChild(m_StateMachine);
 }
 
-template<typename T>
-timespec FirmwareSupImpl<T>::getStartTimestamp() const
+timespec FirmwareSupImpl::getStartTimestamp() const
 {
     return m_StartTime;
 }
 
-template<typename T>
-void FirmwareSupImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+void FirmwareSupImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
     m_StartTimestampFunction = timestampDelegate;
 }
 
-template<typename T>
-void FirmwareSupImpl<T>::push(const timespec& /*timestamp*/, const T& /*data*/)
+void FirmwareSupImpl::push(const timespec& /*timestamp*/, const std::string& /*data*/)
 {
 	//TODO
 }
 
-template<typename T>
-void FirmwareSupImpl<T>::onStart()
+void FirmwareSupImpl::onStart()
 {
     m_StartTime = m_StartTimestampFunction();
     //Set Decimation when push method is defined
     m_OnStartDelegate();
 }
 
-
-template <typename T>
-std::string FirmwareSupImpl<T>::getFirmwareVersion()
+std::string FirmwareSupImpl::getFirmwareVersion()
 {
     std::string FirmwareVersion;
     timespec timestamp;
     m_FirmwareVersion_PV->read(&timestamp, &FirmwareVersion);
     return (std::string)FirmwareVersion;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getFirmwareStatus()
+
+std::string FirmwareSupImpl::getFirmwareStatus()
 {
     std::string FirmwareStatus;
     timespec timestamp;
     m_FirmwareStatus_PV->read(&timestamp, &FirmwareStatus);
     return (std::string)FirmwareStatus;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getHardwareRevision()
+
+std::string FirmwareSupImpl::getHardwareRevision()
 {
     std::string HardwareRevision;
     timespec timestamp;
     m_HWRevision_PV->read(&timestamp, &HardwareRevision);
     return (std::string)HardwareRevision;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getSerialNumber()
+
+std::string FirmwareSupImpl::getSerialNumber()
 {
     std::string SerialNumber;
     timespec timestamp;
     m_SerialNumber_PV->read(&timestamp, &SerialNumber);
     return (std::string)SerialNumber;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getDeviceModel()
+
+std::string FirmwareSupImpl::getDeviceModel()
 {
     std::string DeviceModel;
     timespec timestamp;
     m_DeviceModel_PV->read(&timestamp, &DeviceModel);
     return (std::string)DeviceModel;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getDeviceType()
+
+std::string FirmwareSupImpl::getDeviceType()
 {
     std::string DeviceType;
     timespec timestamp;
     m_DeviceType_PV->read(&timestamp, &DeviceType);
     return (std::string)DeviceType;
 }
-template <typename T>
-std::string FirmwareSupImpl<T>::getFirmwarePath()
+
+std::string FirmwareSupImpl::getFirmwarePath()
 {
     std::string FirmwarePath;
     timespec timestamp;
     m_FirmwarePath_RBVPV->read(&timestamp, &FirmwarePath);
     return (std::string)FirmwarePath;
 }
-template<typename T>
-void FirmwareSupImpl<T>::setFirmwareVersion(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setFirmwareVersion(const timespec& timestamp, const std::string& value)
 {
     m_FirmwareVersion_PV->setValue(timestamp, value);
     m_FirmwareVersion_PV->push(timestamp, value);
 }
-template<typename T>
-void FirmwareSupImpl<T>::setFirmwareStatus(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setFirmwareStatus(const timespec& timestamp, const std::string& value)
 {
     m_FirmwareStatus_PV->setValue(timestamp, value);
     m_FirmwareStatus_PV->push(timestamp, value);
 }
-template<typename T>
-void FirmwareSupImpl<T>::setHardwareRevision(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setHardwareRevision(const timespec& timestamp, const std::string& value)
 {
     m_HWRevision_PV->setValue(timestamp, value);
     m_HWRevision_PV->push(timestamp, value);
 }
-template<typename T>
-void FirmwareSupImpl<T>::setSerialNumber(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setSerialNumber(const timespec& timestamp, const std::string& value)
 {
     m_SerialNumber_PV->setValue(timestamp, value);
     m_SerialNumber_PV->push(timestamp, value);
 }
-template<typename T>
-void FirmwareSupImpl<T>::setDeviceModel(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setDeviceModel(const timespec& timestamp, const std::string& value)
 {
     m_DeviceModel_PV->setValue(timestamp, value);
     m_DeviceModel_PV->push(timestamp, value);
 }
-template<typename T>
-void FirmwareSupImpl<T>::setDeviceType(const timespec& timestamp, const std::string& value)
+
+void FirmwareSupImpl::setDeviceType(const timespec& timestamp, const std::string& value)
 {
     m_DeviceType_PV->setValue(timestamp, value);
     m_DeviceType_PV->push(timestamp, value);
 }
 
-template<typename T>
-void FirmwareSupImpl<T>::setFirmwarePath(const timespec& timestamp, const std::string& value)
+void FirmwareSupImpl::setFirmwarePath(const timespec& timestamp, const std::string& value)
 {
     m_FirmwarePath_RBVPV->setValue(timestamp, value);
     m_FirmwarePath_RBVPV->push(timestamp, value);
 }
-
-
-template class FirmwareSupImpl<std::string>;
-
 
 
 }
