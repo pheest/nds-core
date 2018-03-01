@@ -32,9 +32,10 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 						 stateChange_t stopFunction,
 						 stateChange_t recoverFunction,
 						 allowChange_t allowStateChangeFunction,
+						 writerVectorBool_t PV_dataOutMask_Writer,
 						 writerInt32_t PV_voltLevelHigh_Writer,
 						 writerInt32_t PV_voltLevelLow_Writer,
-						 writerInt32_t PV_ChannelDir_Writer):
+						 writerVectorBool_t PV_ChannelDir_Writer):
 
     Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
 																  maxElements,
@@ -44,6 +45,7 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 																  stopFunction,
 																  recoverFunction,
 																  allowStateChangeFunction,
+																  PV_dataOutMask_Writer,
 																  PV_voltLevelHigh_Writer,
 																  PV_voltLevelLow_Writer,
 																  PV_ChannelDir_Writer)))
@@ -87,6 +89,12 @@ timespec DigitalIO<T>::getStartTimestamp() const
 }
 
 template <typename T>
+std::vector<bool> DigitalIO<T>::getDataOutMask()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getDataOutMask();
+}
+
+template <typename T>
 size_t DigitalIO<T>::getVoltLevelHigh()
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelHigh();
@@ -99,9 +107,15 @@ size_t DigitalIO<T>::getVoltLevelLow()
 }
 
 template <typename T>
-size_t DigitalIO<T>::getChannelDir()
+std::vector<bool> DigitalIO<T>::getChannelDir()
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getChannelDir();
+}
+
+template <typename T>
+void DigitalIO<T>::setDataOutMask(const timespec& timestamp, const std::vector<bool>& value)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setDataOutMask(timestamp, value);
 }
 
 template <typename T>
@@ -117,7 +131,7 @@ void DigitalIO<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t
 }
 
 template <typename T>
-void DigitalIO<T>::setChannelDir(const timespec& timestamp, const std::int32_t& value)
+void DigitalIO<T>::setChannelDir(const timespec& timestamp, const std::vector<bool>& value)
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setChannelDir(timestamp, value);
 }
@@ -136,10 +150,10 @@ void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const 
 //template class DigitalIO<std::uint16_t>;
 //template class DigitalIO<std::uint32_t>;
 
-//template class DigitalIO<std::vector<bool>>;
+template class DigitalIO<std::vector<bool>>;
 template class DigitalIO<std::vector<std::uint8_t>>;
-//template class DigitalIO<std::vector<std::uint16_t>>;
-//template class DigitalIO<std::vector<std::uint32_t>>;
+template class DigitalIO<std::vector<std::uint16_t>>;
+template class DigitalIO<std::vector<std::uint32_t>>;
 
 
 }

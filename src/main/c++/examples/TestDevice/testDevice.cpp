@@ -161,6 +161,7 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::stop_DigitalIO, this),
 			std::bind(&testDevice::recover_DigitalIO, this),
 			std::bind(&testDevice::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&testDevice::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
@@ -999,13 +1000,16 @@ bool testDevice::allow_DigitalIO_Change(const nds::state_t, const nds::state_t, 
 /**
 * DigitalIO setters
 */
+void testDevice::PV_DigitalIO_dataOutMask_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/){
+
+}
 void testDevice::PV_DigitalIO_voltLevelHigh_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
 void testDevice::PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void testDevice::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void testDevice::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/){
 
 }
 

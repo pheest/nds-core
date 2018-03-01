@@ -73,6 +73,16 @@ TEST(testDigitalIO, testPushData)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get dataOutMask
+	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
+	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
+	pInterface->writeCSValue("/rootNode-DigitalIONode.DataOutMask", timestamp, dataOutMaskIn);
+	pInterface->readCSValue("/rootNode-DigitalIONode.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
+	//TODO: How to check arrays in GoogleTest??
+	for(int i=0; i<dataOutMaskOut.size();i++){
+		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
+	}
+
 	// Set/Get voltLevelHigh
 	std::int32_t voltLevelHigh;
 	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelHigh", timestamp, (std::int32_t)0);
@@ -86,10 +96,13 @@ TEST(testDigitalIO, testPushData)
 	EXPECT_EQ((std::int32_t)0, voltLevelLow);
 
 	// Set/Get channelDir
-	std::int32_t channelDir;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.ChannelDir", timestamp, (std::int32_t)0);
-	pInterface->readCSValue("/rootNode-DigitalIONode.ChannelDir_RBV",&readTimestamp,&channelDir); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0, channelDir);
+	std::vector<bool> channelDirIn = {1,0,1,0,1};
+	std::vector<bool> channelDirOut = {0,0,0,0,0};
+	pInterface->writeCSValue("/rootNode-DigitalIONode.ChannelDir", timestamp, channelDirIn);
+	pInterface->readCSValue("/rootNode-DigitalIONode.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
+	for(int i=0; i<dataOutMaskOut.size();i++){
+		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
+	}
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DigitalIONode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);

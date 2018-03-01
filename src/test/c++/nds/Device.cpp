@@ -172,6 +172,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 				std::bind(&Device::stop_DigitalIO, this),
 				std::bind(&Device::recover_DigitalIO, this),
 				std::bind(&Device::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
@@ -1191,6 +1192,14 @@ bool Device::allow_DigitalIO_Change(const nds::state_t, const nds::state_t, cons
 /**
 * DigitalIO setters
 */
+void Device::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO.setDataOutMask(timestamp,value);
+}
 void Device::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value){
 	std::int32_t HW_value;
 	//Value has the voltLevelHigh to be programmed on the hardware.
@@ -1207,8 +1216,8 @@ void Device::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const i
 	HW_value=value;
 	m_DigitalIO.setVoltLevelLow(timestamp,HW_value);
 }
-void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
 	//Value has the ChannelDir to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
@@ -1234,11 +1243,11 @@ void Device::DigitalIO_thread_body(){
 	// Get DutyCycle
 	double VoltLevelLow = m_DigitalIO.getVoltLevelLow();
 	// Get Gain
-	double ChannelDir = m_DigitalIO.getChannelDir();
+	std::vector<bool> ChannelDir = m_DigitalIO.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
-	std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
+	//std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
 
 
 	// Run until the state machine stops us

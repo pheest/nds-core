@@ -36,9 +36,10 @@ public:
                     stateChange_t stopFunction,
                     stateChange_t recoverFunction,
                     allowChange_t allowStateChangeFunction,
+					writerVectorBool_t PV_dataOutMask_Writer,
 					writerInt32_t PV_voltLevelHigh_Writer,
 					writerInt32_t PV_voltLevelLow_Writer,
-					writerInt32_t PV_ChannelDir_Writer);
+					writerVectorBool_t PV_ChannelDir_Writer);
 
 
     /**
@@ -55,15 +56,17 @@ public:
 
     void push(const timespec& timestamp, const T& data);
 
+    std::vector<bool> getDataOutMask();
     size_t getMaxElements();
     size_t getVoltLevelHigh();
     size_t getVoltLevelLow();
-    size_t getChannelDir();
+    std::vector<bool> getChannelDir();
 
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    void setDataOutMask(const timespec& timestamp, const std::vector<bool>& value);
     void setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value);
     void setVoltLevelLow(const timespec& timestamp, const std::int32_t& value);
-    void setChannelDir(const timespec& timestamp, const std::int32_t& value);
+    void setChannelDir(const timespec& timestamp, const std::vector<bool>& value);
 
     /**
      * @brief Returns the timestamp at the moment of the start of the acquisition.
@@ -110,6 +113,9 @@ protected:
     std::shared_ptr<PVVariableInImpl<T> > m_DataIn_PV;
     std::shared_ptr<PVVariableOutImpl<T> > m_DataOut_PV;
 
+    std::shared_ptr<PVDelegateOutImpl<std::vector<bool>>> m_DataOutMask_PV;
+    std::shared_ptr<PVVariableInImpl<std::vector<bool>>> m_DataOutMask_RBVPV;
+
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 
     std::shared_ptr<StateMachineImpl> m_StateMachine;
@@ -118,8 +124,8 @@ protected:
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_VoltLevelHigh_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_VoltLevelLow_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_VoltLevelLow_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ChannelDir_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ChannelDir_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::vector<bool>>> m_ChannelDir_PV;
+    std::shared_ptr<PVVariableInImpl<std::vector<bool>>> m_ChannelDir_RBVPV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 

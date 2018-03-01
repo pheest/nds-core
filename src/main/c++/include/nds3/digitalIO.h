@@ -82,9 +82,10 @@ public:
                stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
 	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
+			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerVectorBool_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
 
@@ -117,6 +118,12 @@ public:
      */
     size_t getMaxElements();
     /**
+     * @brief Retrieve the dataOutMask
+     *
+     * @return the dataOutMask value
+     */
+    std::vector<bool> getDataOutMask();
+    /**
      * @brief Retrieve the voltLevelHigh
      *
      * @return the voltLevelHigh value
@@ -133,12 +140,17 @@ public:
      *
      * @return the ChannelDir value
      */
-    size_t getChannelDir();
+    std::vector<bool> getChannelDir();
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
+    /**
+	 * @brief Sets the value of the m_dataOutMask_RBV.
+	 *
+	 */
+	void setDataOutMask(const timespec& timestamp, const std::vector<bool>& value);
     /**
      * @brief Sets the value of the m_voltLevelHigh_RBV.
      *
@@ -153,7 +165,7 @@ public:
      * @brief Sets the value of the m_channelDir_RBV.
      *
      */
-    void setChannelDir(const timespec& timestamp, const std::int32_t& value);
+    void setChannelDir(const timespec& timestamp, const std::vector<bool>& value);
     /**
      * @ingroup timing
      * @brief Returns the timestamp at the moment of the start of the acquisition.
