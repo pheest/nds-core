@@ -1200,16 +1200,16 @@ void Device::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const st
 	HW_value = value;
 	m_DigitalIO.setDataOutMask(timestamp,value);
 }
-void Device::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the voltLevelHigh to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO.setVoltLevelHigh(timestamp,HW_value);
 }
-void Device::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the voltLevelLow to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.

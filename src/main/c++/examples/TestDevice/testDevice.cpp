@@ -1003,10 +1003,10 @@ bool testDevice::allow_DigitalIO_Change(const nds::state_t, const nds::state_t, 
 void testDevice::PV_DigitalIO_dataOutMask_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/){
 
 }
-void testDevice::PV_DigitalIO_voltLevelHigh_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void testDevice::PV_DigitalIO_voltLevelHigh_Writer(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
-void testDevice::PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void testDevice::PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
 void testDevice::PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/){

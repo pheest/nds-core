@@ -84,16 +84,16 @@ TEST(testDigitalIO, testPushData)
 	}
 
 	// Set/Get voltLevelHigh
-	std::int32_t voltLevelHigh;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelHigh", timestamp, (std::int32_t)0);
+	double voltLevelHigh;
+	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelHigh", timestamp, (double)0);
 	pInterface->readCSValue("/rootNode-DigitalIONode.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0, voltLevelHigh);
+	EXPECT_EQ((double)0, voltLevelHigh);
 
 	// Set/Get voltLevelLow
-	std::int32_t voltLevelLow;
-	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelLow", timestamp, (std::int32_t)0);
+	double voltLevelLow;
+	pInterface->writeCSValue("/rootNode-DigitalIONode.VoltLevelLow", timestamp, (double)0);
 	pInterface->readCSValue("/rootNode-DigitalIONode.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0, voltLevelLow);
+	EXPECT_EQ((double)0, voltLevelLow);
 
 	// Set/Get channelDir
 	std::vector<bool> channelDirIn = {1,0,1,0,1};

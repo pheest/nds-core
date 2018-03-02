@@ -83,8 +83,8 @@ public:
                stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
 	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
 			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerVectorBool_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
@@ -155,12 +155,12 @@ public:
      * @brief Sets the value of the m_voltLevelHigh_RBV.
      *
      */
-    void setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelHigh(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_voltLevelLow_RBV.
      *
      */
-    void setVoltLevelLow(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelLow(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_channelDir_RBV.
      *

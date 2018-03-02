@@ -103,8 +103,8 @@ private:
 	 * DigitalIO setters
 	 */
 	void PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const std::vector<bool>& value);
-	void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value);
-	void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value);
+	void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value);
 
 	/**

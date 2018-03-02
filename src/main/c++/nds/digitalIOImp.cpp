@@ -25,8 +25,8 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 								 stateChange_t recoverFunction,
 								 allowChange_t allowStateChangeFunction,
 								 writerVectorBool_t PV_dataOutMask_Writer,
-								 writerInt32_t PV_voltLevelHigh_Writer,
-								 writerInt32_t PV_voltLevelLow_Writer,
+								 writerDouble_t PV_voltLevelHigh_Writer,
+								 writerDouble_t PV_voltLevelLow_Writer,
 								 writerVectorBool_t PV_ChannelDir_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -64,22 +64,22 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
     addChild(m_Decimation_PV);
 
-    m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<std::int32_t>("VoltLevelHigh",PV_voltLevelHigh_Writer));
+    m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<double>("VoltLevelHigh",PV_voltLevelHigh_Writer));
     m_VoltLevelHigh_PV->setDescription("Volt Level High ");
     m_VoltLevelHigh_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelHigh_PV);
 
-	m_VoltLevelHigh_RBVPV.reset(new PVVariableInImpl<std::int32_t>("VoltLevelHigh_RBV"));
+	m_VoltLevelHigh_RBVPV.reset(new PVVariableInImpl<double>("VoltLevelHigh_RBV"));
 	m_VoltLevelHigh_RBVPV->setDescription("Volt Level High ReadBack");
 	m_VoltLevelHigh_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VoltLevelHigh_RBVPV);
 
-    m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<std::int32_t>("VoltLevelLow",PV_voltLevelLow_Writer));
+    m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<double>("VoltLevelLow",PV_voltLevelLow_Writer));
     m_VoltLevelLow_PV->setDescription("Volt Level Low");
     m_VoltLevelLow_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelLow_PV);
 
-	m_VoltLevelLow_RBVPV.reset(new PVVariableInImpl<std::int32_t>("VoltLevelLow_RBV"));
+	m_VoltLevelLow_RBVPV.reset(new PVVariableInImpl<double>("VoltLevelLow_RBV"));
 	m_VoltLevelLow_RBVPV->setDescription("Volt Level Low Readback");
 	m_VoltLevelLow_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VoltLevelLow_RBVPV);
@@ -163,19 +163,19 @@ std::vector<bool> DigitalIOImpl<T>::getDataOutMask()
 template<typename T>
 size_t DigitalIOImpl<T>::getVoltLevelHigh()
 {
-	std::int32_t voltLevelHigh;
+	double voltLevelHigh;
 	timespec timestamp;
 	m_VoltLevelHigh_RBVPV->read(&timestamp, &voltLevelHigh);
-	return (std::int32_t)voltLevelHigh;
+	return (double)voltLevelHigh;
 }
 
 template<typename T>
 size_t DigitalIOImpl<T>::getVoltLevelLow()
 {
-	std::int32_t voltLevelLow;
+	double voltLevelLow;
 	timespec timestamp;
 	m_VoltLevelLow_RBVPV->read(&timestamp, &voltLevelLow);
-	return (std::int32_t)voltLevelLow;
+	return (double)voltLevelLow;
 }
 
 template<typename T>
@@ -195,14 +195,14 @@ void DigitalIOImpl<T>::setDataOutMask(const timespec& timestamp, const std::vect
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value)
+void DigitalIOImpl<T>::setVoltLevelHigh(const timespec& timestamp, const double& value)
 {
 	m_VoltLevelHigh_RBVPV->setValue(timestamp, value);
 	m_VoltLevelHigh_RBVPV->push(timestamp, value);
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t& value)
+void DigitalIOImpl<T>::setVoltLevelLow(const timespec& timestamp, const double& value)
 {
 	m_VoltLevelLow_RBVPV->setValue(timestamp, value);
 	m_VoltLevelLow_RBVPV->push(timestamp, value);

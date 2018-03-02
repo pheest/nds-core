@@ -33,8 +33,8 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 						 stateChange_t recoverFunction,
 						 allowChange_t allowStateChangeFunction,
 						 writerVectorBool_t PV_dataOutMask_Writer,
-						 writerInt32_t PV_voltLevelHigh_Writer,
-						 writerInt32_t PV_voltLevelLow_Writer,
+						 writerDouble_t PV_voltLevelHigh_Writer,
+						 writerDouble_t PV_voltLevelLow_Writer,
 						 writerVectorBool_t PV_ChannelDir_Writer):
 
     Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
@@ -119,13 +119,13 @@ void DigitalIO<T>::setDataOutMask(const timespec& timestamp, const std::vector<b
 }
 
 template <typename T>
-void DigitalIO<T>::setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value)
+void DigitalIO<T>::setVoltLevelHigh(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelHigh(timestamp, value);
 }
 
 template <typename T>
-void DigitalIO<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t& value)
+void DigitalIO<T>::setVoltLevelLow(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setVoltLevelLow(timestamp, value);
 }
