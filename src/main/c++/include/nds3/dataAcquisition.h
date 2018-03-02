@@ -90,8 +90,9 @@ public:
 					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalRefType_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Ground_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_DMAEnable_Writer);         ///< Delegate function setter/getter to interact to the Low Level Driver API
-
+					writerInt32_t PV_DMAEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_SamplingRate_Writer      ///<Delegate function to interact to the low level driver API
+    );
     /**
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the data acquisition starts.
@@ -226,7 +227,7 @@ public:
     *
     * @return the m_DMASamplingRate_PV value
     */
-    size_t getDMASamplingRate();
+    size_t getSamplingRate();
 
 
     /**
@@ -304,7 +305,7 @@ public:
      * @brief Sets the value of the m_DMASamplingRate_PV.
      *
      */
-    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
+    void setSamplingRate(const timespec& timestamp, const std::int32_t& value);
 };
 
 }

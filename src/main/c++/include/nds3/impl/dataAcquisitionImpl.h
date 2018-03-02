@@ -45,7 +45,8 @@ public:
     		writerInt32_t PV_Coupling_Writer,
     		writerInt32_t PV_SignalRefType_Writer,
     		writerInt32_t PV_Ground_Writer,
-			writerInt32_t PV_DMAEnable_Writer
+			writerInt32_t PV_DMAEnable_Writer,
+			writerDouble_t PV_SamplingRate_Writer
 			);
 
     /**
@@ -78,7 +79,7 @@ public:
     size_t getDMANumChannels();
     size_t getDMAFrameType();
     size_t getDMASampleSize();
-    size_t getDMASamplingRate();
+    size_t getSamplingRate();
 
     void setGain(const timespec& timestamp, const std::vector<double>& value);
     void setOffset(const timespec& timestamp, const double& value);
@@ -94,7 +95,7 @@ public:
     void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
     void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
     void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
-    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
+    void setSamplingRate(const timespec& timestamp, const std::int32_t& value);
 
 
     /**
@@ -172,7 +173,8 @@ protected:
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMANumChannels_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAFrameType_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASampleSize_PV;
-	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASamplingRate_PV;
+	std::shared_ptr<PVDelegateOutImpl<double> > m_SamplingRate_PV;
+	std::shared_ptr<PVVariableInImpl<double> > m_SamplingRate_RBVPV;
 
 };
 

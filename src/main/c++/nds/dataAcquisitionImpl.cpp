@@ -35,7 +35,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_Coupling_Writer,
 											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
-										    writerInt32_t PV_DMAEnable_Writer
+										    writerInt32_t PV_DMAEnable_Writer,
+											writerDouble_t PV_SamplingRate_Writer
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -203,10 +204,10 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_DMASampleSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASampleSize_PV);
 
-	m_DMASamplingRate_PV.reset(new PVVariableInImpl<std::int32_t>("DMASamplingRate"));
-	m_DMASamplingRate_PV->setDescription("DMA Sampling Rate");
-	m_DMASamplingRate_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_DMASamplingRate_PV);
+	m_SamplingRate_PV.reset(new PVDelegateOutImpl<double>("SamplingRate",PV_SamplingRate_Writer));
+	m_SamplingRate_PV->setDescription("Sampling Rate");
+	m_SamplingRate_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_SamplingRate_PV);
  
 
     // Add state machine
@@ -359,12 +360,12 @@ size_t DataAcquisitionImpl<T>::getDMASampleSize()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMASamplingRate()
+size_t DataAcquisitionImpl<T>::getSamplingRate()
 {
-       std::int32_t DMASamplingRate;
+       double SamplingRate;
     timespec timestamp;
-    m_DMASamplingRate_PV->read(&timestamp, &DMASamplingRate);
-    return (std::int32_t)DMASamplingRate;
+    m_SamplingRate_PV->read(&timestamp, &SamplingRate);
+    return (double)SamplingRate;
 }
 
 template<typename T>
@@ -480,10 +481,10 @@ void DataAcquisitionImpl<T>::setDMASampleSize(const timespec& timestamp, const s
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setSamplingRate(const timespec& timestamp, const std::int32_t& value)
 {
-	m_DMASamplingRate_PV->setValue(timestamp, value);
-	m_DMASamplingRate_PV->push(timestamp, value);
+	m_SamplingRate_RBVPV->setValue(timestamp, value);
+	m_SamplingRate_RBVPV->push(timestamp, value);
 }
 
 template<typename T>
