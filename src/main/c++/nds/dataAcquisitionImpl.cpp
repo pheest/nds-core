@@ -27,7 +27,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											stateChange_t stopFunction,
 											stateChange_t recoverFunction,
 											allowChange_t allowStateChangeFunction,
-											writerDouble_t PV_Gain_Writer,
+											writerVectorDouble_t PV_Gain_Writer,
 											writerDouble_t PV_Offset_Writer,
 											writerDouble_t PV_Bandwidth_Writer,
 											writerDouble_t PV_Resolution_Writer,
@@ -54,12 +54,23 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
     addChild(m_Decimation_PV);
 
-    m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
+    //add enumeration for Decimation type
+    enumerationStrings_t DecTypeEnumeratorStrings;
+    DecTypeEnumeratorStrings.push_back("block");
+    DecTypeEnumeratorStrings.push_back("sample");
+
+    m_DecimationType_PV.reset(new PVVariableOutImpl<std::int32_t>("DecimationType"));
+    m_DecimationType_PV->setDescription("block or sample");
+    m_DecimationType_PV->setScanType(scanType_t::passive, 0);
+    m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
+	addChild(m_DecimationType_PV);
+
+    m_Gain_PV.reset(new PVDelegateOutImpl<std::vector<double> >("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
     m_Gain_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Gain_PV);
 
-    m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
+    m_Gain_RBVPV.reset(new PVVariableInImpl<std::vector<double>>("Gain_RBV"));
 	m_Gain_RBVPV->setDescription("Gain of the Channel");
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
@@ -210,12 +221,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getGain()
+std::vector<double> DataAcquisitionImpl<T>::getGain()
 {
-    double Gain;
+    std::vector<double> Gain;
     timespec timestamp;
     m_Gain_RBVPV->read(&timestamp, &Gain);
-    return (double)Gain;
+    return (std::vector<double>)Gain;
 }
 
 template<typename T>
@@ -357,7 +368,7 @@ size_t DataAcquisitionImpl<T>::getDMASamplingRate()
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
+void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const std::vector<double>& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
 	m_Gain_RBVPV->push(timestamp, value);
@@ -485,7 +496,12 @@ template<typename T>
 void DataAcquisitionImpl<T>::onStart()
 {
     m_StartTime = m_StartTimestampFunction();
-    m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+
+    std::int32_t decType;
+    timespec timestamp;
+    m_DecimationType_PV->read(&timestamp, &decType);
+
+    if (decType == (std::int32_t)0) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
     m_OnStartDelegate();
 }
 

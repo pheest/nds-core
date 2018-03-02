@@ -20,15 +20,21 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
   	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
 
   // Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+  	std::vector<double> Gain;
+  	std::vector<double> Gain_in;
+  	Gain_in.push_back(10.0);
+  	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Offset", timestamp, (double)1);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Offset_RBV",&readTimestamp,&offset); // PVVariables are thread safe
+	EXPECT_EQ((double)1, offset);
 
 	// Set/Get Bandwidth
 	double Bandwidth;
@@ -148,7 +154,7 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 //	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
 //	//++startTimestamp;
 	std::int32_t NumDMAChannels;
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.NumDMAChannels",&readTimestamp,&NumDMAChannels);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMANumChannels",&readTimestamp,&NumDMAChannels);
 	//std::cerr<< "Dato de NumDMAChannels"<<NumDMAChannels;
 	factory.destroyDevice("rootNode");
 

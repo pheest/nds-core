@@ -80,10 +80,15 @@ TEST(testDataAcquisition, testPushDataAcquiredVDBL)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -226,10 +231,15 @@ TEST(testDataAcquisition, testPushDataAcquiredVI32)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -365,10 +375,15 @@ TEST(testDataAcquisition, testPushDataAcquiredVI8)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -504,10 +519,15 @@ TEST(testDataAcquisition, testPushDataAcquiredVUI8)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -643,10 +663,15 @@ TEST(testDataAcquisition, testPushDataAcquiredDBL)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -775,10 +800,15 @@ TEST(testDataAcquisition, testPushDataAcquiredI32)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;
@@ -907,10 +937,15 @@ TEST(testDataAcquisition, testDecimation)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+	std::vector<double> Gain;
+	std::vector<double> Gain_in;
+	Gain_in.push_back(10.0);
+	Gain_in.push_back(20.0);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain[0]);
+	EXPECT_EQ(20.0, Gain[1]);
 
 	// Set/Get offset
 	double offset;

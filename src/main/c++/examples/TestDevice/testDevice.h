@@ -101,7 +101,7 @@ private:
 	/**
 	 * DataAcquisition setters
 	 */
-	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value);
+	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const std::vector<double>& value);
 	void PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value);
 	void PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value);
 	void PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value);

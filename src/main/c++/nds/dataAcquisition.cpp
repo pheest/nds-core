@@ -34,7 +34,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									stateChange_t stopFunction,
 									stateChange_t recoverFunction,
 									allowChange_t allowStateChangeFunction,
-									writerDouble_t PV_Gain_Writer,
+									writerVectorDouble_t  PV_Gain_Writer,
 									writerDouble_t PV_Offset_Writer,
 									writerDouble_t PV_Bandwidth_Writer,
 									writerDouble_t PV_Resolution_Writer,
@@ -89,7 +89,7 @@ void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getGain()
+std::vector<double> DataAcquisition<T>::getGain()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGain();
 }
@@ -192,7 +192,7 @@ size_t DataAcquisition<T>::getDMASamplingRate()
 }
 
 template <typename T>
-void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
+void DataAcquisition<T>::setGain(const timespec& timestamp, const std::vector<double>& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
 }

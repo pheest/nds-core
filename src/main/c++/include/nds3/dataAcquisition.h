@@ -82,7 +82,7 @@ public:
                     stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                     stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
                     allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-					writerDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerVectorDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Offset_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Bandwidth_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -118,7 +118,7 @@ public:
      *
      * @return the Gain value
      */
-    size_t getGain();
+    std::vector<double> getGain();
 
     /**
      * @brief Retrieve the Offset
@@ -233,7 +233,7 @@ public:
      * @brief Sets the value of the m_Gain_RBV.
      *
      */
-    void setGain(const timespec& timestamp, const double& value);
+    void setGain(const timespec& timestamp, const std::vector<double>& value);
     /**
      * @brief Sets the value of the m_Offset_RBV.
      *

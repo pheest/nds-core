@@ -295,12 +295,14 @@ typedef std::function<void (const timespec&, const std::int32_t&)> writerInt32_t
 typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;
 typedef std::function<void (const timespec&, const std::string&)> writerString_t;
 typedef std::function<void (const timespec&, const timespec&)> writerTime_t;
+typedef std::function<void (const timespec&, const std::vector<double>&)> writerVectorDouble_t;
 
 typedef std::function<void (timespec* time, std::string* val)> readerString_t;
 typedef std::function<void (timespec* time, std::int32_t* val)> readerInt32_t;
 typedef std::function<void (timespec* time, double* val)> readerDouble_t;
 typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
 typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
+typedef std::function<void (timespec* time, std::vector<double>* val)> readerVectorDouble_t;
 
 
 } // namespace nds

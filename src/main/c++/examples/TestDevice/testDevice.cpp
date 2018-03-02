@@ -514,8 +514,8 @@ bool testDevice::allow_DataAcquisition_Change(const nds::state_t, const nds::sta
 /*
 * DataAcquisition setters
 */
-void testDevice::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
-	double HW_value;
+void testDevice::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const std::vector<double>& value){
+	std::vector<double> HW_value;
 	//Value has the Gain to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
@@ -602,7 +602,7 @@ void testDevice::DataAcquisition_thread_body(){
 		std::int32_t NumberOfPushedDataBlocks(0);
 
 		// Get Gain
-		double Gain = m_DataAcquisition.getGain();
+		std::vector<double> Gain = m_DataAcquisition.getGain();
 		// Get Bandwidth
 		double Bandwidth = m_DataAcquisition.getBandwidth();
 		// Get Resolution
@@ -618,7 +618,9 @@ void testDevice::DataAcquisition_thread_body(){
 		// Get impedance
 		std::int32_t Impedance = m_DataAcquisition.getImpedance();
 
-		std::cout<<"\tGain = "<<Gain<<std::endl;
+		for(int i = 0; i < Gain.size(); i++) {
+			std::cout<<"\tGain = "<< Gain[i] <<std::endl;
+		}
 		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 		std::cout<<"\tResolution = "<<Resolution<<std::endl;
 		std::cout<<"\tCoupling = "<<Coupling<<std::endl;

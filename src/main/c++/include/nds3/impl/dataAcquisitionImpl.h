@@ -16,6 +16,8 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
 
+#include <vector>
+
 namespace nds
 {
 
@@ -35,7 +37,7 @@ public:
             stateChange_t stopFunction,
             stateChange_t recoverFunction,
             allowChange_t allowStateChangeFunction,
-    		writerDouble_t PV_Gain_Writer,
+			writerVectorDouble_t PV_Gain_Writer,
     		writerDouble_t PV_Offset_Writer,
     		writerDouble_t PV_Bandwidth_Writer,
     		writerDouble_t PV_Resolution_Writer,
@@ -62,7 +64,7 @@ public:
 
 
     size_t getMaxElements();
-    size_t getGain();
+    std::vector<double> getGain();
     size_t getOffset();
     size_t getBandwidth();
     size_t getResolution();
@@ -78,7 +80,7 @@ public:
     size_t getDMASampleSize();
     size_t getDMASamplingRate();
 
-    void setGain(const timespec& timestamp, const double& value);
+    void setGain(const timespec& timestamp, const std::vector<double>& value);
     void setOffset(const timespec& timestamp, const double& value);
     void setBandwidth(const timespec& timestamp, const double& value);
     void setResolution(const timespec& timestamp, const double& value);
@@ -142,11 +144,12 @@ protected:
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
-    std::shared_ptr<PVVariableInImpl<double> > m_Gain_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::vector<double> > > m_Gain_PV;
+    std::shared_ptr<PVVariableInImpl<std::vector<double> > > m_Gain_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Bandwidth_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
