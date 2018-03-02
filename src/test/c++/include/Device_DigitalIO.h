@@ -1,5 +1,5 @@
-#ifndef DEVICEI_DIGITALIO_H_
-#define DEVICEI_DIGITALIO_H_
+#ifndef DEVICE_DIGITALIO_H_
+#define DEVICE_DIGITALIO_H_
 
 #include <memory>
 
@@ -21,6 +21,7 @@
  */
 class DeviceDigitalIO
 {
+public:
 	/**
 	 * @brief Constructor.
 	 *

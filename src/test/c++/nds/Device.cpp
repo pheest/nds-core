@@ -180,6 +180,26 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_DigitalIO.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    m_DigitalIO.getStartTimestamp();
 
+	    /**
+	     * Add a Digital I/O node:
+	     */
+	    m_DigitalIOU16 = rootNode.addChild(nds::DigitalIO<std::vector<std::uint16_t> >(
+	    		"DigitalIONodeU16",
+				128,
+				std::bind(&Device::switchOn_DigitalIO, this),
+				std::bind(&Device::switchOff_DigitalIO, this),
+				std::bind(&Device::start_DigitalIO, this),
+				std::bind(&Device::stop_DigitalIO, this),
+				std::bind(&Device::recover_DigitalIO, this),
+				std::bind(&Device::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
+	    ));
+	    m_DigitalIOU16.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_DigitalIOU16.getStartTimestamp();
+
 
 
 	    /**

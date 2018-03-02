@@ -271,6 +271,8 @@ private:
 	  * @brief DigitalIO node
 	  */
 	 nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO;
+	 nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIOU16;
+
 
 	 /**
 	  * Methods to control DigitalIO state machine

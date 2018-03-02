@@ -10,7 +10,8 @@ static std::map<std::string, DeviceDigitalIO*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
 DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
-m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}{
+	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
+{
 	//TODO:Study this.
 	{
 		std::lock_guard<std::mutex> lock(m_lockDevicesMap);
@@ -124,6 +125,68 @@ m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}{
 	m_DigitalIO_Uint32_t.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_Uint32_t.getStartTimestamp();
 
+
+	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
+	//  with the control system that called this constructor.
+	////////////////////////////////////////////////////////////////////////////////
+	rootNode.initialize(this, factory);
+
+    std::string rootNodeComponentName = rootNode.getComponentName();
+    std::string rootNodeFullExternalName = rootNode.getFullExternalName();
+    std::string rootNodeFullName = rootNode.getFullName();
+    std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
+    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
+    timespec rootNodetime = rootNode.getTimestamp();
+
+    //std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
+    //std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
+    //std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
+    //std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
+    //std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
+    //std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
+
+    rootNode.setTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+    rootNode.setLogLevel(nds::logLevel_t::debug);
+
+    rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
+    ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
+
+
+}
+
+DeviceDigitalIO::~DeviceDigitalIO()
+{
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
+
+}
+
+DeviceDigitalIO* DeviceDigitalIO::getInstance(const std::string& deviceName)
+{
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+
+    std::map<std::string, DeviceDigitalIO*>::const_iterator findDevice = m_devicesMap.find(deviceName);
+    if(findDevice == m_devicesMap.end())
+    {
+        return 0;
+    }
+    return findDevice->second;
+}
+
+/**
+ * Allocation function
+ *********************/
+void* DeviceDigitalIO::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+{
+    return new DeviceDigitalIO(factory, deviceName, parameters);
+}
+
+/**
+ * Deallocation function
+ ***********************/
+void DeviceDigitalIO::deallocateDevice(void* deviceName)
+{
+    delete (DeviceDigitalIO*)deviceName;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,17 +235,17 @@ void DeviceDigitalIO::start_DigitalIO(){
 		 *   is ON.
 		 */
 	m_DigitalIO_Thread_Bool = std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_Bool, this));
-	m_DigitalIO_Thread_U8	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U8, this));
-	m_DigitalIO_Thread_U16 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U16, this));
-	m_DigitalIO_Thread_U32 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U32, this));
+//	m_DigitalIO_Thread_U8	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U8, this));
+//	m_DigitalIO_Thread_U16 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U16, this));
+//	m_DigitalIO_Thread_U32 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U32, this));
 
 }
 void DeviceDigitalIO::stop_DigitalIO(){
 	m_bStop_DigitalIO = true;
 	m_DigitalIO_Thread_Bool.join();
-	m_DigitalIO_Thread_U8.join();
-	m_DigitalIO_Thread_U16.join();
-	m_DigitalIO_Thread_U32.join();
+//	m_DigitalIO_Thread_U8.join();
+//	m_DigitalIO_Thread_U16.join();
+//	m_DigitalIO_Thread_U32.join();
 }
 void DeviceDigitalIO::recover_DigitalIO(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
@@ -210,9 +273,9 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp,
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
 	m_DigitalIO_Bool.setDataOutMask(timestamp,value);
-	m_DigitalIO_Uint8_t.setDataOutMask(timestamp,value);
-	m_DigitalIO_Uint16_t.setDataOutMask(timestamp,value);
-	m_DigitalIO_Uint32_t.setDataOutMask(timestamp,value);
+//	m_DigitalIO_Uint8_t.setDataOutMask(timestamp,value);
+//	m_DigitalIO_Uint16_t.setDataOutMask(timestamp,value);
+//	m_DigitalIO_Uint32_t.setDataOutMask(timestamp,value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value){
@@ -222,9 +285,9 @@ void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestam
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setVoltLevelHigh(timestamp,HW_value);
-	m_DigitalIO_Uint8_t.setVoltLevelHigh(timestamp,HW_value);
-	m_DigitalIO_Uint16_t.setVoltLevelHigh(timestamp,HW_value);
-	m_DigitalIO_Uint32_t.setVoltLevelHigh(timestamp,HW_value);
+//	m_DigitalIO_Uint8_t.setVoltLevelHigh(timestamp,HW_value);
+//	m_DigitalIO_Uint16_t.setVoltLevelHigh(timestamp,HW_value);
+//	m_DigitalIO_Uint32_t.setVoltLevelHigh(timestamp,HW_value);
 }
 void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
@@ -233,9 +296,9 @@ void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setVoltLevelLow(timestamp,HW_value);
-	m_DigitalIO_Uint8_t.setVoltLevelLow(timestamp,HW_value);
-	m_DigitalIO_Uint16_t.setVoltLevelLow(timestamp,HW_value);
-	m_DigitalIO_Uint32_t.setVoltLevelLow(timestamp,HW_value);
+//	m_DigitalIO_Uint8_t.setVoltLevelLow(timestamp,HW_value);
+//	m_DigitalIO_Uint16_t.setVoltLevelLow(timestamp,HW_value);
+//	m_DigitalIO_Uint32_t.setVoltLevelLow(timestamp,HW_value);
 }
 void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value){
 	std::vector<bool> HW_value;
@@ -244,9 +307,9 @@ void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, 
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setChannelDir(timestamp,HW_value);
-	m_DigitalIO_Uint8_t.setChannelDir(timestamp,HW_value);
-	m_DigitalIO_Uint16_t.setChannelDir(timestamp,HW_value);
-	m_DigitalIO_Uint32_t.setChannelDir(timestamp,HW_value);
+//	m_DigitalIO_Uint8_t.setChannelDir(timestamp,HW_value);
+//	m_DigitalIO_Uint16_t.setChannelDir(timestamp,HW_value);
+//	m_DigitalIO_Uint32_t.setChannelDir(timestamp,HW_value);
 }
 
 /**
