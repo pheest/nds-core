@@ -15,6 +15,10 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
 
+#include <iostream>
+#include <list>
+#include <algorithm>
+
 namespace nds
 {
 
@@ -36,7 +40,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
 										    writerInt32_t PV_DMAEnable_Writer,
-											writerDouble_t PV_SamplingRate_Writer
+											writerDouble_t PV_SamplingRate_Writer,
+											writerVectorInt32_t PV_ChannelList_Writer
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -60,7 +65,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     DecTypeEnumeratorStrings.push_back("block");
     DecTypeEnumeratorStrings.push_back("sample");
 
-    m_DecimationType_PV.reset(new PVVariableOutImpl<std::int32_t>("DecimationType"));
+    m_DecimationType_PV.reset(new PVVariableOutImpl<std::string>("DecimationType"));
     m_DecimationType_PV->setDescription("block or sample");
     m_DecimationType_PV->setScanType(scanType_t::passive, 0);
     m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
@@ -209,6 +214,21 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_SamplingRate_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SamplingRate_PV);
  
+	m_SamplingRate_RBVPV.reset(new PVVariableInImpl<double>("SamplingRate_RBV"));
+	m_SamplingRate_RBVPV->setDescription("Sampling Rate ReadBack");
+	m_SamplingRate_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_SamplingRate_RBVPV);
+
+    m_ChannelList_PV.reset(new PVDelegateOutImpl<std::vector<std::int32_t> >("ChannelList",PV_ChannelList_Writer));
+    m_ChannelList_PV->setDescription("List of channels");
+    m_ChannelList_PV->setScanType(scanType_t::passive, 0);
+    addChild(m_ChannelList_PV);
+
+    m_ChannelList_RBVPV.reset(new PVVariableInImpl<std::vector<std::int32_t>>("ChannelList_RBV"));
+    m_ChannelList_RBVPV->setDescription("List of channels");
+    m_ChannelList_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_ChannelList_RBVPV);
+
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
@@ -364,8 +384,17 @@ size_t DataAcquisitionImpl<T>::getSamplingRate()
 {
        double SamplingRate;
     timespec timestamp;
-    m_SamplingRate_PV->read(&timestamp, &SamplingRate);
+    m_SamplingRate_RBVPV->read(&timestamp, &SamplingRate);
     return (double)SamplingRate;
+}
+
+template<typename T>
+std::vector<std::int32_t> DataAcquisitionImpl<T>::getChannelList()
+{
+    std::vector<std::int32_t> ChannelList;
+    timespec timestamp;
+    m_ChannelList_RBVPV->read(&timestamp, &ChannelList);
+    return (std::vector<std::int32_t>)ChannelList;
 }
 
 template<typename T>
@@ -481,10 +510,17 @@ void DataAcquisitionImpl<T>::setDMASampleSize(const timespec& timestamp, const s
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setSamplingRate(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setSamplingRate(const timespec& timestamp, const double& value)
 {
 	m_SamplingRate_RBVPV->setValue(timestamp, value);
 	m_SamplingRate_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void DataAcquisitionImpl<T>::setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value)
+{
+	m_ChannelList_RBVPV->setValue(timestamp, value);
+	m_ChannelList_RBVPV->push(timestamp, value);
 }
 
 template<typename T>
@@ -498,11 +534,25 @@ void DataAcquisitionImpl<T>::onStart()
 {
     m_StartTime = m_StartTimestampFunction();
 
-    std::int32_t decType;
+    std::string decType;
     timespec timestamp;
     m_DecimationType_PV->read(&timestamp, &decType);
 
-    if (decType == (std::int32_t)0) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    std::list<std::string> listOfDecimationType = m_DecimationType_PV->getEnumerations();
+
+    std::list<std::string>::iterator it_sample = std::find(listOfDecimationType.begin(), listOfDecimationType.end(), "sample");
+    std::list<std::string>::iterator it = std::find(listOfDecimationType.begin(), listOfDecimationType.end(), decType);
+
+    if (it == it_sample) {
+    	std::cout << "Selected Type is sample" << std::endl;
+    	m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    }
+    else {
+    	std::cout << "Selected Type is not sample" << std::endl;
+    }
+
+//    if (decType == m_DecimationType_PV->getEnumerations().sample) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+
     m_OnStartDelegate();
 }
 

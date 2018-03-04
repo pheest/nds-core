@@ -19,6 +19,24 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
     std::vector<double> datos(2,0);
   	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
 
+	// Set/Get DecimationType
+	std::string decimationType_in = "block";
+	std::string decimationType_out;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DecimationType", timestamp, decimationType_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType_out); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"block", decimationType_out);
+
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
   // Set/Get Gain
   	std::vector<double> Gain;
   	std::vector<double> Gain_in;
@@ -72,6 +90,12 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
+
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -85,9 +109,10 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
-//	// Set the start time
-//	/////////////////////
-	std::int32_t startTimestamp = 200;
+
+	// Set the start time
+	/////////////////////
+//	std::int32_t startTimestamp = 200;
 //	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING

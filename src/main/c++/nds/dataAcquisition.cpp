@@ -43,7 +43,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_SignalRef_Writer,
 									writerInt32_t PV_Ground_Writer,
 									writerInt32_t PV_DMAEnable_Writer,
-									writerDouble_t PV_SamplingRate_Writer):
+									writerDouble_t PV_SamplingRate_Writer,
+									writerVectorInt32_t PV_ChannelList_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -61,7 +62,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_SignalRef_Writer,
 																	 		 PV_Ground_Writer,
 																			 PV_DMAEnable_Writer,
-																			 PV_SamplingRate_Writer)))
+																			 PV_SamplingRate_Writer,
+																			 PV_ChannelList_Writer)))
 {
 }
 
@@ -194,6 +196,12 @@ size_t DataAcquisition<T>::getSamplingRate()
 }
 
 template <typename T>
+std::vector<std::int32_t> DataAcquisition<T>::getChannelList()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getChannelList();
+}
+
+template <typename T>
 void DataAcquisition<T>::setGain(const timespec& timestamp, const std::vector<double>& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
@@ -278,9 +286,15 @@ void DataAcquisition<T>::setDMASampleSize(const timespec& timestamp, const std::
 }
 
 template <typename T>
-void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSamplingRate(timestamp, value);
+}
+
+template <typename T>
+void DataAcquisition<T>::setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setChannelList(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;

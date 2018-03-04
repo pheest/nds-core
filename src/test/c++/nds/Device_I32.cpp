@@ -66,7 +66,9 @@ DeviceI32::DeviceI32(nds::Factory &factory, const std::string &deviceName, const
 			std::bind(&DeviceI32::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceI32::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceI32::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceI32::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2)
+			std::bind(&DeviceI32::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+			std::bind(&DeviceI32::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2),
+			std::bind(&DeviceI32::PV_DataAcquisition_ChannelList_Writer,this,std::placeholders::_1,std::placeholders::_2)
 ));
 
 	/**
@@ -294,6 +296,23 @@ void DeviceI32::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp,	c
 	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
 }
 
+void DeviceI32::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
+		const double& value) {
+	double HW_value;
+	//Value has the SamplingRate to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real SamplingRate programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setSamplingRate(timestamp,HW_value);
+}
+
+void DeviceI32::PV_DataAcquisition_ChannelList_Writer(const timespec& timestamp,
+	const std::vector<std::int32_t>& value) {
+	std::vector<std::int32_t> HW_value;
+	HW_value=value;
+	m_DataAcquisition.setChannelList(timestamp,HW_value);
+}
+
 /*
 * Body of function to acquire data
 */
@@ -330,14 +349,21 @@ void DeviceI32::DataAcquisition_thread_body(){
 		std::int32_t DMAFrameType = m_DataAcquisition.getDMAFrameType();
 		// Get DMASampleSize
 		std::int32_t DMASampleSize = m_DataAcquisition.getDMASampleSize();
-		// Get DMASamplingRate
-		std::int32_t DMASamplingRate = m_DataAcquisition.getDMASamplingRate();
 		// Get DMAEnable
 		std::int32_t DMAEnable = m_DataAcquisition.getDMAEnable();
+		// Get SamplingRate
+		double SamplingRate = m_DataAcquisition.getSamplingRate();
+		// Get ChannelList
+		std::vector<std::int32_t> ChannelList = m_DataAcquisition.getChannelList();
+
+		for(int i = 0; i < ChannelList.size(); i++) {
+			std::cout << "\tChannelList[" << i << "] = " << ChannelList[i] << std::endl;
+		}
 
 		for(int i = 0; i < Gain.size(); i++) {
-			std::cout<<"\tGain = "<< Gain[i] <<std::endl;
+			std::cout << "\tGain[" << i << "] = " << Gain[i] <<std::endl;
 		}
+
 		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 		std::cout<<"\tResolution = "<<Resolution<<std::endl;
 		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
@@ -349,8 +375,8 @@ void DeviceI32::DataAcquisition_thread_body(){
 		std::cout<<"\tDMANumChannels = "<<DMANumChannels<<std::endl;
 		std::cout<<"\tDMAFrameType = "<<DMAFrameType<<std::endl;
 		std::cout<<"\tDMASampleSize = "<<DMASampleSize<<std::endl;
-		std::cout<<"\tDMASamplingRate = "<<DMASamplingRate<<std::endl;
 		std::cout<<"\tDMAEnable = "<<DMAEnable<<std::endl;
+		std::cout<<"\tSamplingRate = "<<SamplingRate<<std::endl;
 
 		// Run until the state machine stops us
 		while(!m_bStop_DataAcquisition){

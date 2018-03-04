@@ -79,6 +79,17 @@ TEST(testDataAcquisition, testPushDataAcquiredVDBL)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -130,6 +141,12 @@ TEST(testDataAcquisition, testPushDataAcquiredVDBL)
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Ground", timestamp, (std::int32_t)0);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
+
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 
 	// Check initial state (OFF)
@@ -230,6 +247,17 @@ TEST(testDataAcquisition, testPushDataAcquiredVI32)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -282,6 +310,11 @@ TEST(testDataAcquisition, testPushDataAcquiredVI32)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -374,6 +407,17 @@ TEST(testDataAcquisition, testPushDataAcquiredVI8)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -426,6 +470,11 @@ TEST(testDataAcquisition, testPushDataAcquiredVI8)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -518,6 +567,17 @@ TEST(testDataAcquisition, testPushDataAcquiredVUI8)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -570,6 +630,11 @@ TEST(testDataAcquisition, testPushDataAcquiredVUI8)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -662,6 +727,17 @@ TEST(testDataAcquisition, testPushDataAcquiredDBL)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -714,6 +790,11 @@ TEST(testDataAcquisition, testPushDataAcquiredDBL)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -799,6 +880,17 @@ TEST(testDataAcquisition, testPushDataAcquiredI32)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -851,6 +943,11 @@ TEST(testDataAcquisition, testPushDataAcquiredI32)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -936,6 +1033,17 @@ TEST(testDataAcquisition, testDecimation)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
+	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList;
+	std::vector<std::int32_t> ChannelList_in;
+	ChannelList_in.push_back(1);
+	ChannelList_in.push_back(2);
+
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList[0]);
+	EXPECT_EQ(2, ChannelList[1]);
+
 	// Set/Get Gain
 	std::vector<double> Gain;
 	std::vector<double> Gain_in;
@@ -946,6 +1054,14 @@ TEST(testDataAcquisition, testDecimation)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
 	EXPECT_EQ(10.0, Gain[0]);
 	EXPECT_EQ(20.0, Gain[1]);
+
+	// Set/Get DecimationType
+	std::string decimationType_in = "sample";
+	std::string decimationType_out;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DecimationType", timestamp, decimationType_in);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType_out); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"sample", decimationType_out);
+
 
 	// Set/Get offset
 	double offset;
@@ -988,7 +1104,13 @@ TEST(testDataAcquisition, testDecimation)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
-	// Set/Get Ground
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
+
+	// Set/Get Decimation
 	std::int32_t decimation;
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Decimation", timestamp, (std::int32_t)10);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Decimation",&readTimestamp,&decimation); // PVVariables are thread safe
@@ -1126,11 +1248,6 @@ TEST(testDataAcquisition, testDMAParameters)
 	std::int32_t DMASampleSize;
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMASampleSize",&readTimestamp,&DMASampleSize); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)4, DMASampleSize);
-
-	// Get DMASamplingRate initial value
-	std::int32_t DMASamplingRate;
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMASamplingRate",&readTimestamp,&DMASamplingRate); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)1000, DMASamplingRate);
 
 	// Get DMAEnable initial value
 	std::int32_t DMAEnable;

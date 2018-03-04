@@ -46,7 +46,8 @@ public:
     		writerInt32_t PV_SignalRefType_Writer,
     		writerInt32_t PV_Ground_Writer,
 			writerInt32_t PV_DMAEnable_Writer,
-			writerDouble_t PV_SamplingRate_Writer
+			writerDouble_t PV_SamplingRate_Writer,
+			writerVectorInt32_t PV_ChannelList_Writer
 			);
 
     /**
@@ -80,6 +81,7 @@ public:
     size_t getDMAFrameType();
     size_t getDMASampleSize();
     size_t getSamplingRate();
+    std::vector<std::int32_t> getChannelList();
 
     void setGain(const timespec& timestamp, const std::vector<double>& value);
     void setOffset(const timespec& timestamp, const double& value);
@@ -95,7 +97,8 @@ public:
     void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
     void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
     void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
-    void setSamplingRate(const timespec& timestamp, const std::int32_t& value);
+    void setSamplingRate(const timespec& timestamp, const double& value);
+    void setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value);
 
 
     /**
@@ -145,7 +148,11 @@ protected:
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
+//    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
+    std::shared_ptr<PVVariableOutImpl<std::string> > m_DecimationType_PV;
+
+    std::shared_ptr<PVDelegateOutImpl<std::vector<std::int32_t> > > m_ChannelList_PV;
+    std::shared_ptr<PVVariableInImpl<std::vector<std::int32_t> > > m_ChannelList_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
