@@ -271,8 +271,6 @@ private:
 	  * @brief DigitalIO node
 	  */
 	 nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO;
-	 nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIOU16;
-
 
 	 /**
 	  * Methods to control DigitalIO state machine
@@ -309,6 +307,51 @@ private:
 	  *        when true.
 	  */
 	 volatile bool m_bStop_DigitalIO;
+
+
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 //  DIGITAL I/O Uint16_t
+	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 /**
+	  * @brief DigitalIO node
+	  */
+
+	 nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIO_U16;
+
+	 /**
+	  * Methods to control DigitalIO state machine
+	  */
+	 void switchOn_DigitalIO_U16();  ///< Called to switch on the DigitalIO node.
+	 void switchOff_DigitalIO_U16(); ///< Called to switch off the DigitalIO node.
+	 void start_DigitalIO_U16();     ///< Called to start the DigitalIO node.
+	 void stop_DigitalIO_U16();      ///< Called to stop the DigitalIO node.
+	 void recover_DigitalIO_U16();   ///< Called to recover the DigitalIO node from a failure.
+
+	 bool allow_DigitalIO_Change_U16(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	 /**
+	  * DigitalIO setters
+	  */
+	 void PV_DigitalIO_dataOutMask_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
+	 void PV_DigitalIO_voltLevelHigh_Writer_U16(const timespec& timestamp, const double& value);
+	 void PV_DigitalIO_voltLevelLow_Writer_U16(const timespec& timestamp, const double& value);
+	 void PV_DigitalIO_ChannelDir_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
+	 /**
+	  * @brief Function that continuously acquires digital IO data.
+	  *        It is launched by start_DigitalIO() in a separate thread.
+	  */
+	 void DigitalIO_thread_body_U16();
+
+	 /**
+	  * @brief A thread that runs DataProcessing_thread_body().
+	  */
+	 std::thread m_DigitalIO_Thread_U16;
+
+	 /**
+	  * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	  *        when true.
+	  */
+	 volatile bool m_bStop_DigitalIO_U16;
 
 
 

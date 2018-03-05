@@ -1,5 +1,5 @@
-#ifndef DEVICE_DIGITALIO_H_
-#define DEVICE_DIGITALIO_H_
+#ifndef DEVICEDIGITALIO_H_
+#define DEVICEDIGITALIO_H_
 
 #include <memory>
 
@@ -10,7 +10,6 @@
 #include <thread>
 
 #include <nds3/nds.h>
-
 
 /**
  * @brief Class that declares and implement a fictional device for testing purposes of nds-core V3.
@@ -67,12 +66,12 @@ private:
 	/**
 	 * Methods to control DeviceDigitalIO state machine
 	 */
-	void switchOn_Device();  ///< Called to switch on the DeviceDigitalIO (rootnode).
-	void switchOff_Device(); ///< Called to switch off the DeviceDigitalIO (rootnode).
-	void start_Device();     ///< Called to start the DeviceDigitalIO (rootnode).
-	void stop_Device();      ///< Called to stop the DeviceDigitalIO (rootnode).
-	void recover_Device();   ///< Called to recover the DeviceDigitalIO (rootnode) from a failure.
-	bool allow_Device_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	void switchOn_DeviceDigitalIO();  ///< Called to switch on the DeviceDigitalIO (rootnode).
+	void switchOff_DeviceDigitalIO(); ///< Called to switch off the DeviceDigitalIO (rootnode).
+	void start_DeviceDigitalIO();     ///< Called to start the DeviceDigitalIO (rootnode).
+	void stop_DeviceDigitalIO();      ///< Called to stop the DeviceDigitalIO (rootnode).
+	void recover_DeviceDigitalIO();   ///< Called to recover the DeviceDigitalIO (rootnode) from a failure.
+	bool allow_DeviceDigitalIO_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
 	timespec getCurrentTime();
@@ -85,9 +84,6 @@ private:
 	 * @brief DigitalIO node
 	 */
 	nds::DigitalIO<std::vector<bool> > m_DigitalIO_Bool;
-	nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO_Uint8_t;
-	nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIO_Uint16_t;
-	nds::DigitalIO<std::vector<std::uint32_t> > m_DigitalIO_Uint32_t;
 
 	/**
 	 * Methods to control DigitalIO state machine
@@ -115,27 +111,49 @@ private:
 	void DigitalIO_thread_body_Bool();
 
 	/**
+	 * @brief A thread that runs DataProcessing_thread_body().
+	 */
+	std::thread m_DigitalIO_Thread_Bool;
+
+	/**
+	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	 *        when true.
+	 */
+	volatile bool m_bStop_DigitalIO_Bool;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DIGITAL I/O Uint8_t
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief DigitalIO node
+	 */
+	nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO_U8;
+
+	/**
+	 * Methods to control DigitalIO state machine
+	 */
+	void switchOn_DigitalIO_U8();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_U8(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_U8();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_U8();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_U8();   ///< Called to recover the DigitalIO node from a failure.
+
+	bool allow_DigitalIO_Change_U8(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * DigitalIO setters
+	 */
+	void PV_DigitalIO_dataOutMask_Writer_U8(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_U8(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_U8(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_U8(const timespec& timestamp, const std::vector<bool>& value);
+
+	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
 	 */
 	void DigitalIO_thread_body_U8();
-
-	/**
-	 * @brief Function that continuously acquires digital IO data.
-	 *        It is launched by start_DigitalIO() in a separate thread.
-	 */
-	void DigitalIO_thread_body_U16();
-
-	/**
-	 * @brief Function that continuously acquires digital IO data.
-	 *        It is launched by start_DigitalIO() in a separate thread.
-	 */
-	void DigitalIO_thread_body_U32();
-
-	/**
-	 * @brief A thread that runs DataProcessing_thread_body().
-	 */
-	std::thread m_DigitalIO_Thread_Bool;
 
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
@@ -143,9 +161,89 @@ private:
 	std::thread m_DigitalIO_Thread_U8;
 
 	/**
+	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	 *        when true.
+	 */
+	volatile bool m_bStop_DigitalIO_U8;
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DIGITAL I/O Uint16_t
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * @brief DigitalIO node
+	 */
+
+	nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIO_U16;
+
+	/**
+	 * Methods to control DigitalIO state machine
+	 */
+	void switchOn_DigitalIO_U16();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_U16(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_U16();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_U16();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_U16();   ///< Called to recover the DigitalIO node from a failure.
+
+	bool allow_DigitalIO_Change_U16(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * DigitalIO setters
+	 */
+	void PV_DigitalIO_dataOutMask_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_U16(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_U16(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
+	/**
+	 * @brief Function that continuously acquires digital IO data.
+	 *        It is launched by start_DigitalIO() in a separate thread.
+	 */
+	void DigitalIO_thread_body_U16();
+
+	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
 	std::thread m_DigitalIO_Thread_U16;
+
+	/**
+	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	 *        when true.
+	 */
+	volatile bool m_bStop_DigitalIO_U16;
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DIGITAL I/O Uint32_t
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief DigitalIO node
+	 */
+	nds::DigitalIO<std::vector<std::uint32_t> > m_DigitalIO_U32;
+
+	/**
+	 * Methods to control DigitalIO state machine
+	 */
+	void switchOn_DigitalIO_U32();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_U32(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_U32();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_U32();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_U32();   ///< Called to recover the DigitalIO node from a failure.
+
+	bool allow_DigitalIO_Change_U32(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * DigitalIO setters
+	 */
+	void PV_DigitalIO_dataOutMask_Writer_U32(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_U32(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_U32(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_U32(const timespec& timestamp, const std::vector<bool>& value);
+	/**
+	 * @brief Function that continuously acquires digital IO data.
+	 *        It is launched by start_DigitalIO() in a separate thread.
+	 */
+	void DigitalIO_thread_body_U32();
 
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
@@ -156,8 +254,8 @@ private:
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
 	 *        when true.
 	 */
-	volatile bool m_bStop_DigitalIO;
+	volatile bool m_bStop_DigitalIO_U32;
 
 };
 
-#endif // DEVICE_DIGITALIO_H_
+#endif // DEVICEDIGITALIO_H_

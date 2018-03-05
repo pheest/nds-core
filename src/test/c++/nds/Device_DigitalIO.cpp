@@ -38,17 +38,17 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 
 	// Add state machine
 	m_DeviceDigitalIO_stateMachine = rootNode.addChild(nds::StateMachine(true,
-			std::bind(&DeviceDigitalIO::switchOn_Device, this),
-			std::bind(&DeviceDigitalIO::switchOff_Device, this),
-			std::bind(&DeviceDigitalIO::start_Device, this),
-			std::bind(&DeviceDigitalIO::stop_Device, this),
-			std::bind(&DeviceDigitalIO::recover_Device, this),
-			std::bind(&DeviceDigitalIO::allow_Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
+			std::bind(&DeviceDigitalIO::switchOn_DeviceDigitalIO, this),
+			std::bind(&DeviceDigitalIO::switchOff_DeviceDigitalIO, this),
+			std::bind(&DeviceDigitalIO::start_DeviceDigitalIO, this),
+			std::bind(&DeviceDigitalIO::stop_DeviceDigitalIO, this),
+			std::bind(&DeviceDigitalIO::recover_DeviceDigitalIO, this),
+			std::bind(&DeviceDigitalIO::allow_DeviceDigitalIO_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
 	/**
 	 * Add a Digital I/O node for boolean PV:
 	 */
-	m_DigitalIO_Bool = rootNode.addChild(nds::DigitalIO<std::vector<bool>>(
+	m_DigitalIO_Bool = rootNode.addChild(nds::DigitalIO<std::vector<bool> >(
 			"DigitalIOBoolNode",
 			128,
 			std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
@@ -62,95 +62,74 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	));
-	m_DigitalIO_Bool.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-	m_DigitalIO_Bool.getStartTimestamp();
+//	m_DigitalIO_Bool.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+//	m_DigitalIO_Bool.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint8_t PV:
 	 */
-	m_DigitalIO_Uint8_t = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t>>(
-			"DigitalIOUint8_tNode",
+	m_DigitalIO_U8 = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t> >(
+			"DigitalIOU8Node",
 			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_U8, this),
+			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_U8, this),
+			std::bind(&DeviceDigitalIO::start_DigitalIO_U8, this),
+			std::bind(&DeviceDigitalIO::stop_DigitalIO_U8, this),
+			std::bind(&DeviceDigitalIO::recover_DigitalIO_U8, this),
+			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_U8, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U8,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U8,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U8,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U8,this, std::placeholders::_1, std::placeholders::_2)
 	));
-	m_DigitalIO_Uint8_t.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-	m_DigitalIO_Uint8_t.getStartTimestamp();
+//	m_DigitalIO_U8.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+//	m_DigitalIO_U8.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint16_t PV:
 	 */
-	m_DigitalIO_Uint16_t = rootNode.addChild(nds::DigitalIO<std::vector<std::uint16_t>>(
-			"DigitalIOUint16_tNode",
+	m_DigitalIO_U16 = rootNode.addChild(nds::DigitalIO<std::vector<std::uint16_t> >(
+			"DigitalIOU16Node",
 			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_U16, this),
+			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_U16, this),
+			std::bind(&DeviceDigitalIO::start_DigitalIO_U16, this),
+			std::bind(&DeviceDigitalIO::stop_DigitalIO_U16, this),
+			std::bind(&DeviceDigitalIO::recover_DigitalIO_U16, this),
+			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_U16, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U16,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U16,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U16,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U16,this, std::placeholders::_1, std::placeholders::_2)
 	));
-	m_DigitalIO_Uint16_t.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-	m_DigitalIO_Uint16_t.getStartTimestamp();
+//	m_DigitalIO_U16.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+//	m_DigitalIO_U16.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint32_t PV:
 	 */
-	m_DigitalIO_Uint32_t = rootNode.addChild(nds::DigitalIO<std::vector<std::uint32_t>>(
-			"DigitalIOUint32_tNode",
+	m_DigitalIO_U32 = rootNode.addChild(nds::DigitalIO<std::vector<std::uint32_t> >(
+			"DigitalIOU32Node",
 			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_U32, this),
+			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_U32, this),
+			std::bind(&DeviceDigitalIO::start_DigitalIO_U32, this),
+			std::bind(&DeviceDigitalIO::stop_DigitalIO_U32, this),
+			std::bind(&DeviceDigitalIO::recover_DigitalIO_U32, this),
+			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_U32, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U32,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U32,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U32,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U32,this, std::placeholders::_1, std::placeholders::_2)
 	));
-	m_DigitalIO_Uint32_t.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-	m_DigitalIO_Uint32_t.getStartTimestamp();
+//	m_DigitalIO_U32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+//	m_DigitalIO_U32.getStartTimestamp();
 
 
 	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
-
-    std::string rootNodeComponentName = rootNode.getComponentName();
-    std::string rootNodeFullExternalName = rootNode.getFullExternalName();
-    std::string rootNodeFullName = rootNode.getFullName();
-    std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
-    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
-    timespec rootNodetime = rootNode.getTimestamp();
-
-    //std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
-    //std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
-    //std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
-    //std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
-    //std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
-    //std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
-
-    rootNode.setTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-    rootNode.setLogLevel(nds::logLevel_t::debug);
-
-    rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
-    ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
-
 
 }
 
@@ -189,6 +168,14 @@ void DeviceDigitalIO::deallocateDevice(void* deviceName)
     delete (DeviceDigitalIO*)deviceName;
 }
 
+timespec DeviceDigitalIO::getCurrentTime()
+{
+    timespec time;
+    time.tv_sec = m_setCurrentTime.getValue();
+    time.tv_nsec = time.tv_sec + 10;
+    return time;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Device STATE MACHINE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,27 +183,29 @@ void DeviceDigitalIO::deallocateDevice(void* deviceName)
 /**
  * Methods to control Device state machine
  */
-void DeviceDigitalIO::switchOn_Device(){
+void DeviceDigitalIO::switchOn_DeviceDigitalIO(){
 
 }
-void DeviceDigitalIO::switchOff_Device(){
+void DeviceDigitalIO::switchOff_DeviceDigitalIO(){
 
 }
-void DeviceDigitalIO::start_Device(){
+void DeviceDigitalIO::start_DeviceDigitalIO(){
 
 }
-void DeviceDigitalIO::stop_Device(){
+void DeviceDigitalIO::stop_DeviceDigitalIO(){
 
 }
-void DeviceDigitalIO::recover_Device(){
+void DeviceDigitalIO::recover_DeviceDigitalIO(){
 
 }
 
-bool DeviceDigitalIO::allow_Device_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool DeviceDigitalIO::allow_DeviceDigitalIO_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Bool Node STATE MACHINE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
 * Methods to control DigitalIO state machine
 */
@@ -227,25 +216,22 @@ void DeviceDigitalIO::switchOff_DigitalIO(){
 
 }
 void DeviceDigitalIO::start_DigitalIO(){
-	m_bStop_DigitalIO = false; //< We will set to true to stop the acquisition thread
-		/**
-		 *   Start the acquisition thread.
-		 *   We don't need to check if the thread was already started because the state
-		 *   machine guarantees that the start handler is called only while the state
-		 *   is ON.
-		 */
+	m_bStop_DigitalIO_Bool = false; //< We will set to true to stop the acquisition thread
+
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
 	m_DigitalIO_Thread_Bool = std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_Bool, this));
-//	m_DigitalIO_Thread_U8	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U8, this));
-//	m_DigitalIO_Thread_U16 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U16, this));
-//	m_DigitalIO_Thread_U32 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U32, this));
+
 
 }
 void DeviceDigitalIO::stop_DigitalIO(){
-	m_bStop_DigitalIO = true;
+	m_bStop_DigitalIO_Bool = true;
 	m_DigitalIO_Thread_Bool.join();
-//	m_DigitalIO_Thread_U8.join();
-//	m_DigitalIO_Thread_U16.join();
-//	m_DigitalIO_Thread_U32.join();
+
 }
 void DeviceDigitalIO::recover_DigitalIO(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
@@ -253,14 +239,6 @@ void DeviceDigitalIO::recover_DigitalIO(){
 
 bool DeviceDigitalIO::allow_DigitalIO_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
-}
-
-timespec DeviceDigitalIO::getCurrentTime()
-{
-    timespec time;
-    time.tv_sec = m_setCurrentTime.getValue();
-    time.tv_nsec = time.tv_sec + 10;
-    return time;
 }
 
 /**
@@ -273,9 +251,7 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp,
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
 	m_DigitalIO_Bool.setDataOutMask(timestamp,value);
-//	m_DigitalIO_Uint8_t.setDataOutMask(timestamp,value);
-//	m_DigitalIO_Uint16_t.setDataOutMask(timestamp,value);
-//	m_DigitalIO_Uint32_t.setDataOutMask(timestamp,value);
+
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value){
@@ -285,9 +261,7 @@ void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestam
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setVoltLevelHigh(timestamp,HW_value);
-//	m_DigitalIO_Uint8_t.setVoltLevelHigh(timestamp,HW_value);
-//	m_DigitalIO_Uint16_t.setVoltLevelHigh(timestamp,HW_value);
-//	m_DigitalIO_Uint32_t.setVoltLevelHigh(timestamp,HW_value);
+
 }
 void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
@@ -296,9 +270,7 @@ void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setVoltLevelLow(timestamp,HW_value);
-//	m_DigitalIO_Uint8_t.setVoltLevelLow(timestamp,HW_value);
-//	m_DigitalIO_Uint16_t.setVoltLevelLow(timestamp,HW_value);
-//	m_DigitalIO_Uint32_t.setVoltLevelLow(timestamp,HW_value);
+
 }
 void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value){
 	std::vector<bool> HW_value;
@@ -307,13 +279,11 @@ void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, 
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_Bool.setChannelDir(timestamp,HW_value);
-//	m_DigitalIO_Uint8_t.setChannelDir(timestamp,HW_value);
-//	m_DigitalIO_Uint16_t.setChannelDir(timestamp,HW_value);
-//	m_DigitalIO_Uint32_t.setChannelDir(timestamp,HW_value);
+
 }
 
 /**
-* Body of function DigitalIO thread.
+* Body of function DigitalIO thread for vector Bool PV type
 */
 void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 
@@ -323,7 +293,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	bool value = false;
 
 	// Get RefFrequency
 	double VoltLevelHigh = m_DigitalIO_Bool.getVoltLevelHigh();
@@ -338,14 +308,16 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 
 
 	// Run until the state machine stops us
-	while(!m_bStop_DigitalIO){
+	while(!m_bStop_DigitalIO_Bool){
 
 		size_t scanVector(0);
 
 		for(scanVector=0; scanVector != outputData.size(); ++scanVector){
 			outputData[scanVector] = value;
+			value = (scanVector%2 ? true:false);
 		}
-		++value;
+		//++value;
+
 		// Push the vector to the control system
 		m_DigitalIO_Bool.push(m_DigitalIO_Bool.getTimestamp(), outputData);
 		++NumberOfPushedDataBlocks;
@@ -357,6 +329,80 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 	m_DigitalIO_Bool.setNumberOfPushedDataBlocks(m_DigitalIO_Bool.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Uint8_t Node STATE MACHINE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+* Methods to control DigitalIO state machine
+*/
+void DeviceDigitalIO::switchOn_DigitalIO_U8(){
+
+}
+void DeviceDigitalIO::switchOff_DigitalIO_U8(){
+
+}
+void DeviceDigitalIO::start_DigitalIO_U8(){
+	m_bStop_DigitalIO_U8   = false;
+
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_DigitalIO_Thread_U8	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U8, this));
+
+}
+void DeviceDigitalIO::stop_DigitalIO_U8(){
+	m_bStop_DigitalIO_U8 = true;
+	m_DigitalIO_Thread_U8.join();
+
+}
+void DeviceDigitalIO::recover_DigitalIO_U8(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+bool DeviceDigitalIO::allow_DigitalIO_Change_U8(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* DigitalIO setters
+*/
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U8(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO_U8.setDataOutMask(timestamp,value);
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U8(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelHigh to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U8.setVoltLevelHigh(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U8(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelLow to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U8.setVoltLevelLow(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U8(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the ChannelDir to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U8.setChannelDir(timestamp,HW_value);
+}
+
 
 /**
 * Body of function DigitalIO thread.
@@ -364,7 +410,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint8_t> outputData(m_DigitalIO_Uint8_t.getMaxElements(),0);
+	std::vector<std::uint8_t> outputData(m_DigitalIO_U8.getMaxElements(),0);
 
 		//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
@@ -372,11 +418,11 @@ void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 	std::uint8_t value(0);
 
 	// Get RefFrequency
-	double VoltLevelHigh = m_DigitalIO_Uint8_t.getVoltLevelHigh();
+	double VoltLevelHigh = m_DigitalIO_U8.getVoltLevelHigh();
 	// Get DutyCycle
-	double VoltLevelLow = m_DigitalIO_Uint8_t.getVoltLevelLow();
+	double VoltLevelLow = m_DigitalIO_U8.getVoltLevelLow();
 	// Get Gain
-	std::vector<bool> ChannelDir = m_DigitalIO_Uint8_t.getChannelDir();
+	std::vector<bool> ChannelDir = m_DigitalIO_U8.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -384,7 +430,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 
 
 	// Run until the state machine stops us
-	while(!m_bStop_DigitalIO){
+	while(!m_bStop_DigitalIO_U8){
 
 		size_t scanVector(0);
 
@@ -393,14 +439,88 @@ void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 		}
 		++value;
 		// Push the vector to the control system
-		m_DigitalIO_Uint8_t.push(m_DigitalIO_Uint8_t.getTimestamp(), outputData);
+		m_DigitalIO_U8.push(m_DigitalIO_U8.getTimestamp(), outputData);
 		++NumberOfPushedDataBlocks;
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
 		::usleep(100000);
 	}
-	m_DigitalIO_Uint8_t.setNumberOfPushedDataBlocks(m_DigitalIO_Uint8_t.getTimestamp(),NumberOfPushedDataBlocks);
+	m_DigitalIO_U8.setNumberOfPushedDataBlocks(m_DigitalIO_U8.getTimestamp(),NumberOfPushedDataBlocks);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Uint16_t Node STATE MACHINE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+* Methods to control DigitalIO state machine
+*/
+void DeviceDigitalIO::switchOn_DigitalIO_U16(){
+
+}
+void DeviceDigitalIO::switchOff_DigitalIO_U16(){
+
+}
+void DeviceDigitalIO::start_DigitalIO_U16(){
+	m_bStop_DigitalIO_U16  = false;
+
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_DigitalIO_Thread_U16 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U16, this));
+
+}
+void DeviceDigitalIO::stop_DigitalIO_U16(){
+	m_bStop_DigitalIO_U16 = true;
+	m_DigitalIO_Thread_U16.join();
+}
+void DeviceDigitalIO::recover_DigitalIO_U16(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+bool DeviceDigitalIO::allow_DigitalIO_Change_U16(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* DigitalIO setters
+*/
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U16(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO_U16.setDataOutMask(timestamp,value);
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U16(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelHigh to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U16.setVoltLevelHigh(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U16(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelLow to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U16.setVoltLevelLow(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U16(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the ChannelDir to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U16.setChannelDir(timestamp,HW_value);
 }
 
 /**
@@ -409,19 +529,19 @@ void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 void DeviceDigitalIO::DigitalIO_thread_body_U16(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint16_t> outputData(m_DigitalIO_Uint16_t.getMaxElements(),0);
+	std::vector<std::uint16_t> outputData(m_DigitalIO_U16.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	std::uint16_t value(0);
 
 	// Get RefFrequency
-	double VoltLevelHigh = m_DigitalIO_Uint16_t.getVoltLevelHigh();
+	double VoltLevelHigh = m_DigitalIO_U16.getVoltLevelHigh();
 	// Get DutyCycle
-	double VoltLevelLow = m_DigitalIO_Uint16_t.getVoltLevelLow();
+	double VoltLevelLow = m_DigitalIO_U16.getVoltLevelLow();
 	// Get Gain
-	std::vector<bool> ChannelDir = m_DigitalIO_Uint16_t.getChannelDir();
+	std::vector<bool> ChannelDir = m_DigitalIO_U16.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -429,7 +549,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_U16(){
 
 
 	// Run until the state machine stops us
-	while(!m_bStop_DigitalIO){
+	while(!m_bStop_DigitalIO_U16){
 
 		size_t scanVector(0);
 
@@ -438,16 +558,90 @@ void DeviceDigitalIO::DigitalIO_thread_body_U16(){
 		}
 		++value;
 		// Push the vector to the control system
-		m_DigitalIO_Uint16_t.push(m_DigitalIO_Uint16_t.getTimestamp(), outputData);
+		m_DigitalIO_U16.push(m_DigitalIO_U16.getTimestamp(), outputData);
 		++NumberOfPushedDataBlocks;
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
 		::usleep(100000);
 	}
-	m_DigitalIO_Uint16_t.setNumberOfPushedDataBlocks(m_DigitalIO_Uint16_t.getTimestamp(),NumberOfPushedDataBlocks);
+	m_DigitalIO_U16.setNumberOfPushedDataBlocks(m_DigitalIO_U16.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Uint32_t Node STATE MACHINE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+* Methods to control DigitalIO state machine
+*/
+void DeviceDigitalIO::switchOn_DigitalIO_U32(){
+
+}
+void DeviceDigitalIO::switchOff_DigitalIO_U32(){
+
+}
+void DeviceDigitalIO::start_DigitalIO_U32(){
+	m_bStop_DigitalIO_U32  = false;
+
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_DigitalIO_Thread_U32 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_U32, this));
+
+}
+void DeviceDigitalIO::stop_DigitalIO_U32(){
+	m_bStop_DigitalIO_U32 = true;
+	m_DigitalIO_Thread_U32.join();
+}
+void DeviceDigitalIO::recover_DigitalIO_U32(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+bool DeviceDigitalIO::allow_DigitalIO_Change_U32(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+
+
+/**
+* DigitalIO setters
+*/
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_U32(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO_U32.setDataOutMask(timestamp,value);
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_U32(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelHigh to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U32.setVoltLevelHigh(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U32(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelLow to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U32.setVoltLevelLow(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U32(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the ChannelDir to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_U32.setChannelDir(timestamp,HW_value);
+}
 
 /**
 * Body of function DigitalIO thread.
@@ -455,19 +649,19 @@ void DeviceDigitalIO::DigitalIO_thread_body_U16(){
 void DeviceDigitalIO::DigitalIO_thread_body_U32(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint32_t> outputData(m_DigitalIO_Uint32_t.getMaxElements(),0);
+	std::vector<std::uint32_t> outputData(m_DigitalIO_U32.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	std::uint32_t value(0);
 
 	// Get RefFrequency
-	double VoltLevelHigh = m_DigitalIO_Uint32_t.getVoltLevelHigh();
+	double VoltLevelHigh = m_DigitalIO_U32.getVoltLevelHigh();
 	// Get DutyCycle
-	double VoltLevelLow = m_DigitalIO_Uint32_t.getVoltLevelLow();
+	double VoltLevelLow = m_DigitalIO_U32.getVoltLevelLow();
 	// Get Gain
-	std::vector<bool> ChannelDir = m_DigitalIO_Uint32_t.getChannelDir();
+	std::vector<bool> ChannelDir = m_DigitalIO_U32.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -475,7 +669,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_U32(){
 
 
 	// Run until the state machine stops us
-	while(!m_bStop_DigitalIO){
+	while(!m_bStop_DigitalIO_U32){
 
 		size_t scanVector(0);
 
@@ -484,12 +678,12 @@ void DeviceDigitalIO::DigitalIO_thread_body_U32(){
 		}
 		++value;
 		// Push the vector to the control system
-		m_DigitalIO_Uint32_t.push(m_DigitalIO_Uint32_t.getTimestamp(), outputData);
+		m_DigitalIO_U32.push(m_DigitalIO_U32.getTimestamp(), outputData);
 		++NumberOfPushedDataBlocks;
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
 		::usleep(100000);
 	}
-	m_DigitalIO_Uint32_t.setNumberOfPushedDataBlocks(m_DigitalIO_Uint32_t.getTimestamp(),NumberOfPushedDataBlocks);
+	m_DigitalIO_U32.setNumberOfPushedDataBlocks(m_DigitalIO_U32.getTimestamp(),NumberOfPushedDataBlocks);
 }
