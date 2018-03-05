@@ -148,8 +148,7 @@ protected:
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
-//    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
-    std::shared_ptr<PVVariableOutImpl<std::string> > m_DecimationType_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
 
     std::shared_ptr<PVDelegateOutImpl<std::vector<std::int32_t> > > m_ChannelList_PV;
     std::shared_ptr<PVVariableInImpl<std::vector<std::int32_t> > > m_ChannelList_RBVPV;

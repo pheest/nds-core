@@ -65,7 +65,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     DecTypeEnumeratorStrings.push_back("block");
     DecTypeEnumeratorStrings.push_back("sample");
 
-    m_DecimationType_PV.reset(new PVVariableOutImpl<std::string>("DecimationType"));
+    m_DecimationType_PV.reset(new PVVariableOutImpl<std::int32_t>("DecimationType"));
     m_DecimationType_PV->setDescription("block or sample");
     m_DecimationType_PV->setScanType(scanType_t::passive, 0);
     m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
@@ -534,24 +534,11 @@ void DataAcquisitionImpl<T>::onStart()
 {
     m_StartTime = m_StartTimestampFunction();
 
-    std::string decType;
+    std::int32_t decType;
     timespec timestamp;
     m_DecimationType_PV->read(&timestamp, &decType);
 
-    std::list<std::string> listOfDecimationType = m_DecimationType_PV->getEnumerations();
-
-    std::list<std::string>::iterator it_sample = std::find(listOfDecimationType.begin(), listOfDecimationType.end(), "sample");
-    std::list<std::string>::iterator it = std::find(listOfDecimationType.begin(), listOfDecimationType.end(), decType);
-
-    if (it == it_sample) {
-    	std::cout << "Selected Type is sample" << std::endl;
-    	m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
-    }
-    else {
-    	std::cout << "Selected Type is not sample" << std::endl;
-    }
-
-//    if (decType == m_DecimationType_PV->getEnumerations().sample) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+    if (decType == (std::int32_t)0) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
 
     m_OnStartDelegate();
 }

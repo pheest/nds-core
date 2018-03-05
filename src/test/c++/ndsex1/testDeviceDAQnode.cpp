@@ -20,33 +20,32 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
   	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
 
 	// Set/Get DecimationType
-	std::string decimationType_in = "block";
-	std::string decimationType_out;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DecimationType", timestamp, decimationType_in);
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType_out); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"block", decimationType_out);
+	std::int32_t decimationType;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DecimationType", timestamp, (std::int32_t)0);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0, decimationType);
 
 	// Set/Get ChannelList
+	std::vector<std::int32_t> ChannelList_rb;
 	std::vector<std::int32_t> ChannelList;
-	std::vector<std::int32_t> ChannelList_in;
-	ChannelList_in.push_back(1);
-	ChannelList_in.push_back(2);
+	ChannelList.push_back(1);
+	ChannelList.push_back(2);
 
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList_in);
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList); // PVVariables are thread safe
-	EXPECT_EQ(1, ChannelList[0]);
-	EXPECT_EQ(2, ChannelList[1]);
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.ChannelList", timestamp, ChannelList);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.ChannelList_RBV",&readTimestamp,&ChannelList_rb); // PVVariables are thread safe
+	EXPECT_EQ(1, ChannelList_rb[0]);
+	EXPECT_EQ(2, ChannelList_rb[1]);
 
   // Set/Get Gain
+  	std::vector<double> Gain_rb;
   	std::vector<double> Gain;
-  	std::vector<double> Gain_in;
-  	Gain_in.push_back(10.0);
-  	Gain_in.push_back(20.0);
+  	Gain.push_back(10.0);
+  	Gain.push_back(20.0);
 
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain_in);
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ(10.0, Gain[0]);
-	EXPECT_EQ(20.0, Gain[1]);
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, Gain);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain_rb); // PVVariables are thread safe
+	EXPECT_EQ(10.0, Gain_rb[0]);
+	EXPECT_EQ(20.0, Gain_rb[1]);
 
 	// Set/Get offset
 	double offset;
