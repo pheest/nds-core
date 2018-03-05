@@ -62,8 +62,8 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	));
-//	m_DigitalIO_Bool.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-//	m_DigitalIO_Bool.getStartTimestamp();
+	m_DigitalIO_Bool.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+	m_DigitalIO_Bool.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint8_t PV:
@@ -82,8 +82,8 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U8,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U8,this, std::placeholders::_1, std::placeholders::_2)
 	));
-//	m_DigitalIO_U8.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-//	m_DigitalIO_U8.getStartTimestamp();
+	m_DigitalIO_U8.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+	m_DigitalIO_U8.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint16_t PV:
@@ -102,8 +102,8 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U16,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U16,this, std::placeholders::_1, std::placeholders::_2)
 	));
-//	m_DigitalIO_U16.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-//	m_DigitalIO_U16.getStartTimestamp();
+	m_DigitalIO_U16.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+	m_DigitalIO_U16.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint32_t PV:
@@ -122,8 +122,11 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_U32,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_U32,this, std::placeholders::_1, std::placeholders::_2)
 	));
-//	m_DigitalIO_U32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
-//	m_DigitalIO_U32.getStartTimestamp();
+	m_DigitalIO_U32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+	m_DigitalIO_U32.getStartTimestamp();
+
+
+    m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
 
 	// 	We have declared all the nodes with several types of PVs in our Device: now we register them

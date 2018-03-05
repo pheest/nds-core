@@ -82,8 +82,7 @@ TEST(testDigitalIO, testPushDataBool)
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.DataOutMask", timestamp, dataOutMaskIn);
 	pInterface->readCSValue("/rootNode-DigitalIOBoolNode.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
-	//TODO: How to check arrays in GoogleTest??
-	for(int i=0; i<dataOutMaskOut.size();i++){
+	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
@@ -104,7 +103,7 @@ TEST(testDigitalIO, testPushDataBool)
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.ChannelDir", timestamp, channelDirIn);
 	pInterface->readCSValue("/rootNode-DigitalIOBoolNode.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
-	for(int i=0; i<channelDirOut.size();i++){
+	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
@@ -122,8 +121,8 @@ TEST(testDigitalIO, testPushDataBool)
 
 	// Set the start time
 	/////////////////////
-	std::int32_t startTimestamp = 200;
-	//pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+//	std::int32_t startTimestamp = 200; //TODO Study this
+//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -269,8 +268,7 @@ TEST(testDigitalIO, testPushDataU8)
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.DataOutMask", timestamp, dataOutMaskIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU8Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
-	//TODO: How to check arrays in GoogleTest??
-	for(int i=0; i<dataOutMaskOut.size();i++){
+	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
@@ -291,7 +289,7 @@ TEST(testDigitalIO, testPushDataU8)
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.ChannelDir", timestamp, channelDirIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU8Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
-	for(int i=0; i<channelDirOut.size();i++){
+	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
@@ -454,8 +452,7 @@ TEST(testDigitalIO, testPushDataU16)
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.DataOutMask", timestamp, dataOutMaskIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU16Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
-	//TODO: How to check arrays in GoogleTest??
-	for(int i=0; i<dataOutMaskOut.size();i++){
+	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
@@ -476,7 +473,7 @@ TEST(testDigitalIO, testPushDataU16)
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.ChannelDir", timestamp, channelDirIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU16Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
-	for(int i=0; i<channelDirOut.size();i++){
+	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
@@ -494,7 +491,7 @@ TEST(testDigitalIO, testPushDataU16)
 
 	// Set the start time
 	/////////////////////
-//	std::int32_t startTimestamp = 200;
+//	std::int32_t startTimestamp = 200; //TODO Study this
 //	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
@@ -640,8 +637,7 @@ TEST(testDigitalIO, testPushDataU32)
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.DataOutMask", timestamp, dataOutMaskIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU32Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
-	//TODO: How to check arrays in GoogleTest??
-	for(int i=0; i<dataOutMaskOut.size();i++){
+	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
@@ -662,7 +658,7 @@ TEST(testDigitalIO, testPushDataU32)
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
 	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.ChannelDir", timestamp, channelDirIn);
 	pInterface->readCSValue("/rootNode-DigitalIOU32Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
-	for(int i=0; i<channelDirOut.size();i++){
+	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
@@ -680,7 +676,7 @@ TEST(testDigitalIO, testPushDataU32)
 
 	// Set the start time
 	/////////////////////
-//	std::int32_t startTimestamp = 200;
+//	std::int32_t startTimestamp = 200; //TODO Study this
 //	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
