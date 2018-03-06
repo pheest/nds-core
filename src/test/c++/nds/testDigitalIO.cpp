@@ -107,6 +107,11 @@ TEST(testDigitalIO, testPushDataBool)
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
+	// Set the start time
+	/////////////////////
+	std::int32_t startTimestamp = 200; //TODO Study this
+	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
@@ -118,11 +123,6 @@ TEST(testDigitalIO, testPushDataBool)
 	::sleep(1);
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
-
-	// Set the start time
-	/////////////////////
-//	std::int32_t startTimestamp = 200; //TODO Study this
-//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -185,9 +185,9 @@ TEST(testDigitalIO, testPushDataBool)
 
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
 	}
-//	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-//	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
-//	++startTimestamp;
+	EXPECT_EQ(startTimestamp, pTime->tv_sec);
+	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
 
@@ -307,8 +307,8 @@ TEST(testDigitalIO, testPushDataU8)
 
 	// Set the start time
 	/////////////////////
-//	std::int32_t startTimestamp = 200;
-//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+	std::int32_t startTimestamp = 200;
+	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -368,9 +368,9 @@ TEST(testDigitalIO, testPushDataU8)
 
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
 	}
-//	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-//	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
-//	++startTimestamp;
+	EXPECT_EQ(startTimestamp, pTime->tv_sec);
+	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
 
@@ -491,8 +491,8 @@ TEST(testDigitalIO, testPushDataU16)
 
 	// Set the start time
 	/////////////////////
-//	std::int32_t startTimestamp = 200; //TODO Study this
-//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+	std::int32_t startTimestamp = 200; //TODO Study this
+	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -552,9 +552,9 @@ TEST(testDigitalIO, testPushDataU16)
 
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
 	}
-//	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-//	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
-//	++startTimestamp;
+	EXPECT_EQ(startTimestamp, pTime->tv_sec);
+	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
 
@@ -676,8 +676,8 @@ TEST(testDigitalIO, testPushDataU32)
 
 	// Set the start time
 	/////////////////////
-//	std::int32_t startTimestamp = 200; //TODO Study this
-//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+	std::int32_t startTimestamp = 200; //TODO Study this
+	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -711,8 +711,8 @@ TEST(testDigitalIO, testPushDataU32)
 	EXPECT_NE((std::int32_t)0, NumberOfPushedDataBlocks);
 
 	//Initialize comparison vector
-	std::vector<std::uint16_t> pushData(128);
-	const std::vector<std::uint16_t>* pRetrievedPushedValues;
+	std::vector<std::uint32_t> pushData(128);
+	const std::vector<std::uint32_t>* pRetrievedPushedValues;
 	const timespec* pTime;
 	double readCount=0;
 	size_t scanVector(0);
@@ -723,7 +723,7 @@ TEST(testDigitalIO, testPushDataU32)
 				pushData[scanVector] = readCount;
 			}
 
-			pInterface->getPushedVectorUint16("/rootNode-DigitalIOU32Node.DataIn", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorUint32("/rootNode-DigitalIOU32Node.DataIn", pTime, pRetrievedPushedValues);
 			++readCount;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -737,9 +737,9 @@ TEST(testDigitalIO, testPushDataU32)
 
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<readCount << std::endl;
 	}
-//	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-//	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
-//	++startTimestamp;
+	EXPECT_EQ(startTimestamp, pTime->tv_sec);
+	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
 

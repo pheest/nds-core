@@ -133,6 +133,7 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
+	rootNode.setTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 
 }
 
