@@ -131,13 +131,13 @@ public:
      *
      * @return the voltLevelHigh value
      */
-    size_t getVoltLevelHigh();
+    double getVoltLevelHigh();
     /**
      * @brief Retrieve the voltLevelLow.
      *
      * @return the voltLevelLow value
      */
-    size_t getVoltLevelLow();
+    double getVoltLevelLow();
     /**
      * @brief Retrieve the ChannelDir.
      *

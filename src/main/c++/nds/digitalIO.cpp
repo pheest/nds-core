@@ -95,13 +95,13 @@ std::vector<bool> DigitalIO<T>::getDataOutMask()
 }
 
 template <typename T>
-size_t DigitalIO<T>::getVoltLevelHigh()
+double DigitalIO<T>::getVoltLevelHigh()
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelHigh();
 }
 
 template <typename T>
-size_t DigitalIO<T>::getVoltLevelLow()
+double DigitalIO<T>::getVoltLevelLow()
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getVoltLevelLow();
 }

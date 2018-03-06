@@ -58,8 +58,8 @@ public:
 
     std::vector<bool> getDataOutMask();
     size_t getMaxElements();
-    size_t getVoltLevelHigh();
-    size_t getVoltLevelLow();
+    double getVoltLevelHigh();
+    double getVoltLevelLow();
     std::vector<bool> getChannelDir();
 
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);

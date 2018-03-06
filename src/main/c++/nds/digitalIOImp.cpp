@@ -161,7 +161,7 @@ std::vector<bool> DigitalIOImpl<T>::getDataOutMask()
 }
 
 template<typename T>
-size_t DigitalIOImpl<T>::getVoltLevelHigh()
+double DigitalIOImpl<T>::getVoltLevelHigh()
 {
 	double voltLevelHigh;
 	timespec timestamp;
@@ -170,7 +170,7 @@ size_t DigitalIOImpl<T>::getVoltLevelHigh()
 }
 
 template<typename T>
-size_t DigitalIOImpl<T>::getVoltLevelLow()
+double DigitalIOImpl<T>::getVoltLevelLow()
 {
 	double voltLevelLow;
 	timespec timestamp;

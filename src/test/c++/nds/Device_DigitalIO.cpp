@@ -36,14 +36,6 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 	 */
 	nds::Port rootNode(deviceName);
 
-	// Add state machine
-	m_DeviceDigitalIO_stateMachine = rootNode.addChild(nds::StateMachine(true,
-			std::bind(&DeviceDigitalIO::switchOn_DeviceDigitalIO, this),
-			std::bind(&DeviceDigitalIO::switchOff_DeviceDigitalIO, this),
-			std::bind(&DeviceDigitalIO::start_DeviceDigitalIO, this),
-			std::bind(&DeviceDigitalIO::stop_DeviceDigitalIO, this),
-			std::bind(&DeviceDigitalIO::recover_DeviceDigitalIO, this),
-			std::bind(&DeviceDigitalIO::allow_DeviceDigitalIO_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
 	/**
 	 * Add a Digital I/O node for boolean PV:
@@ -180,32 +172,7 @@ timespec DeviceDigitalIO::getCurrentTime()
     return time;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Device STATE MACHINE
-///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Methods to control Device state machine
- */
-void DeviceDigitalIO::switchOn_DeviceDigitalIO(){
-
-}
-void DeviceDigitalIO::switchOff_DeviceDigitalIO(){
-
-}
-void DeviceDigitalIO::start_DeviceDigitalIO(){
-
-}
-void DeviceDigitalIO::stop_DeviceDigitalIO(){
-
-}
-void DeviceDigitalIO::recover_DeviceDigitalIO(){
-
-}
-
-bool DeviceDigitalIO::allow_DeviceDigitalIO_Change(const nds::state_t, const nds::state_t, const nds::state_t){
-	return true;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Bool Node STATE MACHINE
@@ -305,6 +272,8 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 	double VoltLevelLow = m_DigitalIO_Bool.getVoltLevelLow();
 	// Get Gain
 	std::vector<bool> ChannelDir = m_DigitalIO_Bool.getChannelDir();
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO_Bool.getDataOutMask();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -427,6 +396,8 @@ void DeviceDigitalIO::DigitalIO_thread_body_U8(){
 	double VoltLevelLow = m_DigitalIO_U8.getVoltLevelLow();
 	// Get Gain
 	std::vector<bool> ChannelDir = m_DigitalIO_U8.getChannelDir();
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO_U8.getDataOutMask();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -546,6 +517,8 @@ void DeviceDigitalIO::DigitalIO_thread_body_U16(){
 	double VoltLevelLow = m_DigitalIO_U16.getVoltLevelLow();
 	// Get Gain
 	std::vector<bool> ChannelDir = m_DigitalIO_U16.getChannelDir();
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO_U16.getDataOutMask();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -666,6 +639,8 @@ void DeviceDigitalIO::DigitalIO_thread_body_U32(){
 	double VoltLevelLow = m_DigitalIO_U32.getVoltLevelLow();
 	// Get Gain
 	std::vector<bool> ChannelDir = m_DigitalIO_U32.getChannelDir();
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO_U32.getDataOutMask();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
