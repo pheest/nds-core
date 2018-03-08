@@ -307,9 +307,11 @@ typedef std::function<void (const timespec&, const std::vector<double>&)> writer
 
 typedef std::function<void (timespec* time, std::vector<bool>* val)> readerVectorBool_t;
 typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
-
+<<<<<<< HEAD
 typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
 typedef std::function<void (timespec* time, std::vector<double>* val)> readerVectorDouble_t;
+=======
+>>>>>>> devel
 
 typedef std::function<void (const timespec&, const std::vector<bool>&)> writerVectorBool_t;
 typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;

@@ -40,8 +40,12 @@ PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction):
 ////////////////////////////////////////
 template class PVDelegateOut<std::int32_t>;
 template class PVDelegateOut<double>;
-template class PVDelegateOut<std::vector<std::int8_t> >;
+template class PVDelegateOut<std::vector<bool> >;
 template class PVDelegateOut<std::vector<std::uint8_t> >;
+template class PVDelegateOut<std::vector<std::uint16_t> >;
+template class PVDelegateOut<std::vector<std::uint32_t> >;
+template class PVDelegateOut<std::vector<std::int8_t> >;
+template class PVDelegateOut<std::vector<std::int16_t> >;
 template class PVDelegateOut<std::vector<std::int32_t> >;
 template class PVDelegateOut<std::vector<double> >;
 template class PVDelegateOut<std::string>;

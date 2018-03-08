@@ -7,3 +7,6 @@
 *.save
 /target/
 QtC-*
+.settings/
+.project
+.cproject

@@ -23,8 +23,12 @@ namespace nds
  *            The following data types are supported:
  *            - std::int32_t
  *            - std::double
- *            - std::vector<std::int8_t>
+ *            - std::vector<bool>
  *            - std::vector<std::uint8_t>
+ *            - std::vector<std::uint16_t>
+ *            - std::vector<std::uint32_t>
+ *            - std::vector<std::int8_t>
+ *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
  *            - std::vector<double>
  *            - std::string

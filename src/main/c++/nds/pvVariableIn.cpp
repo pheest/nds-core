@@ -63,8 +63,12 @@ void PVVariableIn<T>::setValue(const timespec& timestamp, const T& value)
 ////////////////////////////////////////
 template class PVVariableIn<std::int32_t>;
 template class PVVariableIn<double>;
-template class PVVariableIn<std::vector<std::int8_t> >;
+template class PVVariableIn<std::vector<bool> >;
 template class PVVariableIn<std::vector<std::uint8_t> >;
+template class PVVariableIn<std::vector<std::uint16_t> >;
+template class PVVariableIn<std::vector<std::uint32_t> >;
+template class PVVariableIn<std::vector<std::int8_t> >;
+template class PVVariableIn<std::vector<std::int16_t> >;
 template class PVVariableIn<std::vector<std::int32_t> >;
 template class PVVariableIn<std::vector<double> >;
 template class PVVariableIn<std::string>;

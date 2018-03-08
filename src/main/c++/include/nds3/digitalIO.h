@@ -42,11 +42,10 @@ namespace nds
  *            The following data types are supported:
  *            - std::int32_t
  *            - std::double
+ *            - std::vector<bool>
  *            - std::vector<std::int8_t>
- *            - std::vector<std::uint8_t>
+ *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
- *            - std::vector<double>
- *            - std::string
  *
  */
 template <typename T>
@@ -56,14 +55,14 @@ public:
     /**
      * @brief Initializes an empty data acquisition node.
      *
-     * You must assign a valid DataAcquisition node before calling initialize().
+     * You must assign a valid DigitalIO node before calling initialize().
      */
     DigitalIO();
 
     /**
      * @brief Copies a data reference from another object.
      *
-     * @param right a data acquisition holder from which the reference to
+     * @param right a digitalIO holder from which the reference to
      *        the acquisition object implementation is copied
      */
     DigitalIO(const DigitalIO<T>& right);
@@ -82,23 +81,23 @@ public:
                stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
 	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-			   writerInt32_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerInt32_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerVectorBool_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
 
 
     /**
      * @ingroup timing
-     * @brief Set the function that retrieves the exact start time when the data acquisition starts.
+     * @brief Set the function that retrieves the exact start time when the digitalIO node starts.
      *
      * @param timestampDelegate the function that returns the exact starting time of the
-     *                           data acquisition
+     *                           digitalIO node
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @ingroup datareadwrite
      * @brief Push acquired data to the control system.
      *
      * Usually your device implementation will call this function from the
@@ -117,43 +116,54 @@ public:
      */
     size_t getMaxElements();
     /**
+     * @brief Retrieve the dataOutMask
+     *
+     * @return the dataOutMask value
+     */
+    std::vector<bool> getDataOutMask();
+    /**
      * @brief Retrieve the voltLevelHigh
      *
      * @return the voltLevelHigh value
      */
-    size_t getVoltLevelHigh();
+    double getVoltLevelHigh();
     /**
      * @brief Retrieve the voltLevelLow.
      *
      * @return the voltLevelLow value
      */
-    size_t getVoltLevelLow();
+    double getVoltLevelLow();
     /**
      * @brief Retrieve the ChannelDir.
      *
      * @return the ChannelDir value
      */
-    size_t getChannelDir();
+    std::vector<bool> getChannelDir();
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     /**
+	 * @brief Sets the value of the m_dataOutMask_RBV.
+	 *
+	 */
+	void setDataOutMask(const timespec& timestamp, const std::vector<bool>& value);
+    /**
      * @brief Sets the value of the m_voltLevelHigh_RBV.
      *
      */
-    void setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelHigh(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_voltLevelLow_RBV.
      *
      */
-    void setVoltLevelLow(const timespec& timestamp, const std::int32_t& value);
+    void setVoltLevelLow(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_channelDir_RBV.
      *
      */
-    void setChannelDir(const timespec& timestamp, const std::int32_t& value);
+    void setChannelDir(const timespec& timestamp, const std::vector<bool>& value);
     /**
      * @ingroup timing
      * @brief Returns the timestamp at the moment of the start of the acquisition.

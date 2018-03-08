@@ -24,9 +24,10 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 								 stateChange_t stopFunction,
 								 stateChange_t recoverFunction,
 								 allowChange_t allowStateChangeFunction,
-								 writerInt32_t PV_voltLevelHigh_Writer,
-								 writerInt32_t PV_voltLevelLow_Writer,
-								 writerInt32_t PV_ChannelDir_Writer):
+								 writerVectorBool_t PV_dataOutMask_Writer,
+								 writerDouble_t PV_voltLevelHigh_Writer,
+								 writerDouble_t PV_voltLevelLow_Writer,
+								 writerVectorBool_t PV_ChannelDir_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -45,28 +46,45 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_DataOut_PV->setScanType(scanType_t::passive, 0);
     addChild(m_DataOut_PV);
 
+    const int bus_width = int(std::is_same<T, std::vector<bool> >::value) * 1+
+    		int(std::is_same<T, std::vector<std::int8_t> >::value) * 8+
+			int(std::is_same<T, std::vector<std::int16_t> >::value) * 16+
+			int(std::is_same<T, std::vector<std::int32_t> >::value) * 32;
+
+    m_DataOutMask_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("DataOutMask",PV_dataOutMask_Writer));
+    m_DataOutMask_PV->setMaxElements(bus_width);
+    m_DataOutMask_PV->setDescription("Digital output mask");
+    m_DataOutMask_PV->setScanType(scanType_t::passive, 0); //TODO Check Scan Type
+    addChild(m_DataOutMask_PV);
+
+    m_DataOutMask_RBVPV.reset(new PVVariableInImpl<std::vector<bool>>("DataOutMask_RBV"));
+    m_DataOutMask_RBVPV->setMaxElements(bus_width);
+    m_DataOutMask_RBVPV->setDescription("Digital Output Mask ReadBack");
+    m_DataOutMask_RBVPV->setScanType(scanType_t::interrupt, 0); //TODO Check Scan Type
+    addChild(m_DataOutMask_RBVPV);
+
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
     m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
     addChild(m_Decimation_PV);
 
-    m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<std::int32_t>("VoltLevelHigh",PV_voltLevelHigh_Writer));
+    m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<double>("VoltLevelHigh",PV_voltLevelHigh_Writer));
     m_VoltLevelHigh_PV->setDescription("Volt Level High ");
     m_VoltLevelHigh_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelHigh_PV);
 
-	m_VoltLevelHigh_RBVPV.reset(new PVVariableInImpl<std::int32_t>("VoltLevelHigh_RBV"));
+	m_VoltLevelHigh_RBVPV.reset(new PVVariableInImpl<double>("VoltLevelHigh_RBV"));
 	m_VoltLevelHigh_RBVPV->setDescription("Volt Level High ReadBack");
 	m_VoltLevelHigh_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VoltLevelHigh_RBVPV);
 
-    m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<std::int32_t>("VoltLevelLow",PV_voltLevelLow_Writer));
+    m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<double>("VoltLevelLow",PV_voltLevelLow_Writer));
     m_VoltLevelLow_PV->setDescription("Volt Level Low");
     m_VoltLevelLow_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelLow_PV);
 
-	m_VoltLevelLow_RBVPV.reset(new PVVariableInImpl<std::int32_t>("VoltLevelLow_RBV"));
+	m_VoltLevelLow_RBVPV.reset(new PVVariableInImpl<double>("VoltLevelLow_RBV"));
 	m_VoltLevelLow_RBVPV->setDescription("Volt Level Low Readback");
 	m_VoltLevelLow_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VoltLevelLow_RBVPV);
@@ -76,13 +94,15 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     channelDirEnumeratorStrings.push_back("In");
     channelDirEnumeratorStrings.push_back("Out");
 
-    m_ChannelDir_PV.reset(new PVDelegateOutImpl<std::int32_t>("ChannelDir",PV_ChannelDir_Writer));
+    m_ChannelDir_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("ChannelDir",PV_ChannelDir_Writer));
+    m_ChannelDir_PV->setMaxElements(bus_width);
     m_ChannelDir_PV->setDescription("Channel Direction: In/Out");
     m_ChannelDir_PV->setScanType(scanType_t::passive, 0);
     m_ChannelDir_PV->setEnumeration(channelDirEnumeratorStrings);
     addChild(m_ChannelDir_PV);
 
-    m_ChannelDir_RBVPV.reset(new PVVariableInImpl<std::int32_t>("ChannelDir_RBV"));
+    m_ChannelDir_RBVPV.reset(new PVVariableInImpl<std::vector<bool>>("ChannelDir_RBV"));
+    m_ChannelDir_RBVPV->setMaxElements(bus_width);
     m_ChannelDir_RBVPV->setDescription("Channel Direction: In/Out Readback");
     m_ChannelDir_RBVPV->setScanType(scanType_t::interrupt, 0);
     m_ChannelDir_RBVPV->setEnumeration(channelDirEnumeratorStrings);
@@ -139,41 +159,57 @@ void DigitalIOImpl<T>::onStart()
 }
 
 template<typename T>
-size_t DigitalIOImpl<T>::getVoltLevelHigh()
+std::vector<bool> DigitalIOImpl<T>::getDataOutMask()
 {
-	std::int32_t voltLevelHigh;
+	std::vector<bool> dataOutMask;
+	timespec timestamp;
+	m_DataOutMask_RBVPV->read(&timestamp, &dataOutMask);
+	return (std::vector<bool>)dataOutMask;
+}
+
+template<typename T>
+double DigitalIOImpl<T>::getVoltLevelHigh()
+{
+	double voltLevelHigh;
 	timespec timestamp;
 	m_VoltLevelHigh_RBVPV->read(&timestamp, &voltLevelHigh);
-	return (std::int32_t)voltLevelHigh;
+	return (double)voltLevelHigh;
 }
 
 template<typename T>
-size_t DigitalIOImpl<T>::getVoltLevelLow()
+double DigitalIOImpl<T>::getVoltLevelLow()
 {
-	std::int32_t voltLevelLow;
+	double voltLevelLow;
 	timespec timestamp;
 	m_VoltLevelLow_RBVPV->read(&timestamp, &voltLevelLow);
-	return (std::int32_t)voltLevelLow;
+	return (double)voltLevelLow;
 }
 
 template<typename T>
-size_t DigitalIOImpl<T>::getChannelDir()
+std::vector<bool> DigitalIOImpl<T>::getChannelDir()
 {
-	std::int32_t channelDir;
+	std::vector<bool> channelDir;
 	timespec timestamp;
 	m_ChannelDir_RBVPV->read(&timestamp, &channelDir);
-	return (std::int32_t)channelDir;
+	return channelDir;
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setVoltLevelHigh(const timespec& timestamp, const std::int32_t& value)
+void DigitalIOImpl<T>::setDataOutMask(const timespec& timestamp, const std::vector<bool>& value)
+{
+	m_DataOutMask_RBVPV->setValue(timestamp, value);
+	m_DataOutMask_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void DigitalIOImpl<T>::setVoltLevelHigh(const timespec& timestamp, const double& value)
 {
 	m_VoltLevelHigh_RBVPV->setValue(timestamp, value);
 	m_VoltLevelHigh_RBVPV->push(timestamp, value);
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setVoltLevelLow(const timespec& timestamp, const std::int32_t& value)
+void DigitalIOImpl<T>::setVoltLevelLow(const timespec& timestamp, const double& value)
 {
 	m_VoltLevelLow_RBVPV->setValue(timestamp, value);
 	m_VoltLevelLow_RBVPV->push(timestamp, value);
@@ -181,7 +217,7 @@ void DigitalIOImpl<T>::setVoltLevelLow(const timespec& timestamp, const std::int
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setChannelDir(const timespec& timestamp, const std::int32_t& value)
+void DigitalIOImpl<T>::setChannelDir(const timespec& timestamp, const std::vector<bool>& value)
 {
 	m_ChannelDir_RBVPV->setValue(timestamp, value);
 	m_ChannelDir_RBVPV->push(timestamp, value);
@@ -203,10 +239,10 @@ void DigitalIOImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, co
 //template class DigitalIOImpl<std::uint16_t>;
 //template class DigitalIOImpl<std::uint32_t>;
 
-//template class DigitalIOImpl<std::vector<bool>>;
-template class DigitalIOImpl<std::vector<std::uint8_t>>;
-//template class DigitalIOImpl<std::vector<std::uint16_t>>;
-//template class DigitalIOImpl<std::vector<std::uint32_t>>;
+template class DigitalIOImpl<std::vector<bool>>;
+template class DigitalIOImpl<std::vector<std::int8_t>>;
+template class DigitalIOImpl<std::vector<std::int16_t>>;
+template class DigitalIOImpl<std::vector<std::int32_t>>;
 
 
 }

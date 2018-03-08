@@ -43,6 +43,26 @@ void PVBaseImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
     throw;
 }
 
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<bool>* /* pValue */) const
+{
+    throw;
+}
+
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::uint8_t>* /* pValue */) const
+{
+    throw;
+}
+
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::uint16_t>* /* pValue */) const
+{
+    throw;
+}
+
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::uint32_t>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
 {
     // TODO
@@ -52,7 +72,7 @@ void PVBaseImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) co
     read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
 }
 
-void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::uint8_t>* /* pValue */) const
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::int16_t>* /* pValue */) const
 {
     throw;
 }
@@ -94,6 +114,26 @@ void PVBaseImpl::write(const timespec& /* pTimestamp */, const double& /* value 
     throw;
 }
 
+void PVBaseImpl::write(const timespec&  /*pTimestamp*/, const std::vector<bool>& /*value*/)
+{
+	throw;
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint8_t>& /* value */)
+{
+    throw;
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint16_t>& /* value */)
+{
+    throw;
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint32_t>& /* value */)
+{
+    throw;
+}
+
 void PVBaseImpl::write(const timespec& pTimestamp, const std::vector<std::int8_t>& value)
 {
     // TODO
@@ -103,7 +143,7 @@ void PVBaseImpl::write(const timespec& pTimestamp, const std::vector<std::int8_t
     write(pTimestamp, (const std::vector<std::uint8_t>&) value);
 }
 
-void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint8_t>& /* value */)
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int16_t>& /* value */)
 {
     throw;
 }

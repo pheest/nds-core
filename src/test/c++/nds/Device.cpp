@@ -164,7 +164,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	     * Add a Digital I/O node:
 	     */
-	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t> >(
+	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t> >(
 	    		"DigitalIONode",
 				128,
 				std::bind(&Device::switchOn_DigitalIO, this),
@@ -173,14 +173,13 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 				std::bind(&Device::stop_DigitalIO, this),
 				std::bind(&Device::recover_DigitalIO, this),
 				std::bind(&Device::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	    ));
 	    m_DigitalIO.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    m_DigitalIO.getStartTimestamp();
-
-
 
 	    /**
 	      * Add a Streaming Config node:
@@ -1202,24 +1201,32 @@ bool Device::allow_DigitalIO_Change(const nds::state_t, const nds::state_t, cons
 /**
 * DigitalIO setters
 */
-void Device::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO.setDataOutMask(timestamp,value);
+}
+void Device::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the voltLevelHigh to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO.setVoltLevelHigh(timestamp,HW_value);
 }
-void Device::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the voltLevelLow to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO.setVoltLevelLow(timestamp,HW_value);
 }
-void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int32_t& value){
-	std::int32_t HW_value;
+void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
 	//Value has the ChannelDir to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
@@ -1227,29 +1234,32 @@ void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int
 	m_DigitalIO.setChannelDir(timestamp,HW_value);
 }
 
-/*
+/**
 * Body of function DigitalIO thread.
 */
 void Device::DigitalIO_thread_body(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint8_t> outputData(m_DigitalIO.getMaxElements(),0);
+	std::vector<std::int8_t> outputData(m_DigitalIO.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	std::int8_t value(0);
 
-	// Get RefFrequency
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO.getDataOutMask();
+	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO.getVoltLevelHigh();
-	// Get DutyCycle
+	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO.getVoltLevelLow();
-	// Get Gain
-	double ChannelDir = m_DigitalIO.getChannelDir();
+	// Get ChannelDir
+	std::vector<bool> ChannelDir = m_DigitalIO.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
-	std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
+	//std::cout<<"\DataOutMask = "<<DataOutMask<<std::endl;
+	//std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
 
 
 	// Run until the state machine stops us

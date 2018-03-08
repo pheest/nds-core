@@ -271,7 +271,7 @@ private:
 	 /**
 	  * @brief DigitalIO node
 	  */
-	 nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO;
+	 nds::DigitalIO<std::vector<std::int8_t> > m_DigitalIO;
 
 	 /**
 	  * Methods to control DigitalIO state machine
@@ -287,9 +287,10 @@ private:
 	 /**
 	  * DigitalIO setters
 	  */
-	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const int32_t& value);
-	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const int32_t& value);
-	 void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const int32_t& value);
+	 void PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const std::vector<bool>& value);
+	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value);
+	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value);
+	 void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value);
 
 	 /**
 	  * @brief Function that continuously acquires digital IO data.
@@ -307,8 +308,6 @@ private:
 	  *        when true.
 	  */
 	 volatile bool m_bStop_DigitalIO;
-
-
 
 	 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	 //  STREAMING CONFIGURATION
