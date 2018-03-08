@@ -30,162 +30,167 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 											stateChange_t recoverFunction,
 											allowChange_t allowStateChangeFunction,
 											readerDouble_t PV_DevicePower_Reader,
-											readerDouble_t PV_DeviceTemp_Reader,
+											readerDouble_t PV_DeviceTemperature_Reader,
 											readerDouble_t PV_DeviceVoltage_Reader,
 											readerDouble_t PV_DeviceCurrent_Reader,
-											writerInt32_t PV_EnableSEU_Writer,
-											readerInt32_t PV_EnableSEU_Reader,
-											writerInt32_t PV_EnableMonitorDAQ_Writer,
-											readerInt32_t PV_EnableMonitorDAQ_Reader,
-											writerInt32_t PV_EnableShelfTest_Writer,
-											readerInt32_t PV_EnableShelfTest_Reader,
-											writerInt32_t PV_ShelfTestType_Writer,
-											readerInt32_t PV_ShelfTestType_Reader,
-											writerInt32_t PV_VerboseShelfTest_Writer,
-											readerInt32_t PV_VerboseShelfTest_Reader,
-											writerInt32_t PV_EnableShelfTestId_Writer,
-											readerInt32_t PV_EnableShelfTestId_Reader,
-											writerInt32_t PV_EnableShelfTestText_Writer,
-											readerInt32_t PV_EnableShelfTestText_Reader,
+											writerInt32_t PV_SEUEnable_Writer,
+											readerInt32_t PV_SEUEnable_Reader,
+											writerInt32_t PV_DAQEnable_Writer,
+											readerInt32_t PV_DAQEnable_Reader,
+											writerInt32_t PV_SelfTestEnable_Writer,
+											readerInt32_t PV_SelfTestEnable_Reader,
+											writerInt32_t PV_SelfTestType_Writer,
+											readerInt32_t PV_SelfTestType_Reader,
+											writerInt32_t PV_SelfTestVerboseEnable_Writer,
+											readerInt32_t PV_SelfTestVerboseEnable_Reader,
+											writerInt32_t PV_SelfTestIDEnable_Writer,
+											readerInt32_t PV_SelfTestIDEnable_Reader,
+											writerInt32_t PV_SelfTestTxtEnable_Writer,
+											readerInt32_t PV_SelfTestTxtEnable_Reader,
 											readerInt32_t PV_SignalQualityFlag_Reader,
-											readerDouble_t PV_SignalQualityFlagLevel_Reader):
+											writerDouble_t PV_SignalQualityFlagLevel_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
 	m_onStartDelegate(startFunction),
     m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	// Add the children PVs
-    m_DevicePower_PV.reset(new PVDelegateInImpl<double>("DevicePower",PV_DevicePower_Reader));
-	m_DevicePower_PV->setDescription("Device Power");
-	m_DevicePower_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_DevicePower_PV);
+    m_DevPower_PV.reset(new PVDelegateInImpl<double>("DevPower",PV_DevicePower_Reader));
+	m_DevPower_PV->setDescription("Device Power");
+	m_DevPower_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_DevPower_PV);
 
-    m_DeviceTemp_PV.reset(new PVDelegateInImpl<double>("DeviceTemp",PV_DeviceTemp_Reader));
-	m_DeviceTemp_PV->setDescription("Device Temp");
-	m_DeviceTemp_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_DeviceTemp_PV);
+    m_DevTemperature_PV.reset(new PVDelegateInImpl<double>("DevTemperature",PV_DeviceTemperature_Reader));
+	m_DevTemperature_PV->setDescription("Device Temperature");
+	m_DevTemperature_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_DevTemperature_PV);
 
-	m_DeviceVoltage_PV.reset(new PVDelegateInImpl<double>("DeviceVoltage",PV_DeviceVoltage_Reader));
-	m_DeviceVoltage_PV->setDescription("Device Volt");
-	m_DeviceVoltage_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_DeviceVoltage_PV);
+	m_DevVoltage_PV.reset(new PVDelegateInImpl<double>("DevVoltage",PV_DeviceVoltage_Reader));
+	m_DevVoltage_PV->setDescription("Device Volt");
+	m_DevVoltage_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_DevVoltage_PV);
 
-	m_DeviceCurrent_PV.reset(new PVDelegateInImpl<double>("DeviceCurrent",PV_DeviceCurrent_Reader));
-	m_DeviceCurrent_PV->setDescription("Device Current");
-	m_DeviceCurrent_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_DeviceCurrent_PV);
+	m_DevCurrent_PV.reset(new PVDelegateInImpl<double>("DevCurrent",PV_DeviceCurrent_Reader));
+	m_DevCurrent_PV->setDescription("Device Current");
+	m_DevCurrent_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_DevCurrent_PV);
 
-    m_EnableSEU_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableSEU",PV_EnableSEU_Writer));
-    m_EnableSEU_PV->setDescription("Enable Detect SEU");
-    m_EnableSEU_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableSEU_PV);
+    m_SEUEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("SEUEnable",PV_SEUEnable_Writer));
+    m_SEUEnable_PV->setDescription("Enable Detection of Single Events Upsets");
+    m_SEUEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_SEUEnable_PV);
 
-    m_EnableSEU_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableSEU_RBV",PV_EnableSEU_Reader));
-	m_EnableSEU_RBVPV->setDescription("Enable Detect SEU ReadBack");
-	m_EnableSEU_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableSEU_RBVPV);
-
-
-    m_EnableMonitorDAQ_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableMonitorDAQ",PV_EnableMonitorDAQ_Writer));
-    m_EnableMonitorDAQ_PV->setDescription("Enable Monitor DAQ anomalies");
-    m_EnableMonitorDAQ_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableMonitorDAQ_PV);
-
-    m_EnableMonitorDAQ_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableMonitorDAQ_RBV",PV_EnableMonitorDAQ_Reader));
-	m_EnableMonitorDAQ_RBVPV->setDescription("Enable Monitor DAQ anomalies ReadBack");
-	m_EnableMonitorDAQ_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableMonitorDAQ_RBVPV);
+    m_SEUEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SEUEnable_RBV",PV_SEUEnable_Reader));
+	m_SEUEnable_RBVPV->setDescription("Enable Detection of SEU ReadBack");
+	m_SEUEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_SEUEnable_RBVPV);
 
 
-    m_EnableShelfTest_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTest",PV_EnableShelfTest_Writer));
-    m_EnableShelfTest_PV->setDescription("Enable ShelfTest");
-    m_EnableShelfTest_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableShelfTest_PV);
+    m_HQMonitorDAQEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("DAQEnable",PV_DAQEnable_Writer));
+    m_HQMonitorDAQEnable_PV->setDescription("Enable Monitoring of DAQ anomalies");
+    m_HQMonitorDAQEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_HQMonitorDAQEnable_PV);
 
-    m_EnableShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTest_RBV",PV_EnableShelfTest_Reader));
-	m_EnableShelfTest_RBVPV->setDescription("Enable ShelfTest ReadBack");
-	m_EnableShelfTest_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableShelfTest_RBVPV);
-
-    enumerationStrings_t ShelfTestEnumeratorStrings;
-    ShelfTestEnumeratorStrings.push_back("Quick-Test");
-    ShelfTestEnumeratorStrings.push_back("Full-Test");
-
-    m_ShelfTestType_PV.reset(new PVDelegateOutImpl<std::int32_t>("ShelfTestType",PV_ShelfTestType_Writer));
-    m_ShelfTestType_PV->setDescription("Enable ShelfTest");
-    m_ShelfTestType_PV->setEnumeration(ShelfTestEnumeratorStrings);
-    addChild(m_ShelfTestType_PV);
-
-    m_EnableShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("ShelfTestType_RBV",PV_ShelfTestType_Reader));
-	m_EnableShelfTest_RBVPV->setDescription("ShelfTest Type ReadBack");
-	m_EnableShelfTest_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableShelfTest_RBVPV);
+    m_HQMonitorDAQEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("DAQEnable_RBV",PV_DAQEnable_Reader));
+	m_HQMonitorDAQEnable_RBVPV->setDescription("Enable Monitor of DAQ anomalies ReadBack");
+	m_HQMonitorDAQEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_HQMonitorDAQEnable_RBVPV);
 
 
-    m_VerboseShelfTest_PV.reset(new PVDelegateOutImpl<std::int32_t>("VerboseShelfTest",PV_VerboseShelfTest_Writer));
-    m_VerboseShelfTest_PV->setDescription("Enable Verbose ShelfTest");
-    m_VerboseShelfTest_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_VerboseShelfTest_PV);
+    m_TestEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestEnable",PV_SelfTestEnable_Writer));
+    m_TestEnable_PV->setDescription("Enable (start) the Self-Test");
+    m_TestEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_TestEnable_PV);
 
-    m_VerboseShelfTest_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("VerboseShelfTest_RBV",PV_VerboseShelfTest_Reader));
-	m_VerboseShelfTest_RBVPV->setDescription("Enable Verbose ShelfTest ReadBack");
-	m_VerboseShelfTest_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_VerboseShelfTest_RBVPV);
+    m_TestEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestEnable_RBV",PV_SelfTestEnable_Reader));
+	m_TestEnable_RBVPV->setDescription("Enable the Self-Test ReadBack");
+	m_TestEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestEnable_RBVPV);
 
-    m_EnableShelfTestId_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestId",PV_EnableShelfTestId_Writer));
-    m_EnableShelfTestId_PV->setDescription("Enable ShelfTest Id");
-    m_EnableShelfTestId_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableShelfTestId_PV);
+    enumerationStrings_t SelfTestEnumeratorStrings;
+    SelfTestEnumeratorStrings.push_back("Quick-Test");
+    SelfTestEnumeratorStrings.push_back("Full-Test");
 
-    m_EnableShelfTestId_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestId_RBV",PV_EnableShelfTestId_Reader));
-	m_EnableShelfTestId_RBVPV->setDescription("Enable ShelfTest Id ReadBack");
-	m_EnableShelfTestId_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableShelfTestId_RBVPV);
+    m_TestType_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestType",PV_SelfTestType_Writer));
+    m_TestType_PV->setDescription("Type of Self-Test");
+    m_TestType_PV->setEnumeration(SelfTestEnumeratorStrings);
+    addChild(m_TestType_PV);
 
-    m_EnableShelfTestText_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestText",PV_EnableShelfTestText_Writer));
-    m_EnableShelfTestText_PV->setDescription("Enable ShelfTest Out Text");
-    m_EnableShelfTestText_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableShelfTestText_PV);
+    m_TestType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestType_RBV",PV_SelfTestType_Reader));
+    m_TestType_RBVPV->setDescription("Type of Self-Test ReadBack");
+    m_TestType_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestType_RBVPV);
 
-    m_EnableShelfTestText_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestText_RBV",PV_EnableShelfTestText_Reader));
-	m_EnableShelfTestText_RBVPV->setDescription("Enable ShelfTest Out Text ReadBack");
-	m_EnableShelfTestText_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableShelfTestText_RBVPV);
 
-    m_EnableShelfTestOutputNum_PV.reset(new PVDelegateOutImpl<std::int32_t>("EnableShelfTestTextOutputNum",PV_EnableShelfTestText_Writer));
-    m_EnableShelfTestOutputNum_PV->setDescription("Enable ShelfTest Out Num");
-    m_EnableShelfTestOutputNum_PV->write(getTimestamp(), (std::int32_t)0);
-    addChild(m_EnableShelfTestOutputNum_PV);
+    m_TestVerboseEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestVerboseEnable",PV_SelfTestVerboseEnable_Writer));
+    m_TestVerboseEnable_PV->setDescription("Enable the Self-Test Verbose");
+    m_TestVerboseEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_TestVerboseEnable_PV);
 
-    m_EnableShelfTestTextOutputNum_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("EnableShelfTestTextOutputNum_RBV",PV_EnableShelfTestText_Reader));
-	m_EnableShelfTestTextOutputNum_RBVPV->setDescription("Enable ShelfTest Out Num ReadBack");
-	m_EnableShelfTestTextOutputNum_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_EnableShelfTestTextOutputNum_RBVPV);
+    m_TestVerboseEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestVerboseEnable_RBV",PV_SelfTestVerboseEnable_Reader));
+	m_TestVerboseEnable_RBVPV->setDescription("Enable Verbose Self-Test Verbose ReadBack");
+	m_TestVerboseEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestVerboseEnable_RBVPV);
 
-    m_SignalQualityFlag_PV.reset(new PVDelegateInImpl<std::int32_t>("SignalQualityFlag",PV_SignalQualityFlag_Reader));
-	m_SignalQualityFlag_PV->setDescription("Flagged When Signal Quality decrease");
-	m_SignalQualityFlag_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_SignalQualityFlag_PV);
+    m_TestIDEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestIDEnable",PV_SelfTestIDEnable_Writer));
+    m_TestIDEnable_PV->setDescription("Enable the Self-Test ID");
+    m_TestIDEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_TestIDEnable_PV);
 
-    m_SignalQualityFlagLevel_PV.reset(new PVDelegateInImpl<double>("SignalQualityFlagLevel",PV_SignalQualityFlagLevel_Reader));
-	m_SignalQualityFlagLevel_PV->setDescription("Quality Flag trigger level");
-	m_SignalQualityFlagLevel_PV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_SignalQualityFlagLevel_PV);
+    m_TestIDEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestIDEnable_RBV",PV_SelfTestIDEnable_Reader));
+	m_TestIDEnable_RBVPV->setDescription("Enable the Self-Test ID ReadBack");
+	m_TestIDEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestIDEnable_RBVPV);
 
-    m_decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
-    m_decimation_PV->setDescription("Decimation");
-    m_decimation_PV->setScanType(scanType_t::passive, 0);
-    m_decimation_PV->write(getTimestamp(), (std::int32_t)1);
-    addChild(m_decimation_PV);
+    m_TestTxtEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestTxtEnable",PV_SelfTestTxtEnable_Writer));
+    m_TestTxtEnable_PV->setDescription("Enable the Self-Test text description");
+    m_TestTxtEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_TestTxtEnable_PV);
+
+    m_TestTxtEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestTxtEnable_RBV",PV_SelfTestTxtEnable_Reader));
+	m_TestTxtEnable_RBVPV->setDescription("Enable the Self-Test text description ReadBack");
+	m_TestTxtEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestTxtEnable_RBVPV);
+
+    m_TestCodeResultEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("TestCodeResultEnable",PV_SelfTestTxtEnable_Writer));
+    m_TestCodeResultEnable_PV->setDescription("Enable the Self-Test result number");
+    m_TestCodeResultEnable_PV->write(getTimestamp(), (std::int32_t)0);
+    addChild(m_TestCodeResultEnable_PV);
+
+    m_TestCodeResultEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestCodeResultEnable_RBV",PV_SelfTestTxtEnable_Reader));
+	m_TestCodeResultEnable_RBVPV->setDescription("Enable the Self-Test result number ReadBack");
+	m_TestCodeResultEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestCodeResultEnable_RBVPV);
+
+    m_SignalQFlag_PV.reset(new PVDelegateInImpl<std::int32_t>("SignalQFlag",PV_SignalQualityFlag_Reader));
+	m_SignalQFlag_PV->setDescription("Read the flag of low quality signal");
+	m_SignalQFlag_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_SignalQFlag_PV);
+
+	m_SignalQFlagTrigLevel_PV.reset(new PVDelegateOutImpl<double>("SignalQFlagTrigLevel", PV_SignalQualityFlagLevel_Writer));
+	m_SignalQFlagTrigLevel_PV->setDescription("Quality Flag trigger level ReadBack");
+	m_SignalQFlagTrigLevel_PV-> setScanType(scanType_t::passive,0);
+	addChild(m_SignalQFlagTrigLevel_PV);
+
+    m_SignalQFlagTrigLevel_RBVPV.reset(new PVVariableInImpl<double>("SignalQFlagTrigLevel_RBV"));
+	m_SignalQFlagTrigLevel_RBVPV->setDescription("Quality Flag trigger level ReadBack");
+	m_SignalQFlagTrigLevel_RBVPV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_SignalQFlagTrigLevel_RBVPV);
+
+    m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
+    m_Decimation_PV->setDescription("Decimation");
+    m_Decimation_PV->setScanType(scanType_t::passive, 0);
+    m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    addChild(m_Decimation_PV);
 
     // Add state machine
-    m_stateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
                                    switchOffFunction,
                                    std::bind(&HealthMonitSupImpl::onStart, this),
                                    stopFunction,
                                    recoverFunction,
                                    allowStateChangeFunction));
-    addChild(m_stateMachine);
+    addChild(m_StateMachine);
 }
 
 

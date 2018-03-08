@@ -525,7 +525,7 @@ private:
     	  void PV_HealthMonitSup_EnableShelfTestId_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
     	  void PV_HealthMonitSup_EnableShelfTestText_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
     	  void PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_SignalQualityFlagLevel_Reader(timespec* /*timestamp*/, double* /*value*/);
+    	  void PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
 
     	  /**
     	   * @brief Function that continuously acquires data related with health monitoring.

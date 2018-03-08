@@ -230,7 +230,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestText_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlagLevel_Reader,this, std::placeholders::_1, std::placeholders::_2)
+				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	    ));
 	    m_HealthMonitSup.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    m_HealthMonitSup.getStartTimestamp();
@@ -1709,7 +1709,7 @@ void Device::PV_HealthMonitSup_EnableShelfTestText_Reader(timespec* /*timestamp*
 void Device::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
 
 }
-void Device::PV_HealthMonitSup_SignalQualityFlagLevel_Reader(timespec* /*timestamp*/, double* /*value*/){
+void Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
 
