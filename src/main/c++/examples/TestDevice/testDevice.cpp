@@ -188,7 +188,7 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
     /**
      * Add a HealthMonitSup node.
      */
-    m_HealthMonitSup = rootNode.addChild(nds::HealthMonitSup<std::vector<std::int32_t> >(
+    m_HealthMonitSup = rootNode.addChild(nds::HealthMonitSup(
     		"HealthMonitSupNode",
 			std::bind(&testDevice::switchOn_HealthMonitSup, this),
 			std::bind(&testDevice::switchOff_HealthMonitSup, this),

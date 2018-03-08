@@ -24,7 +24,6 @@
 namespace nds
 {
 
-template <typename T>
 class NDS3_API HealthMonitSup: public Node
 {
 public:
@@ -40,9 +39,9 @@ public:
      * @param right a holder from which the reference to
      *        the object implementation is copied
      */
-	HealthMonitSup(const HealthMonitSup<T>& right);
+	HealthMonitSup(const HealthMonitSup& right);
 
-	HealthMonitSup& operator=(const HealthMonitSup<T>& right);
+	HealthMonitSup& operator=(const HealthMonitSup& right);
 
     /**
      * @brief Constructs the node.

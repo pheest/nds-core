@@ -21,8 +21,7 @@
 namespace nds
 {
 
-template<typename T>
-HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
+HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 											stateChange_t switchOnFunction,
 											stateChange_t switchOffFunction,
 											stateChange_t startFunction,
@@ -187,32 +186,20 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 }
 
 
-template<typename T>
-timespec HealthMonitSupImpl<T>::getStartTimestamp() const
+timespec HealthMonitSupImpl::getStartTimestamp() const
 {
     return m_startTime;
 }
 
-template<typename T>
-void HealthMonitSupImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+void HealthMonitSupImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
     m_startTimestampFunction = timestampDelegate;
 }
 
-template<typename T>
-void HealthMonitSupImpl<T>::onStart()
+void HealthMonitSupImpl::onStart()
 {
     m_startTime = m_startTimestampFunction();
     m_onStartDelegate();
 }
-
-template class HealthMonitSupImpl<std::int32_t>;
-template class HealthMonitSupImpl<double>;
-template class HealthMonitSupImpl<std::vector<std::int8_t> >;
-template class HealthMonitSupImpl<std::vector<std::uint8_t> >;
-template class HealthMonitSupImpl<std::vector<std::int32_t> >;
-template class HealthMonitSupImpl<std::vector<double> >;
-template class HealthMonitSupImpl<std::string >;
-
 
 }

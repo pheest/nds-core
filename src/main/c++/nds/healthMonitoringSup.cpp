@@ -13,8 +13,7 @@
 namespace nds
 {
 
-template <typename T>
-HealthMonitSup<T>::HealthMonitSup(): Node()
+HealthMonitSup::HealthMonitSup(): Node()
 {
 }
 
@@ -25,8 +24,7 @@ HealthMonitSup<T>::HealthMonitSup(): Node()
  * @param maxElements if the data type is an array, then indicated
  *                    the maximum size (in elements) of the acquired array
  */
-template <typename T>
-HealthMonitSup<T>::HealthMonitSup(  const std::string& name,
+HealthMonitSup::HealthMonitSup(  const std::string& name,
 									stateChange_t switchOnFunction,
 									stateChange_t switchOffFunction,
 									stateChange_t startFunction,
@@ -46,7 +44,7 @@ HealthMonitSup<T>::HealthMonitSup(  const std::string& name,
 									writerInt32_t PV_SelfTestTxtEnable_Writer,
 									readerInt32_t PV_SignalQualityFlag_Reader,
 									writerDouble_t PV_SignalQualityFlagLevel_Writer):
-    Node(std::shared_ptr<HealthMonitSupImpl<T> >(new HealthMonitSupImpl<T>(	name,
+    Node(std::shared_ptr<HealthMonitSupImpl >(new HealthMonitSupImpl(	name,
 																			switchOnFunction,
 																			switchOffFunction,
 																			startFunction,
@@ -69,37 +67,25 @@ HealthMonitSup<T>::HealthMonitSup(  const std::string& name,
 {
 }
 
-template <typename T>
-HealthMonitSup<T>::HealthMonitSup(const HealthMonitSup<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+HealthMonitSup::HealthMonitSup(const HealthMonitSup& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }
 
-template <typename T>
-HealthMonitSup<T>& HealthMonitSup<T>::operator=(const HealthMonitSup<T>& right)
+HealthMonitSup& HealthMonitSup::operator=(const HealthMonitSup& right)
 {
     m_pImplementation = right.m_pImplementation;
     return *this;
 }
 
-template <typename T>
-void HealthMonitSup<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+void HealthMonitSup::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
-    std::static_pointer_cast<HealthMonitSupImpl<T> >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+    std::static_pointer_cast<HealthMonitSupImpl >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
 }
 
-template <typename T>
-timespec HealthMonitSup<T>::getStartTimestamp() const
+timespec HealthMonitSup::getStartTimestamp() const
 {
-    return std::static_pointer_cast<HealthMonitSupImpl<T> >(m_pImplementation)->getStartTimestamp();
+    return std::static_pointer_cast<HealthMonitSupImpl >(m_pImplementation)->getStartTimestamp();
 }
-
-template class HealthMonitSup<std::int32_t>;
-template class HealthMonitSup<double>;
-template class HealthMonitSup<std::vector<std::int8_t> >;
-template class HealthMonitSup<std::vector<std::uint8_t> >;
-template class HealthMonitSup<std::vector<std::int32_t> >;
-template class HealthMonitSup<std::vector<double> >;
-template class HealthMonitSup<std::string >;
 
 
 }

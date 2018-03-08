@@ -22,8 +22,6 @@ namespace nds
 template <typename T> class PVVariableInImpl;
 template <typename T> class PVVariableOutImpl;
 
-
-template<typename T>
 class HealthMonitSupImpl: public NodeImpl
 {
 public:

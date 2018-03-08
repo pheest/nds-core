@@ -486,7 +486,7 @@ private:
     	  /**
     	   * @brief HealthMonitSup node
     	   */
-    	  nds::HealthMonitSup<std::vector<std::int32_t> > m_HealthMonitSup;
+    	  nds::HealthMonitSup m_HealthMonitSup;
 
     	  /**
     	   * Methods to control HealthMonitSup state machine
