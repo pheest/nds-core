@@ -34,19 +34,12 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
 											readerDouble_t PV_DeviceVoltage_Reader,
 											readerDouble_t PV_DeviceCurrent_Reader,
 											writerInt32_t PV_SEUEnable_Writer,
-											readerInt32_t PV_SEUEnable_Reader,
 											writerInt32_t PV_DAQEnable_Writer,
-											readerInt32_t PV_DAQEnable_Reader,
 											writerInt32_t PV_SelfTestEnable_Writer,
-											readerInt32_t PV_SelfTestEnable_Reader,
 											writerInt32_t PV_SelfTestType_Writer,
-											readerInt32_t PV_SelfTestType_Reader,
 											writerInt32_t PV_SelfTestVerboseEnable_Writer,
-											readerInt32_t PV_SelfTestVerboseEnable_Reader,
 											writerInt32_t PV_SelfTestIDEnable_Writer,
-											readerInt32_t PV_SelfTestIDEnable_Reader,
 											writerInt32_t PV_SelfTestTxtEnable_Writer,
-											readerInt32_t PV_SelfTestTxtEnable_Reader,
 											readerInt32_t PV_SignalQualityFlag_Reader,
 											writerDouble_t PV_SignalQualityFlagLevel_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
@@ -79,7 +72,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_SEUEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_SEUEnable_PV);
 
-    m_SEUEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("SEUEnable_RBV",PV_SEUEnable_Reader));
+    m_SEUEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SEUEnable_RBV"));
 	m_SEUEnable_RBVPV->setDescription("Enable Detection of SEU ReadBack");
 	m_SEUEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_SEUEnable_RBVPV);
@@ -90,7 +83,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_HQMonitorDAQEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_HQMonitorDAQEnable_PV);
 
-    m_HQMonitorDAQEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("DAQEnable_RBV",PV_DAQEnable_Reader));
+    m_HQMonitorDAQEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("DAQEnable_RBV"));
 	m_HQMonitorDAQEnable_RBVPV->setDescription("Enable Monitor of DAQ anomalies ReadBack");
 	m_HQMonitorDAQEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_HQMonitorDAQEnable_RBVPV);
@@ -101,7 +94,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_TestEnable_PV);
 
-    m_TestEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestEnable_RBV",PV_SelfTestEnable_Reader));
+    m_TestEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestEnable_RBV"));
 	m_TestEnable_RBVPV->setDescription("Enable the Self-Test ReadBack");
 	m_TestEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestEnable_RBVPV);
@@ -115,7 +108,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestType_PV->setEnumeration(SelfTestEnumeratorStrings);
     addChild(m_TestType_PV);
 
-    m_TestType_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestType_RBV",PV_SelfTestType_Reader));
+    m_TestType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestType_RBV"));
     m_TestType_RBVPV->setDescription("Type of Self-Test ReadBack");
     m_TestType_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestType_RBVPV);
@@ -126,7 +119,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestVerboseEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_TestVerboseEnable_PV);
 
-    m_TestVerboseEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestVerboseEnable_RBV",PV_SelfTestVerboseEnable_Reader));
+    m_TestVerboseEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestVerboseEnable_RBV"));
 	m_TestVerboseEnable_RBVPV->setDescription("Enable Verbose Self-Test Verbose ReadBack");
 	m_TestVerboseEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestVerboseEnable_RBVPV);
@@ -136,7 +129,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestIDEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_TestIDEnable_PV);
 
-    m_TestIDEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestIDEnable_RBV",PV_SelfTestIDEnable_Reader));
+    m_TestIDEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestIDEnable_RBV"));
 	m_TestIDEnable_RBVPV->setDescription("Enable the Self-Test ID ReadBack");
 	m_TestIDEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestIDEnable_RBVPV);
@@ -146,7 +139,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestTxtEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_TestTxtEnable_PV);
 
-    m_TestTxtEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestTxtEnable_RBV",PV_SelfTestTxtEnable_Reader));
+    m_TestTxtEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestTxtEnable_RBV"));
 	m_TestTxtEnable_RBVPV->setDescription("Enable the Self-Test text description ReadBack");
 	m_TestTxtEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestTxtEnable_RBVPV);
@@ -156,7 +149,7 @@ HealthMonitSupImpl<T>::HealthMonitSupImpl(  const std::string& name,
     m_TestCodeResultEnable_PV->write(getTimestamp(), (std::int32_t)0);
     addChild(m_TestCodeResultEnable_PV);
 
-    m_TestCodeResultEnable_RBVPV.reset(new PVDelegateInImpl<std::int32_t>("TestCodeResultEnable_RBV",PV_SelfTestTxtEnable_Reader));
+    m_TestCodeResultEnable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestCodeResultEnable_RBV"));
 	m_TestCodeResultEnable_RBVPV->setDescription("Enable the Self-Test result number ReadBack");
 	m_TestCodeResultEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestCodeResultEnable_RBVPV);

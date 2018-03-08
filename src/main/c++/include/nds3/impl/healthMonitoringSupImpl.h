@@ -39,19 +39,12 @@ public:
 						readerDouble_t PV_DeviceVoltage_Reader,
 						readerDouble_t PV_DeviceCurrent_Reader,
 						writerInt32_t PV_EnableSEU_Writer,
-						readerInt32_t PV_EnableSEU_Reader,
 						writerInt32_t PV_EnableMonitorDAQ_Writer,
-						readerInt32_t PV_EnableMonitorDAQ_Reader,
 						writerInt32_t PV_EnableShelfTest_Writer,
-						readerInt32_t PV_EnableShelfTest_Reader,
 						writerInt32_t PV_ShelfTestType_Writer,
-						readerInt32_t PV_ShelfTestType_Reader,
 						writerInt32_t PV_VerboseShelfTest_Writer,
-						readerInt32_t PV_VerboseShelfTest_Reader,
 						writerInt32_t PV_EnableShelfTestId_Writer,
-						readerInt32_t PV_EnableShelfTestId_Reader,
 						writerInt32_t PV_EnableShelfTestText_Writer,
-						readerInt32_t PV_EnableShelfTestText_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
 						writerDouble_t PV_SignalQualityFlagLevel_Writer);
 
@@ -115,29 +108,29 @@ protected:
     std::shared_ptr<PVDelegateInImpl<double> > m_DevCurrent_PV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SEUEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SEUEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SEUEnable_RBVPV;
 
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_HQMonitorDAQEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_HQMonitorDAQEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_HQMonitorDAQEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestType_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestType_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestType_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestVerboseEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestVerboseEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestVerboseEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestIDEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestIDEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestIDEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestTxtEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestTxtEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestTxtEnable_RBVPV;
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestCodeResultEnable_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_TestCodeResultEnable_RBVPV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestCodeResultEnable_RBVPV;
 
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQFlag_PV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_SignalQFlagTrigLevel_PV;

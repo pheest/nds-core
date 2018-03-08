@@ -60,19 +60,12 @@ public:
 					readerDouble_t PV_DeviceVoltage_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerDouble_t PV_DeviceCurrent_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SEUEnable_Writer,                   ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SEUEnable_Reader,                   ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_DAQEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_DAQEnable_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestEnable_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SelfTestEnable_Reader,             ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestType_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SelfTestType_Reader,               ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestVerboseEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SelfTestVerboseEnable_Reader,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestIDEnable_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SelfTestIDEnable_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestTxtEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SelfTestTxtEnable_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SignalQualityFlagLevel_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 

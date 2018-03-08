@@ -509,6 +509,7 @@ private:
     	  void PV_HealthMonitSup_VerboseShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
     	  void PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
     	  void PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
 
     	  /**
     	   * HealthMonitSup getters
@@ -517,15 +518,7 @@ private:
     	  void PV_HealthMonitSup_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/);
     	  void PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/);
     	  void PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/);
-    	  void PV_HealthMonitSup_EnableSEU_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_EnableMonitorDAQ_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_ShelfTestType_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_VerboseShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTestId_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTestText_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
     	  void PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
 
     	  /**
     	   * @brief Function that continuously acquires data related with health monitoring.

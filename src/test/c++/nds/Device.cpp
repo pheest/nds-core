@@ -216,19 +216,12 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 				std::bind(&Device::PV_HealthMonitSup_DeviceVoltage_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_DeviceCurrent_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableSEU_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_EnableSEU_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableMonitorDAQ_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_EnableMonitorDAQ_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTest_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_EnableShelfTest_Reader,this,  std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_ShelfTestType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_ShelfTestType_Reader,this,  std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_VerboseShelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_VerboseShelfTest_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestId_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestText_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	    ));
@@ -1669,6 +1662,9 @@ void Device::PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timest
 void Device::PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
+void Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){
+
+}
 
 /**
  * HealthMonitSup getters
@@ -1685,31 +1681,7 @@ void Device::PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, dou
 void Device::PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/){
 
 }
-void Device::PV_HealthMonitSup_EnableSEU_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_EnableMonitorDAQ_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_EnableShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_ShelfTestType_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_VerboseShelfTest_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_EnableShelfTestId_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_EnableShelfTestText_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
 void Device::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
-
-}
-void Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
 
