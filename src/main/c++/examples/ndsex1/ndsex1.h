@@ -64,7 +64,7 @@ nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 	bool allow_DataAcquisition_Change(const nds::state_t, const nds::state_t, const nds::state_t); //Called to verify if a state change is allowed
 
 //DataAcquisition setters
-	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const std::vector<double>& value);
+	void PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value);
 	void PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value);
 	void PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value);
 	void PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value);
@@ -74,8 +74,6 @@ nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 	void PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp, const double& value);
-	void PV_DataAcquisition_ChannelList_Writer(const timespec& timestamp, const std::vector<std::int32_t>& value);
-
 
 
 //Function that continuously acquires data. It is launched by

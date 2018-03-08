@@ -31,7 +31,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											stateChange_t stopFunction,
 											stateChange_t recoverFunction,
 											allowChange_t allowStateChangeFunction,
-											writerVectorDouble_t PV_Gain_Writer,
+											writerDouble_t PV_Gain_Writer,
 											writerDouble_t PV_Offset_Writer,
 											writerDouble_t PV_Bandwidth_Writer,
 											writerDouble_t PV_Resolution_Writer,
@@ -40,8 +40,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
 										    writerInt32_t PV_DMAEnable_Writer,
-											writerDouble_t PV_SamplingRate_Writer,
-											writerVectorInt32_t PV_ChannelList_Writer
+											writerDouble_t PV_SamplingRate_Writer
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -71,12 +70,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
 	addChild(m_DecimationType_PV);
 
-    m_Gain_PV.reset(new PVDelegateOutImpl<std::vector<double> >("Gain",PV_Gain_Writer));
+    m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
     m_Gain_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Gain_PV);
 
-    m_Gain_RBVPV.reset(new PVVariableInImpl<std::vector<double>>("Gain_RBV"));
+    m_Gain_RBVPV.reset(new PVVariableInImpl<double>("Gain_RBV"));
 	m_Gain_RBVPV->setDescription("Gain of the Channel");
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
@@ -179,7 +178,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
 	addChild(m_NumberOfPushedDataBlocks);
 
-	m_DMABufferSize_PV.reset(new PVVariableInImpl<double>("DMABufferSize"));
+	m_DMABufferSize_PV.reset(new PVVariableInImpl<std::int32_t>("DMABufferSize"));
 	m_DMABufferSize_PV->setDescription("Internal DMA Buffer Size");
 	m_DMABufferSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMABufferSize_PV);
@@ -219,17 +218,6 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_SamplingRate_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SamplingRate_RBVPV);
 
-    m_ChannelList_PV.reset(new PVDelegateOutImpl<std::vector<std::int32_t> >("ChannelList",PV_ChannelList_Writer));
-    m_ChannelList_PV->setDescription("List of channels");
-    m_ChannelList_PV->setScanType(scanType_t::passive, 0);
-    addChild(m_ChannelList_PV);
-
-    m_ChannelList_RBVPV.reset(new PVVariableInImpl<std::vector<std::int32_t>>("ChannelList_RBV"));
-    m_ChannelList_RBVPV->setDescription("List of channels");
-    m_ChannelList_RBVPV-> setScanType(scanType_t::interrupt,0);
-	addChild(m_ChannelList_RBVPV);
-
-
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
                                    switchOnFunction,
@@ -242,12 +230,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 }
 
 template<typename T>
-std::vector<double> DataAcquisitionImpl<T>::getGain()
+size_t DataAcquisitionImpl<T>::getGain()
 {
-    std::vector<double> Gain;
+	double Gain;
     timespec timestamp;
     m_Gain_RBVPV->read(&timestamp, &Gain);
-    return (std::vector<double>)Gain;
+    return (double)Gain;
 }
 
 template<typename T>
@@ -337,10 +325,10 @@ size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
 template<typename T>
 size_t DataAcquisitionImpl<T>::getDMABufferSize()
 {
-       double DMABufferSize;
+	std::int32_t DMABufferSize;
     timespec timestamp;
     m_DMABufferSize_PV->read(&timestamp, &DMABufferSize);
-    return (double)DMABufferSize;
+    return (std::int32_t)DMABufferSize;
 }
 
 template<typename T>
@@ -389,16 +377,7 @@ size_t DataAcquisitionImpl<T>::getSamplingRate()
 }
 
 template<typename T>
-std::vector<std::int32_t> DataAcquisitionImpl<T>::getChannelList()
-{
-    std::vector<std::int32_t> ChannelList;
-    timespec timestamp;
-    m_ChannelList_RBVPV->read(&timestamp, &ChannelList);
-    return (std::vector<std::int32_t>)ChannelList;
-}
-
-template<typename T>
-void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const std::vector<double>& value)
+void DataAcquisitionImpl<T>::setGain(const timespec& timestamp, const double& value)
 {
 	m_Gain_RBVPV->setValue(timestamp, value);
 	m_Gain_RBVPV->push(timestamp, value);
@@ -474,7 +453,7 @@ void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timesta
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setDMABufferSize(const timespec& timestamp, const double& value)
+void DataAcquisitionImpl<T>::setDMABufferSize(const timespec& timestamp, const std::int32_t& value)
 {
 	m_DMABufferSize_PV->setValue(timestamp, value);
 	m_DMABufferSize_PV->push(timestamp, value);
@@ -514,13 +493,6 @@ void DataAcquisitionImpl<T>::setSamplingRate(const timespec& timestamp, const do
 {
 	m_SamplingRate_RBVPV->setValue(timestamp, value);
 	m_SamplingRate_RBVPV->push(timestamp, value);
-}
-
-template<typename T>
-void DataAcquisitionImpl<T>::setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value)
-{
-	m_ChannelList_RBVPV->setValue(timestamp, value);
-	m_ChannelList_RBVPV->push(timestamp, value);
 }
 
 template<typename T>

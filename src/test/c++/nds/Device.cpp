@@ -107,8 +107,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 			std::bind(&Device::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_ChannelList_Writer,this,std::placeholders::_1,std::placeholders::_2)
+			std::bind(&Device::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
 	));
 	m_DataAcquisition.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	m_DataAcquisition.getStartTimestamp();
@@ -585,7 +584,7 @@ void Device::switchOn_Device(){
 	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
 	// As an example:
 		// Call API HW to retrieve DMABufferSize -> (ex: DMABufferSize=4194304 (4096*1024) )
-		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(double)4194304);
+		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(std::int32_t)4194304);
 		// Call API HW to retrieve DMAEnable -> (ex: DMAEnable initial status OFF (0))
 		m_DataAcquisition.setDMAEnable(getCurrentTime(),(std::int32_t)0);
 		// Call API HW to retrieve DMAFrameType -> (ex: DMAFrameType=0)
@@ -683,8 +682,8 @@ bool Device::allow_DataAcquisition_Change(const nds::state_t, const nds::state_t
 /*
 * DataAcquisition setters
 */
-void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const std::vector<double> & value){
-	std::vector<double> HW_value;
+void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the Gain to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
@@ -767,12 +766,6 @@ void Device::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
 	m_DataAcquisition.setSamplingRate(timestamp,HW_value);
 }
 
-void Device::PV_DataAcquisition_ChannelList_Writer(const timespec& timestamp,
-	const std::vector<std::int32_t>& value) {
-	std::vector<std::int32_t> HW_value;
-	HW_value=value;
-	m_DataAcquisition.setChannelList(timestamp,HW_value);
-}
 
 /*
 * Body of function to acquire data
@@ -787,7 +780,7 @@ void Device::DataAcquisition_thread_body(){
 	std::int32_t NumberOfPushedDataBlocks(0);
 
 	// Get Gain
-	std::vector<double>  Gain = m_DataAcquisition.getGain();
+	double Gain = m_DataAcquisition.getGain();
 	// Get Bandwidth
 	double Bandwidth = m_DataAcquisition.getBandwidth();
 	// Get Resolution
@@ -803,7 +796,7 @@ void Device::DataAcquisition_thread_body(){
 	// Get impedance
 	std::int32_t Impedance = m_DataAcquisition.getImpedance();
 	// Get DMABufferSize
-	double DMABufferSize = m_DataAcquisition.getDMABufferSize();
+	std::int32_t DMABufferSize = m_DataAcquisition.getDMABufferSize();
 	// Get DMANumChannels
 	std::int32_t DMANumChannels = m_DataAcquisition.getDMANumChannels();
 	// Get DMAFrametype
@@ -814,17 +807,8 @@ void Device::DataAcquisition_thread_body(){
 	std::int32_t DMAEnable = m_DataAcquisition.getDMAEnable();
 	// Get SamplingRate
 	double SamplingRate = m_DataAcquisition.getSamplingRate();
-	// Get ChannelList
-	std::vector<std::int32_t> ChannelList = m_DataAcquisition.getChannelList();
 
-	for(int i = 0; i < ChannelList.size(); i++) {
-		std::cout << "\tChannelList[" << i << "] = " << ChannelList[i] << std::endl;
-	}
-
-	for(int i = 0; i < Gain.size(); i++) {
-		std::cout << "\tGain[" << i << "] = " << Gain[i] <<std::endl;
-	}
-
+	std::cout<<"\tGain = "<< Gain<<std::endl;
 	std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 	std::cout<<"\tResolution = "<<Resolution<<std::endl;
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;

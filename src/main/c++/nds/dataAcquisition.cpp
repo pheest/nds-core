@@ -34,7 +34,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									stateChange_t stopFunction,
 									stateChange_t recoverFunction,
 									allowChange_t allowStateChangeFunction,
-									writerVectorDouble_t  PV_Gain_Writer,
+									writerDouble_t  PV_Gain_Writer,
 									writerDouble_t PV_Offset_Writer,
 									writerDouble_t PV_Bandwidth_Writer,
 									writerDouble_t PV_Resolution_Writer,
@@ -43,8 +43,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_SignalRef_Writer,
 									writerInt32_t PV_Ground_Writer,
 									writerInt32_t PV_DMAEnable_Writer,
-									writerDouble_t PV_SamplingRate_Writer,
-									writerVectorInt32_t PV_ChannelList_Writer):
+									writerDouble_t PV_SamplingRate_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -62,8 +61,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_SignalRef_Writer,
 																	 		 PV_Ground_Writer,
 																			 PV_DMAEnable_Writer,
-																			 PV_SamplingRate_Writer,
-																			 PV_ChannelList_Writer)))
+																			 PV_SamplingRate_Writer)))
 {
 }
 
@@ -93,7 +91,7 @@ void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
-std::vector<double> DataAcquisition<T>::getGain()
+size_t DataAcquisition<T>::getGain()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGain();
 }
@@ -196,13 +194,7 @@ size_t DataAcquisition<T>::getSamplingRate()
 }
 
 template <typename T>
-std::vector<std::int32_t> DataAcquisition<T>::getChannelList()
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getChannelList();
-}
-
-template <typename T>
-void DataAcquisition<T>::setGain(const timespec& timestamp, const std::vector<double>& value)
+void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);
 }
@@ -256,7 +248,7 @@ void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, 
 }
 
 template <typename T>
-void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const double& value)
+void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMABufferSize(timestamp, value);
 }
@@ -289,12 +281,6 @@ template <typename T>
 void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSamplingRate(timestamp, value);
-}
-
-template <typename T>
-void DataAcquisition<T>::setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value)
-{
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setChannelList(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;

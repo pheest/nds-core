@@ -37,7 +37,7 @@ public:
             stateChange_t stopFunction,
             stateChange_t recoverFunction,
             allowChange_t allowStateChangeFunction,
-			writerVectorDouble_t PV_Gain_Writer,
+			writerDouble_t PV_Gain_Writer,
     		writerDouble_t PV_Offset_Writer,
     		writerDouble_t PV_Bandwidth_Writer,
     		writerDouble_t PV_Resolution_Writer,
@@ -46,8 +46,7 @@ public:
     		writerInt32_t PV_SignalRefType_Writer,
     		writerInt32_t PV_Ground_Writer,
 			writerInt32_t PV_DMAEnable_Writer,
-			writerDouble_t PV_SamplingRate_Writer,
-			writerVectorInt32_t PV_ChannelList_Writer
+			writerDouble_t PV_SamplingRate_Writer
 			);
 
     /**
@@ -66,7 +65,7 @@ public:
 
 
     size_t getMaxElements();
-    std::vector<double> getGain();
+    size_t getGain();
     size_t getOffset();
     size_t getBandwidth();
     size_t getResolution();
@@ -81,9 +80,8 @@ public:
     size_t getDMAFrameType();
     size_t getDMASampleSize();
     size_t getSamplingRate();
-    std::vector<std::int32_t> getChannelList();
 
-    void setGain(const timespec& timestamp, const std::vector<double>& value);
+    void setGain(const timespec& timestamp, const double& value);
     void setOffset(const timespec& timestamp, const double& value);
     void setBandwidth(const timespec& timestamp, const double& value);
     void setResolution(const timespec& timestamp, const double& value);
@@ -92,13 +90,12 @@ public:
     void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
     void setGround(const timespec& timestamp, const std::int32_t& value);
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
-    void setDMABufferSize(const timespec& timestamp, const double& value);
+    void setDMABufferSize(const timespec& timestamp, const std::int32_t& value);
     void setDMAEnable(const timespec& timestamp, const std::int32_t& value);
     void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
     void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
     void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
     void setSamplingRate(const timespec& timestamp, const double& value);
-    void setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value);
 
 
     /**
@@ -150,13 +147,10 @@ protected:
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::vector<std::int32_t> > > m_ChannelList_PV;
-    std::shared_ptr<PVVariableInImpl<std::vector<std::int32_t> > > m_ChannelList_RBVPV;
-
     std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
-    std::shared_ptr<PVDelegateOutImpl<std::vector<double> > > m_Gain_PV;
-    std::shared_ptr<PVVariableInImpl<std::vector<double> > > m_Gain_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Gain_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Gain_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Bandwidth_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
@@ -173,7 +167,7 @@ protected:
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 
-    std::shared_ptr<PVVariableInImpl<double> > m_DMABufferSize_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMABufferSize_PV;
 	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_DMAEnable_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAEnable_RBVPV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMANumChannels_PV;

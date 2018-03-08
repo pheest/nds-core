@@ -82,7 +82,7 @@ public:
                     stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                     stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
                     allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-					writerVectorDouble_t PV_Gain_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Gain_Writer,    		///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Offset_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Bandwidth_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -91,8 +91,7 @@ public:
 					writerInt32_t PV_SignalRefType_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_SamplingRate_Writer,  ///< Delegate function to interact to the low level driver API
-					writerVectorInt32_t PV_ChannelList_Writer ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_SamplingRate_Writer   ///< Delegate function to interact to the low level driver API
     );
     /**
      * @ingroup timing
@@ -120,7 +119,7 @@ public:
      *
      * @return the Gain value
      */
-    std::vector<double> getGain();
+    size_t getGain();
 
     /**
      * @brief Retrieve the Offset
@@ -230,18 +229,10 @@ public:
     */
     size_t getSamplingRate();
     /**
-     * @brief Retrieve the ChannelList
-     *
-     * @return the ChannelList value
-     */
-    std::vector<std::int32_t> getChannelList();
-
-
-    /**
      * @brief Sets the value of the m_Gain_RBV.
      *
      */
-    void setGain(const timespec& timestamp, const std::vector<double>& value);
+    void setGain(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Offset_RBV.
      *
@@ -287,7 +278,7 @@ public:
      * @brief Sets the value of the m_DMABufferSize_PV.
      *
      */
-    void setDMABufferSize(const timespec& timestamp, const double& value);
+    void setDMABufferSize(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_DMAEnable_PV.
      *
@@ -313,12 +304,6 @@ public:
      *
      */
     void setSamplingRate(const timespec& timestamp, const double& value);
-    /**
-     * @brief Sets the value of the m_ChannelList_RBV.
-     *
-     */
-    void setChannelList(const timespec& timestamp, const std::vector<std::int32_t>& value);
-
 };
 
 }

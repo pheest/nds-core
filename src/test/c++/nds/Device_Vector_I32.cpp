@@ -59,8 +59,7 @@ DeviceVectorI32::DeviceVectorI32(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceVectorI32::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2),
-			std::bind(&DeviceVectorI32::PV_DataAcquisition_ChannelList_Writer,this,std::placeholders::_1,std::placeholders::_2)
+			std::bind(&DeviceVectorI32::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
 ));
 
 
@@ -190,8 +189,8 @@ bool DeviceVectorI32::allow_DataAcquisition_Change(const nds::state_t, const nds
 /*
 * DataAcquisition setters
 */
-void DeviceVectorI32::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const std::vector<double>& value){
-	std::vector<double> HW_value;
+void DeviceVectorI32::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
+	double HW_value;
 	//Value has the Gain to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
@@ -274,12 +273,6 @@ void DeviceVectorI32::PV_DataAcquisition_SamplingRate_Writer(const timespec& tim
 	m_DataAcquisition.setSamplingRate(timestamp,HW_value);
 }
 
-void DeviceVectorI32::PV_DataAcquisition_ChannelList_Writer(const timespec& timestamp,
-	const std::vector<std::int32_t>& value) {
-	std::vector<std::int32_t> HW_value;
-	HW_value=value;
-	m_DataAcquisition.setChannelList(timestamp,HW_value);
-}
 
 /*
 * Body of function to acquire data
@@ -293,7 +286,7 @@ void DeviceVectorI32::DataAcquisition_thread_body(){
 
 		std::int32_t counter(0);
 		// Get Gain
-		std::vector<double> Gain = m_DataAcquisition.getGain();
+		double Gain = m_DataAcquisition.getGain();
 		// Get Bandwidth
 		double Bandwidth = m_DataAcquisition.getBandwidth();
 		// Get Resolution
@@ -309,7 +302,7 @@ void DeviceVectorI32::DataAcquisition_thread_body(){
 		// Get impedance
 		std::int32_t Impedance = m_DataAcquisition.getImpedance();
 		// Get DMABufferSize
-		double DMABufferSize = m_DataAcquisition.getDMABufferSize();
+		std::int32_t DMABufferSize = m_DataAcquisition.getDMABufferSize();
 		// Get DMANumChannels
 		std::int32_t DMANumChannels = m_DataAcquisition.getDMANumChannels();
 		// Get DMAFrametype
@@ -320,17 +313,8 @@ void DeviceVectorI32::DataAcquisition_thread_body(){
 		std::int32_t DMAEnable = m_DataAcquisition.getDMAEnable();
 		// Get SamplingRate
 		double SamplingRate = m_DataAcquisition.getSamplingRate();
-		// Get ChannelList
-		std::vector<std::int32_t> ChannelList = m_DataAcquisition.getChannelList();
 
-		for(int i = 0; i < ChannelList.size(); i++) {
-			std::cout << "\tChannelList[" << i << "] = " << ChannelList[i] << std::endl;
-		}
-
-		for(int i = 0; i < Gain.size(); i++) {
-			std::cout << "\tGain[" << i << "] = " << Gain[i] <<std::endl;
-		}
-
+		std::cout<<"\tGain = "<< Gain<<std::endl;
 		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 		std::cout<<"\tResolution = "<<Resolution<<std::endl;
 		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
