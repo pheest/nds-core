@@ -270,7 +270,7 @@ private:
 	 /**
 	  * @brief DigitalIO node
 	  */
-	 nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO;
+	 nds::DigitalIO<std::vector<std::int8_t> > m_DigitalIO;
 
 	 /**
 	  * Methods to control DigitalIO state machine

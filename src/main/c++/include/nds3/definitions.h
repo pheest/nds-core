@@ -56,10 +56,11 @@ enum class dataType_t
     dataInt32 = 1,    ///< Signed integer, 32 bits
     dataFloat64,      ///< Float, 64 bits
 	dataBoolArray,	  ///< Array of Bool
-	dataInt8Array,    ///< Array of signed 8 bit integers
     dataUint8Array,   ///< Array of unsigned 8 bit integers
 	dataUint16Array,   ///< Array of unsigned 8 bit integers
 	dataUint32Array,   ///< Array of unsigned 8 bit integers
+	dataInt8Array,    ///< Array of signed 8 bit integers
+	dataInt16Array,   ///< Array of signed 16 bit integers
 	dataInt32Array,   ///< Array of signed 32 bit integers
     dataFloat64Array, ///< Array of 64 bit floats
     dataString,       ///< String

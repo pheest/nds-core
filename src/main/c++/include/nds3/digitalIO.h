@@ -43,13 +43,9 @@ namespace nds
  *            - std::int32_t
  *            - std::double
  *            - std::vector<bool>
- *            - std::vector<std::uint8_t>
- *            - std::vector<std::uint16_t>
- *            - std::vector<std::uint32_t>
  *            - std::vector<std::int8_t>
+ *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
- *            - std::vector<double>
- *            - std::string
  *
  */
 template <typename T>
@@ -59,14 +55,14 @@ public:
     /**
      * @brief Initializes an empty data acquisition node.
      *
-     * You must assign a valid DataAcquisition node before calling initialize().
+     * You must assign a valid DigitalIO node before calling initialize().
      */
     DigitalIO();
 
     /**
      * @brief Copies a data reference from another object.
      *
-     * @param right a data acquisition holder from which the reference to
+     * @param right a digitalIO holder from which the reference to
      *        the acquisition object implementation is copied
      */
     DigitalIO(const DigitalIO<T>& right);
@@ -94,15 +90,14 @@ public:
 
     /**
      * @ingroup timing
-     * @brief Set the function that retrieves the exact start time when the data acquisition starts.
+     * @brief Set the function that retrieves the exact start time when the digitalIO node starts.
      *
      * @param timestampDelegate the function that returns the exact starting time of the
-     *                           data acquisition
+     *                           digitalIO node
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @ingroup datareadwrite
      * @brief Push acquired data to the control system.
      *
      * Usually your device implementation will call this function from the

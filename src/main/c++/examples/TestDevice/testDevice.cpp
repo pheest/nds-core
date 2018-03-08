@@ -152,7 +152,7 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
     /**
      * Add a Digital I/O node:
      */
-    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<uint8_t> >(
+    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<int8_t> >(
     		"DigitalIONode",
 			128,
 			std::bind(&testDevice::switchOn_DigitalIO, this),

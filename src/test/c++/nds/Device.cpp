@@ -163,7 +163,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	     * Add a Digital I/O node:
 	     */
-	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t> >(
+	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t> >(
 	    		"DigitalIONode",
 				128,
 				std::bind(&Device::switchOn_DigitalIO, this),
@@ -1229,22 +1229,25 @@ void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std
 void Device::DigitalIO_thread_body(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint8_t> outputData(m_DigitalIO.getMaxElements(),0);
+	std::vector<std::int8_t> outputData(m_DigitalIO.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	std::int8_t value(0);
 
-	// Get RefFrequency
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO.getDataOutMask();
+	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO.getVoltLevelHigh();
-	// Get DutyCycle
+	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO.getVoltLevelLow();
-	// Get Gain
+	// Get ChannelDir
 	std::vector<bool> ChannelDir = m_DigitalIO.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
+	//std::cout<<"\DataOutMask = "<<DataOutMask<<std::endl;
 	//std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
 
 

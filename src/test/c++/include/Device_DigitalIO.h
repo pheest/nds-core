@@ -122,139 +122,139 @@ private:
 	volatile bool m_bStop_DigitalIO_Bool;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  DIGITAL I/O Uint8_t
+	//  DIGITAL I/O int8_t
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * @brief DigitalIO node
 	 */
-	nds::DigitalIO<std::vector<std::uint8_t> > m_DigitalIO_U8;
+	nds::DigitalIO<std::vector<std::int8_t> > m_DigitalIO_I8;
 
 	/**
 	 * Methods to control DigitalIO state machine
 	 */
-	void switchOn_DigitalIO_U8();  ///< Called to switch on the DigitalIO node.
-	void switchOff_DigitalIO_U8(); ///< Called to switch off the DigitalIO node.
-	void start_DigitalIO_U8();     ///< Called to start the DigitalIO node.
-	void stop_DigitalIO_U8();      ///< Called to stop the DigitalIO node.
-	void recover_DigitalIO_U8();   ///< Called to recover the DigitalIO node from a failure.
+	void switchOn_DigitalIO_I8();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_I8(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_I8();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_I8();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_I8();   ///< Called to recover the DigitalIO node from a failure.
 
-	bool allow_DigitalIO_Change_U8(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DigitalIO_Change_I8(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	/**
 	 * DigitalIO setters
 	 */
-	void PV_DigitalIO_dataOutMask_Writer_U8(const timespec& timestamp, const std::vector<bool>& value);
-	void PV_DigitalIO_voltLevelHigh_Writer_U8(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_voltLevelLow_Writer_U8(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_ChannelDir_Writer_U8(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_dataOutMask_Writer_I8(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_I8(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_I8(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_I8(const timespec& timestamp, const std::vector<bool>& value);
 
 	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
 	 */
-	void DigitalIO_thread_body_U8();
+	void DigitalIO_thread_body_I8();
 
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_U8;
+	std::thread m_DigitalIO_Thread_I8;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
 	 *        when true.
 	 */
-	volatile bool m_bStop_DigitalIO_U8;
+	volatile bool m_bStop_DigitalIO_I8;
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  DIGITAL I/O Uint16_t
+	//  DIGITAL I/O int16_t
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @brief DigitalIO node
 	 */
 
-	nds::DigitalIO<std::vector<std::uint16_t> > m_DigitalIO_U16;
+	nds::DigitalIO<std::vector<std::int16_t> > m_DigitalIO_I16;
 
 	/**
 	 * Methods to control DigitalIO state machine
 	 */
-	void switchOn_DigitalIO_U16();  ///< Called to switch on the DigitalIO node.
-	void switchOff_DigitalIO_U16(); ///< Called to switch off the DigitalIO node.
-	void start_DigitalIO_U16();     ///< Called to start the DigitalIO node.
-	void stop_DigitalIO_U16();      ///< Called to stop the DigitalIO node.
-	void recover_DigitalIO_U16();   ///< Called to recover the DigitalIO node from a failure.
+	void switchOn_DigitalIO_I16();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_I16(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_I16();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_I16();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_I16();   ///< Called to recover the DigitalIO node from a failure.
 
-	bool allow_DigitalIO_Change_U16(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DigitalIO_Change_I16(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	/**
 	 * DigitalIO setters
 	 */
-	void PV_DigitalIO_dataOutMask_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
-	void PV_DigitalIO_voltLevelHigh_Writer_U16(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_voltLevelLow_Writer_U16(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_ChannelDir_Writer_U16(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_dataOutMask_Writer_I16(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_I16(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_I16(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_I16(const timespec& timestamp, const std::vector<bool>& value);
 	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
 	 */
-	void DigitalIO_thread_body_U16();
+	void DigitalIO_thread_body_I16();
 
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_U16;
+	std::thread m_DigitalIO_Thread_I16;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
 	 *        when true.
 	 */
-	volatile bool m_bStop_DigitalIO_U16;
+	volatile bool m_bStop_DigitalIO_I16;
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  DIGITAL I/O Uint32_t
+	//  DIGITAL I/O int32_t
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * @brief DigitalIO node
 	 */
-	nds::DigitalIO<std::vector<std::uint32_t> > m_DigitalIO_U32;
+	nds::DigitalIO<std::vector<std::int32_t> > m_DigitalIO_I32;
 
 	/**
 	 * Methods to control DigitalIO state machine
 	 */
-	void switchOn_DigitalIO_U32();  ///< Called to switch on the DigitalIO node.
-	void switchOff_DigitalIO_U32(); ///< Called to switch off the DigitalIO node.
-	void start_DigitalIO_U32();     ///< Called to start the DigitalIO node.
-	void stop_DigitalIO_U32();      ///< Called to stop the DigitalIO node.
-	void recover_DigitalIO_U32();   ///< Called to recover the DigitalIO node from a failure.
+	void switchOn_DigitalIO_I32();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_I32(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_I32();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_I32();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_I32();   ///< Called to recover the DigitalIO node from a failure.
 
-	bool allow_DigitalIO_Change_U32(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DigitalIO_Change_I32(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	/**
 	 * DigitalIO setters
 	 */
-	void PV_DigitalIO_dataOutMask_Writer_U32(const timespec& timestamp, const std::vector<bool>& value);
-	void PV_DigitalIO_voltLevelHigh_Writer_U32(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_voltLevelLow_Writer_U32(const timespec& timestamp, const double& value);
-	void PV_DigitalIO_ChannelDir_Writer_U32(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_dataOutMask_Writer_I32(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_I32(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_I32(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_I32(const timespec& timestamp, const std::vector<bool>& value);
 	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
 	 */
-	void DigitalIO_thread_body_U32();
+	void DigitalIO_thread_body_I32();
 
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_U32;
+	std::thread m_DigitalIO_Thread_I32;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
 	 *        when true.
 	 */
-	volatile bool m_bStop_DigitalIO_U32;
+	volatile bool m_bStop_DigitalIO_I32;
 
 };
 

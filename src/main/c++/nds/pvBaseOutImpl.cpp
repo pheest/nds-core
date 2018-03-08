@@ -55,15 +55,6 @@ void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<bool>* /* pValu
     throw;
 }
 
-void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
-{
-    // TODO
-    // Epics calls this also for unsigned-int and strings.
-    // If we arrive here maybe we really wanted to call the unsigned int function.
-    // This is as ugly as it can get: consider modifying this
-    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
-}
-
 void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue) const
 {
     // TODO
@@ -84,6 +75,20 @@ void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint16_t>* pValu
 void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint32_t>* pValue) const
 {
 	throw;
+}
+
+void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const
+{
+    // TODO
+    // Epics calls this also for unsigned-int and strings.
+    // If we arrive here maybe we really wanted to call the unsigned int function.
+    // This is as ugly as it can get: consider modifying this
+    read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
+}
+
+void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<std::int16_t>* /* pValue */) const
+{
+    throw;
 }
 
 void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* pValue */) const
@@ -155,6 +160,10 @@ void PVBaseOutImpl::write(const timespec& pTimestamp, const std::vector<std::int
     write(pTimestamp, (const std::vector<std::uint8_t>&) value);
 }
 
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int16_t>& /* value */)
+{
+    throw;
+}
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int32_t>& /* value */)
 {
