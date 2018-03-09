@@ -505,6 +505,26 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_FFT.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    m_FFT.setLogLevel(nds::logLevel_t::debug);
 
+	    /**
+	      * Add a FTE node:
+	      */
+	    m_FTE = rootNode.addChild(nds::FTE<std::string>(
+	     		"FTENode",
+	 			std::bind(&Device::switchOn_Streaming, this),
+	 			std::bind(&Device::switchOff_Streaming, this),
+	 			std::bind(&Device::start_Streaming, this),
+	 			std::bind(&Device::stop_Streaming, this),
+	 			std::bind(&Device::recover_Streaming, this),
+	 			std::bind(&Device::allow_Streaming_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&Device::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
+	    ));
+
+	    m_FTE.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_FTE.setLogLevel(nds::logLevel_t::debug);
+
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
@@ -608,6 +628,9 @@ void Device::switchOn_Device(){
 		m_FirmwareSup.setDeviceType(getCurrentTime(),"Firmware test device type");
 		// Call API HW to retrieve FirmwarePath
 		m_FirmwareSup.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
+
+		// Call API HW to retrieve Maximum -> (ex: Maximum FTE that can be scheduled 20)
+		m_FTE.setMaximum(getCurrentTime(),20);
 
 }
 void Device::switchOff_Device(){
@@ -2116,4 +2139,172 @@ void Device::PV_FFT_SmoothFactor_Writer(const timespec& timestamp, const std::in
 void Device::FFT_thread_body(){
 	//TODO
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//  FTE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Methods to control FTE state machine
+*/
+// Called when the FTE node has to be switched on.
+void Device::switchOn_FTE(){
+
+}
+
+// Called when the FTE node has to be switched off.
+void Device::switchOff_FTE(){
+
+}
+
+// Called when the FTE node has to start working. We start the FTE thread.
+void Device::start_FTE(){
+
+}
+
+// Stop the FTE node thread
+void Device::stop_FTE(){
+
+}
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+void Device::recover_FTE(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+bool Device::allow_FTE_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* FTE setters
+*/
+void Device::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& value){
+
+	std::int32_t FTESetStatus;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value==1){//Value==1 simulates on FTE set.
+
+		//Retrieve the data from the PVs that have been previously configured
+		std::int32_t terminalSet = m_FTE.getTerminalSet();
+		std::int32_t modeSet = m_FTE.getModeSet();
+		timespec startTimeSet = m_FTE.getStartTimeSet();
+		timespec stopTimeSet = m_FTE.getStopTimeSet();
+		std::int32_t levelSet = m_FTE.getLevelSet();
+		std::int32_t periodNsecSet = m_FTE.getPeriodNsecSet();
+		std::int32_t dutyCycleSet = m_FTE.getDutyCycleSet();
+
+		//Just check if there some data in previous PVs
+		if(terminalSet>0 && modeSet>0 && levelSet>0 && periodNsecSet>0 && dutyCycleSet>0 && startTimeSet.tv_sec!=0 && stopTimeSet.tv_sec!=0){
+			FTESetStatus=1;
+		}
+		else{
+			FTESetStatus=-1;
+		}
+
+		//Fill the Status and Code PVs with some information
+		if(FTESetStatus!=0){
+			m_FTE.setSet(timestamp,1);//Idea,remove this and let only Status and Code PVs
+			m_FTE.setSetStatus(timestamp,"OK");
+			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
+		}else{
+			m_FTE.setSet(timestamp,0);//Idea,remove this and let only Status and Code PVs
+			m_FTE.setSetStatus(timestamp,"WRONG");
+			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
+		}
+	}else{
+		m_FTE.setSet(timestamp,0);
+		m_FTE.setSetStatus(timestamp,"OK");
+		m_FTE.setSetCode(timestamp,(std::int32_t)0);
+	}
+
+
+
+}
+void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FTESuppressStatus;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value==1){
+
+		//Retrieve the data from the PVs that have been previously configured
+		std::int32_t terminalSuppress = m_FTE.getTerminalSuppress();
+		std::int32_t modeSuppress = m_FTE.getModeSuppress();
+		timespec startTimeSuppress = m_FTE.getStartTimeSuppress();
+		std::int32_t allSuppress = m_FTE.getAllSuppress();
+
+		//Just check if there some data in previous PVs
+		if(terminalSuppress>0 && modeSuppress>0 && allSuppress>0){
+			FTESuppressStatus=1;
+		}
+		else{
+			FTESuppressStatus=-1;
+		}
+
+		//Fill the Status and Code PVs with some information
+		if(FTESuppressStatus!=0){
+			m_FTE.setSuppress(timestamp,1);//Idea,remove this and let only Status and Code PVs
+			m_FTE.setSuppressStatus(timestamp,"OK");
+			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
+		}else{
+			m_FTE.setSuppress(timestamp,0); //Idea,remove this and let only Status and Code PVs
+			m_FTE.setSuppressStatus(timestamp,"WRONG");
+			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
+		}
+	}else{
+		m_FTE.setSuppress(timestamp,0);
+		m_FTE.setSuppressStatus(timestamp,"OK");
+		m_FTE.setSuppressCode(timestamp,(std::int32_t)0);
+	}
+
+}
+void Device::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FTEChgPeriodStatus;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value==1){
+
+		//Retrieve the data from the PVs that have been previously configured
+		std::int32_t terminalChgPeriod = m_FTE.getTerminalChgPeriod();
+		std::int32_t periodChgPeriod = m_FTE.getPeriodChgPeriod();
+
+		//Just check if there some data in previous PVs
+		if(terminalChgPeriod>0 && periodChgPeriod>0){
+			FTEChgPeriodStatus=1;
+		}
+		else{
+			FTEChgPeriodStatus=-1;
+		}
+		//Fill the Status and Code PVs with some information
+		if(FTEChgPeriodStatus!=0){
+			m_FTE.setChgPeriod(timestamp,1); //Idea,remove this and let only Status and Code PVs
+			m_FTE.setChgPeriodStatus(timestamp,"OK");
+			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
+		}else{
+			m_FTE.setChgPeriod(timestamp,0); //Idea,remove this and let only Status and Code PVs
+			m_FTE.setChgPeriodStatus(timestamp,"WRONG");
+			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
+		}
+	}else{
+		m_FTE.setChgPeriod(timestamp,0);
+		m_FTE.setChgPeriodStatus(timestamp,"OK");
+		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)0);
+	}
+}
+void Device::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t FTEPendingValue;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value>0){ //If some terminal has been chosen
+		FTEPendingValue=1; //HWValue of pending FTEs for the terminal in value
+	}
+	else{
+		FTEPendingValue=-1;
+	}
+	m_FTE.setPendingValue(timestamp,FTEPendingValue);
+}
+
 

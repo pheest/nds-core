@@ -32,9 +32,7 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 		writerInt32_t PV_Set_Writer,
 		writerInt32_t PV_Suppress_Writer,
 		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer,
-		writerInt32_t PV_Maximum_Writer,
-		readerTime_t PV_Time_Reader):
+		writerInt32_t PV_PendingValue_Writer):
 		NodeImpl(name, nodeType_t::dataSourceChannel),
 		m_OnStartDelegate(startFunction),
 		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -43,37 +41,37 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Set FTE PVs
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_TerminalSet_PV.reset(new PVVariableInImpl<std::int32_t>("TerminalSet"));
+	m_TerminalSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalSet"));
 	m_TerminalSet_PV->setDescription("Terminal to set FTE");
 	m_TerminalSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TerminalSet_PV);
 
-	m_ModeSet_PV.reset(new PVVariableInImpl<std::int32_t>("ModeSet"));
+	m_ModeSet_PV.reset(new PVVariableOutImpl<std::int32_t>("ModeSet"));
 	m_ModeSet_PV->setDescription("Mode (Single, Pulse, Clk, InmLVL)");
 	m_ModeSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_ModeSet_PV);
 
-	m_StartTimeSet_PV.reset(new PVVariableInImpl<timespec>("StartTimeSet"));
+	m_StartTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StartTimeSet"));
 	m_StartTimeSet_PV->setDescription("Start Time of FTE");
 	m_StartTimeSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_StartTimeSet_PV);
 
-	m_StopTimeSet_PV.reset(new PVVariableInImpl<timespec>("StopTimeSet"));
+	m_StopTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StopTimeSet"));
 	m_StopTimeSet_PV->setDescription("Stop Time of FTE");
 	m_StopTimeSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_StopTimeSet_PV);
 
-	m_LevelSet_PV.reset(new PVVariableInImpl<std::int32_t>("LevelSet"));
+	m_LevelSet_PV.reset(new PVVariableOutImpl<std::int32_t>("LevelSet"));
 	m_LevelSet_PV->setDescription("Signal level of FTE");
 	m_LevelSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_LevelSet_PV);
 
-	m_PeriodNsecSet_PV.reset(new PVVariableInImpl<std::int32_t>("PeriodNsecSet"));
+	m_PeriodNsecSet_PV.reset(new PVVariableOutImpl<std::int32_t>("PeriodNsecSet"));
 	m_PeriodNsecSet_PV->setDescription("Period in Nanoseconds");
 	m_PeriodNsecSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_PeriodNsecSet_PV);
 
-	m_DutyCycleSet_PV.reset(new PVVariableInImpl<std::int32_t>("DutyCycleSet"));
+	m_DutyCycleSet_PV.reset(new PVVariableOutImpl<std::int32_t>("DutyCycleSet"));
 	m_DutyCycleSet_PV->setDescription("Duty Cycle percentage");
 	m_DutyCycleSet_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DutyCycleSet_PV);
@@ -101,22 +99,22 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Suppress FTE PVs
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_TerminalSuppress_PV.reset(new PVVariableInImpl<std::int32_t>("TerminalSuppress"));
+	m_TerminalSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalSuppress"));
 	m_TerminalSuppress_PV->setDescription("Terminal to suppress FTE");
 	m_TerminalSuppress_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TerminalSuppress_PV);
 
-	m_ModeSuppress_PV.reset(new PVVariableInImpl<std::int32_t>("ModeSuppress"));
+	m_ModeSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("ModeSuppress"));
 	m_ModeSuppress_PV->setDescription("Mode of suppress FTE/clock");
 	m_ModeSuppress_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_ModeSuppress_PV);
 
-	m_AllSuppress_PV.reset(new PVVariableInImpl<std::int32_t>("AllSuppress"));
+	m_AllSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("AllSuppress"));
 	m_AllSuppress_PV->setDescription("Suppress one or Suppress all FTEs");
 	m_AllSuppress_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_AllSuppress_PV);
 
-	m_StartTimeSuppress_PV.reset(new PVVariableInImpl<timespec>("StartTimeSuppress"));
+	m_StartTimeSuppress_PV.reset(new PVVariableOutImpl<timespec>("StartTimeSuppress"));
 	m_StartTimeSuppress_PV->setDescription("Start Time on FTE suppression");
 	m_StartTimeSuppress_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_StartTimeSuppress_PV);
@@ -144,12 +142,12 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Change Period FTE PVs
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_TerminalChgPeriod_PV.reset(new PVVariableInImpl<std::int32_t>("TerminalChgPeriod"));
+	m_TerminalChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalChgPeriod"));
 	m_TerminalChgPeriod_PV->setDescription("Terminal to change the period of FTE");
 	m_TerminalChgPeriod_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TerminalChgPeriod_PV);
 
-	m_PeriodChgPeriod_PV.reset(new PVVariableInImpl<std::int32_t>("PeriodChgPeriod"));
+	m_PeriodChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("PeriodChgPeriod"));
 	m_PeriodChgPeriod_PV->setDescription("Period in nanoseconds to change on FTE");
 	m_PeriodChgPeriod_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_PeriodChgPeriod_PV);
@@ -190,15 +188,10 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Maximum FTEs PV
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_Maximum_PV.reset(new PVDelegateOutImpl<std::int32_t>("Maximum",PV_Maximum_Writer));
+	m_Maximum_PV.reset(new PVVariableInImpl<std::int32_t>("Maximum"));
 	m_Maximum_PV->setDescription("Maximum FTEs");
 	m_Maximum_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Maximum_PV);
-
-	m_Maximum_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Maximum_RBV"));
-	m_Maximum_RBVPV->setDescription("Maximum FTEs ReadBack");
-	m_Maximum_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_Maximum_RBVPV);
 
 	// Add state machine
 	m_StateMachine.reset(new StateMachineImpl(true,
@@ -477,56 +470,6 @@ std::int32_t FTEImpl<T>::getMaximum()
 ///////////////////////////////////////////////////////////////
 // Set FTE setters
 ///////////////////////////////////////////////////////////////
-template<typename T>
-void FTEImpl<T>::setTerminalSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_TerminalSet_PV->setValue(timestamp, value);
-	m_TerminalSet_PV->push(timestamp, value);
-}
-
-
-template<typename T>
-void FTEImpl<T>::setModeSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_ModeSet_PV->setValue(timestamp, value);
-	m_ModeSet_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setStartTimeSet(const timespec& timestamp, const timespec& value)
-{
-	m_StartTimeSet_PV->setValue(timestamp, value);
-	m_StartTimeSet_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setStopTimeSet(const timespec& timestamp, const timespec& value)
-{
-	m_StopTimeSet_PV->setValue(timestamp, value);
-	m_StopTimeSet_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setLevelSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_LevelSet_PV->setValue(timestamp, value);
-	m_LevelSet_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setPeriodNsecSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_PeriodNsecSet_PV->setValue(timestamp, value);
-	m_PeriodNsecSet_PV->push(timestamp, value);
-}
-
-
-template<typename T>
-void FTEImpl<T>::setDutyCycleSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_DutyCycleSet_PV->setValue(timestamp, value);
-	m_DutyCycleSet_PV->push(timestamp, value);
-}
 
 template<typename T>
 void FTEImpl<T>::setSet(const timespec& timestamp, const std::int32_t& value)
@@ -553,34 +496,6 @@ void FTEImpl<T>::setSetCode(const timespec& timestamp, const std::int32_t& value
 // Suppress FTE setters
 ///////////////////////////////////////////////////////////////
 template<typename T>
-void FTEImpl<T>::setTerminalSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-	m_TerminalSuppress_PV->setValue(timestamp, value);
-	m_TerminalSuppress_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setModeSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-	m_ModeSuppress_PV->setValue(timestamp, value);
-	m_ModeSuppress_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setAllSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-	m_AllSuppress_PV->setValue(timestamp, value);
-	m_AllSuppress_PV->push(timestamp, value);
-}
-
-template<typename T>
-void FTEImpl<T>::setStartTimeSuppress(const timespec& timestamp, const timespec& value)
-{
-	m_StartTimeSuppress_PV->setValue(timestamp, value);
-	m_StartTimeSuppress_PV->push(timestamp, value);
-}
-
-template<typename T>
 void FTEImpl<T>::setSuppress(const timespec& timestamp, const std::int32_t& value)
 {
 	m_Suppress_RBVPV->setValue(timestamp, value);
@@ -604,21 +519,6 @@ void FTEImpl<T>::setSuppressCode(const timespec& timestamp, const std::int32_t& 
 ///////////////////////////////////////////////////////////////
 // ChgPeriod FTE setters
 ///////////////////////////////////////////////////////////////
-template<typename T>
-void FTEImpl<T>::setTerminalChgPeriod(const timespec& timestamp, const std::int32_t& value)
-{
-	m_TerminalChgPeriod_PV->setValue(timestamp, value);
-	m_TerminalChgPeriod_PV->push(timestamp, value);
-}
-
-
-template<typename T>
-void FTEImpl<T>::setPeriodChgPeriod(const timespec& timestamp, const std::int32_t& value)
-{
-	m_PeriodChgPeriod_PV->setValue(timestamp, value);
-	m_PeriodChgPeriod_PV->push(timestamp, value);
-}
-
 template<typename T>
 void FTEImpl<T>::setChgPeriod(const timespec& timestamp, const std::int32_t& value)
 {
@@ -656,10 +556,10 @@ void FTEImpl<T>::setPendingValue(const timespec& timestamp, const std::int32_t& 
 template<typename T>
 void FTEImpl<T>::setMaximum(const timespec& timestamp, const std::int32_t& value)
 {
-	m_Maximum_RBVPV->setValue(timestamp, value);
-	m_Maximum_RBVPV->push(timestamp, value);
+	m_Maximum_PV->setValue(timestamp, value);
+	m_Maximum_PV->push(timestamp, value);
 }
 
 
-template class FTEImpl<timespec>;
+template class FTEImpl<std::string>;
 }

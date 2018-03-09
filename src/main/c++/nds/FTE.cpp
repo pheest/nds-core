@@ -40,9 +40,7 @@ FTE<T>::FTE(
 		writerInt32_t PV_Set_Writer,
 		writerInt32_t PV_Suppress_Writer,
 		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer,
-		writerInt32_t PV_Maximum_Writer,
-		readerTime_t PV_Time_Reader):
+		writerInt32_t PV_PendingValue_Writer):
 						Node(std::shared_ptr<FTEImpl<T> >(new FTEImpl<T>(	name,
 																switchOnFunction,
 																switchOffFunction,
@@ -53,9 +51,7 @@ FTE<T>::FTE(
 																PV_Set_Writer,
 																PV_Suppress_Writer,
 																PV_ChgPeriod_Writer,
-																PV_PendingValue_Writer,
-																PV_Maximum_Writer,
-																PV_Time_Reader)))
+																PV_PendingValue_Writer)))
 {
 }
 
@@ -255,48 +251,6 @@ std::int32_t FTE<T>::getMaximum()
 // Set FTE setters
 ///////////////////////////////////////////////////////////////
 template<typename T>
-void FTE<T>::setTerminalSet(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setTerminalSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setModeSet(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setModeSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setStartTimeSet(const timespec& timestamp, const timespec& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setStartTimeSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setStopTimeSet(const timespec& timestamp, const timespec& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setStopTimeSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setLevelSet(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setLevelSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setPeriodNsecSet(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setPeriodNsecSet(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setDutyCycleSet(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setDutyCycleSet(timestamp, value);
-}
-
-template<typename T>
 void FTE<T>::setSet(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setSet(timestamp, value);
@@ -318,30 +272,6 @@ void FTE<T>::setSetCode(const timespec& timestamp, const std::int32_t& value)
 // Suppress FTE setters
 ///////////////////////////////////////////////////////////////
 template<typename T>
-void FTE<T>::setTerminalSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setTerminalSuppress(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setModeSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setModeSuppress(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setAllSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setAllSuppress(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setStartTimeSuppress(const timespec& timestamp, const timespec& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setStartTimeSuppress(timestamp, value);
-}
-
-template<typename T>
 void FTE<T>::setSuppress(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setSuppress(timestamp, value);
@@ -362,18 +292,6 @@ void FTE<T>::setSuppressCode(const timespec& timestamp, const std::int32_t& valu
 ///////////////////////////////////////////////////////////////
 // ChgPeriod FTE setters
 ///////////////////////////////////////////////////////////////
-template<typename T>
-void FTE<T>::setTerminalChgPeriod(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setTerminalChgPeriod(timestamp, value);
-}
-
-template<typename T>
-void FTE<T>::setPeriodChgPeriod(const timespec& timestamp, const std::int32_t& value)
-{
-    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setPeriodChgPeriod(timestamp, value);
-}
-
 template<typename T>
 void FTE<T>::setChgPeriod(const timespec& timestamp, const std::int32_t& value)
 {
@@ -411,5 +329,5 @@ void FTE<T>::setMaximum(const timespec& timestamp, const std::int32_t& value)
 }
 
 
-template class FTE<timespec>;
+template class FTE<std::string>;
 }

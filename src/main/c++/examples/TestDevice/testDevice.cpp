@@ -317,6 +317,22 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::PV_imageAcquisition_ActualTemperature_Reader,this,  std::placeholders::_1, std::placeholders::_2)
     ));
 
+    /**
+      * Add a FTE node:
+      */
+    m_FTE = rootNode.addChild(nds::FTE<std::string>(
+     		"FTENode",
+ 			std::bind(&testDevice::switchOn_Streaming, this),
+ 			std::bind(&testDevice::switchOff_Streaming, this),
+ 			std::bind(&testDevice::start_Streaming, this),
+ 			std::bind(&testDevice::stop_Streaming, this),
+ 			std::bind(&testDevice::recover_Streaming, this),
+ 			std::bind(&testDevice::allow_Streaming_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+ 			std::bind(&testDevice::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
+ 			std::bind(&testDevice::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
+ 			std::bind(&testDevice::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&testDevice::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
+    ));
 
     /**
      * Test PV variables:
@@ -1442,6 +1458,49 @@ void testDevice::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestam
 
 }
 void testDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Reader(timespec* /*timestamp*/, double* /*value*/){
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//  FTE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Methods to control FTE state machine
+*/
+void testDevice::switchOn_FTE(){
+
+}
+void testDevice::switchOff_FTE(){
+
+}
+void testDevice::start_FTE(){
+
+}
+void testDevice::stop_FTE(){
+
+}
+void testDevice::recover_FTE(){
+
+}
+
+bool testDevice::allow_FTE_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* FTE setters
+*/
+void testDevice::PV_FTE_Set_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/){
+
+}
+void testDevice::PV_FTE_Suppress_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/){
+
+}
+void testDevice::PV_FTE_ChgPeriod_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/){
+
+}
+void testDevice::PV_FTE_PendingValue_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/){
 
 }
 

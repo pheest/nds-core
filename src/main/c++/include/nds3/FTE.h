@@ -59,9 +59,9 @@ public:
 			writerInt32_t PV_Set_Writer,               	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_PendingValue_Writer,   	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_Maximum_Writer,        	///< Delegate function setter/getter to interact to the Low Level Driver API
-			readerTime_t PV_Time_Reader);				///< Delegate function setter/getter to interact to the Low Level Driver API
+			writerInt32_t PV_PendingValue_Writer);   	///< Delegate function setter/getter to interact to the Low Level Driver API
+
+
 
 
     /**
@@ -257,41 +257,6 @@ public:
     // Setters of Set functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_TerminalSet_PV.
-     *
-     */
-    void setTerminalSet(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_ModeSet_PV.
-     *
-     */
-    void setModeSet(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_StartTimeSet_PV.
-     *
-     */
-    void setStartTimeSet(const timespec& timestamp, const timespec& value);
-    /**
-     * @brief Sets the value of the m_StopTimeSet_PV.
-     *
-     */
-	void setStopTimeSet(const timespec& timestamp, const timespec& value);
-    /**
-     * @brief Sets the value of the m_LevelSet_PV.
-     *
-     */
-	void setLevelSet(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_PeriodNsecSet_PV.
-     *
-     */
-	void setPeriodNsecSet(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_DutyCycleSet_PV.
-     *
-     */
-	void setDutyCycleSet(const timespec& timestamp, const std::int32_t& value);
-    /**
      * @brief Sets the value of the m_Set_RBVPV.
      *
      */
@@ -311,26 +276,6 @@ public:
     // Setters of Suppress functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_TerminalSuppress_PV.
-     *
-     */
-	void setTerminalSuppress(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_ModeSuppress_PV.
-     *
-     */
-    void setModeSuppress(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_AllSuppress_PV.
-     *
-     */
-	void setAllSuppress(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_StartTimeSuppress_PV.
-     *
-     */
-	void setStartTimeSuppress(const timespec& timestamp, const timespec& value);
-    /**
      * @brief Sets the value of the m_Suppress_RBVPV.
      *
      */
@@ -349,20 +294,6 @@ public:
     //////////////////////////////////////////////////////////////////////////////////////////
     // Setters of Change Period functionality
     //////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * @brief Sets the value of the m_TerminalChgPeriod_PV.
-     *
-     */
-	void setTerminalChgPeriod(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_PeriodChgPeriod_PV.
-     *
-     */
-    void setPeriodChgPeriod(const timespec& timestamp, const std::int32_t& value);
-    /**
-     * @brief Sets the value of the m_ChgPeriod_RBVPV.
-     *
-     */
 	void setChgPeriod(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_ChgPeriodStatus_PV.

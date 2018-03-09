@@ -806,6 +806,34 @@ private:
 		 */
 		volatile bool m_bStop_FFT;
 
+  	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  	  //  FTE SUPPORT
+  	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  	  /**
+  	   * @brief DigitalIO node
+  	   */
+  	  nds::FTE<std::string> m_FTE;
+
+  	  /**
+  	   * Methods to control DigitalIO state machine
+  	   */
+  	  void switchOn_FTE();  ///< Called to switch on the FTE node.
+  	  void switchOff_FTE(); ///< Called to switch off the FTE node.
+  	  void start_FTE();     ///< Called to start the FTE node.
+  	  void stop_FTE();      ///< Called to stop the FTE node.
+  	  void recover_FTE();   ///< Called to recover the FTE node from a failure.
+
+  	  bool allow_FTE_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+  	  /**
+  	   * FTE setters
+  	   */
+  	  void PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& value);
+  	  void PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value);
+  	  void PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value);
+  	  void PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value);
+
 };
 
 #endif // DEVICE_H_

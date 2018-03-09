@@ -37,9 +37,7 @@ public:
 			writerInt32_t PV_Set_Writer,
 			writerInt32_t PV_Suppress_Writer,
 			writerInt32_t PV_ChgPeriod_Writer,
-			writerInt32_t PV_PendingValue_Writer,
-			writerInt32_t PV_Maximum_Writer,
-			readerTime_t PV_Time_Reader);
+			writerInt32_t PV_PendingValue_Writer);
 
 
     /**
@@ -84,31 +82,19 @@ public:
 
 	std::int32_t getMaximum();
 
-    void setTerminalSet(const timespec& timestamp, const std::int32_t& value);
-    void setModeSet(const timespec& timestamp, const std::int32_t& value);
-    void setStartTimeSet(const timespec& timestamp, const timespec& value);
-	void setStopTimeSet(const timespec& timestamp, const timespec& value);
-	void setLevelSet(const timespec& timestamp, const std::int32_t& value);
-	void setPeriodNsecSet(const timespec& timestamp, const std::int32_t& value);
-	void setDutyCycleSet(const timespec& timestamp, const std::int32_t& value);
 	void setSet(const timespec& timestamp, const std::int32_t& value);
 	void setSetStatus(const timespec& timestamp, const std::string& value);
 	void setSetCode(const timespec& timestamp, const std::int32_t& value);
 
-    void setTerminalSuppress(const timespec& timestamp, const std::int32_t& value);
-    void setModeSuppress(const timespec& timestamp, const std::int32_t& value);
-	void setAllSuppress(const timespec& timestamp, const std::int32_t& value);
-	void setStartTimeSuppress(const timespec& timestamp, const timespec& value);
 	void setSuppress(const timespec& timestamp, const std::int32_t& value);
 	void setSuppressStatus(const timespec& timestamp, const std::string& value);
 	void setSuppressCode(const timespec& timestamp, const std::int32_t& value);
 
-    void setTerminalChgPeriod(const timespec& timestamp, const std::int32_t& value);
-    void setPeriodChgPeriod(const timespec& timestamp, const std::int32_t& value);
 	void setChgPeriod(const timespec& timestamp, const std::int32_t& value);
 	void setChgPeriodStatus(const timespec& timestamp, const std::string& value);
 	void setChgPeriodCode(const timespec& timestamp, const std::int32_t& value);
 
+	void setTerminalPending(const timespec& timestamp, const std::int32_t& value);
 	void setPendingValue(const timespec& timestamp, const std::int32_t& value);
 
 	void setMaximum(const timespec& timestamp, const std::int32_t& value);
@@ -156,13 +142,13 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////////////
     // Set FTE PVs
     //////////////////////////////////////////////////////////////////////////////////////////
-    std::shared_ptr<PVVariableInImpl<std::int32_t>> m_TerminalSet_PV; //TODO: Check PV type (int32 or vector int32)
-    std::shared_ptr<PVVariableInImpl<std::int32_t>> m_ModeSet_PV;
-    std::shared_ptr<PVVariableInImpl<timespec> > m_StartTimeSet_PV;
-    std::shared_ptr<PVVariableInImpl<timespec> > m_StopTimeSet_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_LevelSet_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_PeriodNsecSet_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DutyCycleSet_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_TerminalSet_PV; //TODO: Check PV type (int32 or vector int32)
+    std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_ModeSet_PV;
+    std::shared_ptr<PVVariableOutImpl<timespec> > m_StartTimeSet_PV;
+    std::shared_ptr<PVVariableOutImpl<timespec> > m_StopTimeSet_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_LevelSet_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_PeriodNsecSet_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DutyCycleSet_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Set_PV;
     std::shared_ptr<PVVariableInImpl <std::int32_t> > m_Set_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_SetStatus_PV;
@@ -171,10 +157,10 @@ protected:
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Suppress FTE PVs
 	//////////////////////////////////////////////////////////////////////////////////////////
-	std::shared_ptr<PVVariableInImpl<std::int32_t>> m_TerminalSuppress_PV; //TODO: Check PV type (int32 or vector int32)
-    std::shared_ptr<PVVariableInImpl<std::int32_t>> m_ModeSuppress_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t>> m_AllSuppress_PV;
-    std::shared_ptr<PVVariableInImpl<timespec> > m_StartTimeSuppress_PV;
+	std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_TerminalSuppress_PV; //TODO: Check PV type (int32 or vector int32)
+    std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_ModeSuppress_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_AllSuppress_PV;
+    std::shared_ptr<PVVariableOutImpl<timespec> > m_StartTimeSuppress_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Suppress_PV;
     std::shared_ptr<PVVariableInImpl <std::int32_t> > m_Suppress_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_SuppressStatus_PV;
@@ -183,8 +169,8 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////////////
     // Change Period FTE PVs
     //////////////////////////////////////////////////////////////////////////////////////////
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TerminalChgPeriod_PV; //TODO: Check PV type (int32 or vector int32)
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_PeriodChgPeriod_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_TerminalChgPeriod_PV; //TODO: Check PV type (int32 or vector int32)
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_PeriodChgPeriod_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ChgPeriod_PV;
     std::shared_ptr<PVVariableInImpl <std::int32_t> > m_ChgPeriod_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_ChgPeriodStatus_PV;
@@ -199,9 +185,7 @@ protected:
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Maximum FTEs PV
 	//////////////////////////////////////////////////////////////////////////////////////////
-	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Maximum_PV;
-	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Maximum_RBVPV; //TODO: ReadbackValue??
-
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Maximum_PV;
 
 	std::shared_ptr<StateMachineImpl> m_StateMachine;
 
