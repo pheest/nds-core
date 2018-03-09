@@ -39,6 +39,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 											writerInt32_t PV_SelfTestVerboseEnable_Writer,
 											writerInt32_t PV_SelfTestIDEnable_Writer,
 											writerInt32_t PV_SelfTestTxtEnable_Writer,
+											readerString_t PV_SelfTestTxtResult_Reader,
 											readerInt32_t PV_SignalQualityFlag_Reader,
 											writerDouble_t PV_SignalQualityFlagLevel_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
@@ -154,6 +155,11 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 	m_TestCodeResultEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestCodeResultEnable_RBVPV);
 
+	m_TestTxtResult_PV.reset(new PVDelegateInImpl<std::string>("TestTxtResult",PV_SelfTestTxtResult_Reader));
+	m_TestTxtResult_PV->setDescription("Text detailing the result of the Self-Test");
+	m_TestTxtResult_PV-> setScanType(scanType_t::interrupt,0);
+	addChild(m_TestTxtResult_PV);
+
     m_SignalQFlag_PV.reset(new PVDelegateInImpl<std::int32_t>("SignalQFlag",PV_SignalQualityFlag_Reader));
 	m_SignalQFlag_PV->setDescription("Read the flag of low quality signal");
 	m_SignalQFlag_PV-> setScanType(scanType_t::interrupt,0);
@@ -168,6 +174,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 	m_SignalQFlagTrigLevel_RBVPV->setDescription("Quality Flag trigger level ReadBack");
 	m_SignalQFlagTrigLevel_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_SignalQFlagTrigLevel_RBVPV);
+
 
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
@@ -308,6 +315,14 @@ size_t HealthMonitSupImpl::getSelfTestCodeResultEnable()
 	return (std::int32_t) selfTestResult;
 }
 
+std::string HealthMonitSupImpl::getSelfTextTxtResult()
+{
+	std::string selfTestTextResult;
+	timespec timestamp;
+	m_TestTxtResult_PV->read(&timestamp, &selfTestTextResult);
+	return (std::string) selfTestTextResult;
+}
+
 size_t HealthMonitSupImpl::getSignalQualityFlag()
 {
 	std::int32_t signalQualityFlag;
@@ -323,6 +338,7 @@ double HealthMonitSupImpl::getSignalQualityFlagLevel()
 	m_SignalQFlagTrigLevel_RBVPV->read(&timestamp, &signalQualityFlagLevel);
 	return (double) signalQualityFlagLevel;
 }
+
 
 /**
  * ---------------------------------------------------
@@ -390,6 +406,10 @@ void HealthMonitSupImpl::setSelfTestTextEnable(const timespec& timestamp, const 
 {
 	m_TestTxtEnable_RBVPV->setValue(timestamp, value);
 	m_TestTxtEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTextTxtResult(const timespec& timestamp, const std::string& value){
+	m_TestTxtResult_PV->push(timestamp, value);
 }
 
 void HealthMonitSupImpl::setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value)

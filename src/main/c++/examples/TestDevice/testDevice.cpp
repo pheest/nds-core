@@ -207,6 +207,7 @@ testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, con
 			std::bind(&testDevice::PV_HealthMonitSup_VerboseShelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&testDevice::PV_HealthMonitSup_SelfTestTxtResult_Reader, this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&testDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
@@ -1429,6 +1430,9 @@ void testDevice::PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/,
 
 }
 void testDevice::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
+
+}
+void testDevice::PV_HealthMonitSup_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/){
 
 }
 

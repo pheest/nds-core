@@ -43,6 +43,7 @@ public:
 						writerInt32_t PV_VerboseShelfTest_Writer,
 						writerInt32_t PV_EnableShelfTestId_Writer,
 						writerInt32_t PV_EnableShelfTestText_Writer,
+						readerString_t PV_SelfTestTxtResult_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
 						writerDouble_t PV_SignalQualityFlagLevel_Writer);
 
@@ -140,6 +141,11 @@ public:
 	size_t getSelfTestCodeResultEnable();
 
 	/**
+	 * @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
+	 */
+	std::string getSelfTextTxtResult();
+
+	/**
 	 * @brief Retrieve the flag that indicates whether the quality signal is too low
 	 */
 	size_t getSignalQualityFlag();
@@ -148,6 +154,7 @@ public:
 	 * @brief Retrieve the trigger level below the signal quality flag should be flagged
 	 */
 	double getSignalQualityFlagLevel();
+
 
 
     /**
@@ -217,6 +224,11 @@ public:
 	void setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value);
 
 	/**
+	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
+	 */
+	void setSelfTextTxtResult(const timespec& timestamp, const std::string& value);
+
+	/**
 	 * @brief Set the flag that indicates whether the quality signal is too low
 	 */
 	void setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value);
@@ -284,6 +296,8 @@ protected:
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQFlag_PV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_SignalQFlagTrigLevel_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_SignalQFlagTrigLevel_RBVPV;
+
+    std::shared_ptr<PVDelegateInImpl<std::string> > m_TestTxtResult_PV;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
 

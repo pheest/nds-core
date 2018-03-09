@@ -65,6 +65,7 @@ public:
 					writerInt32_t PV_SelfTestVerboseEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestIDEnable_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestTxtEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerString_t PV_SelfTestTxtResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SignalQualityFlagLevel_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
@@ -147,6 +148,11 @@ public:
 	size_t getSelfTestCodeResultEnable();
 
 	/**
+	 * @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
+	 */
+	std::string getSelfTextTxtResult();
+
+	/**
 	 * @brief Retrieve the flag that indicates whether the quality signal is too low
 	 */
 	size_t getSignalQualityFlag();
@@ -222,6 +228,11 @@ public:
 	 * @brief Set the status of the flag for enabling the numeric code with the result of the self-test
 	 */
 	void setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
+	 */
+	void setSelfTextTxtResult(const timespec& timestamp, const std::string& value);
 
 	/**
 	 * @brief Set the flag that indicates whether the quality signal is too low

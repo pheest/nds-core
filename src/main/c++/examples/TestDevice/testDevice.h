@@ -519,6 +519,7 @@ private:
     	  void PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/);
     	  void PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/);
     	  void PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+    	  void PV_HealthMonitSup_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/);
 
     	  /**
     	   * @brief Function that continuously acquires data related with health monitoring.
