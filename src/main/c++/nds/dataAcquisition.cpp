@@ -34,7 +34,7 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									stateChange_t stopFunction,
 									stateChange_t recoverFunction,
 									allowChange_t allowStateChangeFunction,
-									writerDouble_t PV_Gain_Writer,
+									writerDouble_t  PV_Gain_Writer,
 									writerDouble_t PV_Offset_Writer,
 									writerDouble_t PV_Bandwidth_Writer,
 									writerDouble_t PV_Resolution_Writer,
@@ -42,7 +42,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_Coupling_Writer,
 									writerInt32_t PV_SignalRef_Writer,
 									writerInt32_t PV_Ground_Writer,
-									writerInt32_t PV_DMAEnable_Writer):
+									writerInt32_t PV_DMAEnable_Writer,
+									writerDouble_t PV_SamplingRate_Writer):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -59,7 +60,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_Coupling_Writer,
 																	 		 PV_SignalRef_Writer,
 																	 		 PV_Ground_Writer,
-																			 PV_DMAEnable_Writer)))
+																			 PV_DMAEnable_Writer,
+																			 PV_SamplingRate_Writer)))
 {
 }
 
@@ -186,9 +188,9 @@ size_t DataAcquisition<T>::getDMASampleSize()
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMASamplingRate()
+size_t DataAcquisition<T>::getSamplingRate()
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASamplingRate();
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSamplingRate();
 }
 
 template <typename T>
@@ -246,7 +248,7 @@ void DataAcquisition<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, 
 }
 
 template <typename T>
-void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const double& value)
+void DataAcquisition<T>::setDMABufferSize(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMABufferSize(timestamp, value);
 }
@@ -276,9 +278,9 @@ void DataAcquisition<T>::setDMASampleSize(const timespec& timestamp, const std::
 }
 
 template <typename T>
-void DataAcquisition<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const double& value)
 {
-    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setDMASamplingRate(timestamp, value);
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSamplingRate(timestamp, value);
 }
 
 template class DataAcquisition<std::int32_t>;

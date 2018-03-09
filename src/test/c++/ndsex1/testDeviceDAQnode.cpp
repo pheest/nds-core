@@ -19,16 +19,23 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
     std::vector<double> datos(2,0);
   	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
 
+	// Set/Get DecimationType
+	std::int32_t decimationType;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DecimationType", timestamp, (std::int32_t)0);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0, decimationType);
+
   // Set/Get Gain
-	double Gain;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)0);
+  	double Gain;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)10);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
-	EXPECT_EQ((double)0, Gain);
+	EXPECT_EQ(10.0, Gain);
 
 	// Set/Get offset
 	double offset;
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Offset", timestamp, (double)1);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Offset_RBV",&readTimestamp,&offset); // PVVariables are thread safe
+	EXPECT_EQ((double)1, offset);
 
 	// Set/Get Bandwidth
 	double Bandwidth;
@@ -66,6 +73,12 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, Ground);
 
+	// Set/Get SamplingRate
+	double SamplingRate;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.SamplingRate", timestamp, (double)5000);
+	pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate_RBV",&readTimestamp,&SamplingRate); // PVVariables are thread safe
+	EXPECT_EQ((double)5000, SamplingRate);
+
 
 	// Check initial state (OFF)
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
@@ -78,11 +91,6 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	::sleep(1);
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
-
-//	// Set the start time
-//	/////////////////////
-	std::int32_t startTimestamp = 200;
-//	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -144,12 +152,6 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 
 		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
-//	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-//	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
-//	//++startTimestamp;
-	std::int32_t NumDMAChannels;
-	pInterface->readCSValue("/rootNode-DataAcquisitionNode.NumDMAChannels",&readTimestamp,&NumDMAChannels);
-	//std::cerr<< "Dato de NumDMAChannels"<<NumDMAChannels;
 	factory.destroyDevice("rootNode");
 
 }

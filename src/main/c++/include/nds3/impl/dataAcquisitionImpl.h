@@ -16,6 +16,8 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
 
+#include <vector>
+
 namespace nds
 {
 
@@ -35,7 +37,7 @@ public:
             stateChange_t stopFunction,
             stateChange_t recoverFunction,
             allowChange_t allowStateChangeFunction,
-    		writerDouble_t PV_Gain_Writer,
+			writerDouble_t PV_Gain_Writer,
     		writerDouble_t PV_Offset_Writer,
     		writerDouble_t PV_Bandwidth_Writer,
     		writerDouble_t PV_Resolution_Writer,
@@ -43,7 +45,8 @@ public:
     		writerInt32_t PV_Coupling_Writer,
     		writerInt32_t PV_SignalRefType_Writer,
     		writerInt32_t PV_Ground_Writer,
-			writerInt32_t PV_DMAEnable_Writer
+			writerInt32_t PV_DMAEnable_Writer,
+			writerDouble_t PV_SamplingRate_Writer
 			);
 
     /**
@@ -76,7 +79,7 @@ public:
     size_t getDMANumChannels();
     size_t getDMAFrameType();
     size_t getDMASampleSize();
-    size_t getDMASamplingRate();
+    size_t getSamplingRate();
 
     void setGain(const timespec& timestamp, const double& value);
     void setOffset(const timespec& timestamp, const double& value);
@@ -87,12 +90,12 @@ public:
     void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
     void setGround(const timespec& timestamp, const std::int32_t& value);
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
-    void setDMABufferSize(const timespec& timestamp, const double& value);
+    void setDMABufferSize(const timespec& timestamp, const std::int32_t& value);
     void setDMAEnable(const timespec& timestamp, const std::int32_t& value);
     void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
     void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
     void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
-    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
+    void setSamplingRate(const timespec& timestamp, const double& value);
 
 
     /**
@@ -142,6 +145,7 @@ protected:
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DecimationType_PV;
 
     std::shared_ptr<PVDelegateOutImpl<double> > m_Offset_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Offset_RBVPV;
@@ -163,13 +167,14 @@ protected:
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
 
-    std::shared_ptr<PVVariableInImpl<double> > m_DMABufferSize_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMABufferSize_PV;
 	std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_DMAEnable_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAEnable_RBVPV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMANumChannels_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMAFrameType_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASampleSize_PV;
-	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASamplingRate_PV;
+	std::shared_ptr<PVDelegateOutImpl<double> > m_SamplingRate_PV;
+	std::shared_ptr<PVVariableInImpl<double> > m_SamplingRate_RBVPV;
 
 };
 

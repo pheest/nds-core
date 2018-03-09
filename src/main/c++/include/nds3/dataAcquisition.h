@@ -82,16 +82,17 @@ public:
                     stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
                     stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
                     allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-					writerDouble_t PV_Gain_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Gain_Writer,    		///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Offset_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Bandwidth_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Bandwidth_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Resolution_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Impedance_Writer,     ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Coupling_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalRefType_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_DMAEnable_Writer);         ///< Delegate function setter/getter to interact to the Low Level Driver API
-
+					writerInt32_t PV_SignalRefType_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_SamplingRate_Writer   ///< Delegate function to interact to the low level driver API
+    );
     /**
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the data acquisition starts.
@@ -226,9 +227,7 @@ public:
     *
     * @return the m_DMASamplingRate_PV value
     */
-    size_t getDMASamplingRate();
-
-
+    size_t getSamplingRate();
     /**
      * @brief Sets the value of the m_Gain_RBV.
      *
@@ -279,7 +278,7 @@ public:
      * @brief Sets the value of the m_DMABufferSize_PV.
      *
      */
-    void setDMABufferSize(const timespec& timestamp, const double& value);
+    void setDMABufferSize(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_DMAEnable_PV.
      *
@@ -304,7 +303,7 @@ public:
      * @brief Sets the value of the m_DMASamplingRate_PV.
      *
      */
-    void setDMASamplingRate(const timespec& timestamp, const std::int32_t& value);
+    void setSamplingRate(const timespec& timestamp, const double& value);
 };
 
 }

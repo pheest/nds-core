@@ -73,7 +73,7 @@ nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 	void PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp, const std::int32_t& value);
-
+	void PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp, const double& value);
 
 
 //Function that continuously acquires data. It is launched by

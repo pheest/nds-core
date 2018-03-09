@@ -72,6 +72,11 @@ void PVBaseImpl::read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) co
     read(pTimestamp, (std::vector<std::uint8_t>*) pValue);
 }
 
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::int16_t>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* pValue */) const
 {
     throw;
@@ -136,6 +141,11 @@ void PVBaseImpl::write(const timespec& pTimestamp, const std::vector<std::int8_t
     // If we arrive here maybe we really wanted to call the unsigned int function.
     // This is as ugly as it can get: consider modifying this
     write(pTimestamp, (const std::vector<std::uint8_t>&) value);
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int16_t>& /* value */)
+{
+    throw;
 }
 
 void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int32_t>& /* value */)

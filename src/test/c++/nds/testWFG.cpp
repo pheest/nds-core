@@ -1135,6 +1135,12 @@ TEST(testWFG, testPushDataGeneratedDBL)
     pInterface->readCSValue("/rootNode-WFGNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
     EXPECT_EQ((std::int32_t)0, Ground);
 
+    // Set/get DMAEnable
+    std::int32_t DMAEnable;
+    pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DMAEnable", timestamp, (std::int32_t)1);
+    pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable_RBV",&readTimestamp,&DMAEnable); // PVVariables are thread safe
+    EXPECT_EQ((std::int32_t)1, DMAEnable);
+
     /*  SignalType enum
      *  WaveForm=0 (disabled)
 	 *	Spline=1 (disabled)
@@ -1151,6 +1157,10 @@ TEST(testWFG, testPushDataGeneratedDBL)
     std::int32_t auxsignalType;
     pInterface->writeCSValue("/rootNode-WFGNode.SignalType", timestamp, (std::int32_t)3);
     pInterface->readCSValue("/rootNode-WFGNode.SignalType_RBV",&readTimestamp,&auxsignalType); // PVVariables are thread safe
+
+
+
+
 
     //This state machine is Asynchronous.
 
@@ -1355,6 +1365,12 @@ TEST(testWFG, testPushDataGeneratedI32)
     pInterface->writeCSValue("/rootNode-WFGNode.Ground", timestamp, (std::int32_t)0);
     pInterface->readCSValue("/rootNode-WFGNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
     EXPECT_EQ((std::int32_t)0, Ground);
+
+    // Set/get DMAEnable
+    std::int32_t DMAEnable;
+    pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DMAEnable", timestamp, (std::int32_t)1);
+    pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable_RBV",&readTimestamp,&DMAEnable); // PVVariables are thread safe
+    EXPECT_EQ((std::int32_t)1, DMAEnable);
 
     /*  SignalType enum
      *  WaveForm=0 (disabled)
@@ -1576,6 +1592,12 @@ TEST(testWFG, testdecimation)
     pInterface->writeCSValue("/rootNode-WFGNode.Ground", timestamp, (std::int32_t)0);
     pInterface->readCSValue("/rootNode-WFGNode.Ground_RBV",&readTimestamp,&Ground); // PVVariables are thread safe
     EXPECT_EQ((std::int32_t)0, Ground);
+
+    // Set/get DMAEnable
+    std::int32_t DMAEnable;
+    pInterface->writeCSValue("/rootNode-DataAcquisitionNode.DMAEnable", timestamp, (std::int32_t)1);
+    pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable_RBV",&readTimestamp,&DMAEnable); // PVVariables are thread safe
+    EXPECT_EQ((std::int32_t)1, DMAEnable);
 
     /*  SignalType enum
      *  WaveForm=0 (disabled)

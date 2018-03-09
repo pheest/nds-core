@@ -84,6 +84,7 @@ template void PortImpl::push<std::vector<std::uint8_t> >(std::shared_ptr<PVBaseI
 template void PortImpl::push<std::vector<std::uint16_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::uint16_t>&);
 template void PortImpl::push<std::vector<std::uint32_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::uint32_t>&);
 template void PortImpl::push<std::vector<std::int8_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int8_t>&);
+template void PortImpl::push<std::vector<std::int16_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int16_t>&);
 template void PortImpl::push<std::vector<std::int32_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int32_t>&);
 template void PortImpl::push<std::vector<double> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<double>&);
 template void PortImpl::push<std::string >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::string&);

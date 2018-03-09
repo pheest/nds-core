@@ -47,6 +47,7 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::uint16_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::uint32_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<std::int16_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;

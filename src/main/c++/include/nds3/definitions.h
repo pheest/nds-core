@@ -56,10 +56,11 @@ enum class dataType_t
     dataInt32 = 1,    ///< Signed integer, 32 bits
     dataFloat64,      ///< Float, 64 bits
 	dataBoolArray,	  ///< Array of Bool
-	dataInt8Array,    ///< Array of signed 8 bit integers
     dataUint8Array,   ///< Array of unsigned 8 bit integers
 	dataUint16Array,   ///< Array of unsigned 8 bit integers
 	dataUint32Array,   ///< Array of unsigned 8 bit integers
+	dataInt8Array,    ///< Array of signed 8 bit integers
+	dataInt16Array,   ///< Array of signed 16 bit integers
 	dataInt32Array,   ///< Array of signed 32 bit integers
     dataFloat64Array, ///< Array of 64 bit floats
     dataString,       ///< String
@@ -302,9 +303,13 @@ typedef std::function<void (const timespec&, const std::int32_t&)> writerInt32_t
 typedef std::function<void (const timespec&, const double&)> writerDouble_t;
 typedef std::function<void (const timespec&, const std::string&)> writerString_t;
 typedef std::function<void (const timespec&, const timespec&)> writerTime_t;
+typedef std::function<void (const timespec&, const std::vector<double>&)> writerVectorDouble_t;
 
 typedef std::function<void (timespec* time, std::vector<bool>* val)> readerVectorBool_t;
 typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
+
+typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
+typedef std::function<void (timespec* time, std::vector<double>* val)> readerVectorDouble_t;
 
 typedef std::function<void (const timespec&, const std::vector<bool>&)> writerVectorBool_t;
 typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;

@@ -106,7 +106,8 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 			std::bind(&Device::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
 			std::bind(&Device::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&Device::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2)
+			std::bind(&Device::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+			std::bind(&Device::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
 	));
 	m_DataAcquisition.setStartTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	m_DataAcquisition.getStartTimestamp();
@@ -163,7 +164,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    /**
 	     * Add a Digital I/O node:
 	     */
-	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::uint8_t> >(
+	    m_DigitalIO = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t> >(
 	    		"DigitalIONode",
 				128,
 				std::bind(&Device::switchOn_DigitalIO, this),
@@ -602,7 +603,7 @@ void Device::switchOn_Device(){
 	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
 	// As an example:
 		// Call API HW to retrieve DMABufferSize -> (ex: DMABufferSize=4194304 (4096*1024) )
-		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(double)4194304);
+		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(std::int32_t)4194304);
 		// Call API HW to retrieve DMAEnable -> (ex: DMAEnable initial status OFF (0))
 		m_DataAcquisition.setDMAEnable(getCurrentTime(),(std::int32_t)0);
 		// Call API HW to retrieve DMAFrameType -> (ex: DMAFrameType=0)
@@ -611,8 +612,8 @@ void Device::switchOn_Device(){
 		m_DataAcquisition.setDMANumChannels(getCurrentTime(),(std::int32_t)4);
 		// Call API HW to retrieve DMASampleSize -> (ex: DMASampleSize=49
 		m_DataAcquisition.setDMASampleSize(getCurrentTime(),(std::int32_t)4);
-		// Call API HW to retrieve DMASamplingRate -> (ex: DMASamplingRate=1000)
-		m_DataAcquisition.setDMASamplingRate(getCurrentTime(),(std::int32_t)1000);
+		// Call API HW to retrieve SamplingRate -> (ex: SamplingRate=1000)
+		m_DataAcquisition.setSamplingRate(getCurrentTime(),(double)1000);
 
 		// Call API HW to retrieve FirmwareVersion
 		m_FirmwareSup.setFirmwareVersion(getCurrentTime(),"Firmware test version");
@@ -777,6 +778,17 @@ void Device::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp,	cons
 	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
 }
 
+void Device::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
+		const double& value) {
+	double HW_value;
+	//Value has the SamplingRate to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real SamplingRate programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DataAcquisition.setSamplingRate(timestamp,HW_value);
+}
+
+
 /*
 * Body of function to acquire data
 */
@@ -806,20 +818,19 @@ void Device::DataAcquisition_thread_body(){
 	// Get impedance
 	std::int32_t Impedance = m_DataAcquisition.getImpedance();
 	// Get DMABufferSize
-	double DMABufferSize = m_DataAcquisition.getDMABufferSize();
+	std::int32_t DMABufferSize = m_DataAcquisition.getDMABufferSize();
 	// Get DMANumChannels
 	std::int32_t DMANumChannels = m_DataAcquisition.getDMANumChannels();
 	// Get DMAFrametype
 	std::int32_t DMAFrameType = m_DataAcquisition.getDMAFrameType();
 	// Get DMASampleSize
 	std::int32_t DMASampleSize = m_DataAcquisition.getDMASampleSize();
-	// Get DMASamplingRate
-	std::int32_t DMASamplingRate = m_DataAcquisition.getDMASamplingRate();
 	// Get DMAEnable
 	std::int32_t DMAEnable = m_DataAcquisition.getDMAEnable();
+	// Get SamplingRate
+	double SamplingRate = m_DataAcquisition.getSamplingRate();
 
-
-	std::cout<<"\tGain = "<<Gain<<std::endl;
+	std::cout<<"\tGain = "<< Gain<<std::endl;
 	std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
 	std::cout<<"\tResolution = "<<Resolution<<std::endl;
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
@@ -831,8 +842,8 @@ void Device::DataAcquisition_thread_body(){
 	std::cout<<"\tDMANumChannels = "<<DMANumChannels<<std::endl;
 	std::cout<<"\tDMAFrameType = "<<DMAFrameType<<std::endl;
 	std::cout<<"\tDMASampleSize = "<<DMASampleSize<<std::endl;
-	std::cout<<"\tDMASamplingRate = "<<DMASamplingRate<<std::endl;
 	std::cout<<"\tDMAEnable = "<<DMAEnable<<std::endl;
+	std::cout<<"\tSamplingRate = "<<SamplingRate<<std::endl;
 
 	// Run until the state machine stops us
 	while(!m_bStop_DataAcquisition){
@@ -1252,22 +1263,25 @@ void Device::PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std
 void Device::DigitalIO_thread_body(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<std::uint8_t> outputData(m_DigitalIO.getMaxElements(),0);
+	std::vector<std::int8_t> outputData(m_DigitalIO.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
 
-	std::uint8_t value(0);
+	std::int8_t value(0);
 
-	// Get RefFrequency
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO.getDataOutMask();
+	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO.getVoltLevelHigh();
-	// Get DutyCycle
+	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO.getVoltLevelLow();
-	// Get Gain
+	// Get ChannelDir
 	std::vector<bool> ChannelDir = m_DigitalIO.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
+	//std::cout<<"\DataOutMask = "<<DataOutMask<<std::endl;
 	//std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
 
 

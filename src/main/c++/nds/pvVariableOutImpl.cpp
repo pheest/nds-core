@@ -96,6 +96,7 @@ template class PVVariableOutImpl<std::vector<std::uint8_t>>;
 template class PVVariableOutImpl<std::vector<std::uint16_t>>;
 template class PVVariableOutImpl<std::vector<std::uint32_t>>;
 template class PVVariableOutImpl<std::vector<std::int8_t>>;
+template class PVVariableOutImpl<std::vector<std::int16_t>>;
 template class PVVariableOutImpl<std::vector<std::int32_t>>;
 template class PVVariableOutImpl<std::vector<double> >;
 template class PVVariableOutImpl<std::string>;

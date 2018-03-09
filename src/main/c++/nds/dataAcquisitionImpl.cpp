@@ -15,6 +15,10 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
 
+#include <iostream>
+#include <list>
+#include <algorithm>
+
 namespace nds
 {
 
@@ -35,7 +39,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_Coupling_Writer,
 											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
-										    writerInt32_t PV_DMAEnable_Writer
+										    writerInt32_t PV_DMAEnable_Writer,
+											writerDouble_t PV_SamplingRate_Writer
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -53,6 +58,17 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
     m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
     addChild(m_Decimation_PV);
+
+    //add enumeration for Decimation type
+    enumerationStrings_t DecTypeEnumeratorStrings;
+    DecTypeEnumeratorStrings.push_back("block");
+    DecTypeEnumeratorStrings.push_back("sample");
+
+    m_DecimationType_PV.reset(new PVVariableOutImpl<std::int32_t>("DecimationType"));
+    m_DecimationType_PV->setDescription("block or sample");
+    m_DecimationType_PV->setScanType(scanType_t::passive, 0);
+    m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
+	addChild(m_DecimationType_PV);
 
     m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
     m_Gain_PV->setDescription("Gain of the Channel");
@@ -162,7 +178,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_NumberOfPushedDataBlocks->setScanType(scanType_t::interrupt, 0);
 	addChild(m_NumberOfPushedDataBlocks);
 
-	m_DMABufferSize_PV.reset(new PVVariableInImpl<double>("DMABufferSize"));
+	m_DMABufferSize_PV.reset(new PVVariableInImpl<std::int32_t>("DMABufferSize"));
 	m_DMABufferSize_PV->setDescription("Internal DMA Buffer Size");
 	m_DMABufferSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMABufferSize_PV);
@@ -192,11 +208,15 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_DMASampleSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASampleSize_PV);
 
-	m_DMASamplingRate_PV.reset(new PVVariableInImpl<std::int32_t>("DMASamplingRate"));
-	m_DMASamplingRate_PV->setDescription("DMA Sampling Rate");
-	m_DMASamplingRate_PV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_DMASamplingRate_PV);
+	m_SamplingRate_PV.reset(new PVDelegateOutImpl<double>("SamplingRate",PV_SamplingRate_Writer));
+	m_SamplingRate_PV->setDescription("Sampling Rate");
+	m_SamplingRate_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_SamplingRate_PV);
  
+	m_SamplingRate_RBVPV.reset(new PVVariableInImpl<double>("SamplingRate_RBV"));
+	m_SamplingRate_RBVPV->setDescription("Sampling Rate ReadBack");
+	m_SamplingRate_RBVPV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_SamplingRate_RBVPV);
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
@@ -212,7 +232,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 template<typename T>
 size_t DataAcquisitionImpl<T>::getGain()
 {
-    double Gain;
+	double Gain;
     timespec timestamp;
     m_Gain_RBVPV->read(&timestamp, &Gain);
     return (double)Gain;
@@ -305,10 +325,10 @@ size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
 template<typename T>
 size_t DataAcquisitionImpl<T>::getDMABufferSize()
 {
-       double DMABufferSize;
+	std::int32_t DMABufferSize;
     timespec timestamp;
     m_DMABufferSize_PV->read(&timestamp, &DMABufferSize);
-    return (double)DMABufferSize;
+    return (std::int32_t)DMABufferSize;
 }
 
 template<typename T>
@@ -348,12 +368,12 @@ size_t DataAcquisitionImpl<T>::getDMASampleSize()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMASamplingRate()
+size_t DataAcquisitionImpl<T>::getSamplingRate()
 {
-       std::int32_t DMASamplingRate;
+       double SamplingRate;
     timespec timestamp;
-    m_DMASamplingRate_PV->read(&timestamp, &DMASamplingRate);
-    return (std::int32_t)DMASamplingRate;
+    m_SamplingRate_RBVPV->read(&timestamp, &SamplingRate);
+    return (double)SamplingRate;
 }
 
 template<typename T>
@@ -433,7 +453,7 @@ void DataAcquisitionImpl<T>::setNumberOfPushedDataBlocks(const timespec& timesta
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setDMABufferSize(const timespec& timestamp, const double& value)
+void DataAcquisitionImpl<T>::setDMABufferSize(const timespec& timestamp, const std::int32_t& value)
 {
 	m_DMABufferSize_PV->setValue(timestamp, value);
 	m_DMABufferSize_PV->push(timestamp, value);
@@ -469,10 +489,10 @@ void DataAcquisitionImpl<T>::setDMASampleSize(const timespec& timestamp, const s
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setDMASamplingRate(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setSamplingRate(const timespec& timestamp, const double& value)
 {
-	m_DMASamplingRate_PV->setValue(timestamp, value);
-	m_DMASamplingRate_PV->push(timestamp, value);
+	m_SamplingRate_RBVPV->setValue(timestamp, value);
+	m_SamplingRate_RBVPV->push(timestamp, value);
 }
 
 template<typename T>
@@ -485,7 +505,13 @@ template<typename T>
 void DataAcquisitionImpl<T>::onStart()
 {
     m_StartTime = m_StartTimestampFunction();
-    m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+
+    std::int32_t decType;
+    timespec timestamp;
+    m_DecimationType_PV->read(&timestamp, &decType);
+
+    if (decType == (std::int32_t)0) m_Data_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
+
     m_OnStartDelegate();
 }
 

@@ -194,7 +194,7 @@ TEST(testDigitalIO, testPushDataBool)
 }
 
 
-TEST(testDigitalIO, testStateMachineU8)
+TEST(testDigitalIO, testStateMachineI8)
 {
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
@@ -210,39 +210,39 @@ TEST(testDigitalIO, testStateMachineU8)
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
     // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
     //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
       // Destroy test device
@@ -250,7 +250,7 @@ TEST(testDigitalIO, testStateMachineU8)
 
 }
 
-TEST(testDigitalIO, testPushDataU8)
+TEST(testDigitalIO, testPushDataI8)
 {
 
 	const timespec* pStateMachineSwitchTime;
@@ -266,43 +266,43 @@ TEST(testDigitalIO, testPushDataU8)
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.DataOutMask", timestamp, dataOutMaskIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU8Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.DataOutMask", timestamp, dataOutMaskIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI8Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
 	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
 	// Set/Get voltLevelHigh
 	double voltLevelHigh;
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.VoltLevelHigh", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU8Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.VoltLevelHigh", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI8Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelHigh);
 
 	// Set/Get voltLevelLow
 	double voltLevelLow;
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.VoltLevelLow", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU8Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.VoltLevelLow", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI8Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelLow);
 
 	// Set/Get channelDir
 	std::vector<bool> channelDirIn = {1,0,1,0,1};
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.ChannelDir", timestamp, channelDirIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU8Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.ChannelDir", timestamp, channelDirIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI8Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
 	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
 	// Check initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Change state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	// Set the start time
@@ -311,39 +311,39 @@ TEST(testDigitalIO, testPushDataU8)
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
 	::sleep(2);//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	//Change state:  ON -> (switchingOff) -> OFF
-	pInterface->writeCSValue("/rootNode-DigitalIOU8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Get number of pushed vectors by the Acquisition node.
 	std::int32_t NumberOfPushedDataBlocks;
-	pInterface->readCSValue("/rootNode-DigitalIOU8Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
+	pInterface->readCSValue("/rootNode-DigitalIOI8Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
 	EXPECT_NE((std::int32_t)0, NumberOfPushedDataBlocks);
 
 	//Initialize comparison vector
-	std::vector<std::uint8_t> pushData(128);
-	const std::vector<std::uint8_t>* pRetrievedPushedValues;
+	std::vector<std::int8_t> pushData(128);
+	const std::vector<std::int8_t>* pRetrievedPushedValues;
 	const timespec* pTime;
 	double readCount=0;
 	size_t scanVector(0);
@@ -354,7 +354,7 @@ TEST(testDigitalIO, testPushDataU8)
 				pushData[scanVector] = readCount;
 			}
 
-			pInterface->getPushedVectorUint8("/rootNode-DigitalIOU8Node.DataIn", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorInt8("/rootNode-DigitalIOI8Node.DataIn", pTime, pRetrievedPushedValues);
 			++readCount;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -377,7 +377,7 @@ TEST(testDigitalIO, testPushDataU8)
 }
 
 
-TEST(testDigitalIO, testStateMachineU16)
+TEST(testDigitalIO, testStateMachineI16)
 {
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
@@ -393,39 +393,39 @@ TEST(testDigitalIO, testStateMachineU16)
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
     // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
     //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
       // Destroy test device
@@ -434,7 +434,7 @@ TEST(testDigitalIO, testStateMachineU16)
 }
 
 
-TEST(testDigitalIO, testPushDataU16)
+TEST(testDigitalIO, testPushDataI16)
 {
 
 	const timespec* pStateMachineSwitchTime;
@@ -450,84 +450,84 @@ TEST(testDigitalIO, testPushDataU16)
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.DataOutMask", timestamp, dataOutMaskIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU16Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.DataOutMask", timestamp, dataOutMaskIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI16Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
 	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
 	// Set/Get voltLevelHigh
 	double voltLevelHigh;
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.VoltLevelHigh", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU16Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.VoltLevelHigh", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI16Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelHigh);
 
 	// Set/Get voltLevelLow
 	double voltLevelLow;
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.VoltLevelLow", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU16Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.VoltLevelLow", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI16Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelLow);
 
 	// Set/Get channelDir
 	std::vector<bool> channelDirIn = {1,0,1,0,1};
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.ChannelDir", timestamp, channelDirIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU16Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.ChannelDir", timestamp, channelDirIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI16Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
 	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
 	// Check initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Change state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	// Set the start time
 	/////////////////////
-	std::int32_t startTimestamp = 200; //TODO Study this
+	std::int32_t startTimestamp = 200;
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
 	::sleep(2);//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	//Change state:  ON -> (switchingOff) -> OFF
-	pInterface->writeCSValue("/rootNode-DigitalIOU16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Get number of pushed vectors by the Acquisition node.
 	std::int32_t NumberOfPushedDataBlocks;
-	pInterface->readCSValue("/rootNode-DigitalIOU16Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
+	pInterface->readCSValue("/rootNode-DigitalIOI16Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
 	EXPECT_NE((std::int32_t)0, NumberOfPushedDataBlocks);
 
 	//Initialize comparison vector
-	std::vector<std::uint16_t> pushData(128);
-	const std::vector<std::uint16_t>* pRetrievedPushedValues;
+	std::vector<std::int16_t> pushData(128);
+	const std::vector<std::int16_t>* pRetrievedPushedValues;
 	const timespec* pTime;
 	double readCount=0;
 	size_t scanVector(0);
@@ -538,7 +538,7 @@ TEST(testDigitalIO, testPushDataU16)
 				pushData[scanVector] = readCount;
 			}
 
-			pInterface->getPushedVectorUint16("/rootNode-DigitalIOU16Node.DataIn", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorInt16("/rootNode-DigitalIOI16Node.DataIn", pTime, pRetrievedPushedValues);
 			++readCount;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -562,7 +562,7 @@ TEST(testDigitalIO, testPushDataU16)
 
 
 
-TEST(testDigitalIO, testStateMachineU32)
+TEST(testDigitalIO, testStateMachineI32)
 {
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
@@ -578,39 +578,39 @@ TEST(testDigitalIO, testStateMachineU32)
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
     // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
     //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
       // Destroy test device
@@ -619,7 +619,7 @@ TEST(testDigitalIO, testStateMachineU32)
 }
 
 
-TEST(testDigitalIO, testPushDataU32)
+TEST(testDigitalIO, testPushDataI32)
 {
 
 	const timespec* pStateMachineSwitchTime;
@@ -635,84 +635,84 @@ TEST(testDigitalIO, testPushDataU32)
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
 	std::vector<bool> dataOutMaskOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.DataOutMask", timestamp, dataOutMaskIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU32Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.DataOutMask", timestamp, dataOutMaskIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI32Node.DataOutMask_RBV",&readTimestamp,&dataOutMaskOut); // PVVariables are thread safe
 	for(size_t i=0; i<dataOutMaskOut.size();i++){
 		EXPECT_EQ(dataOutMaskIn[i],dataOutMaskOut[i]);
 	}
 
 	// Set/Get voltLevelHigh
 	double voltLevelHigh;
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.VoltLevelHigh", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU32Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.VoltLevelHigh", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI32Node.VoltLevelHigh_RBV",&readTimestamp,&voltLevelHigh); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelHigh);
 
 	// Set/Get voltLevelLow
 	double voltLevelLow;
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.VoltLevelLow", timestamp, (double)0);
-	pInterface->readCSValue("/rootNode-DigitalIOU32Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.VoltLevelLow", timestamp, (double)0);
+	pInterface->readCSValue("/rootNode-DigitalIOI32Node.VoltLevelLow_RBV",&readTimestamp,&voltLevelLow); // PVVariables are thread safe
 	EXPECT_EQ((double)0, voltLevelLow);
 
 	// Set/Get channelDir
 	std::vector<bool> channelDirIn = {1,0,1,0,1};
 	std::vector<bool> channelDirOut = {0,0,0,0,0};
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.ChannelDir", timestamp, channelDirIn);
-	pInterface->readCSValue("/rootNode-DigitalIOU32Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.ChannelDir", timestamp, channelDirIn);
+	pInterface->readCSValue("/rootNode-DigitalIOI32Node.ChannelDir_RBV",&readTimestamp,&channelDirOut); // PVVariables are thread safe
 	for(size_t i=0; i<channelDirOut.size();i++){
 		EXPECT_EQ(channelDirIn[i],channelDirOut[i]);
 	}
 
 	// Check initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Change state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	// Set the start time
 	/////////////////////
-	std::int32_t startTimestamp = 200; //TODO Study this
+	std::int32_t startTimestamp = 200;
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
 	//Change state:  ON -> (starting) -> RUNNING
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
 	::sleep(2);//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	//Change state:  ON -> (switchingOff) -> OFF
-	pInterface->writeCSValue("/rootNode-DigitalIOU32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DigitalIOU32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Get number of pushed vectors by the Acquisition node.
 	std::int32_t NumberOfPushedDataBlocks;
-	pInterface->readCSValue("/rootNode-DigitalIOU32Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
+	pInterface->readCSValue("/rootNode-DigitalIOI32Node.NumberOfPushedDataBlocks", &readTimestamp,&NumberOfPushedDataBlocks);
 	EXPECT_NE((std::int32_t)0, NumberOfPushedDataBlocks);
 
 	//Initialize comparison vector
-	std::vector<std::uint32_t> pushData(128);
-	const std::vector<std::uint32_t>* pRetrievedPushedValues;
+	std::vector<std::int32_t> pushData(128);
+	const std::vector<std::int32_t>* pRetrievedPushedValues;
 	const timespec* pTime;
 	double readCount=0;
 	size_t scanVector(0);
@@ -723,7 +723,7 @@ TEST(testDigitalIO, testPushDataU32)
 				pushData[scanVector] = readCount;
 			}
 
-			pInterface->getPushedVectorUint32("/rootNode-DigitalIOU32Node.DataIn", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorInt32("/rootNode-DigitalIOI32Node.DataIn", pTime, pRetrievedPushedValues);
 			++readCount;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)

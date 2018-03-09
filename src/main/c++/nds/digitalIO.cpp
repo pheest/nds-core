@@ -151,9 +151,9 @@ void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const 
 //template class DigitalIO<std::uint32_t>;
 
 template class DigitalIO<std::vector<bool>>;
-template class DigitalIO<std::vector<std::uint8_t>>;
-template class DigitalIO<std::vector<std::uint16_t>>;
-template class DigitalIO<std::vector<std::uint32_t>>;
+template class DigitalIO<std::vector<std::int8_t>>;
+template class DigitalIO<std::vector<std::int16_t>>;
+template class DigitalIO<std::vector<std::int32_t>>;
 
 
 }
