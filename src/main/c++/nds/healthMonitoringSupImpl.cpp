@@ -109,6 +109,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 
     m_TestType_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TestType_RBV"));
     m_TestType_RBVPV->setDescription("Type of Self-Test ReadBack");
+    m_TestType_RBVPV->setEnumeration(SelfTestEnumeratorStrings);
     m_TestType_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestType_RBVPV);
 
@@ -200,6 +201,212 @@ void HealthMonitSupImpl::onStart()
 {
     m_startTime = m_startTimestampFunction();
     m_onStartDelegate();
+}
+
+
+/**
+ * ---------------------------------------------------
+ * Getter functions
+ * ---------------------------------------------------
+ */
+
+double HealthMonitSupImpl::getDevicePower()
+{
+	double power;
+	timespec timestamp;
+	m_DevPower_PV->read(&timestamp, &power);
+	return (double) power;
+}
+
+double HealthMonitSupImpl::getDeviceTemperature()
+{
+	double temperature;
+	timespec timestamp;
+	m_DevTemperature_PV->read(&timestamp, &temperature);
+	return (double) temperature;
+}
+
+double HealthMonitSupImpl::getDeviceVoltage()
+{
+	double voltage;
+	timespec timestamp;
+	m_DevVoltage_PV->read(&timestamp, &voltage);
+	return (double) voltage;
+}
+
+
+double HealthMonitSupImpl::getDeviceCurrent()
+{
+	double current;
+	timespec timestamp;
+	m_DevCurrent_PV->read(&timestamp, &current);
+	return (double) current;
+}
+
+
+size_t HealthMonitSupImpl::getSEUEnable()
+{
+	std::int32_t SEUenable;
+	timespec timestamp;
+	m_SEUEnable_RBVPV->read(&timestamp, &SEUenable);
+	return (std::int32_t) SEUenable;
+}
+
+size_t HealthMonitSupImpl::getDAQMonitorEnable()
+{
+	std::int32_t DAQMonEnable;
+	timespec timestamp;
+	m_HQMonitorDAQEnable_RBVPV->read(&timestamp, &DAQMonEnable);
+	return (std::int32_t) DAQMonEnable;
+}
+
+size_t HealthMonitSupImpl::getSelfTestEnable()
+{
+	std::int32_t selfTestEnable;
+	timespec timestamp;
+	m_TestEnable_RBVPV->read(&timestamp, &selfTestEnable);
+	return (std::int32_t) selfTestEnable;
+}
+
+size_t HealthMonitSupImpl::getSelfTestType()
+{
+	std::int32_t selfTestType;
+	timespec timestamp;
+	m_TestType_RBVPV->read(&timestamp, &selfTestType);
+	return (std::int32_t) selfTestType;
+}
+
+size_t HealthMonitSupImpl::getSelfTestVerboseEnable()
+{
+	std::int32_t selfTestVerbose;
+	timespec timestamp;
+	m_TestVerboseEnable_RBVPV->read(&timestamp, &selfTestVerbose);
+	return (std::int32_t) selfTestVerbose;
+}
+
+size_t HealthMonitSupImpl::getSelfTestIDEnable()
+{
+	std::int32_t selfTestID;
+	timespec timestamp;
+	m_TestIDEnable_RBVPV->read(&timestamp, &selfTestID);
+	return (std::int32_t) selfTestID;
+}
+
+size_t HealthMonitSupImpl::getSelfTestTextEnable()
+{
+	std::int32_t selfTestTxt;
+	timespec timestamp;
+	m_TestTxtEnable_RBVPV->read(&timestamp, &selfTestTxt);
+	return (std::int32_t) selfTestTxt;
+}
+
+size_t HealthMonitSupImpl::getSelfTestCodeResultEnable()
+{
+	std::int32_t selfTestResult;
+	timespec timestamp;
+	m_TestCodeResultEnable_RBVPV->read(&timestamp, &selfTestResult);
+	return (std::int32_t) selfTestResult;
+}
+
+size_t HealthMonitSupImpl::getSignalQualityFlag()
+{
+	std::int32_t signalQualityFlag;
+	timespec timestamp;
+	m_SignalQFlag_PV->read(&timestamp, &signalQualityFlag);
+	return (std::int32_t) signalQualityFlag;
+}
+
+double HealthMonitSupImpl::getSignalQualityFlagLevel()
+{
+	double signalQualityFlagLevel;
+	timespec timestamp;
+	m_SignalQFlagTrigLevel_RBVPV->read(&timestamp, &signalQualityFlagLevel);
+	return (double) signalQualityFlagLevel;
+}
+
+/**
+ * ---------------------------------------------------
+ * Setter functions
+ * ---------------------------------------------------
+ */
+
+void HealthMonitSupImpl::setDevicePower(const timespec& timestamp, const double& value){
+	m_DevPower_PV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setDeviceTemperature(const timespec& timestamp, const double& value)
+{
+	m_DevTemperature_PV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setDeviceVoltage(const timespec& timestamp, const double& value)
+{
+	m_DevVoltage_PV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setDeviceCurrent(const timespec& timestamp, const double& value)
+{
+	m_DevCurrent_PV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSEUEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SEUEnable_RBVPV->setValue(timestamp, value);
+	m_SEUEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_HQMonitorDAQEnable_RBVPV->setValue(timestamp, value);
+	m_HQMonitorDAQEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTestEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestEnable_RBVPV->setValue(timestamp, value);
+	m_TestEnable_RBVPV->push(timestamp, value);
+}
+
+
+void HealthMonitSupImpl::setSelfTestType(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestType_RBVPV->setValue(timestamp, value);
+	m_TestType_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestVerboseEnable_RBVPV->setValue(timestamp, value);
+	m_TestVerboseEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestIDEnable_RBVPV->setValue(timestamp, value);
+	m_TestIDEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestTxtEnable_RBVPV->setValue(timestamp, value);
+	m_TestTxtEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TestCodeResultEnable_RBVPV->setValue(timestamp, value);
+	m_TestCodeResultEnable_RBVPV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value)
+{
+	m_SignalQFlag_PV->push(timestamp, value);
+}
+
+void HealthMonitSupImpl::setSignalQualityFlagLevel(const timespec& timestamp, const double& value)
+{
+	m_SignalQFlagTrigLevel_RBVPV->setValue(timestamp, value);
+	m_SignalQFlagTrigLevel_RBVPV->push(timestamp, value);
 }
 
 }

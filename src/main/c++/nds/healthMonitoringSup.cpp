@@ -88,4 +88,159 @@ timespec HealthMonitSup::getStartTimestamp() const
 }
 
 
+/**
+ * ---------------------------------------------------
+ * Getter functions
+ * ---------------------------------------------------
+ */
+
+double HealthMonitSup::getDevicePower()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) ->getDevicePower();
+}
+
+double HealthMonitSup::getDeviceTemperature()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) ->getDeviceTemperature();
+}
+
+double HealthMonitSup::getDeviceVoltage()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) ->getDeviceVoltage();
+}
+
+
+double HealthMonitSup::getDeviceCurrent()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) ->getDeviceCurrent();
+}
+
+
+size_t HealthMonitSup::getSEUEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSEUEnable();
+}
+
+size_t HealthMonitSup::getDAQMonitorEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getDAQMonitorEnable();
+}
+
+size_t HealthMonitSup::getSelfTestEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestEnable();
+}
+
+size_t HealthMonitSup::getSelfTestType()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestType();
+}
+
+size_t HealthMonitSup::getSelfTestVerboseEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestVerboseEnable();
+}
+
+size_t HealthMonitSup::getSelfTestIDEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestIDEnable();
+}
+
+size_t HealthMonitSup::getSelfTestTextEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestTextEnable();
+}
+
+size_t HealthMonitSup::getSelfTestCodeResultEnable()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestCodeResultEnable();
+}
+
+size_t HealthMonitSup::getSignalQualityFlag()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSignalQualityFlag();
+}
+
+double HealthMonitSup::getSignalQualityFlagLevel()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSignalQualityFlagLevel();
+}
+
+/**
+ * ---------------------------------------------------
+ * Setter functions
+ * ---------------------------------------------------
+ */
+
+void HealthMonitSup::setDevicePower(const timespec& timestamp, const double& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setDevicePower(timestamp, value);
+}
+
+void HealthMonitSup::setDeviceTemperature(const timespec& timestamp, const double& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setDeviceTemperature(timestamp, value);
+}
+
+void HealthMonitSup::setDeviceVoltage(const timespec& timestamp, const double& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setDeviceVoltage(timestamp, value);
+}
+
+void HealthMonitSup::setDeviceCurrent(const timespec& timestamp, const double& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setDeviceCurrent(timestamp, value);
+}
+
+void HealthMonitSup::setSEUEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSEUEnable(timestamp, value);
+}
+
+void HealthMonitSup::setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setDAQMonitorEnable(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTestEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestEnable(timestamp, value);
+}
+
+
+void HealthMonitSup::setSelfTestType(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestType(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestVerboseEnable(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestIDEnable(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestTextEnable(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTestCodeResultEnable(timestamp, value);
+}
+
+void HealthMonitSup::setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSignalQualityFlag(timestamp, value);
+}
+
+void HealthMonitSup::setSignalQualityFlagLevel(const timespec& timestamp, const double& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSignalQualityFlagLevel(timestamp, value);
+}
+
 }

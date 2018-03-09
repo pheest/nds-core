@@ -83,6 +83,156 @@ public:
      */
     timespec getStartTimestamp() const;
 
+    /**
+     * ---------------------------------------------------
+     * Getter functions
+     * ---------------------------------------------------
+     */
+
+    /**
+     * @brief Retrieve the Device Power
+     */
+    double getDevicePower();
+    /**
+	 * @brief Retrieve the Device Temperature
+	 */
+	double getDeviceTemperature();
+    /**
+	 * @brief Retrieve the Device Voltage
+	 */
+	double getDeviceVoltage();
+    /**
+	 * @brief Retrieve the Device Temperature
+	 */
+	double getDeviceCurrent();
+
+	/**
+	 * @brief Retrieve the status of the flag for detecting Single Event Upsets (SEU)
+	 */
+	size_t getSEUEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for monitoring DAQ anomalies
+	 */
+	size_t getDAQMonitorEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the self-test
+	 */
+	size_t getSelfTestEnable();
+
+	/**
+	 * @brief Retrieve the type of self-test selected (Quick-Test/Full-Test)
+	 */
+	size_t getSelfTestType();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling verbose in the self-test
+	 */
+	size_t getSelfTestVerboseEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the identifier in the self-test
+	 */
+	size_t getSelfTestIDEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the textual description in the self-test
+	 */
+	size_t getSelfTestTextEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the numeric code with the result of the self-test
+	 */
+	size_t getSelfTestCodeResultEnable();
+
+	/**
+	 * @brief Retrieve the flag that indicates whether the quality signal is too low
+	 */
+	size_t getSignalQualityFlag();
+
+	/**
+	 * @brief Retrieve the trigger level below the signal quality flag should be flagged
+	 */
+	double getSignalQualityFlagLevel();
+
+
+    /**
+     * ---------------------------------------------------
+     * Setter functions
+     * ---------------------------------------------------
+     */
+
+	/**
+	 * @brief Set the Device Power
+	 */
+	void setDevicePower(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Temperature
+	 */
+	void setDeviceTemperature(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Voltage
+	 */
+	void setDeviceVoltage(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Current
+	 */
+	void setDeviceCurrent(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the status of the flag for detecting Single Event Upsets (SEU)
+	 */
+	void setSEUEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for monitoring DAQ anomalies
+	 */
+	void setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the self-test
+	 */
+	void setSelfTestEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the type of self-test selected (Quick-Test/Full-Test)
+	 */
+	void setSelfTestType(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling verbose in the self-test
+	 */
+	void setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the identifier in the self-test
+	 */
+	void setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the textual description in the self-test
+	 */
+	void setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the numeric code with the result of the self-test
+	 */
+	void setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the flag that indicates whether the quality signal is too low
+	 */
+	void setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the the trigger level below the signal quality flag should be flagged
+	 */
+	void setSignalQualityFlagLevel(const timespec& timestamp, const double& value);
+
 };
 
 }
