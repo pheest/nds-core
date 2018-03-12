@@ -42,15 +42,6 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 	m_setCurrentTime.setDescription("Set timestamp (in secodns)");
 
-	// Add state machine
-	m_StateMachine = rootNode.addChild(nds::StateMachine(true,
-			std::bind(&DeviceFirmware::switchOn_Device, this),
-			std::bind(&DeviceFirmware::switchOff_Device, this),
-			std::bind(&DeviceFirmware::start_Device, this),
-			std::bind(&DeviceFirmware::stop_Device, this),
-			std::bind(&DeviceFirmware::recover_Device, this),
-			std::bind(&DeviceFirmware::allow_Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
-
 	// Add Firmware node
 	m_Firmware = rootNode.addChild(nds::FirmwareSup("Firm",
 				std::bind(&DeviceFirmware::switchOn_Firmware, this),
@@ -113,15 +104,17 @@ void DeviceFirmware::deallocateDevice(void* DeviceName)
     delete (DeviceFirmware*)DeviceName;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//  TEST DEVICE STATE MACHINE
-///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Methods to control Device state machine
- */
-void DeviceFirmware::switchOn_Device(){
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEST FIRMWARE STATE MACHINE
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
+* Methods to control Firmware state machine
+*/
+
+// Called when the Firmware node has to be switched on.
+void DeviceFirmware::switchOn_Firmware(){
 	// Call API HW to retrieve FirmwareVersion
 	m_Firmware.setFirmwareVersion(getCurrentTime(),"Firmware test version");
 	// Call API HW to retrieve FirmwareStatus
@@ -136,36 +129,6 @@ void DeviceFirmware::switchOn_Device(){
 	m_Firmware.setDeviceType(getCurrentTime(),"Firmware test device type");
 	// Call API HW to retrieve FirmwarePath
 	m_Firmware.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
-
-}
-void DeviceFirmware::switchOff_Device(){
-
-}
-void DeviceFirmware::start_Device(){
-
-}
-void DeviceFirmware::stop_Device(){
-
-}
-void DeviceFirmware::recover_Device(){
-
-}
-
-bool DeviceFirmware::allow_Device_Change(const nds::state_t, const nds::state_t, const nds::state_t){
-	return true;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// TEST FIRMWARE STATE MACHINE
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
-* Methods to control Firmware state machine
-*/
-
-// Called when the Firmware node has to be switched on.
-void DeviceFirmware::switchOn_Firmware(){
 
 }
 
