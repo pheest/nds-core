@@ -222,6 +222,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 				std::bind(&Device::PV_HealthMonitSup_VerboseShelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_HealthMonitSup_EnableCodeResultTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SelfTestTxtResult_Reader, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
@@ -1661,6 +1662,9 @@ void Device::PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timest
 
 }
 void Device::PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+
+}
+void Device::PV_HealthMonitSup_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
 void Device::PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){

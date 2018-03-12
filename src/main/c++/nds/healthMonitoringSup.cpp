@@ -42,6 +42,7 @@ HealthMonitSup::HealthMonitSup(  const std::string& name,
 									writerInt32_t PV_SelfTestVerboseEnable_Writer,
 									writerInt32_t PV_SelfTestIDEnable_Writer,
 									writerInt32_t PV_SelfTestTxtEnable_Writer,
+									writerInt32_t PV_SelfTestCodeResultEnable_Writer,
 									readerString_t PV_SelfTestTxtResult_Reader,
 									readerInt32_t PV_SignalQualityFlag_Reader,
 									writerDouble_t PV_SignalQualityFlagLevel_Writer):
@@ -63,6 +64,7 @@ HealthMonitSup::HealthMonitSup(  const std::string& name,
 																			PV_SelfTestVerboseEnable_Writer,
 																			PV_SelfTestIDEnable_Writer,
 																			PV_SelfTestTxtEnable_Writer,
+																			PV_SelfTestCodeResultEnable_Writer,
 																			PV_SelfTestTxtResult_Reader,
 																			PV_SignalQualityFlag_Reader,
 																			PV_SignalQualityFlagLevel_Writer)))
@@ -82,6 +84,11 @@ HealthMonitSup& HealthMonitSup::operator=(const HealthMonitSup& right)
 void HealthMonitSup::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
 {
     std::static_pointer_cast<HealthMonitSupImpl >(m_pImplementation)->setStartTimestampDelegate(timestampDelegate);
+}
+
+void HealthMonitSup::push(const timespec& timestamp, const std::int32_t& data)
+{
+    std::static_pointer_cast<HealthMonitSupImpl >(m_pImplementation)->push(timestamp, data);
 }
 
 timespec HealthMonitSup::getStartTimestamp() const

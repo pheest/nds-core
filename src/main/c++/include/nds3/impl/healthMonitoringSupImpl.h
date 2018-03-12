@@ -43,6 +43,7 @@ public:
 						writerInt32_t PV_VerboseShelfTest_Writer,
 						writerInt32_t PV_EnableShelfTestId_Writer,
 						writerInt32_t PV_EnableShelfTestText_Writer,
+						writerInt32_t PV_SelfTestCodeResultEnable_Writer,
 						readerString_t PV_SelfTestTxtResult_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
 						writerDouble_t PV_SignalQualityFlagLevel_Writer);
@@ -59,6 +60,18 @@ public:
      * @param timestampDelegate the function to call to get the start time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+	 * @ingroup
+	 * @brief Push data to the control system.
+	 *
+	 * Usually your device implementation will call this function from the
+	 *  data thread in order to push the data.
+	 *
+	 * @param timestamp the timestamp for the data
+	 * @param data      the data to push to the control system
+	 */
+	void push(const timespec& timestamp, const std::int32_t& data);
 
     /**
      * @brief Returns the timestamp at start.

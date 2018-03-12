@@ -65,6 +65,7 @@ public:
 					writerInt32_t PV_SelfTestVerboseEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestIDEnable_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestTxtEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_SelfTestCodeResultEnable_Writer, ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerString_t PV_SelfTestTxtResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SignalQualityFlagLevel_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -76,6 +77,19 @@ public:
      * @param timestampDelegate the function that returns the exact starting time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+	 * @ingroup
+	 * @brief Push data to the control system.
+	 *
+	 * Usually your device implementation will call this function from the
+	 *  data thread in order to push the data.
+	 *
+	 * @param timestamp the timestamp for the data
+	 * @param data      the data to push to the control system
+	 */
+    void push(const timespec& timestamp, const std::int32_t& data);
+
     /**
      * @ingroup
      * @brief Returns the timestamp at start.

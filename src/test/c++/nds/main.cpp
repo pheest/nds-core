@@ -9,6 +9,7 @@
 #include "../include/Device_Vector_I8.h"
 #include "../include/Device_Vector_UI8.h"
 #include "../include/Device_DigitalIO.h"
+#include "../include/DeviceHQMonitor.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -42,6 +43,10 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceDigitalIO",
                            std::bind(&DeviceDigitalIO::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceDigitalIO::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceHQMonitor",
+                           std::bind(&DeviceHQMonitor::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceHQMonitor::deallocateDevice, std::placeholders::_1));
 
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));

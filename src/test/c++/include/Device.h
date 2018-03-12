@@ -513,6 +513,7 @@ private:
 	  void PV_HealthMonitSup_VerboseShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
 	  void PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
 	  void PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+	  void PV_HealthMonitSup_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
 	  void PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
 
 	  /**
