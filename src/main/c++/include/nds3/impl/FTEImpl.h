@@ -59,7 +59,6 @@ public:
 	std::int32_t getLevelSet();
 	std::int32_t getPeriodNsecSet();
 	std::int32_t getDutyCycleSet();
-	std::int32_t getSet();
 	std::string getSetStatus();
 	std::int32_t getSetCode();
 
@@ -67,35 +66,33 @@ public:
     std::int32_t getModeSuppress();
 	std::int32_t getAllSuppress();
 	timespec getStartTimeSuppress();
-	std::int32_t getSuppress();
 	std::string getSuppressStatus();
 	std::int32_t getSuppressCode();
 
     std::int32_t getTerminalChgPeriod();
     std::int32_t getPeriodChgPeriod();
-	std::int32_t getChgPeriod();
 	std::string getChgPeriodStatus();
 	std::int32_t getChgPeriodCode();
 
 	std::int32_t getTerminalPending();
 	std::int32_t getPendingValue();
+	std::string getPendingStatus();
+	std::int32_t getPendingCode();
 
 	std::int32_t getMaximum();
 
-	void setSet(const timespec& timestamp, const std::int32_t& value);
 	void setSetStatus(const timespec& timestamp, const std::string& value);
 	void setSetCode(const timespec& timestamp, const std::int32_t& value);
 
-	void setSuppress(const timespec& timestamp, const std::int32_t& value);
 	void setSuppressStatus(const timespec& timestamp, const std::string& value);
 	void setSuppressCode(const timespec& timestamp, const std::int32_t& value);
 
-	void setChgPeriod(const timespec& timestamp, const std::int32_t& value);
 	void setChgPeriodStatus(const timespec& timestamp, const std::string& value);
 	void setChgPeriodCode(const timespec& timestamp, const std::int32_t& value);
 
-	void setTerminalPending(const timespec& timestamp, const std::int32_t& value);
 	void setPendingValue(const timespec& timestamp, const std::int32_t& value);
+	void setPendingStatus(const timespec& timestamp, const std::string& value);
+	void setPendingCode(const timespec& timestamp, const std::int32_t& value);
 
 	void setMaximum(const timespec& timestamp, const std::int32_t& value);
 
@@ -150,7 +147,6 @@ protected:
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_PeriodNsecSet_PV;
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_DutyCycleSet_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Set_PV;
-    std::shared_ptr<PVVariableInImpl <std::int32_t> > m_Set_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_SetStatus_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SetCode_PV;
 
@@ -162,7 +158,6 @@ protected:
     std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_AllSuppress_PV;
     std::shared_ptr<PVVariableOutImpl<timespec> > m_StartTimeSuppress_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Suppress_PV;
-    std::shared_ptr<PVVariableInImpl <std::int32_t> > m_Suppress_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_SuppressStatus_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SuppressCode_PV;
 
@@ -172,7 +167,6 @@ protected:
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_TerminalChgPeriod_PV; //TODO: Check PV type (int32 or vector int32)
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_PeriodChgPeriod_PV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ChgPeriod_PV;
-    std::shared_ptr<PVVariableInImpl <std::int32_t> > m_ChgPeriod_RBVPV;
     std::shared_ptr<PVVariableInImpl<std::string> >  m_ChgPeriodStatus_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ChgPeriodCode_PV;
 
@@ -181,6 +175,8 @@ protected:
 	//////////////////////////////////////////////////////////////////////////////////////////
 	std::shared_ptr<PVDelegateOutImpl<std::int32_t>> m_TerminalPending_PV; //TODO: Check PV type (int32 or vector int32)
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_PendingValue_PV;
+	std::shared_ptr<PVVariableInImpl<std::string> > m_PendingStatus_PV;
+	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_PendingCode_PV;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Maximum FTEs PV

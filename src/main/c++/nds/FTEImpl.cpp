@@ -81,11 +81,6 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_Set_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Set_PV);
 
-	m_Set_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Set_RBV"));
-	m_Set_RBVPV->setDescription("Set ReadBack");
-	m_Set_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_Set_RBVPV);
-
 	m_SetStatus_PV.reset(new PVVariableInImpl<std::string>("SetStatus"));
 	m_SetStatus_PV->setDescription("Report on FTE configuration");
 	m_SetStatus_PV->setScanType(scanType_t::interrupt, 0);
@@ -124,11 +119,6 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_Suppress_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Suppress_PV);
 
-	m_Suppress_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Suppress_RBV"));
-	m_Suppress_RBVPV->setDescription("Suppress ReadBack");
-	m_Suppress_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_Suppress_RBVPV);
-
 	m_SuppressStatus_PV.reset(new PVVariableInImpl<std::string>("SuppressStatus"));
 	m_SuppressStatus_PV->setDescription("Report on FTE suppression");
 	m_SuppressStatus_PV->setScanType(scanType_t::interrupt, 0);
@@ -157,11 +147,6 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_ChgPeriod_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_ChgPeriod_PV);
 
-	m_ChgPeriod_RBVPV.reset(new PVVariableInImpl<std::int32_t>("ChgPeriod_RBV"));
-	m_ChgPeriod_RBVPV->setDescription("ChgPeriod ReadBack");
-	m_ChgPeriod_RBVPV->setScanType(scanType_t::interrupt, 0);
-	addChild(m_ChgPeriod_RBVPV);
-
 	m_ChgPeriodStatus_PV.reset(new PVVariableInImpl<std::string>("ChgPeriodStatus"));
 	m_ChgPeriodStatus_PV->setDescription("Report on FTE clock period change");
 	m_ChgPeriodStatus_PV->setScanType(scanType_t::interrupt, 0);
@@ -184,6 +169,16 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_PendingValue_PV->setDescription("Pending FTEs in the terminal");
 	m_PendingValue_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_PendingValue_PV);
+
+	m_PendingStatus_PV.reset(new PVVariableInImpl<std::string>("PendingStatus"));
+	m_PendingStatus_PV->setDescription("Report on getting pending FTEs");
+	m_PendingStatus_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_PendingStatus_PV);
+
+	m_PendingCode_PV.reset(new PVVariableInImpl<std::int32_t>("PendingCode"));
+	m_PendingCode_PV->setDescription("Code of success/error on getting pending FTEs");
+	m_PendingCode_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_PendingCode_PV);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Maximum FTEs PV
@@ -292,15 +287,6 @@ std::int32_t FTEImpl<T>::getDutyCycleSet()
 }
 
 template<typename T>
-std::int32_t FTEImpl<T>::getSet()
-{
-	std::int32_t set;
-	timespec timestamp;
-	m_Set_RBVPV->read(&timestamp, &set);
-	return set;
-}
-
-template<typename T>
 std::string FTEImpl<T>::getSetStatus()
 {
 	std::string setStatus;
@@ -359,15 +345,6 @@ timespec FTEImpl<T>::getStartTimeSuppress()
 }
 
 template<typename T>
-std::int32_t FTEImpl<T>::getSuppress()
-{
-	std::int32_t suppress;
-	timespec timestamp;
-	m_Suppress_RBVPV->read(&timestamp, &suppress);
-	return suppress;
-}
-
-template<typename T>
 std::string FTEImpl<T>::getSuppressStatus()
 {
 	std::string setStatus;
@@ -405,15 +382,6 @@ std::int32_t FTEImpl<T>::getPeriodChgPeriod()
 	timespec timestamp;
 	m_PeriodChgPeriod_PV->read(&timestamp, &periodChgPeriod);
 	return periodChgPeriod;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getChgPeriod()
-{
-	std::int32_t chgPeriod;
-	timespec timestamp;
-	m_ChgPeriod_RBVPV->read(&timestamp, &chgPeriod);
-	return chgPeriod;
 }
 
 template<typename T>
@@ -455,6 +423,24 @@ std::int32_t FTEImpl<T>::getPendingValue()
 	return pendingValue;
 }
 
+template<typename T>
+std::string FTEImpl<T>::getPendingStatus()
+{
+	std::string pendingStatus;
+	timespec timestamp;
+	m_PendingStatus_PV->read(&timestamp, &pendingStatus);
+	return pendingStatus;
+}
+
+template<typename T>
+std::int32_t FTEImpl<T>::getPendingCode()
+{
+	std::int32_t pendingCode;
+	timespec timestamp;
+	m_PendingCode_PV->read(&timestamp, &pendingCode);
+	return pendingCode;
+}
+
 ///////////////////////////////////////////////////////////////
 // Maximum FTE getter
 ///////////////////////////////////////////////////////////////
@@ -470,14 +456,6 @@ std::int32_t FTEImpl<T>::getMaximum()
 ///////////////////////////////////////////////////////////////
 // Set FTE setters
 ///////////////////////////////////////////////////////////////
-
-template<typename T>
-void FTEImpl<T>::setSet(const timespec& timestamp, const std::int32_t& value)
-{
-	m_Set_RBVPV->setValue(timestamp, value);
-	m_Set_RBVPV->push(timestamp, value);
-}
-
 template<typename T>
 void FTEImpl<T>::setSetStatus(const timespec& timestamp, const std::string& value)
 {
@@ -496,13 +474,6 @@ void FTEImpl<T>::setSetCode(const timespec& timestamp, const std::int32_t& value
 // Suppress FTE setters
 ///////////////////////////////////////////////////////////////
 template<typename T>
-void FTEImpl<T>::setSuppress(const timespec& timestamp, const std::int32_t& value)
-{
-	m_Suppress_RBVPV->setValue(timestamp, value);
-	m_Suppress_RBVPV->push(timestamp, value);
-}
-
-template<typename T>
 void FTEImpl<T>::setSuppressStatus(const timespec& timestamp, const std::string& value)
 {
 	m_SuppressStatus_PV->setValue(timestamp, value);
@@ -519,13 +490,6 @@ void FTEImpl<T>::setSuppressCode(const timespec& timestamp, const std::int32_t& 
 ///////////////////////////////////////////////////////////////
 // ChgPeriod FTE setters
 ///////////////////////////////////////////////////////////////
-template<typename T>
-void FTEImpl<T>::setChgPeriod(const timespec& timestamp, const std::int32_t& value)
-{
-	m_ChgPeriod_RBVPV->setValue(timestamp, value);
-	m_ChgPeriod_RBVPV->push(timestamp, value);
-}
-
 template<typename T>
 void FTEImpl<T>::setChgPeriodStatus(const timespec& timestamp, const std::string& value)
 {
@@ -548,6 +512,20 @@ void FTEImpl<T>::setPendingValue(const timespec& timestamp, const std::int32_t& 
 {
 	m_PendingValue_PV->setValue(timestamp, value);
 	m_PendingValue_PV->push(timestamp, value);
+}
+
+template<typename T>
+void FTEImpl<T>::setPendingStatus(const timespec& timestamp, const std::string& value)
+{
+	m_PendingStatus_PV->setValue(timestamp, value);
+	m_PendingStatus_PV->push(timestamp, value);
+}
+
+template<typename T>
+void FTEImpl<T>::setPendingCode(const timespec& timestamp, const std::int32_t& value)
+{
+	m_PendingCode_PV->setValue(timestamp, value);
+	m_PendingCode_PV->push(timestamp, value);
 }
 
 ///////////////////////////////////////////////////////////////

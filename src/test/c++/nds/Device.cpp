@@ -2386,16 +2386,13 @@ void Device::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& va
 
 		//Fill the Status and Code PVs with some information
 		if(FTESetStatus!=0){
-			m_FTE.setSet(timestamp,1);//Idea,remove this and let only Status and Code PVs
 			m_FTE.setSetStatus(timestamp,"OK");
 			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
 		}else{
-			m_FTE.setSet(timestamp,0);//Idea,remove this and let only Status and Code PVs
 			m_FTE.setSetStatus(timestamp,"WRONG");
 			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
 		}
 	}else{
-		m_FTE.setSet(timestamp,0);
 		m_FTE.setSetStatus(timestamp,"OK");
 		m_FTE.setSetCode(timestamp,(std::int32_t)0);
 	}
@@ -2425,16 +2422,13 @@ void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_
 
 		//Fill the Status and Code PVs with some information
 		if(FTESuppressStatus!=0){
-			m_FTE.setSuppress(timestamp,1);//Idea,remove this and let only Status and Code PVs
 			m_FTE.setSuppressStatus(timestamp,"OK");
 			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
 		}else{
-			m_FTE.setSuppress(timestamp,0); //Idea,remove this and let only Status and Code PVs
 			m_FTE.setSuppressStatus(timestamp,"WRONG");
 			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
 		}
 	}else{
-		m_FTE.setSuppress(timestamp,0);
 		m_FTE.setSuppressStatus(timestamp,"OK");
 		m_FTE.setSuppressCode(timestamp,(std::int32_t)0);
 	}
@@ -2459,16 +2453,13 @@ void Device::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32
 		}
 		//Fill the Status and Code PVs with some information
 		if(FTEChgPeriodStatus!=0){
-			m_FTE.setChgPeriod(timestamp,1); //Idea,remove this and let only Status and Code PVs
 			m_FTE.setChgPeriodStatus(timestamp,"OK");
 			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
 		}else{
-			m_FTE.setChgPeriod(timestamp,0); //Idea,remove this and let only Status and Code PVs
 			m_FTE.setChgPeriodStatus(timestamp,"WRONG");
 			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
 		}
 	}else{
-		m_FTE.setChgPeriod(timestamp,0);
 		m_FTE.setChgPeriodStatus(timestamp,"OK");
 		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)0);
 	}
@@ -2479,11 +2470,17 @@ void Device::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::in
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value>0){ //If some terminal has been chosen
 		FTEPendingValue=1; //HWValue of pending FTEs for the terminal in value
+		m_FTE.setPendingValue(timestamp,FTEPendingValue);
+		m_FTE.setPendingStatus(timestamp,"OK");
+		m_FTE.setPendingCode(timestamp,1);
 	}
 	else{
 		FTEPendingValue=-1;
+		m_FTE.setPendingValue(timestamp,FTEPendingValue);
+		m_FTE.setPendingStatus(timestamp,"WRONG");
+		m_FTE.setPendingCode(timestamp,-1);
 	}
-	m_FTE.setPendingValue(timestamp,FTEPendingValue);
+
 }
 
 

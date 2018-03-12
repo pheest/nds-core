@@ -147,12 +147,6 @@ public:
     /**
      * @brief Retrieve the SignalRef
      *
-     * @return the Set value
-     */
-	std::int32_t getSet();
-    /**
-     * @brief Retrieve the SignalRef
-     *
      * @return the SetStatus value
      */
 	std::string getSetStatus();
@@ -191,12 +185,6 @@ public:
      */
 	timespec getStartTimeSuppress();
     /**
-     * @brief Retrieve the Suppress signal
-     *
-     * @return the Suppress value
-     */
-	std::int32_t getSuppress();
-    /**
      * @brief Retrieve the Suppress Status signal
      *
      * @return the SuppressStatus value
@@ -225,12 +213,6 @@ public:
      */
     std::int32_t getPeriodChgPeriod();
     /**
-     * @brief Retrieve the ChgPeriod signal
-     *
-     * @return the ChgPeriod value
-     */
-	std::int32_t getChgPeriod();
-    /**
      * @brief Retrieve the ChgPeriodStatus
      *
      * @return the ChgPeriodStatus value
@@ -258,6 +240,18 @@ public:
      * @return the PendingValue value
      */
 	std::int32_t getPendingValue();
+    /**
+     * @brief Retrieve the Pending Status signal
+     *
+     * @return the PendingStatus value
+     */
+	std::string getPendingStatus();
+    /**
+     * @brief Retrieve the Pending Code signal
+     *
+     * @return the PendingCode value
+     */
+	std::int32_t getPendingCode();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Getter of Maximum functionality
@@ -273,11 +267,6 @@ public:
     // Setters of Set functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_Set_RBVPV.
-     *
-     */
-	void setSet(const timespec& timestamp, const std::int32_t& value);
-    /**
      * @brief Sets the value of the m_SetStatus_PV.
      *
      */
@@ -292,11 +281,6 @@ public:
     // Setters of Suppress functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_Suppress_RBVPV.
-     *
-     */
-	void setSuppress(const timespec& timestamp, const std::int32_t& value);
-    /**
      * @brief Sets the value of the m_SuppressStatus_PV.
      *
      */
@@ -310,7 +294,6 @@ public:
     //////////////////////////////////////////////////////////////////////////////////////////
     // Setters of Change Period functionality
     //////////////////////////////////////////////////////////////////////////////////////////
-	void setChgPeriod(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_ChgPeriodStatus_PV.
      *
@@ -330,6 +313,16 @@ public:
      *
      */
 	void setPendingValue(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the m_PendingStatus_PV.
+     *
+     */
+	void setPendingStatus(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the m_PendingCode_PV.
+     *
+     */
+	void setPendingCode(const timespec& timestamp, const std::int32_t& value);
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Setter of Maximum functionality
