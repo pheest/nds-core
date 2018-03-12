@@ -22,8 +22,6 @@ namespace nds
 template <typename T> class PVVariableInImpl;
 template <typename T> class PVVariableOutImpl;
 
-
-template<typename T>
 class HealthMonitSupImpl: public NodeImpl
 {
 public:
@@ -39,21 +37,16 @@ public:
 						readerDouble_t PV_DeviceVoltage_Reader,
 						readerDouble_t PV_DeviceCurrent_Reader,
 						writerInt32_t PV_EnableSEU_Writer,
-						readerInt32_t PV_EnableSEU_Reader,
 						writerInt32_t PV_EnableMonitorDAQ_Writer,
-						readerInt32_t PV_EnableMonitorDAQ_Reader,
 						writerInt32_t PV_EnableShelfTest_Writer,
-						readerInt32_t PV_EnableShelfTest_Reader,
 						writerInt32_t PV_ShelfTestType_Writer,
-						readerInt32_t PV_ShelfTestType_Reader,
 						writerInt32_t PV_VerboseShelfTest_Writer,
-						readerInt32_t PV_VerboseShelfTest_Reader,
 						writerInt32_t PV_EnableShelfTestId_Writer,
-						readerInt32_t PV_EnableShelfTestId_Reader,
 						writerInt32_t PV_EnableShelfTestText_Writer,
-						readerInt32_t PV_EnableShelfTestText_Reader,
+						writerInt32_t PV_SelfTestCodeResultEnable_Writer,
+						readerString_t PV_SelfTestTxtResult_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
-						readerDouble_t PV_SignalQualityFlagLevel_Reader);
+						writerDouble_t PV_SignalQualityFlagLevel_Writer);
 
 
     /**
@@ -67,6 +60,18 @@ public:
      * @param timestampDelegate the function to call to get the start time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+	 * @ingroup
+	 * @brief Push data to the control system.
+	 *
+	 * Usually your device implementation will call this function from the
+	 *  data thread in order to push the data.
+	 *
+	 * @param timestamp the timestamp for the data
+	 * @param data      the data to push to the control system
+	 */
+	void push(const timespec& timestamp, const std::int32_t& data);
 
     /**
      * @brief Returns the timestamp at start.
@@ -83,6 +88,168 @@ public:
      *        delegated onStart function.
      */
     void onStart();
+
+
+    /**
+     * ---------------------------------------------------
+     * Getter functions
+     * ---------------------------------------------------
+     */
+
+    /**
+     * @brief Retrieve the Device Power
+     */
+    double getDevicePower();
+    /**
+	 * @brief Retrieve the Device Temperature
+	 */
+	double getDeviceTemperature();
+    /**
+	 * @brief Retrieve the Device Voltage
+	 */
+	double getDeviceVoltage();
+    /**
+	 * @brief Retrieve the Device Temperature
+	 */
+	double getDeviceCurrent();
+
+	/**
+	 * @brief Retrieve the status of the flag for detecting Single Event Upsets (SEU)
+	 */
+	size_t getSEUEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for monitoring DAQ anomalies
+	 */
+	size_t getDAQMonitorEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the self-test
+	 */
+	size_t getSelfTestEnable();
+
+	/**
+	 * @brief Retrieve the type of self-test selected (Quick-Test/Full-Test)
+	 */
+	size_t getSelfTestType();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling verbose in the self-test
+	 */
+	size_t getSelfTestVerboseEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the identifier in the self-test
+	 */
+	size_t getSelfTestIDEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the textual description in the self-test
+	 */
+	size_t getSelfTestTextEnable();
+
+	/**
+	 * @brief Retrieve the status of the flag for enabling the numeric code with the result of the self-test
+	 */
+	size_t getSelfTestCodeResultEnable();
+
+	/**
+	 * @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
+	 */
+	std::string getSelfTextTxtResult();
+
+	/**
+	 * @brief Retrieve the flag that indicates whether the quality signal is too low
+	 */
+	size_t getSignalQualityFlag();
+
+	/**
+	 * @brief Retrieve the trigger level below the signal quality flag should be flagged
+	 */
+	double getSignalQualityFlagLevel();
+
+
+
+    /**
+     * ---------------------------------------------------
+     * Setter functions
+     * ---------------------------------------------------
+     */
+
+	/**
+	 * @brief Set the Device Power
+	 */
+	void setDevicePower(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Temperature
+	 */
+	void setDeviceTemperature(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Voltage
+	 */
+	void setDeviceVoltage(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the Device Current
+	 */
+	void setDeviceCurrent(const timespec& timestamp, const double& value);
+
+	/**
+	 * @brief Set the status of the flag for detecting Single Event Upsets (SEU)
+	 */
+	void setSEUEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for monitoring DAQ anomalies
+	 */
+	void setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the self-test
+	 */
+	void setSelfTestEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the type of self-test selected (Quick-Test/Full-Test)
+	 */
+	void setSelfTestType(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling verbose in the self-test
+	 */
+	void setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the identifier in the self-test
+	 */
+	void setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the textual description in the self-test
+	 */
+	void setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the status of the flag for enabling the numeric code with the result of the self-test
+	 */
+	void setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
+	 */
+	void setSelfTextTxtResult(const timespec& timestamp, const std::string& value);
+
+	/**
+	 * @brief Set the flag that indicates whether the quality signal is too low
+	 */
+	void setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value);
+
+	/**
+	 * @brief Set the the trigger level below the signal quality flag should be flagged
+	 */
+	void setSignalQualityFlagLevel(const timespec& timestamp, const double& value);
 
 protected:
 
@@ -109,42 +276,45 @@ protected:
 
     // PVs
 
-    std::shared_ptr<PVDelegateInImpl<double> > m_DevicePower_PV;
-    std::shared_ptr<PVDelegateInImpl<double> > m_DeviceTemp_PV;
-    std::shared_ptr<PVDelegateInImpl<double> > m_DeviceVoltage_PV;
-    std::shared_ptr<PVDelegateInImpl<double> > m_DeviceCurrent_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_DevPower_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_DevTemperature_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_DevVoltage_PV;
+    std::shared_ptr<PVDelegateInImpl<double> > m_DevCurrent_PV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableSEU_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableSEU_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SEUEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SEUEnable_RBVPV;
 
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableMonitorDAQ_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableMonitorDAQ_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_HQMonitorDAQEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_HQMonitorDAQEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableShelfTest_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableShelfTest_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_ShelfTestType_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_ShelfTestType_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestType_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestType_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_VerboseShelfTest_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_VerboseShelfTest_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestVerboseEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestVerboseEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableShelfTestId_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableShelfTestId_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestIDEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestIDEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableShelfTestText_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableShelfTestText_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestTxtEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestTxtEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableShelfTestOutputNum_PV;
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_EnableShelfTestTextOutputNum_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_TestCodeResultEnable_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TestCodeResultEnable_RBVPV;
 
-    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQualityFlag_PV;
-    std::shared_ptr<PVDelegateInImpl<double> > m_SignalQualityFlagLevel_PV;
+    std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_SignalQFlag_PV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_SignalQFlagTrigLevel_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_SignalQFlagTrigLevel_RBVPV;
 
-    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_decimation_PV;
+    std::shared_ptr<PVDelegateInImpl<std::string> > m_TestTxtResult_PV;
 
-    std::shared_ptr<StateMachineImpl> m_stateMachine;
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Decimation_PV;
+
+    std::shared_ptr<StateMachineImpl> m_StateMachine;
 
 
 };
