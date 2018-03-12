@@ -1111,16 +1111,16 @@ TEST(testDataAcquisition, testDMAParameters)
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
-	// Check Device initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	// Check DAQ Node initial state (OFF)
+	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
-	//Change Device state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	//Change DAQ Node state:  OFF -> (initializing) -> ON
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(10);
-	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	::sleep(2);
+	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	// Get DMABufferSize initial value
@@ -1148,17 +1148,6 @@ TEST(testDataAcquisition, testDMAParameters)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable_RBV",&readTimestamp,&DMAEnable); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, DMAEnable);
 
-	// Check DAQ Node initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
-
-	//Change DAQ Node state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	//Change DAQ Node state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
@@ -1187,14 +1176,6 @@ TEST(testDataAcquisition, testDMAParameters)
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
 	::sleep(2);
 	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
-
-	//Change Device state:  ON -> (switchingOff) -> OFF
-	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	factory.destroyDevice("rootNode");

@@ -263,7 +263,7 @@ private:
     	 /**
     	  * @brief DigitalIO node
     	  */
-    	 nds::DigitalIO<std::vector<std::int8_t> > m_DigitalIO;
+    	 nds::DigitalIO<std::vector<std::int32_t> > m_DigitalIO;
 
     	 /**
     	  * Methods to control DigitalIO state machine
@@ -279,10 +279,10 @@ private:
     	 /**
     	  * DigitalIO setters
     	  */
-    	 void PV_DigitalIO_dataOutMask_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/);
-    	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& /*timestamp*/, const double& /*value*/);
-    	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& /*timestamp*/, const double& /*value*/);
-    	 void PV_DigitalIO_ChannelDir_Writer(const timespec& /*timestamp*/, const std::vector<bool>& /*value*/);
+    	 void PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp, const std::vector<bool>& value);
+    	 void PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value);
+    	 void PV_DigitalIO_voltLevelLow_Writer(const timespec& timestamp, const double& value);
+    	 void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value);
 
     	 /**
     	  * @brief Function that continuously acquires digital IO data.
@@ -568,27 +568,11 @@ private:
     	  /**
     	   * FTE setters
     	   */
-    	  void PV_FTE_Set_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/);
-    	  void PV_FTE_Suppress_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/);
-    	  void PV_FTE_ChgPeriod_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/);
-    	  void PV_FTE_PendingValue_Writer(const timespec& /*timestamp*/, const std::int32_t& /*value*/);
+      	  void PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& value);
+      	  void PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value);
+      	  void PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value);
+      	  void PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value);
 
-    	  /**
-    	   * @brief Function that continuously acquires digital IO data.
-    	   *        It is launched by start_FTE() in a separate thread.
-    	   */
-    	  void FTE_thread_body();
-
-    	  /**
-    	   * @brief A thread that runs DataProcessing_thread_body().
-    	   */
-    	  std::thread m_FTE_Thread;
-
-    	  /**
-    	   * @brief A boolean flag that stop the FTE loop in FTE_thread_body()
-    	   *        when true.
-    	   */
-    	  volatile bool m_bStop_FTE;
 
 	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	  //  EXTRA PVs for testing purposes
@@ -713,6 +697,9 @@ private:
 	   void readTestVariableOut(timespec* pTimestamp, std::string* pValue);
 
 	   std::string m_writtenByDelegate;
+
+	   nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	   timespec getCurrentTime();
 };
 
 #endif /* TESTDEVICE_H_ */

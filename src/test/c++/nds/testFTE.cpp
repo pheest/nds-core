@@ -16,7 +16,7 @@ TEST(testFTE, testStateMachineFTE)
     //Create factory
     nds::Factory factory("test");
 
-    // Create test device of type DeviceDigitalIO and named rootNode
+    // Create test device of type DeviceFTE and named rootNode
     factory.createDevice("Device", "rootNode", nds::namedParameters_t());
 
     //Get instance of the Test Control System
@@ -242,8 +242,8 @@ TEST(testFTE, testSuppressPVManaging)
 TEST(testFTE, testChgPeriodPVManaging)
 {
 
-	const timespec* pStateMachineSwitchTime;
-	const std::int32_t* pStateMachineState;
+//	const timespec* pStateMachineSwitchTime;
+//	const std::int32_t* pStateMachineState;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
@@ -326,22 +326,16 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
-	// Pending Value Testing
-	std::int32_t pendingValue;
-	pInterface->writeCSValue("/rootNode-FTENode.TerminalPending",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.PendingValue",&readTimestamp,&pendingValue); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)1,pendingValue);
-
     // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
     //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
 	//Maximum Value Testing
@@ -349,28 +343,34 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
 	pInterface->readCSValue("/rootNode-FTENode.Maximum",&readTimestamp,&maximum); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)20,maximum);
 
+	// Pending Value Testing
+	std::int32_t pendingValue;
+	pInterface->writeCSValue("/rootNode-FTENode.TerminalPending",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->readCSValue("/rootNode-FTENode.PendingValue",&readTimestamp,&pendingValue); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,pendingValue);
+
     //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
     //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
     //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
     ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+    pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	factory.destroyDevice("rootNode");

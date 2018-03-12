@@ -511,12 +511,12 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	      */
 	    m_FTE = rootNode.addChild(nds::FTE<std::string>(
 	     		"FTENode",
-	 			std::bind(&Device::switchOn_Streaming, this),
-	 			std::bind(&Device::switchOff_Streaming, this),
-	 			std::bind(&Device::start_Streaming, this),
-	 			std::bind(&Device::stop_Streaming, this),
-	 			std::bind(&Device::recover_Streaming, this),
-	 			std::bind(&Device::allow_Streaming_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&Device::switchOn_FTE, this),
+	 			std::bind(&Device::switchOff_FTE, this),
+	 			std::bind(&Device::start_FTE, this),
+	 			std::bind(&Device::stop_FTE, this),
+	 			std::bind(&Device::recover_FTE, this),
+	 			std::bind(&Device::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 	 			std::bind(&Device::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&Device::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&Device::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
@@ -600,20 +600,6 @@ void Device::deallocateDevice(void* DeviceName)
 void Device::switchOn_Device(){
 	// Call HW initialization function here,
 		//HW_CALL_INIT_FUNCTION
-	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
-	// As an example:
-		// Call API HW to retrieve DMABufferSize -> (ex: DMABufferSize=4194304 (4096*1024) )
-		m_DataAcquisition.setDMABufferSize(getCurrentTime(),(std::int32_t)4194304);
-		// Call API HW to retrieve DMAEnable -> (ex: DMAEnable initial status OFF (0))
-		m_DataAcquisition.setDMAEnable(getCurrentTime(),(std::int32_t)0);
-		// Call API HW to retrieve DMAFrameType -> (ex: DMAFrameType=0)
-		m_DataAcquisition.setDMAFrameType(getCurrentTime(),(std::int32_t)1);
-		// Call API HW to retrieve DMANumChannels -> (ex: DMANumChannels=4)
-		m_DataAcquisition.setDMANumChannels(getCurrentTime(),(std::int32_t)4);
-		// Call API HW to retrieve DMASampleSize -> (ex: DMASampleSize=49
-		m_DataAcquisition.setDMASampleSize(getCurrentTime(),(std::int32_t)4);
-		// Call API HW to retrieve SamplingRate -> (ex: SamplingRate=1000)
-		m_DataAcquisition.setSamplingRate(getCurrentTime(),(double)1000);
 
 		// Call API HW to retrieve FirmwareVersion
 		m_FirmwareSup.setFirmwareVersion(getCurrentTime(),"Firmware test version");
@@ -629,9 +615,6 @@ void Device::switchOn_Device(){
 		m_FirmwareSup.setDeviceType(getCurrentTime(),"Firmware test device type");
 		// Call API HW to retrieve FirmwarePath
 		m_FirmwareSup.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
-
-		// Call API HW to retrieve Maximum -> (ex: Maximum FTE that can be scheduled 20)
-		m_FTE.setMaximum(getCurrentTime(),20);
 
 }
 void Device::switchOff_Device(){
@@ -663,6 +646,21 @@ bool Device::allow__Device_Change(const nds::state_t, const nds::state_t, const 
 
 // Called when the DataAcquisition node has to be switched on.
 void Device::switchOn_DataAcquisition(){
+
+	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
+	// As an example:
+	// Call API HW to retrieve DMABufferSize -> (ex: DMABufferSize=4194304 (4096*1024) )
+	m_DataAcquisition.setDMABufferSize(getCurrentTime(),(std::int32_t)4194304);
+	// Call API HW to retrieve DMAEnable -> (ex: DMAEnable initial status OFF (0))
+	m_DataAcquisition.setDMAEnable(getCurrentTime(),(std::int32_t)0);
+	// Call API HW to retrieve DMAFrameType -> (ex: DMAFrameType=0)
+	m_DataAcquisition.setDMAFrameType(getCurrentTime(),(std::int32_t)1);
+	// Call API HW to retrieve DMANumChannels -> (ex: DMANumChannels=4)
+	m_DataAcquisition.setDMANumChannels(getCurrentTime(),(std::int32_t)4);
+	// Call API HW to retrieve DMASampleSize -> (ex: DMASampleSize=49
+	m_DataAcquisition.setDMASampleSize(getCurrentTime(),(std::int32_t)4);
+	// Call API HW to retrieve SamplingRate -> (ex: SamplingRate=1000)
+	m_DataAcquisition.setSamplingRate(getCurrentTime(),(double)1000);
 
 }
 
@@ -2163,7 +2161,8 @@ void Device::FFT_thread_body(){
 */
 // Called when the FTE node has to be switched on.
 void Device::switchOn_FTE(){
-
+	// Call API HW to retrieve Maximum -> (ex: Maximum FTE that can be scheduled 20)
+	m_FTE.setMaximum(getCurrentTime(),20);
 }
 
 // Called when the FTE node has to be switched off.

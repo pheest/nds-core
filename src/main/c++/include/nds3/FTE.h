@@ -12,7 +12,7 @@
 
 /**
  * @file FTE.h
- * @brief TBD
+ * @brief Defines the nds::FTE node, which provides basic services for Future Time Event scheduling
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
  * necessary header files (including this one).
@@ -24,21 +24,37 @@
 namespace nds
 {
 
+/**
+ * This is a node that supplies FTE scheduling tools. Set, suppress and change FTEs.
+ *
+ * It also provides a state machine that allows to start/stop the node.
+ *
+ * The user of FTE class must declare few delegate functions that specify
+ * the actions to perform when the acquisition node's state changes.
+ *
+ * In particular, the transition from the state off to on should get
+ * the hardware parameters.
+ *
+ * @tparam T  the PV data type. //TODO:template??
+ *            The following data types are supported:
+ *            - std::string
+ *
+ */
 template <typename T>
 class NDS3_API FTE: public Node
 {
 public:
     /**
-     * @brief Initializes an empty node.
+     * @brief Initializes an empty FTE node.
      *
-     * You must assign a valid node before calling initialize().
+     * You must assign a valid FTE node before calling initialize().
      */
 	FTE();
 
     /**
-     * @brief Copies a reference from another object.
+     * @brief Copies a FTE reference from another object.
      *
-     * @param right a holder from which the reference to
+     * @param right a FTE holder from which the reference to
      *        the object implementation is copied
      */
 	FTE(const FTE<T>& right);
@@ -46,7 +62,7 @@ public:
 	FTE& operator=(const FTE<T>& right);
 
     /**
-     * @brief Constructs the node.
+     * @brief Constructs the FTE node.
      *
      */
 	FTE(const std::string& name,
