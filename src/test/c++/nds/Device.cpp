@@ -506,6 +506,27 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_FFT.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
 	    m_FFT.setLogLevel(nds::logLevel_t::debug);
 
+
+	    /**
+	      * Add a Routing node:
+	      */
+	    m_Routing = rootNode.addChild(nds::Routing<std::string>(
+	     		"RoutingNode",
+	 			std::bind(&Device::switchOn_Routing, this),
+	 			std::bind(&Device::switchOff_Routing, this),
+	 			std::bind(&Device::start_Routing, this),
+	 			std::bind(&Device::stop_Routing, this),
+	 			std::bind(&Device::recover_Routing, this),
+	 			std::bind(&Device::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&Device::PV_Routing_ClkSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_Routing_ClkDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&Device::PV_Routing_TermSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&Device::PV_Routing_TermDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2)
+	    ));
+
+	    m_Routing.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_Routing.setLogLevel(nds::logLevel_t::debug);
+
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
@@ -2130,4 +2151,142 @@ void Device::PV_FFT_SmoothFactor_Writer(const timespec& timestamp, const std::in
 void Device::FFT_thread_body(){
 	//TODO
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Routing
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* Methods to control Routing state machine
+*/
+// Called when the Routing node has to be switched on.
+void Device::switchOn_Routing(){
+
+}
+
+// Called when the Routing node has to be switched off.
+void Device::switchOff_Routing(){
+
+}
+
+// Called when the Routing node has to start working. We start the FTE thread.
+void Device::start_Routing(){
+
+}
+
+// Stop the Routing node thread
+void Device::stop_Routing(){
+
+}
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+void Device::recover_Routing(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+bool Device::allow_Routing_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* Routing setters
+*/
+void Device::PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t RoutingSetStatus;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value==1){//Value==1 simulates a clock routing set.
+
+		//Retrieve the data from the PVs that have been previously configured
+		std::int32_t clockSrc = m_Routing.getClkSrc();
+		std::int32_t clockDst = m_Routing.getClkDst();
+
+		//Just check PVs have been written
+		if(clockSrc!=0 && clockDst!=0){
+			RoutingSetStatus=0;
+		}
+		else{
+			RoutingSetStatus=-1;
+		}
+
+		//Fill the Status and Code PVs with some information
+		if(RoutingSetStatus==0){
+			m_Routing.setClkSetStatus(timestamp,"OK");
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+		}else{
+			m_Routing.setClkSetStatus(timestamp,"WRONG");
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+		}
+	}else{
+		m_Routing.setClkSetStatus(timestamp,"OK");
+		m_Routing.setClkSetCode(timestamp,(std::int32_t)0);
+	}
+
+}
+
+void Device::PV_Routing_ClkDstRead_Writer(const timespec& timestamp, const std::int32_t& value){
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+
+	//Fill the readable PV with the connection information for this destination clock
+	// As an example any given ClkDst is connected to ClkDst+1 as source
+	m_Routing.setClkSrcRead(timestamp,value + 1);
+}
+
+void Device::PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int32_t& value){
+	std::int32_t RoutingSetStatus;
+
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+	if(value==1){//Value==1 simulates a terminal routing set.
+
+		//Retrieve the data from the PVs that have been previously configured
+		std::int32_t terminalSrc = m_Routing.getTermSrc();
+		std::int32_t terminalDst = m_Routing.getTermDst();
+		std::int32_t terminalSyncSet = m_Routing.getTermSyncSet();
+		std::int32_t terminalInvertSet = m_Routing.getTermInvertSet();
+
+		//Just check PVs have been written
+		if(terminalSrc!=0 && terminalDst!=0){
+			RoutingSetStatus=0;
+		}
+		else{
+			RoutingSetStatus=-1;
+		}
+
+		//Fill the Status and Code PVs with some information
+		if(RoutingSetStatus==0){
+			m_Routing.setTermSetStatus(timestamp,"OK");
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+		}else{
+			m_Routing.setTermSetStatus(timestamp,"WRONG");
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+		}
+	}else{
+		m_Routing.setTermSetStatus(timestamp,"OK");
+		m_Routing.setTermSetCode(timestamp,(std::int32_t)0);
+	}
+
+}
+
+void Device::PV_Routing_TermDstRead_Writer(const timespec& timestamp, const std::int32_t& value){
+	//This code has been developed just for testing purposes. Should be replaced with HW API.
+
+	//Fill the readable PV with the connection information for this destination terminal
+	// As an example any given TermDst is connected to TermDst+1 as source
+	// and set Sync and Invert PVs with 0 when Dst is 0 and with 1 in any other case
+	m_Routing.setTermSrcRead(timestamp,value + 1);
+
+	if (value == 0){
+		m_Routing.setTermSyncRead(timestamp,0);
+		m_Routing.setTermInvertRead(timestamp,0);
+	} else {
+		m_Routing.setTermSyncRead(timestamp,1);
+		m_Routing.setTermInvertRead(timestamp,1);
+	}
+}
+
+
 

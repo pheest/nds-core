@@ -47,6 +47,7 @@
 #include "nds3/FFT.h"
 #include "nds3/Decimation.h"
 #include "nds3/timeSupp.h"
+#include "nds3/routing.h"
 
 
 
