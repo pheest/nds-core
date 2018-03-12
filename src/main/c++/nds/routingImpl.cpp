@@ -1,0 +1,452 @@
+/*
+ * Nominal Device Support v.3 (NDS3)
+ *
+ * For more information about the license please refer to the license.txt
+ * file included in the distribution.
+ *
+ *  By GMV & UPM
+ */
+
+
+#include "nds3/definitions.h"
+#include "nds3/impl/routingImpl.h"
+#include "nds3/impl/stateMachineImpl.h"
+#include "nds3/impl/pvVariableInImpl.h"
+#include "nds3/impl/pvVariableOutImpl.h"
+#include "nds3/impl/pvDelegateOutImpl.h"
+#include "nds3/impl/pvDelegateInImpl.h"
+
+
+
+namespace nds
+{
+
+template<typename T>
+RoutingImpl<T>::RoutingImpl(const std::string& name,
+							stateChange_t switchOnFunction,
+							stateChange_t switchOffFunction,
+							stateChange_t startFunction,
+							stateChange_t stopFunction,
+							stateChange_t recoverFunction,
+							allowChange_t allowStateChangeFunction,
+							writerInt32_t PV_ClkSet_Writer,
+							writerInt32_t PV_ClkDstRead_Writer,
+							writerInt32_t PV_TermSet_Writer,
+							writerInt32_t PV_TermDstRead_Writer
+):
+	NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Set Route Clocks PVs
+    ////////////////////////////////////////////////////////////////////////////
+
+    m_ClkSrc_PV.reset(new PVVariableOutImpl<std::int32_t>("ClkSrc"));
+    m_ClkSrc_PV->setDescription("Clock source");
+    m_ClkSrc_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkSrc_PV);
+
+	m_ClkDst_PV.reset(new PVVariableOutImpl<std::int32_t>("ClkDst"));
+	m_ClkDst_PV->setDescription("Clock Destination");
+	m_ClkDst_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkDst_PV);
+
+	m_ClkSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkSet",PV_ClkSet_Writer));
+	m_ClkSet_PV->setDescription("Clock Routing Set");
+	m_ClkSet_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_ClkSet_PV);
+
+    m_ClkSetStatus_PV.reset(new PVVariableInImpl<std::string>("ClkSetStatus"));
+    m_ClkSetStatus_PV->setDescription("Clock routing set status message");
+    m_ClkSetStatus_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkSetStatus_PV);
+
+    m_ClkSetCode_PV.reset(new PVVariableInImpl<std::int32_t>("ClkSetCode"));
+    m_ClkSetCode_PV->setDescription("Clock routing set status code");
+    m_ClkSetCode_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkSetCode_PV);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Set Read Clock Route Status PVs
+    ////////////////////////////////////////////////////////////////////////////
+
+    m_ClkDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkDstRead",PV_ClkDstRead_Writer));
+    m_ClkDstRead_PV->setDescription("Clock destination connection configuration read");
+    m_ClkDstRead_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_ClkDstRead_PV);
+
+    m_ClkSrcRead_PV.reset(new PVVariableInImpl<std::int32_t>("ClkSrcRead"));
+    m_ClkSrcRead_PV->setDescription("Clock source of selected clock destination");
+    m_ClkSrcRead_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ClkSrcRead_PV);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Set Route Terminals PVs
+    ////////////////////////////////////////////////////////////////////////////
+
+    m_TermSrc_PV.reset(new PVVariableOutImpl<std::int32_t>("TermSrc"));
+    m_TermSrc_PV->setDescription("Terminal source");
+    m_TermSrc_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSrc_PV);
+
+    m_TermDst_PV.reset(new PVVariableOutImpl<std::int32_t>("TermDst"));
+    m_TermDst_PV->setDescription("Terminal destination");
+    m_TermDst_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermDst_PV);
+
+    m_TermSyncSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TermSyncSet"));
+    m_TermSyncSet_PV->setDescription("Terminal sync mode set");
+    m_TermSyncSet_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSyncSet_PV);
+
+    m_TermInvertSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TermInvertSet"));
+    m_TermInvertSet_PV->setDescription("Terminal inversion mode set");
+    m_TermInvertSet_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermInvertSet_PV);
+
+    m_TermSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermSet",PV_TermSet_Writer));
+    m_TermSet_PV->setDescription("Terminal Routing Set");
+    m_TermSet_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_TermSet_PV);
+
+    m_TermSetStatus_PV.reset(new PVVariableInImpl<std::string>("TermSetStatus"));
+    m_TermSetStatus_PV->setDescription("Terminal routing set status message");
+    m_TermSetStatus_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSetStatus_PV);
+
+    m_TermSetCode_PV.reset(new PVVariableInImpl<std::int32_t>("TermSetCode"));
+    m_TermSetCode_PV->setDescription("Terminal routing set status code");
+    m_TermSetCode_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSetCode_PV);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Set Read Routing Configuration PVs
+    ////////////////////////////////////////////////////////////////////////////
+
+    m_TermDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermDstRead",PV_TermDstRead_Writer));
+    m_TermDstRead_PV->setDescription("Terminal destination connection configuration read");
+    m_TermDstRead_PV->setScanType(scanType_t::passive, 0);
+	addChild(m_TermDstRead_PV);
+
+    m_TermSrcRead_PV.reset(new PVVariableInImpl<std::int32_t>("TermSrcRead"));
+    m_TermSrcRead_PV->setDescription("Terminal source of selected Terminal destination");
+    m_TermSrcRead_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSrcRead_PV);
+
+    m_TermSyncRead_PV.reset(new PVVariableInImpl<std::int32_t>("TermSyncRead"));
+    m_TermSyncRead_PV->setDescription("Terminal sync mode of selected Terminal destination");
+    m_TermSyncRead_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermSyncRead_PV);
+
+    m_TermInvertRead_PV.reset(new PVVariableInImpl<std::int32_t>("TermInvertRead"));
+    m_TermInvertRead_PV->setDescription("Terminal invert mode of selected Terminal destination");
+    m_TermInvertRead_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_TermInvertRead_PV);
+
+
+	// Add state machine
+	m_StateMachine.reset(new StateMachineImpl(true,
+			switchOnFunction,
+			switchOffFunction,
+			std::bind(&RoutingImpl::onStart, this),
+			stopFunction,
+			recoverFunction,
+			allowStateChangeFunction));
+	addChild(m_StateMachine);
+}
+
+
+template<typename T>
+timespec RoutingImpl<T>::getStartTimestamp() const
+{
+	return m_StartTime;
+}
+
+template<typename T>
+void RoutingImpl<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+	m_StartTimestampFunction = timestampDelegate;
+}
+
+template<typename T>
+void RoutingImpl<T>::onStart()
+{
+	m_StartTime = m_StartTimestampFunction();
+	m_OnStartDelegate();
+}
+
+
+
+///////////////////////////////////////////////////////////////
+// Route Clocks getters
+///////////////////////////////////////////////////////////////
+
+template<typename T>
+size_t RoutingImpl<T>::getClkSrc()
+{
+	std::int32_t ClkSrc;
+	timespec timestamp;
+	m_ClkSrc_PV->read(&timestamp, &ClkSrc);
+	return (std::int32_t)ClkSrc;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getClkDst()
+{
+	std::int32_t ClkDst;
+	timespec timestamp;
+	m_ClkDst_PV->read(&timestamp, &ClkDst);
+	return (std::int32_t)ClkDst;
+}
+
+template<typename T>
+std::string RoutingImpl<T>::getClkSetStatus()
+{
+	std::string ClkSetStatus;
+	timespec timestamp;
+	m_ClkSetStatus_PV->read(&timestamp, &ClkSetStatus);
+	return (std::string)ClkSetStatus;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getClkSetCode()
+{
+	std::int32_t ClkSetCode;
+	timespec timestamp;
+	m_ClkSetCode_PV->read(&timestamp, &ClkSetCode);
+	return (std::int32_t)ClkSetCode;
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+// Read Clock Route Status getters
+////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+size_t RoutingImpl<T>::getClkSrcRead()
+{
+	std::int32_t ClkSrcRead;
+	timespec timestamp;
+	m_ClkSrcRead_PV->read(&timestamp, &ClkSrcRead);
+	return (std::int32_t)ClkSrcRead;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// Route Terminals getters
+////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+size_t RoutingImpl<T>::getTermSrc()
+{
+	std::int32_t TermSrc;
+	timespec timestamp;
+	m_TermSrc_PV->read(&timestamp, &TermSrc);
+	return (std::int32_t)TermSrc;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermDst()
+{
+	std::int32_t TermDst;
+	timespec timestamp;
+	m_TermDst_PV->read(&timestamp, &TermDst);
+	return (std::int32_t)TermDst;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermSyncSet()
+{
+	std::int32_t TermSyncSet;
+	timespec timestamp;
+	m_TermSyncSet_PV->read(&timestamp, &TermSyncSet);
+	return (std::int32_t)TermSyncSet;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermInvertSet()
+{
+	std::int32_t TermInvertSet;
+	timespec timestamp;
+	m_TermInvertSet_PV->read(&timestamp, &TermInvertSet);
+	return (std::int32_t)TermInvertSet;
+}
+
+template<typename T>
+std::string RoutingImpl<T>::getTermSetStatus()
+{
+	std::string TermSetStatus;
+	timespec timestamp;
+	m_ClkSetStatus_PV->read(&timestamp, &TermSetStatus);
+	return (std::string)TermSetStatus;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermSetCode()
+{
+	std::int32_t TermSetCode;
+	timespec timestamp;
+	m_TermSetCode_PV->read(&timestamp, &TermSetCode);
+	return (std::int32_t)TermSetCode;
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// Read Routing Configuration getters
+////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+size_t RoutingImpl<T>::getTermSrcRead()
+{
+	std::int32_t TermSrcRead;
+	timespec timestamp;
+	m_TermSrcRead_PV->read(&timestamp, &TermSrcRead);
+	return (std::int32_t)TermSrcRead;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermSyncRead()
+{
+	std::int32_t TermSyncRead;
+	timespec timestamp;
+	m_TermSyncRead_PV->read(&timestamp, &TermSyncRead);
+	return (std::int32_t)TermSyncRead;
+}
+
+template<typename T>
+size_t RoutingImpl<T>::getTermInvertRead()
+{
+	std::int32_t TermInvertRead;
+	timespec timestamp;
+	m_TermInvertRead_PV->read(&timestamp, &TermInvertRead);
+	return (std::int32_t)TermInvertRead;
+}
+
+/** TODO some setters have been commented. Should they exist?
+ *
+ */
+
+///////////////////////////////////////////////////////////////
+// Route Clocks setters
+///////////////////////////////////////////////////////////////
+
+//template<typename T>
+//void RoutingImpl<T>::setClkSet(const timespec& timestamp, const std::int32_t& value)
+//{
+//	m_ClkSet_PV->setValue(timestamp, value);
+//	m_ClkSet_PV->push(timestamp, value);
+//}
+
+
+template<typename T>
+void RoutingImpl<T>::setClkSetStatus(const timespec& timestamp, const std::string& value)
+{
+	m_ClkSetStatus_PV->setValue(timestamp, value);
+	m_ClkSetStatus_PV->push(timestamp, value);
+}
+
+
+template<typename T>
+void RoutingImpl<T>::setClkSetCode(const timespec& timestamp, const std::int32_t& value)
+{
+	m_ClkSetCode_PV->setValue(timestamp, value);
+	m_ClkSetCode_PV->push(timestamp, value);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// Read Clock Route Status setters
+////////////////////////////////////////////////////////////////////////////
+
+//template<typename T>
+//void RoutingImpl<T>::setClkDstRead(const timespec& timestamp, const std::int32_t& value)
+//{
+//	m_ClkDstRead_PV->setValue(timestamp, value);
+//	m_ClkDstRead_PV->push(timestamp, value);
+//}
+
+
+template<typename T>
+void RoutingImpl<T>::setClkSrcRead(const timespec& timestamp, const std::int32_t& value)
+{
+	m_ClkSrcRead_PV->setValue(timestamp, value);
+	m_ClkSrcRead_PV->push(timestamp, value);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// Route Terminals setters
+////////////////////////////////////////////////////////////////////////////
+
+//template<typename T>
+//void RoutingImpl<T>::setTermSet(const timespec& timestamp, const std::int32_t& value)
+//{
+//	m_TermSe_PV->setValue(timestamp, value);
+//	m_TermSe_PV->push(timestamp, value);
+//}
+
+
+template<typename T>
+void RoutingImpl<T>::setTermSetStatus(const timespec& timestamp, const std::string& value)
+{
+	m_TermSetStatus_PV->setValue(timestamp, value);
+	m_TermSetStatus_PV->push(timestamp, value);
+}
+
+
+template<typename T>
+void RoutingImpl<T>::setTermSetCode(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TermSetCode_PV->setValue(timestamp, value);
+	m_TermSetCode_PV->push(timestamp, value);
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// Read Routing Configuration setters
+////////////////////////////////////////////////////////////////////////////
+
+//template<typename T>
+//void RoutingImpl<T>::setTermDstRead(const timespec& timestamp, const std::int32_t& value)
+//{
+//	m_TermDstRead_PV->setValue(timestamp, value);
+//	m_TermDstRead_PV->push(timestamp, value);
+//}
+
+
+template<typename T>
+void RoutingImpl<T>::setTermSrcRead(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TermSrcRead_PV->setValue(timestamp, value);
+	m_TermSrcRead_PV->push(timestamp, value);
+}
+
+
+template<typename T>
+void RoutingImpl<T>::setTermSyncRead(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TermSyncRead_PV->setValue(timestamp, value);
+	m_TermSyncRead_PV->push(timestamp, value);
+}
+
+
+template<typename T>
+void RoutingImpl<T>::setTermInvertRead(const timespec& timestamp, const std::int32_t& value)
+{
+	m_TermInvertRead_PV->setValue(timestamp, value);
+	m_TermInvertRead_PV->push(timestamp, value);
+}
+
+
+template class RoutingImpl<std::string>;
+
+}
