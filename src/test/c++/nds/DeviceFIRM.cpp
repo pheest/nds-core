@@ -118,7 +118,7 @@ void DeviceFirmware::switchOn_Firmware(){
 	// Call API HW to retrieve FirmwareVersion
 	m_Firmware.setFirmwareVersion(getCurrentTime(),"Firmware test version");
 	// Call API HW to retrieve FirmwareStatus
-	m_Firmware.setFirmwareStatus(getCurrentTime(),"Firmware test status");
+	m_Firmware.setFirmwareStatus(getCurrentTime(),0);
 	// Call API HW to retrieve HardwareRevision
 	m_Firmware.setHardwareRevision(getCurrentTime(),"Firmware test hardware revision");
 	// Call API HW to retrieve SerialNumber
@@ -189,7 +189,7 @@ void DeviceFirmware::Firmware_thread_body(){
 	// Get FirmwareVersion
 	std::string FirmwareVersion = m_Firmware.getFirmwareVersion();
 	// Get FirmwareStatus
-	std::string FirmwareStatus = m_Firmware.getFirmwareStatus();
+	std::int32_t FirmwareStatus = m_Firmware.getFirmwareStatus();
 	// Get HardwareRevision
 	std::string HardwareRevision = m_Firmware.getHardwareRevision();
 	// Get SerialNumber
@@ -201,9 +201,9 @@ void DeviceFirmware::Firmware_thread_body(){
 	// Get DriverVersion
 	std::string DriverVersion = m_Firmware.getDriverVersion();
 	// Get ChassisNumber
-	int32_t ChassisNumber = m_Firmware.getChassisNumber();
+        std::int32_t ChassisNumber = m_Firmware.getChassisNumber();
 	// Get SlotNumber
-	int32_t SlotNumber = m_Firmware.getSlotNumber();
+        std::int32_t SlotNumber = m_Firmware.getSlotNumber();
 	// Get FirmwarePath
 	std::string FirmwarePath = m_Firmware.getFirmwarePath();
 	std::string FirmwarePathOld=m_Firmware.getFirmwarePath();

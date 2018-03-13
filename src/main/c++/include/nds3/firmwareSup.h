@@ -114,7 +114,7 @@ public:
      *
      * @return the Firmware Status
      */
-    std::string getFirmwareStatus();
+    std::int32_t  getFirmwareStatus();
     /**
      * @brief Retrieve the Hardware Revision
      *
@@ -150,13 +150,13 @@ public:
      *
      * @return the Chassis Number
      */
-    int32_t getChassisNumber();
+    std::int32_t getChassisNumber();
     /**
      * @brief Retrieve the Slot Number
      *
      * @return the Slot Number
      */
-    int32_t getSlotNumber();
+    std::int32_t getSlotNumber();
 
     /**
      * @brief Retrieve the Firmware Path
@@ -173,7 +173,7 @@ public:
      * @brief Sets the value of the Firmware Status
      *
      */
-    void setFirmwareStatus(const timespec& timestamp, const std::string& value);
+    void setFirmwareStatus(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the Hardware Revision
      *
@@ -203,12 +203,12 @@ public:
      * @brief Sets the value of the Chassis Number
      *
      */
-    void setChassisNumber(const timespec& timestamp, const int32_t& value);
+    void setChassisNumber(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the Slot Number
      *
      */
-    void setSlotNumber(const timespec& timestamp, const int32_t& value);
+    void setSlotNumber(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the Firmware Path
      *

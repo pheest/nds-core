@@ -38,9 +38,21 @@ FirmwareSupImpl::FirmwareSupImpl(const std::string& name,
 	m_FirmwareVersion_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_FirmwareVersion_PV);
 
-	m_FirmwareStatus_PV.reset(new PVVariableInImpl<std::string>("Status"));
+        enumerationStrings_t firmwareStatusEnumerationStrings;
+        firmwareStatusEnumerationStrings.push_back("NO_ERROR");
+        firmwareStatusEnumerationStrings.push_back("INITIALIZING");
+        firmwareStatusEnumerationStrings.push_back("RESETTING");
+        firmwareStatusEnumerationStrings.push_back("HARDWARE/FIRMWARE_ERROR");
+        firmwareStatusEnumerationStrings.push_back("NO_BOARD_ACCESS");
+        firmwareStatusEnumerationStrings.push_back("STATIC_CONF_ERROR");
+        firmwareStatusEnumerationStrings.push_back("DYNAMIC_CONF_ERROR");
+        firmwareStatusEnumerationStrings.push_back("RESERVED");
+
+
+	m_FirmwareStatus_PV.reset(new PVVariableInImpl<std::int32_t>("Status"));
 	m_FirmwareStatus_PV->setDescription("Firmware status");
 	m_FirmwareStatus_PV->setScanType(scanType_t::interrupt, 0);
+        m_FirmwareStatus_PV->setEnumeration(firmwareStatusEnumerationStrings);
 	addChild(m_FirmwareStatus_PV);
 
 	m_HWRevision_PV.reset(new PVVariableInImpl<std::string>("HWRevision"));
@@ -129,12 +141,12 @@ std::string FirmwareSupImpl::getFirmwareVersion()
     return (std::string)FirmwareVersion;
 }
 
-std::string FirmwareSupImpl::getFirmwareStatus()
+std::int32_t FirmwareSupImpl::getFirmwareStatus()
 {
-    std::string FirmwareStatus;
+    std::int32_t FirmwareStatus;
     timespec timestamp;
     m_FirmwareStatus_PV->read(&timestamp, &FirmwareStatus);
-    return (std::string)FirmwareStatus;
+    return FirmwareStatus;
 }
 
 std::string FirmwareSupImpl::getHardwareRevision()
@@ -207,7 +219,7 @@ void FirmwareSupImpl::setFirmwareVersion(const timespec& timestamp, const std::s
     m_FirmwareVersion_PV->push(timestamp, value);
 }
 
-void FirmwareSupImpl::setFirmwareStatus(const timespec& timestamp, const std::string& value)
+void FirmwareSupImpl::setFirmwareStatus(const timespec& timestamp, const std::int32_t& value)
 {
     m_FirmwareStatus_PV->setValue(timestamp, value);
     m_FirmwareStatus_PV->push(timestamp, value);

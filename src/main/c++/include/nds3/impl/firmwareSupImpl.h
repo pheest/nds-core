@@ -78,7 +78,7 @@ namespace nds
        *
        * @return the Firmware Status
        */
-      std::string getFirmwareStatus();
+      std::int32_t getFirmwareStatus();
       /**
        * @brief Retrieve the Hardware Revision
        *
@@ -114,13 +114,13 @@ namespace nds
        *
        * @return the Chassis Number
        */
-      int32_t getChassisNumber();
+      std::int32_t getChassisNumber();
       /**
        * @brief Retrieve the Slot Number 
        *
        * @return the Slot Number
        */
-      int32_t getSlotNumber();
+      std::int32_t getSlotNumber();
       /**
        * @brief Retrieve the Firmware Path
        *
@@ -136,7 +136,7 @@ namespace nds
        * @brief Sets the value of the Firmware Status
        *
        */
-      void setFirmwareStatus(const timespec& timestamp, const std::string& value);
+      void setFirmwareStatus(const timespec& timestamp, const std::int32_t& value);
       /**
        * @brief Sets the value of the Hardware Revision
        *
@@ -210,10 +210,9 @@ namespace nds
       std::shared_ptr<PVVariableInImpl<std::string> > m_FirmwareVersion_PV;
 
       /**
-       * TODO @Paula
        * @brief Input PV that provides the status of the firmware with a string
        */
-      std::shared_ptr<PVVariableInImpl<std::string> > m_FirmwareStatus_PV;
+      std::shared_ptr<PVVariableInImpl<std::int32_t> > m_FirmwareStatus_PV;
 
       /**
        * @brief Input PV that provides the hardware revision with a string
@@ -243,12 +242,12 @@ namespace nds
       /**
        * @brief Input PV that provides the chassis number
        * */
-      std::shared_ptr<PVVariableInImpl<int32_t> > m_ChassisNumber_PV;
+      std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ChassisNumber_PV;
 
       /**
        * @brief Input PV that provides the slot number
        * */
-      std::shared_ptr<PVVariableInImpl<int32_t> > m_SlotNumber_PV;
+      std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SlotNumber_PV;
 
       /**
        * @brief Output PV to set the path of the firmware to be loaded

@@ -598,7 +598,7 @@ void Device::switchOn_Device(){
 		// Call API HW to retrieve FirmwareVersion
 		m_FirmwareSup.setFirmwareVersion(getCurrentTime(),"Firmware test version");
 		// Call API HW to retrieve FirmwareStatus
-		m_FirmwareSup.setFirmwareStatus(getCurrentTime(),"Firmware test status");
+		m_FirmwareSup.setFirmwareStatus(getCurrentTime(),0);
 		// Call API HW to retrieve HardwareRevision
 		m_FirmwareSup.setHardwareRevision(getCurrentTime(),"Firmware test hardware revision");
 		// Call API HW to retrieve SerialNumber
@@ -1886,7 +1886,7 @@ void Device::FirmwareSup_thread_body(){
 	// Get FirmwareVersion
 	std::string FirmwareVersion = m_FirmwareSup.getFirmwareVersion();
 	// Get FirmwareStatus
-	std::string FirmwareStatus = m_FirmwareSup.getFirmwareStatus();
+	std::int32_t FirmwareStatus = m_FirmwareSup.getFirmwareStatus();
 	// Get HardwareRevision
 	std::string HardwareRevision = m_FirmwareSup.getHardwareRevision();
 	// Get SerialNumber

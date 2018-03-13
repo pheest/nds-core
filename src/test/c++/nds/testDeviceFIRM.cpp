@@ -39,8 +39,7 @@ TEST(testDeviceFIRM, fullTest)
       timestamp, (std::int32_t)nds::state_t::on);
   pInterface->getPushedInt32("/deviceFIRM-Firm.StateMachine.getState", 
       pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
-  EXPECT_EQ((std::int32_t)nds::state_t::initializing, 
-      *pFirmwareStateMachineState);
+  EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pFirmwareStateMachineState);
 
   ::sleep(2);
   pInterface->getPushedInt32("/deviceFIRM-Firm.StateMachine.getState", 
@@ -58,9 +57,9 @@ TEST(testDeviceFIRM, fullTest)
   EXPECT_EQ((std::string)"Firmware test version", firmwareVersion);
 
   //Get the firmware status
-  std::string firmwareStatus;
+  std::int32_t firmwareStatus;
   pInterface->readCSValue("/deviceFIRM-Firm.Status", &timestamp, &firmwareStatus);
-  EXPECT_EQ((std::string)"Firmware test status", firmwareStatus);
+  EXPECT_EQ(0, firmwareStatus);
 
   //Get the hardware revision
   std::string hardwareRevision;
@@ -88,12 +87,12 @@ TEST(testDeviceFIRM, fullTest)
   EXPECT_EQ("<major_id>.<minor_id>.<maintenance_id>", driverVersion);
 
   //Get the chassis number
-  int32_t chassisNumber;
+  std::int32_t chassisNumber;
   pInterface->readCSValue("/deviceFIRM-Firm.ChassisNumber", &timestamp, &chassisNumber);
   EXPECT_EQ(42, chassisNumber);
 
   //Get the slot number
-  int32_t slotNumber;
+  std::int32_t slotNumber;
   pInterface->readCSValue("/deviceFIRM-Firm.SlotNumber", &timestamp, &slotNumber);
   EXPECT_EQ(42, slotNumber);
 

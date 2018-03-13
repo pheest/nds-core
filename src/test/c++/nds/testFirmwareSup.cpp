@@ -39,9 +39,9 @@ TEST(testFirmwareSupport, testVariables)
     EXPECT_EQ((std::string)"Firmware test version", firmwareVersion);
 
     //Get the firmware status
-    std::string firmwareStatus;
+    std::int32_t firmwareStatus;
     pInterface->readCSValue("/rootNode-Firm.Status", &timestamp, &firmwareStatus);
-    EXPECT_EQ((std::string)"Firmware test status", firmwareStatus);
+    EXPECT_EQ( 0, firmwareStatus);
 
     //Get the hardware revision
     std::string hardwareRevision;

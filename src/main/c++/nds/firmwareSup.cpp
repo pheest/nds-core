@@ -73,7 +73,8 @@ std::string FirmwareSup::getFirmwareVersion()
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getFirmwareVersion();
 }
 
-std::string FirmwareSup::getFirmwareStatus()
+//std::string FirmwareSup::getFirmwareStatus()
+std::int32_t FirmwareSup::getFirmwareStatus()
 {
     return std::static_pointer_cast<FirmwareSupImpl>(m_pImplementation)->getFirmwareStatus();
 }
@@ -123,7 +124,8 @@ void FirmwareSup::setFirmwareVersion(const timespec& timestamp, const std::strin
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setFirmwareVersion(timestamp, value);
 }
 
-void FirmwareSup::setFirmwareStatus(const timespec& timestamp, const std::string& value)
+//void FirmwareSup::setFirmwareStatus(const timespec& timestamp, const std::string& value)
+void FirmwareSup::setFirmwareStatus(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setFirmwareStatus(timestamp, value);
 }
@@ -168,6 +170,7 @@ void FirmwareSup::setFirmwarePath(const timespec& timestamp, const std::string& 
 {
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setFirmwarePath(timestamp, value);
 }
+
 
 
 }
