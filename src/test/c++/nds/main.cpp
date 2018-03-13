@@ -53,7 +53,5 @@ int main(int argc, char **argv)
     nds::Factory::registerControlSystem(testControlSystem);
 
     ::testing::InitGoogleTest(&argc, argv);
-    // Testing only FIRMWARE
-    //::testing::GTEST_FLAG(filter) = "DeviceFIRM";
     return RUN_ALL_TESTS();
 }
