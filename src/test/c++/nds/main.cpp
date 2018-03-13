@@ -11,6 +11,7 @@
 #include "../include/Device_DigitalIO.h"
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
+#include "../include/DeviceFIRM.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -52,6 +53,15 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceStateMachine",
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceStateMachine::deallocateDevice, std::placeholders::_1));
+
+
+
+    //Devices which have been created for testing isolated nodes
+
+    nds::Factory::registerDriver("DeviceFIRM",
+                           std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceFirmware::deallocateDevice, std::placeholders::_1));
+
 
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
