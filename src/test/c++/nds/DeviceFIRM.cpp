@@ -127,9 +127,14 @@ void DeviceFirmware::switchOn_Firmware(){
 	m_Firmware.setDeviceModel(getCurrentTime(),"Firmware test device model");
 	// Call API HW to retrieve DeviceType
 	m_Firmware.setDeviceType(getCurrentTime(),"Firmware test device type");
+        // Call API HW to retrieve DriverVersion
+	m_Firmware.setDriverVersion(getCurrentTime(),"<major_id>.<minor_id>.<maintenance_id>");
+        // Call API HW to retrieve ChassisNumber
+	m_Firmware.setChassisNumber(getCurrentTime(),42);
+        // Call API HW to retrieve SlotNumber
+	m_Firmware.setSlotNumber(getCurrentTime(),42);
 	// Call API HW to retrieve FirmwarePath
 	m_Firmware.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
-
 }
 
 // Called when the Firmware node has to be switched off.
@@ -193,19 +198,28 @@ void DeviceFirmware::Firmware_thread_body(){
 	std::string DeviceModel = m_Firmware.getDeviceModel();
 	// Get DeviceType
 	std::string DeviceType = m_Firmware.getDeviceType();
+	// Get DriverVersion
+	std::string DriverVersion = m_Firmware.getDriverVersion();
+	// Get ChassisNumber
+	int32_t ChassisNumber = m_Firmware.getChassisNumber();
+	// Get SlotNumber
+	int32_t SlotNumber = m_Firmware.getSlotNumber();
 	// Get FirmwarePath
 	std::string FirmwarePath = m_Firmware.getFirmwarePath();
 	std::string FirmwarePathOld=m_Firmware.getFirmwarePath();
 
 
-	std::cout<<"Firmware support information:"<<std::endl;
-	std::cout<<"\tFirmwareVersion = "<<FirmwareVersion<<std::endl;
-	std::cout<<"\tFirmwareStatus = "<<FirmwareStatus<<std::endl;
-	std::cout<<"\tHardwareRevision = "<<HardwareRevision<<std::endl;
-	std::cout<<"\tSerialNumber = "<<SerialNumber<<std::endl;
-	std::cout<<"\tDeviceModel = "<<DeviceModel<<std::endl;
-	std::cout<<"\tDeviceType = "<<DeviceType<<std::endl;
-	std::cout<<"\tFirmwarePath = "<<FirmwarePath<<std::endl;
+	std::cout << "Firmware support information:" << std::endl;
+	std::cout << "\tFirmwareVersion = " << FirmwareVersion<<std::endl;
+	std::cout << "\tFirmwareStatus = " << FirmwareStatus << std::endl;
+	std::cout << "\tHardwareRevision = " << HardwareRevision << std::endl;
+	std::cout << "\tSerialNumber = " << SerialNumber << std::endl;
+	std::cout << "\tDeviceModel = " << DeviceModel << std::endl;
+	std::cout << "\tDeviceType = " << DeviceType << std::endl;
+	std::cout << "\tDriverVersion = " << DriverVersion << std::endl;
+	std::cout << "\tChassisNumber = " << ChassisNumber << std::endl;
+	std::cout << "\tSlotNumber = " << SlotNumber << std::endl;
+	std::cout << "\tFirmwarePath = " << FirmwarePath << std::endl;
 
 	// Run until the state machine stops us
 	while(!m_bStop_Firmware){

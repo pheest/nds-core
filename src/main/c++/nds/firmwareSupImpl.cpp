@@ -21,13 +21,13 @@ namespace nds
 {
 
 FirmwareSupImpl::FirmwareSupImpl(const std::string& name,
-									stateChange_t switchOnFunction,
-									stateChange_t switchOffFunction,
-									stateChange_t startFunction,
-									stateChange_t stopFunction,
-									stateChange_t recoverFunction,
-									allowChange_t allowStateChangeFunction,
-									writerString_t PV_FirmwarePath_Writer):
+		stateChange_t switchOnFunction,
+          	stateChange_t switchOffFunction,
+		stateChange_t startFunction,
+		stateChange_t stopFunction,
+	        stateChange_t recoverFunction,
+		allowChange_t allowStateChangeFunction,
+		writerString_t PV_FirmwarePath_Writer):
 	NodeImpl(name, nodeType_t::inputChannel),
 	m_OnStartDelegate(startFunction),
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -62,6 +62,21 @@ FirmwareSupImpl::FirmwareSupImpl(const std::string& name,
 	m_DeviceType_PV->setDescription("Device type");
 	m_DeviceType_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DeviceType_PV);
+
+	m_DriverVersion_PV.reset(new PVVariableInImpl<std::string>("DriverVersion"));
+	m_DriverVersion_PV->setDescription("Driver Version");
+	m_DriverVersion_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_DriverVersion_PV);
+
+	m_ChassisNumber_PV.reset(new PVVariableInImpl<int32_t>("ChassisNumber"));
+	m_ChassisNumber_PV->setDescription("Chassis Number");
+	m_ChassisNumber_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_ChassisNumber_PV);
+
+	m_SlotNumber_PV.reset(new PVVariableInImpl<int32_t>("SlotNumber"));
+	m_SlotNumber_PV->setDescription("Slot Number");
+	m_SlotNumber_PV->setScanType(scanType_t::interrupt, 0);
+	addChild(m_SlotNumber_PV);
 
 	m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",PV_FirmwarePath_Writer));
 	m_FirmwarePath_PV->setDescription("Path to the firmware file to load");
@@ -154,6 +169,30 @@ std::string FirmwareSupImpl::getDeviceType()
     return (std::string)DeviceType;
 }
 
+std::string FirmwareSupImpl::getDriverVersion() 
+{
+    std::string DriverVersion;
+    timespec timestamp; 
+    m_DriverVersion_PV->read(&timestamp, &DriverVersion);
+    return DriverVersion; 
+}
+
+int32_t FirmwareSupImpl::getChassisNumber() 
+{
+    int32_t ChassisNumber;
+    timespec timestamp; 
+    m_ChassisNumber_PV->read(&timestamp, &ChassisNumber);
+    return ChassisNumber; 
+}
+
+int32_t FirmwareSupImpl::getSlotNumber() 
+{
+    int32_t SlotNumber;
+    timespec timestamp; 
+    m_SlotNumber_PV->read(&timestamp, &SlotNumber);
+    return SlotNumber; 
+}
+
 std::string FirmwareSupImpl::getFirmwarePath()
 {
     std::string FirmwarePath;
@@ -196,6 +235,24 @@ void FirmwareSupImpl::setDeviceType(const timespec& timestamp, const std::string
 {
     m_DeviceType_PV->setValue(timestamp, value);
     m_DeviceType_PV->push(timestamp, value);
+}
+
+void FirmwareSupImpl::setDriverVersion(const timespec& timestamp, const std::string& value)
+{
+    m_DriverVersion_PV->setValue(timestamp, value);
+    m_DriverVersion_PV->push(timestamp, value);
+}
+
+void FirmwareSupImpl::setChassisNumber(const timespec& timestamp, const int32_t& value)
+{
+    m_ChassisNumber_PV->setValue(timestamp, value);
+    m_ChassisNumber_PV->push(timestamp, value);
+}
+
+void FirmwareSupImpl::setSlotNumber(const timespec& timestamp, const int32_t& value)
+{
+    m_SlotNumber_PV->setValue(timestamp, value);
+    m_SlotNumber_PV->push(timestamp, value);
 }
 
 void FirmwareSupImpl::setFirmwarePath(const timespec& timestamp, const std::string& value)

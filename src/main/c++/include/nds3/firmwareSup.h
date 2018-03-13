@@ -11,7 +11,7 @@
 #define NDSFIRMWARESUP_H
 
 /**
- * @file firmwareSupport.h
+ * @file firmwareSup.h
  * @brief Defines the nds::FirmwareSup node, which provides support to obtain
  * 			basic information about the device
  *
@@ -63,13 +63,13 @@ public:
      *
      */
     FirmwareSup(const std::string& name,  ///< The node's name
-			stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
-			stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
-			stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-			stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-			stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
-			allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
-			writerString_t PV_FirmwarePath_Writer); 	  ///< Delegate function that performs the actions to set the firmware path
+	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
+	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
+	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+	stateChange_t stopFunction,      ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
+	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
+	writerString_t PV_FirmwarePath_Writer);  ///< Delegate function that performs the actions to set the firmware path
 
 
     /**
@@ -140,6 +140,25 @@ public:
      */
     std::string getDeviceType();
     /**
+     * @brief Retrieve the Driver Version
+     *
+     * @return the Driver Version
+     */
+    std::string getDriverVersion();
+    /**
+     * @brief Retrieve the Chassis Number
+     *
+     * @return the Chassis Number
+     */
+    int32_t getChassisNumber();
+    /**
+     * @brief Retrieve the Slot Number
+     *
+     * @return the Slot Number
+     */
+    int32_t getSlotNumber();
+
+    /**
      * @brief Retrieve the Firmware Path
      *
      * @return the Firmware Path
@@ -175,6 +194,21 @@ public:
      *
      */
     void setDeviceType(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Driver Version
+     *
+     */
+    void setDriverVersion(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Chassis Number
+     *
+     */
+    void setChassisNumber(const timespec& timestamp, const int32_t& value);
+    /**
+     * @brief Sets the value of the Slot Number
+     *
+     */
+    void setSlotNumber(const timespec& timestamp, const int32_t& value);
     /**
      * @brief Sets the value of the Firmware Path
      *

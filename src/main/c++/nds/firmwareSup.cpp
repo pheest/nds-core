@@ -31,18 +31,19 @@ FirmwareSup::FirmwareSup(const std::string& name,
 		stateChange_t recoverFunction,
 		allowChange_t allowStateChangeFunction,
 		writerString_t PV_FirmwarePath_Writer):
-						Node(std::shared_ptr<FirmwareSupImpl>(new FirmwareSupImpl(	name,
-																							switchOnFunction,
-																							switchOffFunction,
-																							startFunction,
-																							stopFunction,
-																							recoverFunction,
-																							allowStateChangeFunction,
-																							PV_FirmwarePath_Writer)))
+	Node(std::shared_ptr<FirmwareSupImpl>(new FirmwareSupImpl(name,
+		switchOnFunction,
+		switchOffFunction,
+		startFunction,
+		stopFunction,
+		recoverFunction,
+		allowStateChangeFunction,
+		PV_FirmwarePath_Writer)))
 {
 }
 
-FirmwareSup::FirmwareSup(const FirmwareSup& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+FirmwareSup::FirmwareSup(const FirmwareSup& right): 
+     Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }
 
@@ -97,6 +98,21 @@ std::string FirmwareSup::getDeviceType()
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getDeviceType();
 }
 
+std::string FirmwareSup::getDriverVersion()
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getDriverVersion();
+}
+
+int32_t FirmwareSup::getChassisNumber()
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getChassisNumber();
+}
+
+int32_t FirmwareSup::getSlotNumber()
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getSlotNumber();
+}
+
 std::string FirmwareSup::getFirmwarePath()
 {
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->getFirmwarePath();
@@ -131,6 +147,22 @@ void FirmwareSup::setDeviceType(const timespec& timestamp, const std::string& va
 {
     return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setDeviceType(timestamp, value);
 }
+
+void FirmwareSup::setDriverVersion(const timespec& timestamp, const std::string& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setDriverVersion(timestamp, value);
+}
+
+void FirmwareSup::setChassisNumber(const timespec& timestamp, const int32_t& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setChassisNumber(timestamp, value);
+}
+
+void FirmwareSup::setSlotNumber(const timespec& timestamp, const int32_t& value)
+{
+    return std::static_pointer_cast<FirmwareSupImpl >(m_pImplementation)->setSlotNumber(timestamp, value);
+}
+
 
 void FirmwareSup::setFirmwarePath(const timespec& timestamp, const std::string& value)
 {
