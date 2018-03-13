@@ -11,7 +11,7 @@
 #define NDSFIRMWARESUP_H
 
 /**
- * @file firmwareSupport.h
+ * @file firmwareSup.h
  * @brief Defines the nds::FirmwareSup node, which provides support to obtain
  * 			basic information about the device
  *
@@ -36,18 +36,8 @@ namespace nds
  * the firmware status, the hardware version id, the device serial number, the
  * device model, and the device type DAQ/IMAQ
  *
- * @tparam T  the PV data type.
- *            The following data types are supported:
- *            - std::int32_t
- *            - std::double
- *            - std::vector<std::int8_t>
- *            - std::vector<std::uint8_t>
- *            - std::vector<std::int32_t>
- *            - std::vector<double>
- *            - std::string
- *
  */
-template <typename T>
+
 class NDS3_API FirmwareSup: public Node
 {
 public:
@@ -64,22 +54,22 @@ public:
      * @param right a firmware support holder from which the reference to
      *        the firmware object implementation is copied
      */
-    FirmwareSup(const FirmwareSup<T>& right);
+    FirmwareSup(const FirmwareSup& right);
 
-    FirmwareSup& operator=(const FirmwareSup<T>& right);
+    FirmwareSup& operator=(const FirmwareSup& right);
 
     /**
      * @brief Constructs the firmware support device node.
      *
      */
     FirmwareSup(const std::string& name,  ///< The node's name
-			stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
-			stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
-			stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-			stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-			stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
-			allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
-			writerString_t PV_FirmwarePath_Writer); 	  ///< Delegate function that performs the actions to set the firmware path
+	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
+	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
+	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+	stateChange_t stopFunction,      ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
+	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
+	writerString_t PV_FirmwarePath_Writer);  ///< Delegate function that performs the actions to set the firmware path
 
 
     /**
@@ -102,7 +92,7 @@ public:
      * @param timestamp the timestamp for the data
      * @param data      the data to push to the control system
      */
-    void push(const timespec& timestamp, const T& data);
+    void push(const timespec& timestamp, const std::string& data);
 
     /**
      * @ingroup
@@ -124,7 +114,7 @@ public:
      *
      * @return the Firmware Status
      */
-    std::string getFirmwareStatus();
+    std::int32_t  getFirmwareStatus();
     /**
      * @brief Retrieve the Hardware Revision
      *
@@ -150,6 +140,25 @@ public:
      */
     std::string getDeviceType();
     /**
+     * @brief Retrieve the Driver Version
+     *
+     * @return the Driver Version
+     */
+    std::string getDriverVersion();
+    /**
+     * @brief Retrieve the Chassis Number
+     *
+     * @return the Chassis Number
+     */
+    std::int32_t getChassisNumber();
+    /**
+     * @brief Retrieve the Slot Number
+     *
+     * @return the Slot Number
+     */
+    std::int32_t getSlotNumber();
+
+    /**
      * @brief Retrieve the Firmware Path
      *
      * @return the Firmware Path
@@ -164,7 +173,7 @@ public:
      * @brief Sets the value of the Firmware Status
      *
      */
-    void setFirmwareStatus(const timespec& timestamp, const std::string& value);
+    void setFirmwareStatus(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the Hardware Revision
      *
@@ -185,6 +194,21 @@ public:
      *
      */
     void setDeviceType(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Driver Version
+     *
+     */
+    void setDriverVersion(const timespec& timestamp, const std::string& value);
+    /**
+     * @brief Sets the value of the Chassis Number
+     *
+     */
+    void setChassisNumber(const timespec& timestamp, const std::int32_t& value);
+    /**
+     * @brief Sets the value of the Slot Number
+     *
+     */
+    void setSlotNumber(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the Firmware Path
      *
