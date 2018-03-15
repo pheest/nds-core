@@ -9,21 +9,19 @@ TARGETDIR = ../../../../lib
 # Flags passed to gcc during linking
 LINK = -shared -fPIC -Wl,-as-needed
  
-# Name of the nds library
-#TARGET = libnds3-dev-nodestest.so
+# List of targets 
+TARGET = $(patsubst %.cpp,$(TARGETDIR)/libnds3-%.so,$(wildcard *.cpp))
  
 # Additional linker libraries
 LIBS = -lnds3
  
-
 all: $(patsubst %.cpp, %.so,$(wildcard *.cpp))
 
 %.so: %.cpp 
 	mkdir -p $(TARGETDIR)
 	$(CXX) $< $(CXXFLAGS) $(LINK) $(LDFLAGS) -o $(TARGETDIR)/libnds3-$@  $(LIBS)
 
- 
 .PHONY: clean
 clean:
-	$(RM) $(TARGET) $(OBJS)
+	$(RM) $(TARGET) 
  
