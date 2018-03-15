@@ -1694,7 +1694,7 @@ void testDevice::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::i
 			FTEChgPeriodStatus=1;
 		}
 		else{
-			FTEChgPeriodStatus=-1;
+			FTEChgPeriodStatus=0;
 		}
 		//Fill the Status and Code PVs with some information
 		if(FTEChgPeriodStatus!=0){

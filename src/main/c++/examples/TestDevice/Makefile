@@ -1,7 +1,7 @@
 CXX = g++
  
-CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/opt/codac/include
-LDFLAGS = -L../../../../lib -L/opt/codac/lib
+CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../include -I/opt/codac/include -g
+LDFLAGS = -L../../../../lib -L/opt/codac/lib -g
 
 TARGETDIR = ../../../../lib
 # Flags passed to gcc during linking
