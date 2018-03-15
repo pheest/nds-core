@@ -43,7 +43,7 @@ HealthMonitSup::HealthMonitSup(  const std::string& name,
 									writerInt32_t PV_SelfTestIDEnable_Writer,
 									writerInt32_t PV_SelfTestTxtEnable_Writer,
 									writerInt32_t PV_SelfTestCodeResultEnable_Writer,
-									readerString_t PV_SelfTestTxtResult_Reader,
+									readerString_t PV_SelfTestTextResult_Reader,
 									readerInt32_t PV_SignalQualityFlag_Reader,
 									writerDouble_t PV_SignalQualityFlagLevel_Writer):
     Node(std::shared_ptr<HealthMonitSupImpl >(new HealthMonitSupImpl(	name,
@@ -65,7 +65,7 @@ HealthMonitSup::HealthMonitSup(  const std::string& name,
 																			PV_SelfTestIDEnable_Writer,
 																			PV_SelfTestTxtEnable_Writer,
 																			PV_SelfTestCodeResultEnable_Writer,
-																			PV_SelfTestTxtResult_Reader,
+																			PV_SelfTestTextResult_Reader,
 																			PV_SignalQualityFlag_Reader,
 																			PV_SignalQualityFlagLevel_Writer)))
 {
