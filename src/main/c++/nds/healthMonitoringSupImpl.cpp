@@ -38,7 +38,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 											writerInt32_t PV_SelfTestIDEnable_Writer,
 											writerInt32_t PV_SelfTestTxtEnable_Writer,
 											writerInt32_t PV_SelfTestCodeResultEnable_Writer,
-											readerString_t PV_SelfTestTxtResult_Reader,
+											readerString_t PV_SelfTestTextResult_Reader,
 											readerInt32_t PV_SignalQualityFlag_Reader,
 											writerDouble_t PV_SignalQualityFlagLevel_Writer):
     NodeImpl(name, nodeType_t::dataSourceChannel),
@@ -147,7 +147,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 	m_TestCodeResultEnable_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestCodeResultEnable_RBVPV);
 
-	m_TestTxtResult_PV.reset(new PVDelegateInImpl<std::string>("TestTxtResult",PV_SelfTestTxtResult_Reader));
+	m_TestTxtResult_PV.reset(new PVDelegateInImpl<std::string>("TestTxtResult",PV_SelfTestTextResult_Reader));
 	m_TestTxtResult_PV->setDescription("Text detailing the result of the Self-Test");
 	m_TestTxtResult_PV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_TestTxtResult_PV);
