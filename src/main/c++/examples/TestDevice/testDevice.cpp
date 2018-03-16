@@ -1627,7 +1627,7 @@ bool testDevice::allow_Routing_Change(const nds::state_t, const nds::state_t, co
  * Routing setters
  */
 void testDevice::PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t RoutingSetStatus;
+	std::int32_t RoutingSetCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates a clock routing set.
@@ -1638,23 +1638,23 @@ void testDevice::PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::
 
 		//Just check PVs have been written
 		if(clockSrc!=0 && clockDst!=0){
-			RoutingSetStatus=0;
+			RoutingSetCode=1;
 		}
 		else{
-			RoutingSetStatus=-1;
+			RoutingSetCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(RoutingSetStatus==0){
+		if(RoutingSetCode==1){
 			m_Routing.setClkSetStatus(timestamp,"OK");
-			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}else{
 			m_Routing.setClkSetStatus(timestamp,"WRONG");
-			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}
 	}else{
 		m_Routing.setClkSetStatus(timestamp,"OK");
-		m_Routing.setClkSetCode(timestamp,(std::int32_t)0);
+		m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 	}
 
 }
@@ -1669,7 +1669,7 @@ void testDevice::PV_Routing_ClkDstRead_Writer(const timespec& timestamp, const s
 }
 
 void testDevice::PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t RoutingSetStatus;
+	std::int32_t RoutingSetCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates a terminal routing set.
@@ -1682,23 +1682,23 @@ void testDevice::PV_Routing_TermSet_Writer(const timespec& timestamp, const std:
 
 		//Just check PVs have been written
 		if(terminalSrc!=0 && terminalDst!=0){
-			RoutingSetStatus=0;
+			RoutingSetCode=1;
 		}
 		else{
-			RoutingSetStatus=-1;
+			RoutingSetCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(RoutingSetStatus==0){
+		if(RoutingSetCode==1){
 			m_Routing.setTermSetStatus(timestamp,"OK");
-			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}else{
 			m_Routing.setTermSetStatus(timestamp,"WRONG");
-			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}
 	}else{
 		m_Routing.setTermSetStatus(timestamp,"OK");
-		m_Routing.setTermSetCode(timestamp,(std::int32_t)0);
+		m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 	}
 
 }
@@ -1750,12 +1750,17 @@ void testDevice::stop_FTE(){
 
 // A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+
 void testDevice::recover_FTE(){
+
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 // We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+
+
 bool testDevice::allow_FTE_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+
 	return true;
 }
 
@@ -1764,7 +1769,7 @@ bool testDevice::allow_FTE_Change(const nds::state_t, const nds::state_t, const 
 */
 void testDevice::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& value){
 
-	std::int32_t FTESetStatus;
+	std::int32_t FTESetCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates on FTE set.
@@ -1780,30 +1785,30 @@ void testDevice::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t
 
 		//Just check if there some data in previous PVs
 		if(terminalSet>0 && modeSet>0 && levelSet>0 && periodNsecSet>0 && dutyCycleSet>0 && startTimeSet.tv_sec!=0 && stopTimeSet.tv_sec!=0){
-			FTESetStatus=1;
+			FTESetCode=1;
 		}
 		else{
-			FTESetStatus=0;
+			FTESetCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(FTESetStatus!=0){
+		if(FTESetCode==1){
 			m_FTE.setSetStatus(timestamp,"OK");
-			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
+			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetCode);
 		}else{
 			m_FTE.setSetStatus(timestamp,"WRONG");
-			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
+			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetCode);
 		}
 	}else{
 		m_FTE.setSetStatus(timestamp,"OK");
-		m_FTE.setSetCode(timestamp,(std::int32_t)0);
+		m_FTE.setSetCode(timestamp,(std::int32_t)FTESetCode);
 	}
 
 
 
 }
 void testDevice::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTESuppressStatus;
+	std::int32_t FTESuppressCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){
@@ -1815,29 +1820,29 @@ void testDevice::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::in
 		std::int32_t allSuppress = m_FTE.getAllSuppress();
 
 		//Just check if there some data in previous PVs
-		if(terminalSuppress>0 && modeSuppress>0 && allSuppress>0){
-			FTESuppressStatus=1;
+		if(terminalSuppress>0 && modeSuppress>0 && allSuppress>0 && startTimeSuppress.tv_sec!=0 && startTimeSuppress.tv_nsec!=0){
+			FTESuppressCode=1;
 		}
 		else{
-			FTESuppressStatus=0;
+			FTESuppressCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(FTESuppressStatus!=0){
+		if(FTESuppressCode==1){
 			m_FTE.setSuppressStatus(timestamp,"OK");
-			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
+			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressCode);
 		}else{
 			m_FTE.setSuppressStatus(timestamp,"WRONG");
-			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
+			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressCode);
 		}
 	}else{
 		m_FTE.setSuppressStatus(timestamp,"OK");
-		m_FTE.setSuppressCode(timestamp,(std::int32_t)0);
+		m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressCode);
 	}
 
 }
 void testDevice::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTEChgPeriodStatus;
+	std::int32_t FTEChgPeriodCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){
@@ -1848,40 +1853,44 @@ void testDevice::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::i
 
 		//Just check if there some data in previous PVs
 		if(terminalChgPeriod>0 && periodChgPeriod>0){
-			FTEChgPeriodStatus=1;
+			FTEChgPeriodCode=1;
 		}
 		else{
-			FTEChgPeriodStatus=0;
+			FTEChgPeriodCode=-1;
 		}
 		//Fill the Status and Code PVs with some information
-		if(FTEChgPeriodStatus!=0){
+		if(FTEChgPeriodCode==1){
 			m_FTE.setChgPeriodStatus(timestamp,"OK");
-			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
+			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodCode);
 		}else{
 			m_FTE.setChgPeriodStatus(timestamp,"WRONG");
-			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
+			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodCode);
 		}
 	}else{
 		m_FTE.setChgPeriodStatus(timestamp,"OK");
-		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)0);
+		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodCode);
 	}
 }
 
 void testDevice::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTEPendingValue;
+	std::int32_t FTEPendingValue=0;
+	std::int32_t FTEPendingCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
-	if(value>0){ //If some terminal has been chosen
+	if(value>=0){ //If some terminal has been chosen
 		FTEPendingValue=1; //HWValue of pending FTEs for the terminal in value
+		FTEPendingCode=1;
 		m_FTE.setPendingValue(timestamp,FTEPendingValue);
 		m_FTE.setPendingStatus(timestamp,"OK");
-		m_FTE.setPendingValue(timestamp,0);
+		m_FTE.setPendingCode(timestamp,FTEPendingCode);
+
 	}
 	else{
-		FTEPendingValue=-1;
+		FTEPendingValue=0; //if terminal<0 not pending values
+		FTEPendingCode=-1;
 		m_FTE.setPendingValue(timestamp,FTEPendingValue);
 		m_FTE.setPendingStatus(timestamp,"WRONG");
-		m_FTE.setPendingValue(timestamp,-1);
+		m_FTE.setPendingCode(timestamp,FTEPendingCode);
 	}
 }
 
