@@ -66,7 +66,7 @@ public:
 					writerInt32_t PV_SelfTestIDEnable_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestTxtEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SelfTestCodeResultEnable_Writer, ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerString_t PV_SelfTestTxtResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
+					readerString_t PV_SelfTestTextResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SignalQualityFlagLevel_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 

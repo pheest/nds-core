@@ -1783,7 +1783,7 @@ void testDevice::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t
 			FTESetStatus=1;
 		}
 		else{
-			FTESetStatus=-1;
+			FTESetStatus=0;
 		}
 
 		//Fill the Status and Code PVs with some information
@@ -1819,7 +1819,7 @@ void testDevice::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::in
 			FTESuppressStatus=1;
 		}
 		else{
-			FTESuppressStatus=-1;
+			FTESuppressStatus=0;
 		}
 
 		//Fill the Status and Code PVs with some information
@@ -1851,7 +1851,7 @@ void testDevice::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::i
 			FTEChgPeriodStatus=1;
 		}
 		else{
-			FTEChgPeriodStatus=-1;
+			FTEChgPeriodStatus=0;
 		}
 		//Fill the Status and Code PVs with some information
 		if(FTEChgPeriodStatus!=0){

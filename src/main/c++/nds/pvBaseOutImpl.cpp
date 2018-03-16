@@ -148,7 +148,7 @@ void PVBaseOutImpl::write(const timespec& timestamp, const std::vector<std::uint
 
 void PVBaseOutImpl::write(const timespec& timestamp, const std::vector<std::uint32_t>& value)
 {
-    throw;
+
 }
 
 void PVBaseOutImpl::write(const timespec& pTimestamp, const std::vector<std::int8_t>& value)
@@ -167,7 +167,7 @@ void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<st
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int32_t>& /* value */)
 {
-    throw;
+    throw  std::logic_error("Incorrect data type");;;
 }
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<double>& /* value */)
