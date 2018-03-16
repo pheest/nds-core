@@ -367,10 +367,9 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
 	///TEST read MAXIMUM FTEs PV
 	////////////////////////////////////////////////////////////////
 	//Maximum Value Testing
-	const std::int32_t* maximum;
-	const timespec* maximumTimestamp;
-	pInterface->getPushedInt32("/rootNode-FTENode.Maximum",maximumTimestamp,maximum); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)20,*maximum);
+	std::int32_t maximum;
+	pInterface->readCSValue("/rootNode-FTENode.Maximum",&readTimestamp,&maximum); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)20,maximum);
 
 	////////////////////////////////////////////////////////////////
 	///TEST TERMINAL PENDING with correct values
