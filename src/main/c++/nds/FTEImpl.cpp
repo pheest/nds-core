@@ -41,19 +41,26 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Set FTE PVs
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///
+	timespec tst;
+	tst.tv_nsec=0;
+	tst.tv_sec=0;
 	m_TerminalSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalSet"));
 	m_TerminalSet_PV->setDescription("Terminal to set FTE");
-	m_TerminalSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_TerminalSet_PV->setScanType(scanType_t::passive, 0);
+	m_TerminalSet_PV->write(tst,0); //Initial value
 	addChild(m_TerminalSet_PV);
 
 	m_ModeSet_PV.reset(new PVVariableOutImpl<std::int32_t>("ModeSet"));
 	m_ModeSet_PV->setDescription("Mode (Single, Pulse, Clk, InmLVL)");
-	m_ModeSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_ModeSet_PV->setScanType(scanType_t::passive, 0);
+	m_ModeSet_PV->write(tst,0);
 	addChild(m_ModeSet_PV);
 
 	m_StartTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StartTimeSet"));
 	m_StartTimeSet_PV->setDescription("Start Time of FTE");
-	m_StartTimeSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_StartTimeSet_PV->setScanType(scanType_t::passive, 0);
+	m_StartTimeSet_PV->write(tst,tst);
 	addChild(m_StartTimeSet_PV);
 
 	m_StopTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StopTimeSet"));
@@ -135,6 +142,9 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_TerminalChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalChgPeriod"));
 	m_TerminalChgPeriod_PV->setDescription("Terminal to change the period of FTE");
 	m_TerminalChgPeriod_PV->setScanType(scanType_t::interrupt, 0);
+
+	m_TerminalChgPeriod_PV->write(tst,50);
+
 	addChild(m_TerminalChgPeriod_PV);
 
 	m_PeriodChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("PeriodChgPeriod"));
