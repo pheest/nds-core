@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-
-//#include <iostream>
-
-#include "../include/Device.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
@@ -17,7 +13,7 @@ TEST(testRouting, testStateMachineRouting)
     nds::Factory factory("test");
 
     // Create test device of type Device and named rootNode
-    factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceRouting", "rootNode", nds::namedParameters_t());
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
@@ -70,11 +66,12 @@ TEST(testRouting, testClockSet)
 
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
+
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceRouting", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -99,18 +96,19 @@ TEST(testRouting, testClockSet)
 	///TEST CLK SET with correct values
 	////////////////////////////////////////////////////////////////
 
-	std::int32_t clkSetCode;
-	std::string clkSetStatus;
+	const std::int32_t* clkSetCode;
+	const std::string* clkSetStatus;
+	const timespec* clkTimestamp;
 	// Set ClkSet
 	pInterface->writeCSValue("/rootNode-RoutingNode.ClkSet",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
 
 	// Get SetStatus
-	pInterface->readCSValue("/rootNode-RoutingNode.ClkSetStatus",&readTimestamp,&clkSetStatus); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",clkSetStatus);
+	pInterface->getPushedString("/rootNode-RoutingNode.ClkSetStatus",clkTimestamp,clkSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*clkSetStatus);
 
 	// Get SetCode
-	pInterface->readCSValue("/rootNode-RoutingNode.ClkSetCode",&readTimestamp,&clkSetCode); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0,clkSetCode);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.ClkSetCode",clkTimestamp,clkSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*clkSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST CLK SET with incorrect values
@@ -122,23 +120,23 @@ TEST(testRouting, testClockSet)
 	pInterface->writeCSValue("/rootNode-RoutingNode.ClkSet",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
 
 	// Get SetStatus
-	pInterface->readCSValue("/rootNode-RoutingNode.ClkSetStatus",&readTimestamp,&clkSetStatus); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"WRONG",clkSetStatus);
+	pInterface->getPushedString("/rootNode-RoutingNode.ClkSetStatus",clkTimestamp,clkSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"WRONG",*clkSetStatus);
 
 	// Get SetCode
-	pInterface->readCSValue("/rootNode-RoutingNode.ClkSetCode",&readTimestamp,&clkSetCode); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)-1,clkSetCode);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.ClkSetCode",clkTimestamp,clkSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)-1,*clkSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST CLK DST READ
 	////////////////////////////////////////////////////////////////
 	std::int32_t clkDstRead(2);
-	std::int32_t clkSrcRead;
+	const std::int32_t* clkSrcRead;
 	// Set ClkDstRead
 	pInterface->writeCSValue("/rootNode-RoutingNode.ClkDstRead",readTimestamp,clkDstRead); // PVVariables are thread safe
 	// Get ClkSrcRead
-	pInterface->readCSValue("/rootNode-RoutingNode.ClkSrcRead",&readTimestamp,&clkSrcRead); // PVVariables are thread safe
-	EXPECT_EQ(clkDstRead + 1,clkSrcRead);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.ClkSrcRead",clkTimestamp,clkSrcRead); // PVVariables are thread safe
+	EXPECT_EQ(clkDstRead + 1,*clkSrcRead);
 
 
 	factory.destroyDevice("rootNode");
@@ -154,7 +152,7 @@ TEST(testRouting, testTermSet)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceRouting", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -191,18 +189,19 @@ TEST(testRouting, testTermSet)
 	///TEST TERM SET with correct values
 	////////////////////////////////////////////////////////////////
 
-	std::int32_t TermSetCode;
-	std::string TermSetStatus;
+	const std::int32_t* termSetCode;
+	const std::string* termSetStatus;
+	const timespec* termTimestamp;
 	// Set TermSet
 	pInterface->writeCSValue("/rootNode-RoutingNode.TermSet",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
 
 	// Get SetStatus
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSetStatus",&readTimestamp,&TermSetStatus); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",TermSetStatus);
+	pInterface->getPushedString("/rootNode-RoutingNode.TermSetStatus",termTimestamp,termSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*termSetStatus);
 
 	// Get SetCode
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSetCode",&readTimestamp,&TermSetCode); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0,TermSetCode);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSetCode",termTimestamp,termSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*termSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST TERM SET with incorrect values
@@ -214,31 +213,31 @@ TEST(testRouting, testTermSet)
 	pInterface->writeCSValue("/rootNode-RoutingNode.TermSet",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
 
 	// Get SetStatus
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSetStatus",&readTimestamp,&TermSetStatus); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"WRONG",TermSetStatus);
+	pInterface->getPushedString("/rootNode-RoutingNode.TermSetStatus",termTimestamp,termSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"WRONG",*termSetStatus);
 
 	// Get SetCode
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSetCode",&readTimestamp,&TermSetCode); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)-1,TermSetCode);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSetCode",termTimestamp,termSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)-1,*termSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST TERM DST READ
 	////////////////////////////////////////////////////////////////
 	std::int32_t TermDstRead(2);
-	std::int32_t TermSrcRead;
-	std::int32_t TermSyncRead;
-	std::int32_t TermInvertRead;
+	const std::int32_t* termSrcRead;
+	const std::int32_t* termSyncRead;
+	const std::int32_t* termInvertRead;
 	// Set TermDstRead
 	pInterface->writeCSValue("/rootNode-RoutingNode.TermDstRead",readTimestamp,TermDstRead); // PVVariables are thread safe
 	// Get TermSrcRead
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSrcRead",&readTimestamp,&TermSrcRead); // PVVariables are thread safe
-	EXPECT_EQ(TermDstRead + 1,TermSrcRead);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSrcRead",termTimestamp,termSrcRead); // PVVariables are thread safe
+	EXPECT_EQ(TermDstRead + 1,*termSrcRead);
 	// Get TermSyncRead
-	pInterface->readCSValue("/rootNode-RoutingNode.TermSyncRead",&readTimestamp,&TermSyncRead); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)1,TermSyncRead);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSyncRead",termTimestamp,termSyncRead); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*termSyncRead);
 	// Get TermInvertRead
-	pInterface->readCSValue("/rootNode-RoutingNode.TermInvertRead",&readTimestamp,&TermInvertRead); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)1,TermInvertRead);
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermInvertRead",termTimestamp,termInvertRead); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*termInvertRead);
 
 
 	factory.destroyDevice("rootNode");

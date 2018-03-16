@@ -9,6 +9,8 @@
 #include "../include/Device_Vector_I8.h"
 #include "../include/Device_Vector_UI8.h"
 #include "../include/Device_DigitalIO.h"
+#include "../include/Device_FTE.h"
+#include "../include/Device_Routing.h"
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
 #include "../include/DeviceFIRM.h"
@@ -45,6 +47,14 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceDigitalIO",
                            std::bind(&DeviceDigitalIO::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceDigitalIO::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceFTE",
+                           std::bind(&DeviceFTE::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceFTE::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceRouting",
+                               std::bind(&DeviceRouting::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                               std::bind(&DeviceRouting::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceHQMonitor",
                            std::bind(&DeviceHQMonitor::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
