@@ -11,8 +11,8 @@
 #define NDSFIRMWARESUP_H
 
 /**
- * @file firmwareSup.h
- * @brief Defines the nds::FirmwareSup node, which provides support to obtain
+ * @file firmware.h
+ * @brief Defines the nds::Firmware node, which provides support to obtain
  * 			basic information about the device
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
@@ -29,7 +29,7 @@ namespace nds
  * This is a node that supplies a firmware support  with a few control
  * PVs that provides to the Control System information about the device.
  *
- * The user of a FirmwareSup class must declare few delegate functions that
+ * The user of a Firmware class must declare few delegate functions that
  * provide some information about the device.
  *
  * In particular, the information to be provided should be: the firmware version,
@@ -38,15 +38,15 @@ namespace nds
  *
  */
 
-class NDS3_API FirmwareSup: public Node
+class NDS3_API Firmware: public Node
 {
 public:
     /**
      * @brief Initializes an empty data acquisition node.
      *
-     * You must assign a valid FirmwareSup node before calling initialize().
+     * You must assign a valid Firmware node before calling initialize().
      */
-    FirmwareSup();
+    Firmware();
 
     /**
      * @brief Copies a firmware support reference from another object.
@@ -54,15 +54,15 @@ public:
      * @param right a firmware support holder from which the reference to
      *        the firmware object implementation is copied
      */
-    FirmwareSup(const FirmwareSup& right);
+    Firmware(const Firmware& right);
 
-    FirmwareSup& operator=(const FirmwareSup& right);
+    Firmware& operator=(const Firmware& right);
 
     /**
      * @brief Constructs the firmware support device node.
      *
      */
-    FirmwareSup(const std::string& name,  ///< The node's name
+    Firmware(const std::string& name,  ///< The node's name
 	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
 	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
 	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)

@@ -79,7 +79,7 @@ private:
 	/**
 	 * @brief Firmware node
 	 */
-	nds::FirmwareSup m_Firmware;
+	nds::Firmware m_Firmware;
 
 	/**
 	 * Methods to control the Firmware state machine
