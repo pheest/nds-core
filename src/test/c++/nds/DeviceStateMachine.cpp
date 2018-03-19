@@ -6,6 +6,9 @@
 
 #include "../include/DeviceStateMachine.h"
 
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
+
 static std::map<std::string, DeviceStateMachine*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
@@ -41,6 +44,10 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 	//Add a PV to set the current time
 	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 	m_setCurrentTime.setDescription("Set timestamp (in seconds)");
+	// For testing purposes the current time is set to a constant bigger
+	// than 1 of January of 1990 which is the EPICS epoch.
+	timespec timestamp = {0, 0};
+	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
 	// Add Health Monitor node
 	m_StateMachine = rootNode.addChild(nds::StateMachine(true,
