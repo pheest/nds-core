@@ -331,17 +331,17 @@ NDS_DEFINE_DRIVER(DeviceHQMonitor, DeviceHQMonitor)
 /*
  * Allocation function
  *********************/
-void* DeviceFirmware::allocateDevice(nds::Factory& factory,
+void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
 				     const std::string& DeviceName,
 				     const nds::namedParameters_t& parameters) {
 
-  return new DeviceFirmware(factory, DeviceName, parameters);
+  return new DeviceHQMonitor(factory, DeviceName, parameters);
 }
 
 /*
  * Deallocation function
  ***********************/
-void DeviceFirmware::deallocateDevice(void* DeviceName) {
-  delete (DeviceFirmware*)DeviceName;
+void DeviceHQMonitor::deallocateDevice(void* DeviceName) {
+  delete (DeviceHQMonitor*)DeviceName;
 }
 #endif
