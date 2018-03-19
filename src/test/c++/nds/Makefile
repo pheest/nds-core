@@ -27,7 +27,7 @@ EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nodesTest)
 
 # If ITER CCS
 ifneq (,$(wildcard ../../../main/c/include))
-INCLUDES :=-I../../../main/c/lib -I../../../main/c/driver -I../../../main/c++/include
+INCLUDES :=-I../../../main/c/lib -I../../../main/c/driver -I../../../main/c++/include -I$(EXAMPLESDIR)
 LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 else # NI
 INCLUDES :=-I../../src -I../../../driver/src -I../../../main/c++/include
