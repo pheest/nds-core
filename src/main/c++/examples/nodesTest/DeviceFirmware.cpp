@@ -6,6 +6,8 @@
 
 #include "../include/DeviceFirmware.h"
 
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
@@ -36,11 +38,15 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	 * control system thread.
 	 */
 	nds::Port rootNode(DeviceName);
-	rootNode.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 
 	//Add a PV to set the current time
 	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 	m_setCurrentTime.setDescription("Set timestamp (in secodns)");
+	// For testing purposes the current time is set to a constant bigger
+	// than 1 of January of 1990 which is the EPICS epoch.
+	timespec timestamp = {0, 0};
+	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
+
 
 	// Add Firmware node
 	m_Firmware = rootNode.addChild(nds::FirmwareSup("Firm",
@@ -57,6 +63,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
+	rootNode.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 
 	//Stream information for debugging purposes
 	rootNode.setLogLevel(nds::logLevel_t::debug);
