@@ -88,22 +88,6 @@ DeviceFirmware* DeviceFirmware::getInstance(const std::string& DeviceName)
     return findDevice->second;
 }
 
-/*
- * Allocation function
- *********************/
-void* DeviceFirmware::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceFirmware(factory, DeviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceFirmware::deallocateDevice(void* DeviceName)
-{
-    delete (DeviceFirmware*)DeviceName;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEST FIRMWARE STATE MACHINE
@@ -247,5 +231,22 @@ timespec DeviceFirmware::getCurrentTime()
 
 
 #ifdef EPICS
-  NDS_DEFINE_DRIVER(DeviceFirmware, DeviceFirmware)
+NDS_DEFINE_DRIVER(DeviceFirmware, DeviceFirmware)
+#else
+/*
+ * Allocation function
+ *********************/
+void* DeviceFirmware::allocateDevice(nds::Factory& factory,
+				     const std::string& DeviceName,
+				     const nds::namedParameters_t& parameters){
+    return new DeviceFirmware(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceFirmware::deallocateDevice(void* DeviceName)
+{
+    delete (DeviceFirmware*)DeviceName;
+}
 #endif
