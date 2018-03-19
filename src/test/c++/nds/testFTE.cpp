@@ -1,9 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-//#include <iostream>
-
-#include "../include/Device.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
@@ -17,7 +14,7 @@ TEST(testFTE, testStateMachineFTE)
     nds::Factory factory("test");
 
     // Create test device of type DeviceFTE and named rootNode
-    factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
@@ -66,13 +63,16 @@ TEST(testFTE, testStateMachineFTE)
 TEST(testFTE, testSetPVManaging)
 {
 
-	const timespec* pStateMachineSwitchTime;
-	const std::int32_t* pStateMachineState;
+	//const timespec* pStateMachineSwitchTime;
+	//const std::int32_t* pStateMachineState;
+	const std::string* setStatus;
+	const std::int32_t* setCode;
+	const timespec* timestampSet;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -81,6 +81,9 @@ TEST(testFTE, testSetPVManaging)
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
+	////////////////////////////////////////////////////////////////
+	///TEST SET with correct values
+	////////////////////////////////////////////////////////////////
 	// Set/Get TerminalSet
 	std::int32_t terminalSet;
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalSet",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -125,27 +128,44 @@ TEST(testFTE, testSetPVManaging)
 	pInterface->readCSValue("/rootNode-FTENode.DutyCycleSet",&readTimestamp,&dutyCycleSet); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,dutyCycleSet);
 
-	std::string setStatus;
-	std::int32_t setCode;
 	////////////////////////////////////////////////////////////////
-	///TEST NO Set
+	///TEST Set==1
 	////////////////////////////////////////////////////////////////
 	// Set/Get SetStatus
 	pInterface->writeCSValue("/rootNode-FTENode.Set",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SetStatus",&readTimestamp,&setStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SetCode",&readTimestamp,&setCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",setStatus);
-	EXPECT_EQ((std::int32_t)0,setCode);
+	pInterface->getPushedString("/rootNode-FTENode.SetStatus",timestampSet,setStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SetCode",timestampSet,setCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*setStatus);
+	EXPECT_EQ((std::int32_t)0,*setCode);
 
 	////////////////////////////////////////////////////////////////
-	///TEST YES Set
+	///TEST Set==0
 	////////////////////////////////////////////////////////////////
-	// Set/Get SetStatus
+	// Set/Get SuppressStatus
 	pInterface->writeCSValue("/rootNode-FTENode.Set",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SetStatus",&readTimestamp,&setStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SetCode",&readTimestamp,&setCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",setStatus);
-	EXPECT_EQ((std::int32_t)1,setCode);
+	pInterface->getPushedString("/rootNode-FTENode.SetStatus",timestampSet,setStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SetCode",timestampSet,setCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*setStatus);
+	EXPECT_EQ((std::int32_t)1,*setCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST SET with incorrect values
+	////////////////////////////////////////////////////////////////
+	// Set/Get TerminalSet
+	pInterface->writeCSValue("/rootNode-FTENode.TerminalSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.ModeSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.LevelSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSet",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StopTimeSet",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.PeriodNsecSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.DutyCycleSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+
+	// Set/Get SuppressStatus
+	pInterface->writeCSValue("/rootNode-FTENode.Set",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->getPushedString("/rootNode-FTENode.SetStatus",timestampSet,setStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SetCode",timestampSet,setCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"WRONG",*setStatus);
+	EXPECT_EQ((std::int32_t)-1,*setCode);
 
 	factory.destroyDevice("rootNode");
 
@@ -153,14 +173,16 @@ TEST(testFTE, testSetPVManaging)
 
 TEST(testFTE, testSuppressPVManaging)
 {
-
-	const timespec* pStateMachineSwitchTime;
-	const std::int32_t* pStateMachineState;
+	//const timespec* pStateMachineSwitchTime;
+	//const std::int32_t* pStateMachineState;
+	const std::string* suppressStatus;
+	const std::int32_t* suppressCode;
+	const timespec* timestampSuppress;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -169,6 +191,9 @@ TEST(testFTE, testSuppressPVManaging)
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
+	////////////////////////////////////////////////////////////////
+	///TEST SUPPRESS with correct values
+	////////////////////////////////////////////////////////////////
 	// Set/Get TerminalSet
 	std::int32_t terminalSuppress;
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalSuppress",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -187,27 +212,48 @@ TEST(testFTE, testSuppressPVManaging)
 	pInterface->readCSValue("/rootNode-FTENode.AllSuppress",&readTimestamp,&allSuppress); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,allSuppress);
 
-	std::string suppressStatus;
-	std::int32_t suppressCode;
+	// Set/Get StartTimeSet
+	timespec startTimeSuppress;
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp,(timespec){1,1}); // PVVariables are thread safe
+	pInterface->readCSValue("/rootNode-FTENode.StartTimeSuppress",&readTimestamp,&startTimeSuppress); // PVVariables are thread safe
+	EXPECT_EQ(1,startTimeSuppress.tv_sec);
+	EXPECT_EQ(1,startTimeSuppress.tv_nsec);
+
 	////////////////////////////////////////////////////////////////
-	///TEST NO Suppress
+	///TEST Suppress==0
 	////////////////////////////////////////////////////////////////
 	// Set/Get SuppressStatus
 	pInterface->writeCSValue("/rootNode-FTENode.Suppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SuppressStatus",&readTimestamp,&suppressStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SuppressCode",&readTimestamp,&suppressCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",suppressStatus);
-	EXPECT_EQ((std::int32_t)0,suppressCode);
+	pInterface->getPushedString("/rootNode-FTENode.SuppressStatus",timestampSuppress,suppressStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SuppressCode",timestampSuppress,suppressCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*suppressStatus);
+	EXPECT_EQ((std::int32_t)0,*suppressCode);
 
 	////////////////////////////////////////////////////////////////
-	///TEST YES Suppress
+	///TEST Suppress==1
 	////////////////////////////////////////////////////////////////
 	// Set/Get SuppressStatus
 	pInterface->writeCSValue("/rootNode-FTENode.Suppress",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SuppressStatus",&readTimestamp,&suppressStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.SuppressCode",&readTimestamp,&suppressCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",suppressStatus);
-	EXPECT_EQ((std::int32_t)1,suppressCode);
+	pInterface->getPushedString("/rootNode-FTENode.SuppressStatus",timestampSuppress,suppressStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SuppressCode",timestampSuppress,suppressCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*suppressStatus);
+	EXPECT_EQ((std::int32_t)1,*suppressCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST SUPPRESS with incorrect values
+	////////////////////////////////////////////////////////////////
+	// Set/Get TerminalSet
+	pInterface->writeCSValue("/rootNode-FTENode.TerminalSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.ModeSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.AllSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
+
+	// Set/Get SuppressStatus
+	pInterface->writeCSValue("/rootNode-FTENode.Suppress",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->getPushedString("/rootNode-FTENode.SuppressStatus",timestampSuppress,suppressStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.SuppressCode",timestampSuppress,suppressCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"WRONG",*suppressStatus);
+	EXPECT_EQ((std::int32_t)-1,*suppressCode);
 
 	factory.destroyDevice("rootNode");
 
@@ -218,11 +264,14 @@ TEST(testFTE, testChgPeriodPVManaging)
 
 //	const timespec* pStateMachineSwitchTime;
 //	const std::int32_t* pStateMachineState;
+	const std::string* ChgPeriodStatus;
+	const std::int32_t* ChgPeriodCode;
+	const timespec* timestampChgPeriod;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -231,6 +280,9 @@ TEST(testFTE, testChgPeriodPVManaging)
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
 
+	////////////////////////////////////////////////////////////////
+	///TEST CHG PERIOD with correct values
+	////////////////////////////////////////////////////////////////
 	// Set/Get TerminalSet
 	std::int32_t terminalChgPeriod;
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalChgPeriod",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -243,27 +295,39 @@ TEST(testFTE, testChgPeriodPVManaging)
 	pInterface->readCSValue("/rootNode-FTENode.PeriodChgPeriod",&readTimestamp,&periodChgPeriod); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,periodChgPeriod);
 
-	std::string ChgPeriodStatus;
-	std::int32_t ChgPeriodCode;
 	////////////////////////////////////////////////////////////////
-	///TEST NO ChgPeriod
+	///TEST ChgPeriod==0
 	////////////////////////////////////////////////////////////////
 	// Set/Get ChgPeriodStatus
 	pInterface->writeCSValue("/rootNode-FTENode.ChgPeriod",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.ChgPeriodStatus",&readTimestamp,&ChgPeriodStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.ChgPeriodCode",&readTimestamp,&ChgPeriodCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",ChgPeriodStatus);
-	EXPECT_EQ((std::int32_t)0,ChgPeriodCode);
+	pInterface->getPushedString("/rootNode-FTENode.ChgPeriodStatus",timestampChgPeriod,ChgPeriodStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.ChgPeriodCode",timestampChgPeriod,ChgPeriodCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*ChgPeriodStatus);
+	EXPECT_EQ((std::int32_t)0,*ChgPeriodCode);
 
 	////////////////////////////////////////////////////////////////
-	///TEST YES ChgPeriod
+	///TEST ChgPeriod==1
 	////////////////////////////////////////////////////////////////
 	// Set/Get ChgPeriodStatus
 	pInterface->writeCSValue("/rootNode-FTENode.ChgPeriod",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.ChgPeriodStatus",&readTimestamp,&ChgPeriodStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.ChgPeriodCode",&readTimestamp,&ChgPeriodCode); // PVVariables are thread safe
-	EXPECT_EQ((std::string)"OK",ChgPeriodStatus);
-	EXPECT_EQ((std::int32_t)1,ChgPeriodCode);
+	pInterface->getPushedString("/rootNode-FTENode.ChgPeriodStatus",timestampChgPeriod,ChgPeriodStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.ChgPeriodCode",timestampChgPeriod,ChgPeriodCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*ChgPeriodStatus);
+	EXPECT_EQ((std::int32_t)1,*ChgPeriodCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST CHG PERIOD with incorrect values
+	////////////////////////////////////////////////////////////////
+	// Set/Get TerminalSet
+	pInterface->writeCSValue("/rootNode-FTENode.TerminalChgPeriod",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.PeriodChgPeriod",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+
+	// Set/Get ChgPeriodStatus
+	pInterface->writeCSValue("/rootNode-FTENode.ChgPeriod",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->getPushedString("/rootNode-FTENode.ChgPeriodStatus",timestampChgPeriod,ChgPeriodStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.ChgPeriodCode",timestampChgPeriod,ChgPeriodCode); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"WRONG",*ChgPeriodStatus);
+	EXPECT_EQ((std::int32_t)-1,*ChgPeriodCode);
 
 	factory.destroyDevice("rootNode");
 
@@ -278,7 +342,7 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -299,22 +363,40 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
+	////////////////////////////////////////////////////////////////
+	///TEST read MAXIMUM FTEs PV
+	////////////////////////////////////////////////////////////////
 	//Maximum Value Testing
 	std::int32_t maximum;
 	pInterface->readCSValue("/rootNode-FTENode.Maximum",&readTimestamp,&maximum); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)20,maximum);
 
+	////////////////////////////////////////////////////////////////
+	///TEST TERMINAL PENDING with correct values
+	////////////////////////////////////////////////////////////////
 	// Pending Value Testing
-	std::int32_t pendingValue;
-	std::string pendingStatus;
-	std::int32_t pendingCode;
+	const std::int32_t* pendingValue;
+	const std::string* pendingStatus;
+	const std::int32_t* pendingCode;
+	const timespec* pendingTimestamp;
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalPending",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.PendingValue",&readTimestamp,&pendingValue); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.PendingStatus",&readTimestamp,&pendingStatus); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-FTENode.PendingCode",&readTimestamp,&pendingCode); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)1,pendingValue);
-	EXPECT_EQ((std::string)"OK",pendingStatus);
-	EXPECT_EQ((std::int32_t)1,pendingCode);
+	pInterface->getPushedInt32("/rootNode-FTENode.PendingValue",pendingTimestamp,pendingValue); // PVVariables are thread safe
+	pInterface->getPushedString("/rootNode-FTENode.PendingStatus",pendingTimestamp,pendingStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.PendingCode",pendingTimestamp,pendingCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*pendingValue);
+	EXPECT_EQ((std::string)"OK",*pendingStatus);
+	EXPECT_EQ((std::int32_t)1,*pendingCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST TERMINAL PENDING with incorrect values
+	////////////////////////////////////////////////////////////////
+	pInterface->writeCSValue("/rootNode-FTENode.TerminalPending",readTimestamp,(std::int32_t)-1); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.PendingValue",pendingTimestamp,pendingValue); // PVVariables are thread safe
+	pInterface->getPushedString("/rootNode-FTENode.PendingStatus",pendingTimestamp,pendingStatus); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-FTENode.PendingCode",pendingTimestamp,pendingCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*pendingValue);
+	EXPECT_EQ((std::string)"WRONG",*pendingStatus);
+	EXPECT_EQ((std::int32_t)-1,*pendingCode);
 
     //Change state:  ON -> (starting) -> RUNNING
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);

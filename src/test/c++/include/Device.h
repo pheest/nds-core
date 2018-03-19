@@ -849,7 +849,6 @@ private:
   	  void start_FTE();     ///< Called to start the FTE node.
   	  void stop_FTE();      ///< Called to stop the FTE node.
   	  void recover_FTE();   ///< Called to recover the FTE node from a failure.
-
   	  bool allow_FTE_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
   	  /**

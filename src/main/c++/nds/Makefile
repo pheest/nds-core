@@ -42,7 +42,7 @@ C=gcc
 CC=g++
 CFLAGS=-c -Wall -fPIC -g --coverage
 CXXFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden -DNDS3_DLL -DNDS3_DLL_EXPORTS -g --coverage
-LDFLAGS= -shared --coverage
+LDFLAGS= -shared --coverage -g
 
 
 .PHONY: all clean run 
