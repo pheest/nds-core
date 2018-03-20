@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <functional>
 
-#include "../include/DeviceDigitalIO.h"
+#include "../include/Device_DigitalIO.h"
 
 static std::map<std::string, DeviceDigitalIO*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
