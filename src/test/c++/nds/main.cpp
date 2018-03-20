@@ -13,7 +13,7 @@
 #include "../include/Device_Routing.h"
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
-#include "../include/DeviceFIRM.h"
+#include "../include/DeviceFirmware.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
     //Devices which have been created for testing isolated nodes
 
-    nds::Factory::registerDriver("DeviceFIRM",
+    nds::Factory::registerDriver("DeviceFirmware",
                            std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceFirmware::deallocateDevice, std::placeholders::_1));
 
@@ -76,6 +76,7 @@ int main(int argc, char **argv)
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);
+
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

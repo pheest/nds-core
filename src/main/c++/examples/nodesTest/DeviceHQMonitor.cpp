@@ -112,21 +112,6 @@ DeviceHQMonitor* DeviceHQMonitor::getInstance(const std::string& DeviceName)
     return findDevice->second;
 }
 
-/*
- * Allocation function
- *********************/
-void* DeviceHQMonitor::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceHQMonitor(factory, DeviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceHQMonitor::deallocateDevice(void* DeviceName)
-{
-    delete (DeviceHQMonitor*)DeviceName;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEST HEALTH MONITOR STATE MACHINE
@@ -340,3 +325,23 @@ timespec DeviceHQMonitor::getCurrentTime()
     return time;
 }
 
+#ifdef EPICS
+NDS_DEFINE_DRIVER(DeviceHQMonitor, DeviceHQMonitor)
+#else
+/*
+ * Allocation function
+ *********************/
+void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
+				     const std::string& DeviceName,
+				     const nds::namedParameters_t& parameters) {
+
+  return new DeviceHQMonitor(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceHQMonitor::deallocateDevice(void* DeviceName) {
+  delete (DeviceHQMonitor*)DeviceName;
+}
+#endif

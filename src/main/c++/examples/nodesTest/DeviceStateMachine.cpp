@@ -99,25 +99,10 @@ DeviceStateMachine* DeviceStateMachine::getInstance(const std::string& DeviceNam
     return findDevice->second;
 }
 
-/*
- * Allocation function
- *********************/
-void* DeviceStateMachine::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceStateMachine(factory, DeviceName, parameters);
-}
 
-/*
- * Deallocation function
- ***********************/
-void DeviceStateMachine::deallocateDevice(void* DeviceName)
-{
-    delete (DeviceStateMachine*)DeviceName;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // TEST STATE MACHINE
-////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*
  * Methods to control State Machine
@@ -185,3 +170,26 @@ timespec DeviceStateMachine::getCurrentTime()
     return time;
 }
 
+
+#ifdef EPICS
+NDS_DEFINE_DRIVER(DeviceStateMachine, DeviceStateMachine)
+#else
+
+/*
+ * Allocation function
+ *********************/
+void* DeviceStateMachine::allocateDevice(nds::Factory& factory,
+					 const std::string& DeviceName,
+					 const nds::namedParameters_t& parameters) {
+
+  return new DeviceStateMachine(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceStateMachine::deallocateDevice(void* DeviceName) {
+
+  delete (DeviceStateMachine*)DeviceName;
+}
+#endif
