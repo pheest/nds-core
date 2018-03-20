@@ -7,8 +7,8 @@
  * By GMV & UPM
  */
 
-#ifndef NDSFIRMWARESUPIMP_H
-#define NDSFIRMWARESUPIMP_H
+#ifndef NDSFIRMWAREIMPL_H
+#define NDSFIRMWAREIMPL_H
 
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"

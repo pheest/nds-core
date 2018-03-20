@@ -7,8 +7,8 @@
  * By GMV & UPM
  */
 
-#ifndef NDSFIRMWARESUP_H
-#define NDSFIRMWARESUP_H
+#ifndef NDSFIRMWARE_H
+#define NDSFIRMWARE_H
 
 /**
  * @file firmware.h
