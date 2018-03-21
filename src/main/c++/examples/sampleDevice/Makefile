@@ -8,13 +8,13 @@ TARGETDIR = ../../../../lib
 LINK = -shared -fPIC -Wl,-as-needed
  
 # Name of the nds library
-TARGET = libnds3-dev-testDevice.so
+TARGET = libnds3-dev-sampleDevice.so
  
 # Additional linker libraries
 LIBS = -lnds3
  
 # Source code files used in this project
-SRCS = testDevice.cpp 
+SRCS = sampleDevice.cpp 
  
 OBJS = $(SRCS:.cpp=.o)
 
