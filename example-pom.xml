@@ -49,12 +49,6 @@
             </roles>
         </developer>
         <developer>
-            <id>bernale</id>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
- 	<developer>
             <id>ruizm</id>
             <roles>
                 <role>developer</role>
@@ -85,10 +79,10 @@
                             <include type="library" name="nds3-dev-oscilloscopemultichannel" />
                             <include type="library" name="nds3-dev-thermometer" />
                             <include type="library" name="nds3-dev-devicesimulator" />
-			    <include type="library" name="nds3-dev-ndsex1" />
-			    <include type="library" name="nds3-DeviceStateMachine" />
-			    <include type="library" name="nds3-DeviceHQMonitor" />
-			    <include type="library" name="nds3-DeviceFirmware" />
+			   				<include type="library" name="nds3-dev-ndsex1" />
+			   				<include type="library" name="nds3-DeviceStateMachine" />
+			    			<include type="library" name="nds3-DeviceHQMonitor" />
+			   				<include type="library" name="nds3-DeviceFirmware" />
                             <requires codac="true">nds3-core</requires>
                         </package>
                     </packaging>
