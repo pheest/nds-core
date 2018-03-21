@@ -90,9 +90,17 @@
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
 						<package name ="testdevices-nds-epics">
+							<include type="library" name="nds3-DeviceDBL" />
+							<include type="library" name="nds3-DeviceDigitalIO" />
+							<include type="library" name="nds3-DeviceFirmware" />
+							<include type="library" name="nds3-DeviceFTE" />
+							<include type="library" name="nds3-DeviceHQMonitor" />
+							<include type="library" name="nds3-DeviceI32" />
+							<include type="library" name="nds3-DeviceRouting" />
 							<include type="library" name="nds3-DeviceStateMachine" />
-			    			<include type="library" name="nds3-DeviceHQMonitor" />
-			   				<include type="library" name="nds3-DeviceFirmware" />
+							<include type="library" name="nds3-DeviceVectorI32" />
+							<include type="library" name="nds3-DeviceVectorI8" />
+							<include type="library" name="nds3-DeviceVectorUI8" />
 			   				<requires codac="true">nds3-core-devel</requires>
 						</package>
 

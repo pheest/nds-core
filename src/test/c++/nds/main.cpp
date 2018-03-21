@@ -2,15 +2,15 @@
 //
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
+#include "../include/DeviceDBL.h"
+#include "../include/DeviceDigitalIO.h"
+#include "../include/DeviceFTE.h"
+#include "../include/DeviceI32.h"
+#include "../include/DeviceRouting.h"
+#include "../include/DeviceVectorI32.h"
+#include "../include/DeviceVectorI8.h"
+#include "../include/DeviceVectorUI8.h"
 #include "../include/Device.h"
-#include "../include/Device_DBL.h"
-#include "../include/Device_I32.h"
-#include "../include/Device_Vector_I32.h"
-#include "../include/Device_Vector_I8.h"
-#include "../include/Device_Vector_UI8.h"
-#include "../include/Device_DigitalIO.h"
-#include "../include/Device_FTE.h"
-#include "../include/Device_Routing.h"
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
 #include "../include/DeviceFirmware.h"

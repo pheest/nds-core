@@ -1,10 +1,11 @@
 
+#include "../include/DeviceFTE.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device_FTE.h"
 
 static std::map<std::string, DeviceFTE*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -53,7 +54,7 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 			std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
 
-    m_FTE.setTimestampDelegate(std::bind(&DeviceFTE::getCurrentTime,this));
+    m_FTE.setStartTimestampDelegate(std::bind(&DeviceFTE::getCurrentTime,this));
     m_FTE.setLogLevel(nds::logLevel_t::debug);
 
 
@@ -85,22 +86,6 @@ DeviceFTE* DeviceFTE::getInstance(const std::string& deviceName)
         return 0;
     }
     return findDevice->second;
-}
-
-/**
- * Allocation function
- *********************/
-void* DeviceFTE::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceFTE(factory, deviceName, parameters);
-}
-
-/**
- * Deallocation function
- ***********************/
-void DeviceFTE::deallocateDevice(void* deviceName)
-{
-    delete (DeviceFTE*)deviceName;
 }
 
 timespec DeviceFTE::getCurrentTime()
@@ -175,6 +160,7 @@ void DeviceFTE::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t&
 		std::int32_t levelSet = m_FTE.getLevelSet();
 		std::int32_t periodNsecSet = m_FTE.getPeriodNsecSet();
 		std::int32_t dutyCycleSet = m_FTE.getDutyCycleSet();
+
 
 		//Just check if there some data in previous PVs
 		if(terminalSet>0 && modeSet>0 && levelSet>0 && periodNsecSet>0 && dutyCycleSet>0 && startTimeSet.tv_sec!=0 && stopTimeSet.tv_sec!=0){
@@ -286,3 +272,24 @@ void DeviceFTE::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std:
 		m_FTE.setPendingCode(timestamp,FTEPendingCode);
 	}
 }
+
+#ifdef EPICS
+ NDS_DEFINE_DRIVER(DeviceFTE, DeviceFTE)
+#else
+/**
+ * Allocation function
+ *********************/
+void* DeviceFTE::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+{
+    return new DeviceFTE(factory, deviceName, parameters);
+}
+
+/**
+ * Deallocation function
+ ***********************/
+void DeviceFTE::deallocateDevice(void* deviceName)
+{
+    delete (DeviceFTE*)deviceName;
+}
+#endif
+
