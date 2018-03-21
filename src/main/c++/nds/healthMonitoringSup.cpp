@@ -47,27 +47,27 @@ HealthMonitSup::HealthMonitSup(  const std::string& name,
 									readerInt32_t PV_SignalQualityFlag_Reader,
 									writerDouble_t PV_SignalQualityFlagLevel_Writer):
     Node(std::shared_ptr<HealthMonitSupImpl >(new HealthMonitSupImpl(	name,
-																			switchOnFunction,
-																			switchOffFunction,
-																			startFunction,
-																			stopFunction,
-																			recoverFunction,
-																			allowStateChangeFunction,
-																			PV_DevicePower_Reader,
-																			PV_DeviceTemperature_Reader,
-																			PV_DeviceVoltage_Reader,
-																			PV_DeviceCurrent_Reader,
-																			PV_SEUEnable_Writer,
-																			PV_DAQEnable_Writer,
-																			PV_SelfTestEnable_Writer,
-																			PV_SelfTestType_Writer,
-																			PV_SelfTestVerboseEnable_Writer,
-																			PV_SelfTestIDEnable_Writer,
-																			PV_SelfTestTxtEnable_Writer,
-																			PV_SelfTestCodeResultEnable_Writer,
-																			PV_SelfTestTextResult_Reader,
-																			PV_SignalQualityFlag_Reader,
-																			PV_SignalQualityFlagLevel_Writer)))
+									switchOnFunction,
+									switchOffFunction,
+									startFunction,
+									stopFunction,
+									recoverFunction,
+									allowStateChangeFunction,
+									PV_DevicePower_Reader,
+									PV_DeviceTemperature_Reader,
+									PV_DeviceVoltage_Reader,
+									PV_DeviceCurrent_Reader,
+									PV_SEUEnable_Writer,
+									PV_DAQEnable_Writer,
+									PV_SelfTestEnable_Writer,
+									PV_SelfTestType_Writer,
+									PV_SelfTestVerboseEnable_Writer,
+									PV_SelfTestIDEnable_Writer,
+									PV_SelfTestTxtEnable_Writer,
+									PV_SelfTestCodeResultEnable_Writer,
+									PV_SelfTestTextResult_Reader,
+									PV_SignalQualityFlag_Reader,
+									PV_SignalQualityFlagLevel_Writer)))
 {
 }
 
@@ -250,6 +250,11 @@ void HealthMonitSup::setSignalQualityFlag(const timespec& timestamp, const std::
 void HealthMonitSup::setSignalQualityFlagLevel(const timespec& timestamp, const double& value)
 {
 	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSignalQualityFlagLevel(timestamp, value);
+}
+
+void HealthMonitSup::setSelfTextTxtResult(const timespec& timestamp, const std::string& value)
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTextTxtResult(timestamp, value);
 }
 
 }
