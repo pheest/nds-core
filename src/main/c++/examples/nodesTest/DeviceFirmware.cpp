@@ -4,7 +4,12 @@
 #include <unistd.h>
 #include <functional>
 
-#include "../include/DeviceFIRM.h"
+#include "../include/DeviceFirmware.h"
+
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
 
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
@@ -36,14 +41,18 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	 * control system thread.
 	 */
 	nds::Port rootNode(DeviceName);
-	rootNode.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 
 	//Add a PV to set the current time
 	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 	m_setCurrentTime.setDescription("Set timestamp (in secodns)");
+	// For testing purposes the current time is set to a constant bigger
+	// than 1 of January of 1990 which is the EPICS epoch.
+	timespec timestamp = {0, 0};
+	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
+
 
 	// Add Firmware node
-	m_Firmware = rootNode.addChild(nds::FirmwareSup("Firm",
+	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
 				std::bind(&DeviceFirmware::switchOn_Firmware, this),
 				std::bind(&DeviceFirmware::switchOff_Firmware, this),
 				std::bind(&DeviceFirmware::start_Firmware, this),
@@ -57,6 +66,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
+	rootNode.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 
 	//Stream information for debugging purposes
 	rootNode.setLogLevel(nds::logLevel_t::debug);
@@ -86,22 +96,6 @@ DeviceFirmware* DeviceFirmware::getInstance(const std::string& DeviceName)
     }
 
     return findDevice->second;
-}
-
-/*
- * Allocation function
- *********************/
-void* DeviceFirmware::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceFirmware(factory, DeviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceFirmware::deallocateDevice(void* DeviceName)
-{
-    delete (DeviceFirmware*)DeviceName;
 }
 
 
@@ -245,3 +239,24 @@ timespec DeviceFirmware::getCurrentTime()
     return time;
 }
 
+
+#ifdef EPICS
+NDS_DEFINE_DRIVER(DeviceFirmware, DeviceFirmware)
+#else
+/*
+ * Allocation function
+ *********************/
+void* DeviceFirmware::allocateDevice(nds::Factory& factory,
+				     const std::string& DeviceName,
+				     const nds::namedParameters_t& parameters){
+    return new DeviceFirmware(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceFirmware::deallocateDevice(void* DeviceName)
+{
+    delete (DeviceFirmware*)DeviceName;
+}
+#endif

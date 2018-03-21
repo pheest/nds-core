@@ -7,8 +7,8 @@
  * By GMV & UPM
  */
 
-#ifndef NDSFIRMWARESUPIMP_H
-#define NDSFIRMWARESUPIMP_H
+#ifndef NDSFIRMWAREIMPL_H
+#define NDSFIRMWAREIMPL_H
 
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
@@ -19,10 +19,10 @@
 namespace nds
 {
 
-  class FirmwareSupImpl: public NodeImpl
+  class FirmwareImpl: public NodeImpl
   {
     public:
-      FirmwareSupImpl(const std::string& name,  ///< The node's name
+      FirmwareImpl(const std::string& name,  ///< The node's name
           stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
           stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
           stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)

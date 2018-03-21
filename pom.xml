@@ -61,6 +61,12 @@
                 <role>developer</role>
             </roles>
         </developer>
+	<developer>
+            <id>morenoj</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <!-- configuration of how the project is built -->
@@ -91,12 +97,12 @@
                             <requires codac="true">nds3-core-devel</requires>
                         </package>
 
-                        
+
 			<package name="doc">
                             <include type="doxygen" name="NDS3" project="${project.name}" version="${project.version}" optimize="c">
 				<filepattern>*.dox</filepattern>
                                 <filepattern>*.h</filepattern>
-                                <filepattern>*.cpp</filepattern>                             
+                                <filepattern>*.cpp</filepattern>
 				<outputformat>html</outputformat>
                                 <outputformat>pdf</outputformat>
                                 <input>main/c++/doc</input>
