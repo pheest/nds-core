@@ -104,7 +104,7 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 
 	m_FirmwarePath_RBVPV.reset(new PVVariableInImpl<std::string>("FilePath_RBV"));
 	m_FirmwarePath_RBVPV->setDescription("Readback PV of the firmware file");
-	m_FirmwarePath_RBPV->setMaxElements(maxElements);
+	m_FirmwarePath_RBVPV->setMaxElements(maxElements);
 	m_FirmwarePath_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_FirmwarePath_RBVPV);
 
