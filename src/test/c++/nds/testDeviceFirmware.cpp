@@ -122,9 +122,12 @@ TEST(testDeviceFirmware, fullTest)
 
   //Change Firmware Path
   std::string NewFirmwarePath="New FirmwarePath";
+  const std::string * pushedPath;
   pInterface->writeCSValue("/deviceFirmware-Firm.FilePath", timestamp, NewFirmwarePath);
-  pInterface->readCSValue("/deviceFirmware-Firm.FilePath_RBV", &timestamp, &NewFirmwarePath);
-  EXPECT_EQ((std::string)"New FirmwarePath", NewFirmwarePath);
+  pInterface->getPushedString("/deviceFirmware-Firm.FilePath_RBV",
+			      pFirmwareStateMachineSwitchTime,
+			      pushedPath);
+  EXPECT_EQ((std::string)"New FirmwarePath", *pushedPath);
 
   //Change FirmwareNode state:  RUNNING -> (stopping) -> ON
   pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState", 
@@ -152,5 +155,3 @@ TEST(testDeviceFirmware, fullTest)
   factory.destroyDevice("deviceFirmware");
 
 }
-
-
