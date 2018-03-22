@@ -57,19 +57,13 @@ public:
 
     size_t getClkSrc();
     size_t getClkDst();
-    std::string getClkSetStatus();
-    size_t getClkSetCode();
-    size_t getClkSrcRead();
 
     size_t getTermSrc();
     size_t getTermDst();
     size_t getTermSyncSet();
     size_t getTermInvertSet();
-    std::string getTermSetStatus();
-    size_t getTermSetCode();
-    size_t getTermSrcRead();
-    size_t getTermSyncRead();
-    size_t getTermInvertRead();
+
+
 
     //TODO Necesito los setters que están comentados?
 

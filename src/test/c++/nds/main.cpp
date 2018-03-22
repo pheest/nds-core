@@ -2,18 +2,19 @@
 //
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
+#include "../include/DeviceDBL.h"
+#include "../include/DeviceDigitalIO.h"
+#include "../include/DeviceFTE.h"
+#include "../include/DeviceI32.h"
+#include "../include/DeviceRouting.h"
+#include "../include/DeviceVectorI32.h"
+#include "../include/DeviceVectorI8.h"
+#include "../include/DeviceVectorUI8.h"
 #include "../include/Device.h"
-#include "../include/Device_DBL.h"
-#include "../include/Device_I32.h"
-#include "../include/Device_Vector_I32.h"
-#include "../include/Device_Vector_I8.h"
-#include "../include/Device_Vector_UI8.h"
-#include "../include/Device_DigitalIO.h"
-#include "../include/Device_FTE.h"
-#include "../include/Device_Routing.h"
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
 #include "../include/DeviceFirmware.h"
+#include "../include/DeviceTiming.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -59,6 +60,10 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceHQMonitor",
                            std::bind(&DeviceHQMonitor::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceHQMonitor::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceTiming",
+                           std::bind(&DeviceTiming::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceTiming::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceStateMachine",
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),

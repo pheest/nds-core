@@ -5,7 +5,6 @@
 #include <functional>
 
 #include "../include/DeviceHQMonitor.h"
-
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
 
@@ -37,7 +36,7 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory, const std::string &Devic
 	 *
 	 * It is possible to have the root node as a simple Node and promote one or
 	 * more of its children to "Port": each port will interface with a different
-	 * control system thread.
+	 * control system thread
 	 */
 	nds::Port rootNode(DeviceName);
 
@@ -124,10 +123,10 @@ DeviceHQMonitor* DeviceHQMonitor::getInstance(const std::string& DeviceName)
 // Called when the HQMonitor node has to be switched on.
 void DeviceHQMonitor::switchOn_HQMonitor(){
 	//Call API HW to set the default parameters
-	m_HQMonitor.setDevicePower(getCurrentTime(), 0.25);
-	m_HQMonitor.setDeviceTemperature(getCurrentTime(), 295.5);
-	m_HQMonitor.setDeviceVoltage(getCurrentTime(), 2.5);
-	m_HQMonitor.setDeviceCurrent(getCurrentTime(), 0.1);
+	m_HQMonitor.setDevicePower(getCurrentTime(), 0.42);
+	m_HQMonitor.setDeviceTemperature(getCurrentTime(), 296.5);
+	m_HQMonitor.setDeviceVoltage(getCurrentTime(), 2.6);
+	m_HQMonitor.setDeviceCurrent(getCurrentTime(), 0.2);
 	m_HQMonitor.setSEUEnable(getCurrentTime(),0);
 	m_HQMonitor.setDAQMonitorEnable(getCurrentTime(),0);
 	m_HQMonitor.setSelfTestEnable(getCurrentTime(),0);
@@ -179,24 +178,31 @@ bool DeviceHQMonitor::allow_HQMonitor_Change(const nds::state_t, const nds::stat
  * HQMonitor support getters
  */
 void DeviceHQMonitor::PV_HQMonitor_Power_Reader(timespec* timestamp, double* value)
-{
-	*timestamp = getCurrentTime();
-	*value = 0.25;
+{        
+ 
+  *timestamp = getCurrentTime();
+  
+  *value = 0.25 ;
+  m_HQMonitor.setDevicePower(*timestamp, *value );
+
 }
 void DeviceHQMonitor::PV_HQMonitor_Temperature_Reader(timespec* timestamp, double* value)
 {
 	*timestamp = getCurrentTime();
 	*value = 295.5;
+	m_HQMonitor.setDeviceTemperature(*timestamp, *value );
 }
 void DeviceHQMonitor::PV_HQMonitor_Voltage_Reader(timespec* timestamp, double* value)
 {
 	*timestamp = getCurrentTime();
 	*value = 2.5;
+	 m_HQMonitor.setDeviceVoltage(*timestamp, *value );
 }
 void DeviceHQMonitor::PV_HQMonitor_Current_Reader(timespec* timestamp, double* value)
 {
 	*timestamp = getCurrentTime();
 	*value = 0.1;
+	m_HQMonitor.setDeviceCurrent(*timestamp, *value );
 }
 void DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader(timespec* timestamp, std::string* value){
 	std::string result = "";
@@ -216,6 +222,7 @@ void DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader(timespec* timestamp, std::
 	}
 	*timestamp = getCurrentTime();
 	*value = result;
+	m_HQMonitor.setSelfTestTextResult(*timestamp, *value );
 }
 void DeviceHQMonitor::PV_HQMonitor_SignalQualityFlag_Reader(timespec* timestamp, std::int32_t* value)
 {
@@ -294,26 +301,56 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
 	//Get Self-Test enable
 	std::int32_t selfTestEnableOld = m_HQMonitor.getSelfTestEnable();
 
-
+	//Initial Default Values 
+	std::int32_t SelfTestVerboseEnableOld = m_HQMonitor.getSelfTestVerboseEnable();
+	std::int32_t SelfTestTextEnableOld = m_HQMonitor.getSelfTestTextEnable();
+	std::int32_t SelfTestCodeResultEnableOld = m_HQMonitor.getSelfTestCodeResultEnable();
+	
 	std::cout<<"HealthMonitor support information:"<<std::endl;
 	std::cout<<"\tDevicePower = "<<devicePower<<std::endl;
 	std::cout<<"\tDeviceTemperature = "<<deviceTemperature<<std::endl;
 	std::cout<<"\tDeviceVoltage = "<<deviceVoltage<<std::endl;
 	std::cout<<"\tDeviceCurrent = "<<deviceCurrent<<std::endl;
 	std::cout<<"\tSelfTestEnable = "<<selfTestEnableOld<<std::endl;
-
+	
 	// Run until the state machine stops us
 	while(!m_bStop_HQMonitor){
+	  
+	  devicePower = m_HQMonitor.getDevicePower();
+	  deviceVoltage = m_HQMonitor.getDeviceVoltage();
+	  deviceCurrent =  m_HQMonitor.getDeviceCurrent();
+	  deviceTemperature  =  m_HQMonitor.getDeviceTemperature();
 
+	  //Verbosity flags
+	  std::int32_t SelfTestVerboseEnable = m_HQMonitor.getSelfTestVerboseEnable();
+	  std::int32_t SelfTestTextEnable = m_HQMonitor.getSelfTestTextEnable();
+	  std::int32_t SelfTestCodeResultEnable = m_HQMonitor.getSelfTestCodeResultEnable();
 
-		// Get Self-Test enable
-		std::int32_t selfTestEnable =  m_HQMonitor.getSelfTestEnable();
-		if(selfTestEnable != selfTestEnableOld){
-			m_HQMonitor.push(getCurrentTime(), selfTestEnable);
-			selfTestEnableOld=selfTestEnable;
-		}
-		// Rest for a while
-		::usleep(1000000);
+	  // Get Self-Test enable
+	  std::int32_t selfTestEnable =  m_HQMonitor.getSelfTestEnable();
+	  
+	  if(selfTestEnable != selfTestEnableOld){
+	    m_HQMonitor.push(getCurrentTime(), selfTestEnable);
+	    selfTestEnableOld=selfTestEnable;
+	   
+	                  
+	    }
+	    
+	  if(selfTestEnable!=0){
+	    //Call to the function that print the Result string and update (push) the string
+	    if((SelfTestVerboseEnable!= SelfTestVerboseEnableOld)|| 
+	       (SelfTestTextEnable!= SelfTestTextEnable) ||
+	       (SelfTestCodeResultEnable !=  SelfTestCodeResultEnableOld)){
+	      std::string result = m_HQMonitor.getSelfTestTextResult();
+	      
+	    }
+	  }
+	  //update old values
+	  if(SelfTestVerboseEnable!= SelfTestVerboseEnableOld) SelfTestVerboseEnableOld = SelfTestVerboseEnable;
+	  if(SelfTestTextEnable!= SelfTestTextEnable) SelfTestTextEnableOld = SelfTestTextEnable;
+	  if (SelfTestCodeResultEnable !=  SelfTestCodeResultEnableOld) SelfTestCodeResultEnableOld = SelfTestCodeResultEnable;
+	  // Rest for a while
+	  ::usleep(1000000);
 	}
 }
 

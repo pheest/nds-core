@@ -3,8 +3,6 @@
 
 //#include <iostream>
 
-#include "../include/Device.h"
-#include "../include/Device_DigitalIO.h"
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
