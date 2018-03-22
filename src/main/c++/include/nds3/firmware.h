@@ -63,6 +63,7 @@ public:
      *
      */
     Firmware(const std::string& name,  ///< The node's name
+	     size_t maxElements, ///< Maximum length of the PV strings.
 	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
 	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
 	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)

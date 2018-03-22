@@ -1,10 +1,11 @@
 
+#include "../include/DeviceDigitalIO.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device_DigitalIO.h"
 
 static std::map<std::string, DeviceDigitalIO*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -146,22 +147,6 @@ DeviceDigitalIO* DeviceDigitalIO::getInstance(const std::string& deviceName)
         return 0;
     }
     return findDevice->second;
-}
-
-/**
- * Allocation function
- *********************/
-void* DeviceDigitalIO::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceDigitalIO(factory, deviceName, parameters);
-}
-
-/**
- * Deallocation function
- ***********************/
-void DeviceDigitalIO::deallocateDevice(void* deviceName)
-{
-    delete (DeviceDigitalIO*)deviceName;
 }
 
 timespec DeviceDigitalIO::getCurrentTime()
@@ -674,4 +659,21 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
 
 #ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceDigitalIO, DeviceDigitalIO)
+#else
+ /**
+  * Allocation function
+  *********************/
+ void* DeviceDigitalIO::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+ {
+     return new DeviceDigitalIO(factory, deviceName, parameters);
+ }
+
+ /**
+  * Deallocation function
+  ***********************/
+ void DeviceDigitalIO::deallocateDevice(void* deviceName)
+ {
+     delete (DeviceDigitalIO*)deviceName;
+ }
 #endif
+

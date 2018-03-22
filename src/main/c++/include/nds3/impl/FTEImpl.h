@@ -59,27 +59,14 @@ public:
 	std::int32_t getLevelSet();
 	std::int32_t getPeriodNsecSet();
 	std::int32_t getDutyCycleSet();
-	std::string getSetStatus();
-	std::int32_t getSetCode();
 
     std::int32_t getTerminalSuppress();
     std::int32_t getModeSuppress();
 	std::int32_t getAllSuppress();
 	timespec getStartTimeSuppress();
-	std::string getSuppressStatus();
-	std::int32_t getSuppressCode();
 
     std::int32_t getTerminalChgPeriod();
     std::int32_t getPeriodChgPeriod();
-	std::string getChgPeriodStatus();
-	std::int32_t getChgPeriodCode();
-
-	std::int32_t getTerminalPending();
-	std::int32_t getPendingValue();
-	std::string getPendingStatus();
-	std::int32_t getPendingCode();
-
-	std::int32_t getMaximum();
 
 	void setSetStatus(const timespec& timestamp, const std::string& value);
 	void setSetCode(const timespec& timestamp, const std::int32_t& value);

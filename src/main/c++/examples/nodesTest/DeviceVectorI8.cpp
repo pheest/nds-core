@@ -1,10 +1,11 @@
 
+#include "../include/DeviceVectorI8.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device_Vector_I8.h"
 
 static std::map<std::string, DeviceVectorI8*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -120,24 +121,6 @@ DeviceVectorI8* DeviceVectorI8::getInstance(const std::string& deviceName)
     }
     return findDevice->second;
 }
-
-/*
- * Allocation function
- *********************/
-void* DeviceVectorI8::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceVectorI8(factory, deviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceVectorI8::deallocateDevice(void* deviceName)
-{
-    delete (DeviceVectorI8*)deviceName;
-}
-
-
 
 bool DeviceVectorI8::allow__DeviceVectorI8_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
@@ -644,4 +627,23 @@ void DeviceVectorI8::WaveformGeneration_thread_body(){
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
+#ifdef EPICS
+ NDS_DEFINE_DRIVER(DeviceVectorI8, DeviceVectorI8)
+#else
+ /**
+  * Allocation function
+  *********************/
+ void* DeviceVectorI8::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+ {
+     return new DeviceVectorI8(factory, deviceName, parameters);
+ }
+
+ /**
+  * Deallocation function
+  ***********************/
+ void DeviceVectorI8::deallocateDevice(void* deviceName)
+ {
+     delete (DeviceVectorI8*)deviceName;
+ }
+#endif
 

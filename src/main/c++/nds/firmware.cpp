@@ -24,6 +24,7 @@ Firmware::Firmware(): Node()
  * @param name        the node name
  */
 Firmware::Firmware(const std::string& name,
+		   size_t maxElements,
 		stateChange_t switchOnFunction,
 		stateChange_t switchOffFunction,
 		stateChange_t startFunction,
@@ -32,6 +33,7 @@ Firmware::Firmware(const std::string& name,
 		allowChange_t allowStateChangeFunction,
 		writerString_t PV_FirmwarePath_Writer):
 	Node(std::shared_ptr<FirmwareImpl>(new FirmwareImpl(name,
+							    maxElements,
 		switchOnFunction,
 		switchOffFunction,
 		startFunction,

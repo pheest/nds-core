@@ -43,29 +43,29 @@ class NDS3_API Timing: public Node  {
 
 
     /**
-     * @brief overloading of assignment operator  
+     * @brief overloading of assignment operator
      * */
     Timing& operator=(const Timing& right);
 
     /**
-     * @brief Constructs the firmware support device node.
+     * @brief Constructs the timing support device node.
      *
      */
-    Timing( const std::string& name,  
+    Timing( const std::string& name,
         stateChange_t switchOnFunction,
         stateChange_t switchOffFunction,
         stateChange_t startFunction,
         stateChange_t stopFunction,
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
-        readerTime_t PV_Time_Reader); 
+        readerTime_t PV_Time_Reader);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**
      * @ingroup
      * @brief Set the function that retrieves the exact start time when starts.
      *
-     * @param timestampDelegate 
+     * @param timestampDelegate
      *
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);

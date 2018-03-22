@@ -1,5 +1,5 @@
-#ifndef DEVICEVECTORI32_H_
-#define DEVICEVECTORI32_H_
+#ifndef DEVICEVECTORI8_H_
+#define DEVICEVECTORI8_H_
 
 #include <memory>
 
@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceVectorI32
+class DeviceVectorI8
 {
 public:
 	/**
@@ -28,21 +28,23 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceVectorI32(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceVectorI32();
+	DeviceVectorI8(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceVectorI8();
 
+#ifndef EPICS
 	/*
 	 * Allocation/deallocation
 	 *
 	 *******************************************************/
 	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	static void deallocateDevice(void* deviceName);
+#endif
 
 	/*
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceVectorI32* getInstance(const std::string& deviceName);
+	static DeviceVectorI8* getInstance(const std::string& deviceName);
 
 
 private:
@@ -59,20 +61,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief DeviceVectorI32 state machine
+	 * @brief DeviceVectorI8 state machine
 	 */
-	nds::StateMachine m_DeviceVectorI32_stateMachine;
+	nds::StateMachine m_DeviceVectorI8_stateMachine;
 
 	/**
-	 * Methods to control DeviceVectorI32 state machine
+	 * Methods to control DeviceVectorI8 state machine
 	 */
-	void switchOn_DeviceVectorI32();  ///< Called to switch on the DeviceVectorI32 (rootnode).
-	void switchOff_DeviceVectorI32(); ///< Called to switch off the DeviceVectorI32 (rootnode).
-	void start_DeviceVectorI32();     ///< Called to start the DeviceVectorI32 (rootnode).
-	void stop_DeviceVectorI32();      ///< Called to stop the DeviceVectorI32 (rootnode).
-	void recover_DeviceVectorI32();   ///< Called to recover the DeviceVectorI32 (rootnode) from a failure.
+	void switchOn_DeviceVectorI8();  ///< Called to switch on the DeviceVectorI8 (rootnode).
+	void switchOff_DeviceVectorI8(); ///< Called to switch off the DeviceVectorI8 (rootnode).
+	void start_DeviceVectorI8();     ///< Called to start the DeviceVectorI8 (rootnode).
+	void stop_DeviceVectorI8();      ///< Called to stop the DeviceVectorI8 (rootnode).
+	void recover_DeviceVectorI8();   ///< Called to recover the DeviceVectorI8 (rootnode) from a failure.
 
-	bool allow__DeviceVectorI32_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow__DeviceVectorI8_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION
@@ -81,7 +83,7 @@ private:
 	/**
 	 * @brief DataAcquisition node
 	 */
-	nds::DataAcquisition<std::vector<std::int32_t> > m_DataAcquisition;
+	nds::DataAcquisition<std::vector<std::int8_t> > m_DataAcquisition;
 
 	/**
 	 * Methods to control DataAcquisition state machine
@@ -132,7 +134,7 @@ private:
 	/**
 	 * @brief WaveformGeneration node
 	 */
-	nds::WaveformGeneration<std::vector<std::int32_t>> m_WaveformGeneration;
+	nds::WaveformGeneration<std::vector<std::int8_t>> m_WaveformGeneration;
 
 	/**
 	 * Methods to control WaveformGeneration state machine
@@ -183,4 +185,4 @@ private:
 
 };
 
-#endif // DEVICEVECTORI32_H_
+#endif // DEVICEVECTORI8_H_

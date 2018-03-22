@@ -296,24 +296,6 @@ std::int32_t FTEImpl<T>::getDutyCycleSet()
 	return dutyCycleSet;
 }
 
-template<typename T>
-std::string FTEImpl<T>::getSetStatus()
-{
-	std::string setStatus;
-	timespec timestamp;
-	m_SetStatus_PV->read(&timestamp, &setStatus);
-	return setStatus;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getSetCode()
-{
-	std::int32_t setCode;
-	timespec timestamp;
-	m_SetCode_PV->read(&timestamp, &setCode);
-	return setCode;
-}
-
 ///////////////////////////////////////////////////////////////
 // Suppress FTE getters
 ///////////////////////////////////////////////////////////////
@@ -354,24 +336,6 @@ timespec FTEImpl<T>::getStartTimeSuppress()
 	return startTimeSuppress;
 }
 
-template<typename T>
-std::string FTEImpl<T>::getSuppressStatus()
-{
-	std::string setStatus;
-	timespec timestamp;
-	m_SuppressStatus_PV->read(&timestamp, &setStatus);
-	return setStatus;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getSuppressCode()
-{
-	std::int32_t suppressCode;
-	timespec timestamp;
-	m_SuppressCode_PV->read(&timestamp, &suppressCode);
-	return suppressCode;
-}
-
 ///////////////////////////////////////////////////////////////
 // ChgPeriod FTE getters
 ///////////////////////////////////////////////////////////////
@@ -392,75 +356,6 @@ std::int32_t FTEImpl<T>::getPeriodChgPeriod()
 	timespec timestamp;
 	m_PeriodChgPeriod_PV->read(&timestamp, &periodChgPeriod);
 	return periodChgPeriod;
-}
-
-template<typename T>
-std::string FTEImpl<T>::getChgPeriodStatus()
-{
-	std::string chgPeriodStatus;
-	timespec timestamp;
-	m_ChgPeriodStatus_PV->read(&timestamp, &chgPeriodStatus);
-	return chgPeriodStatus;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getChgPeriodCode()
-{
-	std::int32_t chgPeriodCode;
-	timespec timestamp;
-	m_ChgPeriodCode_PV->read(&timestamp, &chgPeriodCode);
-	return chgPeriodCode;
-}
-
-///////////////////////////////////////////////////////////////
-// Pending FTE getters
-///////////////////////////////////////////////////////////////
-template<typename T>
-std::int32_t FTEImpl<T>::getTerminalPending()
-{
-	std::int32_t terminalPending;
-	timespec timestamp;
-	m_TerminalPending_PV->read(&timestamp, &terminalPending);
-	return terminalPending;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getPendingValue()
-{
-	std::int32_t pendingValue;
-	timespec timestamp;
-	m_PendingValue_PV->read(&timestamp, &pendingValue);
-	return pendingValue;
-}
-
-template<typename T>
-std::string FTEImpl<T>::getPendingStatus()
-{
-	std::string pendingStatus;
-	timespec timestamp;
-	m_PendingStatus_PV->read(&timestamp, &pendingStatus);
-	return pendingStatus;
-}
-
-template<typename T>
-std::int32_t FTEImpl<T>::getPendingCode()
-{
-	std::int32_t pendingCode;
-	timespec timestamp;
-	m_PendingCode_PV->read(&timestamp, &pendingCode);
-	return pendingCode;
-}
-
-///////////////////////////////////////////////////////////////
-// Maximum FTE getter
-///////////////////////////////////////////////////////////////
-template<typename T>
-std::int32_t FTEImpl<T>::getMaximum()
-{
-	std::int32_t maximum;
-	timespec timestamp;
-	m_Maximum_PV->read(&timestamp, &maximum);
-	return maximum;
 }
 
 ///////////////////////////////////////////////////////////////

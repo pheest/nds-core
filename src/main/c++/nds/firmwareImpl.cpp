@@ -21,6 +21,7 @@ namespace nds
 {
 
 FirmwareImpl::FirmwareImpl(const std::string& name,
+			   size_t maxElements,
 		stateChange_t switchOnFunction,
           	stateChange_t switchOffFunction,
 		stateChange_t startFunction,
@@ -57,26 +58,31 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 
 	m_HWRevision_PV.reset(new PVVariableInImpl<std::string>("HWRevision"));
 	m_HWRevision_PV->setDescription("Hardware revision");
+	m_HWRevision_PV->setMaxElements(maxElements);
 	m_HWRevision_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_HWRevision_PV);
 
 	m_SerialNumber_PV.reset(new PVVariableInImpl<std::string>("SerialNumber"));
 	m_SerialNumber_PV->setDescription("Serial number");
+	m_SerialNumber_PV->setMaxElements(maxElements);
 	m_SerialNumber_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SerialNumber_PV);
 
 	m_DeviceModel_PV.reset(new PVVariableInImpl<std::string>("Model"));
 	m_DeviceModel_PV->setDescription("Device model");
+	m_DeviceModel_PV->setMaxElements(maxElements);
 	m_DeviceModel_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DeviceModel_PV);
 
 	m_DeviceType_PV.reset(new PVVariableInImpl<std::string>("Type"));
 	m_DeviceType_PV->setDescription("Device type");
+	m_DeviceType_PV->setMaxElements(maxElements);
 	m_DeviceType_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DeviceType_PV);
 
 	m_DriverVersion_PV.reset(new PVVariableInImpl<std::string>("DriverVersion"));
 	m_DriverVersion_PV->setDescription("Driver Version");
+	m_DriverVersion_PV->setMaxElements(maxElements);
 	m_DriverVersion_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DriverVersion_PV);
 
@@ -92,11 +98,13 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 
 	m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",PV_FirmwarePath_Writer));
 	m_FirmwarePath_PV->setDescription("Path to the firmware file to load");
+	m_FirmwarePath_PV->setMaxElements(maxElements);
 	m_FirmwarePath_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_FirmwarePath_PV);
 
 	m_FirmwarePath_RBVPV.reset(new PVVariableInImpl<std::string>("FilePath_RBV"));
 	m_FirmwarePath_RBVPV->setDescription("Readback PV of the firmware file");
+	m_FirmwarePath_RBVPV->setMaxElements(maxElements);
 	m_FirmwarePath_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_FirmwarePath_RBVPV);
 

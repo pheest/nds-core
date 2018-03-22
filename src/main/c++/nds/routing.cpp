@@ -94,31 +94,6 @@ size_t Routing<T>::getClkDst()
 	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getClkDst();
 }
 
-template<typename T>
-std::string Routing<T>::getClkSetStatus()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getClkSetStatus();
-}
-
-template<typename T>
-size_t Routing<T>::getClkSetCode()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getClkSetCode();
-}
-
-
-////////////////////////////////////////////////////////////////////////////
-// Read Clock Route Status getters
-////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-size_t Routing<T>::getClkSrcRead()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getClkSrcRead();
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////
 // Route Terminals getters
 ////////////////////////////////////////////////////////////////////////////
@@ -145,43 +120,6 @@ template<typename T>
 size_t Routing<T>::getTermInvertSet()
 {
 	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermInvertSet();
-}
-
-template<typename T>
-std::string Routing<T>::getTermSetStatus()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermSetStatus();
-}
-
-template<typename T>
-size_t Routing<T>::getTermSetCode()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermSetCode();
-}
-
-
-
-
-////////////////////////////////////////////////////////////////////////////
-// Read Routing Configuration getters
-////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-size_t Routing<T>::getTermSrcRead()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermSrcRead();
-}
-
-template<typename T>
-size_t Routing<T>::getTermSyncRead()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermSyncRead();
-}
-
-template<typename T>
-size_t Routing<T>::getTermInvertRead()
-{
-	return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getTermInvertRead();
 }
 
 /** TODO some setters have been commented. Should they exist?
