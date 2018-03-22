@@ -917,6 +917,8 @@ void testDevice::WaveformGeneration_thread_body(){
 	double SignalRef = m_WaveformGeneration.getSignalRef();
 	// Get Ground
 	double Ground = m_WaveformGeneration.getGround();
+	// Get impedance
+	std::int32_t impedance = m_WaveformGeneration.getImpedance();
 
 	std::cout<<"Signal generator configured with:"<<std::endl;
 	std::cout<<"\tRefFrequency = "<<RefFrequency<<std::endl;
@@ -927,6 +929,7 @@ void testDevice::WaveformGeneration_thread_body(){
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
 	std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
 	std::cout<<"\tGround = "<<Ground<<std::endl;
+	std::cout<<"\tImpedance = "<<impedance<<std::endl;
 
 	// Run until the state machine stops us
 	while(!m_bStop_WaveformGeneration){
@@ -946,8 +949,7 @@ void testDevice::WaveformGeneration_thread_body(){
 		double offset = m_WaveformGeneration.getOffset();
 		// Get phase
 		double phase = m_WaveformGeneration.getPhase();
-		// Get phase
-		double impedance = m_WaveformGeneration.getImpedance();
+
 
 		switch(signalType){
 
@@ -1681,7 +1683,7 @@ void testDevice::PV_Routing_TermSet_Writer(const timespec& timestamp, const std:
 		std::int32_t terminalInvertSet = m_Routing.getTermInvertSet();
 
 		//Just check PVs have been written
-		if(terminalSrc!=0 && terminalDst!=0){
+		if(terminalSrc!=0 && terminalDst!=0 && terminalSyncSet!=0 && terminalInvertSet!=0){
 			RoutingSetCode=1;
 		}
 		else{
@@ -2022,7 +2024,7 @@ timespec testDevice::getCurrentTime()
 }
 
 
-NDS_DEFINE_DRIVER(testDevice, testDevice);
+NDS_DEFINE_DRIVER(testDevice, testDevice)
 
 
 

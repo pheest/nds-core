@@ -2,19 +2,20 @@
 //
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/DeviceDBL.h"
-#include "../include/DeviceDigitalIO.h"
-#include "../include/DeviceFTE.h"
-#include "../include/DeviceI32.h"
-#include "../include/DeviceRouting.h"
-#include "../include/DeviceVectorI32.h"
-#include "../include/DeviceVectorI8.h"
-#include "../include/DeviceVectorUI8.h"
 #include "../include/Device.h"
-#include "../include/DeviceHQMonitor.h"
-#include "../include/DeviceStateMachine.h"
-#include "../include/DeviceFirmware.h"
-#include "../include/DeviceTiming.h"
+#include "DeviceDBL.h"
+#include "DeviceDigitalIO.h"
+#include "DeviceFTE.h"
+#include "DeviceI32.h"
+#include "DeviceRouting.h"
+#include "DeviceVectorI32.h"
+#include "DeviceVectorI8.h"
+#include "DeviceVectorUI8.h"
+#include "DeviceVectorDBL.h"
+#include "DeviceHQMonitor.h"
+#include "DeviceStateMachine.h"
+#include "DeviceFirmware.h"
+#include "DeviceTiming.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -23,7 +24,6 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("Device",
                            std::bind(&Device::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&Device::deallocateDevice, std::placeholders::_1));
-
 
     nds::Factory::registerDriver("DeviceDBL",
                            std::bind(&DeviceDBL::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -44,6 +44,10 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceVectorUI8",
                            std::bind(&DeviceVectorUI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceVectorUI8::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceVectorDBL",
+                           std::bind(&DeviceVectorDBL::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceVectorDBL::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceDigitalIO",
                            std::bind(&DeviceDigitalIO::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),

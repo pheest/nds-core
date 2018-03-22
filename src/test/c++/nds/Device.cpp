@@ -551,15 +551,15 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
     std::string rootNodeFullExternalName = rootNode.getFullExternalName();
     std::string rootNodeFullName = rootNode.getFullName();
     std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
-    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
     timespec rootNodetime = rootNode.getTimestamp();
-
-    //std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
-    //std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
-    //std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
-    //std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
-    //std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
-    //std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
+//    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
+//
+//    std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
+//    std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
+//    std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
+//    std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
+//    std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
+//    std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
 
     rootNode.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
     rootNode.setLogLevel(nds::logLevel_t::debug);
@@ -1073,6 +1073,8 @@ void Device::WaveformGeneration_thread_body(){
 	double SignalRef = m_WaveformGeneration.getSignalRef();
 	// Get Ground
 	double Ground = m_WaveformGeneration.getGround();
+	// Get impedance
+	std::int32_t impedance = m_WaveformGeneration.getImpedance();
 
 	std::cout<<"Signal generator configured with:"<<std::endl;
 	std::cout<<"\tRefFrequency = "<<RefFrequency<<std::endl;
@@ -1083,6 +1085,7 @@ void Device::WaveformGeneration_thread_body(){
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
 	std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
 	std::cout<<"\tGround = "<<Ground<<std::endl;
+	std::cout<<"\tImpedance = "<<impedance<<std::endl;
 
 	// Run until the state machine stops us
 	while(!m_bStop_WaveformGeneration){
@@ -1101,8 +1104,6 @@ void Device::WaveformGeneration_thread_body(){
 		double offset = m_WaveformGeneration.getOffset();
 		// Get phase
 		double phase = m_WaveformGeneration.getPhase();
-		// Get phase
-		std::int32_t impedance = m_WaveformGeneration.getImpedance();
 
 		switch(signalType){
 
@@ -2255,7 +2256,7 @@ void Device::PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int
 		std::int32_t terminalInvertSet = m_Routing.getTermInvertSet();
 
 		//Just check PVs have been written
-		if(terminalSrc!=0 && terminalDst!=0){
+		if(terminalSrc!=0 && terminalDst!=0 && terminalSyncSet!=0 && terminalInvertSet!=0){
 			RoutingSetCode=1;
 		}
 		else{

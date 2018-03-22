@@ -64,8 +64,8 @@ TEST(testRouting, testStateMachineRouting)
 TEST(testRouting, testClockSet)
 {
 
-	const timespec* pStateMachineSwitchTime;
-	const std::int32_t* pStateMachineState;
+//	const timespec* pStateMachineSwitchTime;
+//	const std::int32_t* pStateMachineState;
 
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
@@ -146,8 +146,8 @@ TEST(testRouting, testClockSet)
 TEST(testRouting, testTermSet)
 {
 
-	const timespec* pStateMachineSwitchTime;
-	const std::int32_t* pStateMachineState;
+//	const timespec* pStateMachineSwitchTime;
+//	const std::int32_t* pStateMachineState;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");

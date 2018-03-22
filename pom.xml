@@ -102,6 +102,8 @@
 							<include type="library" name="nds3-DeviceVectorI32" />
 							<include type="library" name="nds3-DeviceVectorI8" />
 							<include type="library" name="nds3-DeviceVectorUI8" />
+							<include type="library" name="nds3-DeviceVectorDBL" />
+							
 			   				<requires codac="true">nds3-core-devel</requires>
 						</package>
 

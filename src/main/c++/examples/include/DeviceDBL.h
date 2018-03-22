@@ -74,7 +74,10 @@ private:
 	void stop_DeviceDBL();      ///< Called to stop the DeviceDBL (rootnode).
 	void recover_DeviceDBL();   ///< Called to recover the DeviceDBL (rootnode) from a failure.
 
-	bool allow__DeviceDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	timespec getCurrentTime();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION

@@ -67,12 +67,12 @@ void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue
     ::memcpy(pValue->data(), temporaryValue.data(), temporaryValue.size());
 }
 
-void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint16_t>* pValue) const
+void PVBaseOutImpl::read(timespec* /*pTimestamp*/, std::vector<std::uint16_t>* /*pValue*/) const
 {
 	throw;
 }
 
-void PVBaseOutImpl::read(timespec* pTimestamp, std::vector<std::uint32_t>* pValue) const
+void PVBaseOutImpl::read(timespec* /*pTimestamp*/, std::vector<std::uint32_t>* /*pValue*/) const
 {
 	throw;
 }
@@ -141,12 +141,12 @@ void PVBaseOutImpl::write(const timespec& timestamp, const std::vector<std::uint
     write(timestamp, temporaryString);
 }
 
-void PVBaseOutImpl::write(const timespec& timestamp, const std::vector<std::uint16_t>& value)
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint16_t>& /* value */)
 {
 	throw;
 }
 
-void PVBaseOutImpl::write(const timespec& timestamp, const std::vector<std::uint32_t>& value)
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::uint32_t>& /* value */)
 {
 
 }
