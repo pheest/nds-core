@@ -14,6 +14,7 @@
 #include "../include/DeviceHQMonitor.h"
 #include "../include/DeviceStateMachine.h"
 #include "../include/DeviceFirmware.h"
+#include "../include/DeviceTiming.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -59,6 +60,10 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceHQMonitor",
                            std::bind(&DeviceHQMonitor::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceHQMonitor::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceTiming",
+                           std::bind(&DeviceTiming::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceTiming::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceStateMachine",
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
