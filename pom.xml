@@ -98,6 +98,7 @@
 							<include type="library" name="nds3-DeviceI32" />
 							<include type="library" name="nds3-DeviceRouting" />
 							<include type="library" name="nds3-DeviceStateMachine" />
+							<include type="library" name="nds3-DeviceTiming" />
 							<include type="library" name="nds3-DeviceVectorI32" />
 							<include type="library" name="nds3-DeviceVectorI8" />
 							<include type="library" name="nds3-DeviceVectorUI8" />
