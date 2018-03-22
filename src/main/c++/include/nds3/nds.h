@@ -39,6 +39,7 @@
 #include "nds3/imageAcquisition.h"
 #include "nds3/digitalIO.h"
 #include "nds3/firmware.h"
+#include "nds3/timing.h"
 #include "nds3/factory.h"
 #include "nds3/stateMachine.h"
 #include "nds3/thread.h"

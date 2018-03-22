@@ -1,0 +1,134 @@
+/*
+ * Nominal Device Support v.3 (NDS3)
+ *
+ * For more information about the license please refer to the license.txt
+ * file included in the distribution.
+ *
+ *  By GMV & UPM
+ */
+
+
+#include "nds3/timing.h"
+#include "../include/nds3/impl/timingImpl.h"
+
+namespace nds {
+
+///////////////////////////////////////// TIME SUPPORT /////////////////////////////////////////
+
+// ---------------- Constructors and assignment operator -------------------//
+Timing::Timing(): Node()
+{
+}
+
+/**
+ * @brief Constructs the firmware support node
+ *
+ * @param name        the node name
+ */
+Timing::Timing(const std::string& name,
+		stateChange_t switchOnFunction,
+		stateChange_t switchOffFunction,
+		stateChange_t startFunction,
+		stateChange_t stopFunction,
+		stateChange_t recoverFunction,
+		allowChange_t allowStateChangeFunction,
+    readerTime_t PV_Time_Reader): 
+	  Node(std::shared_ptr<TimingImpl>(new TimingImpl(name,
+		switchOnFunction,
+		switchOffFunction,
+		startFunction,
+		stopFunction,
+		recoverFunction,
+		allowStateChangeFunction,
+		PV_Time_Reader))) 
+{ 
+}
+
+Timing::Timing(const Timing& right): 
+     Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
+{
+}
+
+Timing& Timing::operator=(const Timing& right)
+{
+    m_pImplementation = right.m_pImplementation;
+    return *this;
+}
+
+// -------------------- Functions common to all nodes ----------------------- //
+void Timing::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+{
+    std::static_pointer_cast<TimingImpl >(m_pImplementation)->
+          setStartTimestampDelegate(timestampDelegate);
+}
+
+void Timing::push(const timespec& timestamp, const timespec& data)
+{
+    std::static_pointer_cast<TimingImpl>(m_pImplementation)->push(timestamp, data);
+}
+
+timespec Timing::getStartTimestamp() const
+{
+    return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getStartTimestamp();
+}
+
+// -------------------------------- Getters --------------------------------- //
+timespec Timing::getTime() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getTime();
+}
+
+std::string Timing::getHumanTime() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getHumanTime();
+}
+
+double Timing::getClkFrequency() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getClkFrequency();
+}
+
+std::int32_t Timing::getClkMultiplier() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getClkMultiplier();
+}
+
+std::int32_t Timing::getSyncStatus() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getSyncStatus();
+}
+
+std::int32_t Timing::getSecsLastSync() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getSecsLastSync();
+}
+
+timespec Timing::getRefTimeBase() {
+  return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getRefTimeBase();
+}
+
+// -------------------------------- Setters --------------------------------- //
+void Timing::setTime(const timespec& timestamp, const timespec& value) { 
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setTime(timestamp, value);
+}
+
+void Timing::setHumanTime(const timespec& timestamp, const std::string& value) {
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setHumanTime(timestamp, value);
+}
+
+void Timing::setClkFrequency(const timespec& timestamp, const double& value) { 
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setClkFrequency(timestamp, value);
+}
+
+void Timing::setClkMultiplier(const timespec& timestamp, const std::int32_t& value) {
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setClkMultiplier(timestamp, value);
+}
+
+void Timing::setSyncStatus(const timespec& timestamp, const std::int32_t& value) {
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setSyncStatus(timestamp, value);
+}
+
+void Timing::setSecsLastSync(const timespec& timestamp, const std::int32_t& value) {
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setSecsLastSync(timestamp, value);
+}
+
+void Timing::setRefTimeBase(const timespec& timestamp, const timespec& value) {
+  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setRefTimeBase(timestamp, value);
+}
+
+}
+
