@@ -1,10 +1,11 @@
 
+#include "../include/DeviceRouting.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device_Routing.h"
 
 static std::map<std::string, DeviceRouting*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -53,7 +54,7 @@ DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceNam
 			std::bind(&DeviceRouting::PV_Routing_TermDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
 
-    m_Routing.setTimestampDelegate(std::bind(&DeviceRouting::getCurrentTime,this));
+    m_Routing.setStartTimestampDelegate(std::bind(&DeviceRouting::getCurrentTime,this));
     m_Routing.setLogLevel(nds::logLevel_t::debug);
 
     m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
@@ -83,22 +84,6 @@ DeviceRouting* DeviceRouting::getInstance(const std::string& deviceName)
         return 0;
     }
     return findDevice->second;
-}
-
-/**
- * Allocation function
- *********************/
-void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceRouting(factory, deviceName, parameters);
-}
-
-/**
- * Deallocation function
- ***********************/
-void DeviceRouting::deallocateDevice(void* deviceName)
-{
-    delete (DeviceRouting*)deviceName;
 }
 
 timespec DeviceRouting::getCurrentTime()
@@ -248,3 +233,24 @@ void DeviceRouting::PV_Routing_TermDstRead_Writer(const timespec& timestamp, con
 		m_Routing.setTermInvertRead(timestamp,1);
 	}
 }
+
+#ifdef EPICS
+ NDS_DEFINE_DRIVER(DeviceRouting, DeviceRouting)
+#else
+/**
+ * Allocation function
+ *********************/
+void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+{
+    return new DeviceRouting(factory, deviceName, parameters);
+}
+
+/**
+ * Deallocation function
+ ***********************/
+void DeviceRouting::deallocateDevice(void* deviceName)
+{
+    delete (DeviceRouting*)deviceName;
+}
+#endif
+

@@ -109,25 +109,6 @@ public:
      */
     size_t getClkDst();
     /**
-     * @brief Retrieve the clock set status message
-     *
-     * @return the clock set status message
-     */
-    std::string getClkSetStatus();
-    /**
-     * @brief Retrieve the clock set status code
-     *
-     * @return the clock set status code value
-     */
-    size_t getClkSetCode();
-    /**
-     * @brief Retrieve the clock source of selected destination
-     *
-     * @return the clock source of selected destination value
-     */
-    size_t getClkSrcRead();
-
-    /**
      * @brief Retrieve the terminal source
      *
      * @return the terminal source value
@@ -150,36 +131,6 @@ public:
      * @return the terminal invert mode value
      */
     size_t getTermInvertSet();
-    /**
-     * @brief Retrieve the terminal set status message
-     *
-     * @return the terminal set status message
-     */
-    std::string getTermSetStatus();
-    /**
-     * @brief Retrieve the terminal set status code
-     *
-     * @return the terminal set status code value
-     */
-    size_t getTermSetCode();
-    /**
-     * @brief Retrieve the source of the selected destination terminal
-     *
-     * @return the source of the selected destination terminal value
-     */
-    size_t getTermSrcRead();
-    /**
-     * @brief Retrieve the sync mode of the selected destination terminal
-     *
-     * @return the sync mode of the selected destination terminal value
-     */
-    size_t getTermSyncRead();
-    /**
-     * @brief Retrieve the invert mode of the selected destination terminal
-     *
-     * @return the invert mode of the selected destination terminal value
-     */
-    size_t getTermInvertRead();
 
 
     /** TODO Some setters are commented. Should they exist

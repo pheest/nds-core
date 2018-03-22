@@ -126,18 +126,6 @@ std::int32_t FTE<T>::getDutyCycleSet()
 	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getDutyCycleSet();
 }
 
-template<typename T>
-std::string FTE<T>::getSetStatus()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getSetStatus();
-}
-
-template<typename T>
-std::int32_t FTE<T>::getSetCode()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getSetCode();
-}
-
 ///////////////////////////////////////////////////////////////
 // Suppress FTE getters
 ///////////////////////////////////////////////////////////////
@@ -165,18 +153,6 @@ timespec FTE<T>::getStartTimeSuppress()
 	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getStartTimeSuppress();
 }
 
-template<typename T>
-std::string FTE<T>::getSuppressStatus()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getSuppressStatus();
-}
-
-template<typename T>
-std::int32_t FTE<T>::getSuppressCode()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getSuppressCode();
-}
-
 ///////////////////////////////////////////////////////////////
 // ChgPeriod FTE getters
 ///////////////////////////////////////////////////////////////
@@ -191,54 +167,6 @@ template<typename T>
 std::int32_t FTE<T>::getPeriodChgPeriod()
 {
 	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getPeriodChgPeriod();
-}
-
-template<typename T>
-std::string FTE<T>::getChgPeriodStatus()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getChgPeriodStatus();
-}
-
-template<typename T>
-std::int32_t FTE<T>::getChgPeriodCode()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getChgPeriodCode();
-}
-
-///////////////////////////////////////////////////////////////
-// Pending FTE getters
-///////////////////////////////////////////////////////////////
-template<typename T>
-std::int32_t FTE<T>::getTerminalPending()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getTerminalPending();
-}
-
-template<typename T>
-std::int32_t FTE<T>::getPendingValue()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getPendingValue();
-}
-
-template<typename T>
-std::string FTE<T>::getPendingStatus()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getPendingStatus();
-}
-
-template<typename T>
-std::int32_t FTE<T>::getPendingCode()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getPendingCode();
-}
-
-///////////////////////////////////////////////////////////////
-// Maximum FTE getter
-///////////////////////////////////////////////////////////////
-template<typename T>
-std::int32_t FTE<T>::getMaximum()
-{
-	return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getMaximum();
 }
 
 ///////////////////////////////////////////////////////////////

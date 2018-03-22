@@ -1,10 +1,11 @@
 
+#include "../include/DeviceDBL.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device_DBL.h"
 
 static std::map<std::string, DeviceDBL*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -116,22 +117,6 @@ DeviceDBL* DeviceDBL::getInstance(const std::string& deviceName)
         return 0;
     }
     return findDevice->second;
-}
-
-/*
- * Allocation function
- *********************/
-void* DeviceDBL::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceDBL(factory, deviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceDBL::deallocateDevice(void* deviceName)
-{
-    delete (DeviceDBL*)deviceName;
 }
 
 
@@ -620,4 +605,24 @@ void DeviceDBL::WaveformGeneration_thread_body(){
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
+
+#ifdef EPICS
+NDS_DEFINE_DRIVER(DeviceDBL, DeviceDBL)
+#else
+/*
+ * Allocation function
+ *********************/
+void* DeviceDBL::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+{
+    return new DeviceDBL(factory, deviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceDBL::deallocateDevice(void* deviceName)
+{
+    delete (DeviceDBL*)deviceName;
+}
+#endif
 

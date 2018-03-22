@@ -201,40 +201,6 @@ size_t RoutingImpl<T>::getClkDst()
 	return (std::int32_t)ClkDst;
 }
 
-template<typename T>
-std::string RoutingImpl<T>::getClkSetStatus()
-{
-	std::string ClkSetStatus;
-	timespec timestamp;
-	m_ClkSetStatus_PV->read(&timestamp, &ClkSetStatus);
-	return (std::string)ClkSetStatus;
-}
-
-template<typename T>
-size_t RoutingImpl<T>::getClkSetCode()
-{
-	std::int32_t ClkSetCode;
-	timespec timestamp;
-	m_ClkSetCode_PV->read(&timestamp, &ClkSetCode);
-	return (std::int32_t)ClkSetCode;
-}
-
-
-////////////////////////////////////////////////////////////////////////////
-// Read Clock Route Status getters
-////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-size_t RoutingImpl<T>::getClkSrcRead()
-{
-	std::int32_t ClkSrcRead;
-	timespec timestamp;
-	m_ClkSrcRead_PV->read(&timestamp, &ClkSrcRead);
-	return (std::int32_t)ClkSrcRead;
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////
 // Route Terminals getters
 ////////////////////////////////////////////////////////////////////////////
@@ -273,58 +239,6 @@ size_t RoutingImpl<T>::getTermInvertSet()
 	timespec timestamp;
 	m_TermInvertSet_PV->read(&timestamp, &TermInvertSet);
 	return (std::int32_t)TermInvertSet;
-}
-
-template<typename T>
-std::string RoutingImpl<T>::getTermSetStatus()
-{
-	std::string TermSetStatus;
-	timespec timestamp;
-	m_ClkSetStatus_PV->read(&timestamp, &TermSetStatus);
-	return (std::string)TermSetStatus;
-}
-
-template<typename T>
-size_t RoutingImpl<T>::getTermSetCode()
-{
-	std::int32_t TermSetCode;
-	timespec timestamp;
-	m_TermSetCode_PV->read(&timestamp, &TermSetCode);
-	return (std::int32_t)TermSetCode;
-}
-
-
-
-
-////////////////////////////////////////////////////////////////////////////
-// Read Routing Configuration getters
-////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-size_t RoutingImpl<T>::getTermSrcRead()
-{
-	std::int32_t TermSrcRead;
-	timespec timestamp;
-	m_TermSrcRead_PV->read(&timestamp, &TermSrcRead);
-	return (std::int32_t)TermSrcRead;
-}
-
-template<typename T>
-size_t RoutingImpl<T>::getTermSyncRead()
-{
-	std::int32_t TermSyncRead;
-	timespec timestamp;
-	m_TermSyncRead_PV->read(&timestamp, &TermSyncRead);
-	return (std::int32_t)TermSyncRead;
-}
-
-template<typename T>
-size_t RoutingImpl<T>::getTermInvertRead()
-{
-	std::int32_t TermInvertRead;
-	timespec timestamp;
-	m_TermInvertRead_PV->read(&timestamp, &TermInvertRead);
-	return (std::int32_t)TermInvertRead;
 }
 
 /** TODO some setters have been commented. Should they exist?

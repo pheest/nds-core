@@ -144,18 +144,6 @@ public:
      * @return the DutyCycleSet value
      */
 	std::int32_t getDutyCycleSet();
-    /**
-     * @brief Retrieve the SignalRef
-     *
-     * @return the SetStatus value
-     */
-	std::string getSetStatus();
-    /**
-     * @brief Retrieve the SignalRef
-     *
-     * @return the SetCode value
-     */
-	std::int32_t getSetCode();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Getters of Suppress functionality
@@ -184,18 +172,6 @@ public:
      * @return the StartTimeSuppress value
      */
 	timespec getStartTimeSuppress();
-    /**
-     * @brief Retrieve the Suppress Status signal
-     *
-     * @return the SuppressStatus value
-     */
-	std::string getSuppressStatus();
-    /**
-     * @brief Retrieve the Suppress Code signal
-     *
-     * @return the Code value
-     */
-	std::int32_t getSuppressCode();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Getters of Change Period functionality
@@ -212,56 +188,6 @@ public:
      * @return the PeriodChgPeriod value
      */
     std::int32_t getPeriodChgPeriod();
-    /**
-     * @brief Retrieve the ChgPeriodStatus
-     *
-     * @return the ChgPeriodStatus value
-     */
-	std::string getChgPeriodStatus();
-    /**
-     * @brief Retrieve the ChgPeriodCode
-     *
-     * @return the ChgPeriodCode value
-     */
-	std::int32_t getChgPeriodCode();
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // Getters of Pending functionality
-    //////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * @brief Retrieve the TerminalPending
-     *
-     * @return the TerminalPending value
-     */
-	std::int32_t getTerminalPending();
-    /**
-     * @brief Retrieve the number of FTEs pending in the TerminalPending set
-     *
-     * @return the PendingValue value
-     */
-	std::int32_t getPendingValue();
-    /**
-     * @brief Retrieve the Pending Status signal
-     *
-     * @return the PendingStatus value
-     */
-	std::string getPendingStatus();
-    /**
-     * @brief Retrieve the Pending Code signal
-     *
-     * @return the PendingCode value
-     */
-	std::int32_t getPendingCode();
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // Getter of Maximum functionality
-    //////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * @brief Retrieve the Maximum number FTEs that can be scheduled. (Size of the FTE FIFO)
-     *
-     * @return the Maximum value
-     */
-	std::int32_t getMaximum();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Setters of Set functionality

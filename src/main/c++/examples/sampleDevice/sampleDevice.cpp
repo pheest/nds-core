@@ -10,7 +10,7 @@
  *  It declares all the nodes and PVs in the device, then register the root node (which in turn register all its children).
  */
 
-#include "testDevice.h"
+#include "sampleDevice.h"
 
 
 testDevice::testDevice(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
