@@ -165,6 +165,13 @@ size_t HealthMonitSup::getSelfTestCodeResultEnable()
 	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTestCodeResultEnable();
 }
 
+  std::string HealthMonitSup::getSelfTestTextResult()
+{
+	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSelfTextTxtResult();
+}
+
+
+
 size_t HealthMonitSup::getSignalQualityFlag()
 {
 	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> getSignalQualityFlag();
@@ -252,7 +259,7 @@ void HealthMonitSup::setSignalQualityFlagLevel(const timespec& timestamp, const 
 	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSignalQualityFlagLevel(timestamp, value);
 }
 
-void HealthMonitSup::setSelfTextTxtResult(const timespec& timestamp, const std::string& value)
+void HealthMonitSup::setSelfTestTextResult(const timespec& timestamp, const std::string& value)
 {
 	return std::static_pointer_cast<HealthMonitSupImpl> (m_pImplementation) -> setSelfTextTxtResult(timestamp, value);
 }

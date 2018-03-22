@@ -164,7 +164,7 @@ public:
 	/**
 	 * @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
 	 */
-	std::string getSelfTextTxtResult();
+	std::string getSelfTestTextResult();
 
 	/**
 	 * @brief Retrieve the flag that indicates whether the quality signal is too low
@@ -246,7 +246,7 @@ public:
 	/**
 	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
 	 */
-	void setSelfTextTxtResult(const timespec& timestamp, const std::string& value);
+	void setSelfTestTextResult(const timespec& timestamp, const std::string& value);
 
 	/**
 	 * @brief Set the flag that indicates whether the quality signal is too low
