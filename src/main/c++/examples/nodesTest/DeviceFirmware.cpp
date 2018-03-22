@@ -51,6 +51,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 
 	// Add Firmware node
 	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+						     256, // Maximum string length.
 				std::bind(&DeviceFirmware::switchOn_Firmware, this),
 				std::bind(&DeviceFirmware::switchOff_Firmware, this),
 				std::bind(&DeviceFirmware::start_Firmware, this),
