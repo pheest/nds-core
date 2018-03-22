@@ -8,8 +8,8 @@ TEST(testFirmwareSupport, testVariables)
 {
 	const timespec* pDeviceStateMachineSwitchTime;
 	const std::int32_t* pDeviceStateMachineState;
-	const timespec* pFirmwareSupStateMachineSwitchTime;
-	const std::int32_t* pFirmwareSupStateMachineState;
+	const timespec* pFirmwareStateMachineSwitchTime;
+	const std::int32_t* pFirmwareStateMachineState;
 	timespec timestamp = {0, 0};
 
     //Create factory
@@ -69,24 +69,24 @@ TEST(testFirmwareSupport, testVariables)
     EXPECT_EQ("Firmware path to be uploaded", firmwarePath);
 
     // Check FirmwareNode initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::off, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::off, *pFirmwareStateMachineState);
 
 	//Change FirmwareNode state:  OFF -> (initializing) -> ON
 	pInterface->writeCSValue("/rootNode-Firm.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pFirmwareStateMachineState);
 	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareStateMachineState);
 
 	//Change FirmwareNode state:  ON -> (starting) -> RUNNING
 	pInterface->writeCSValue("/rootNode-Firm.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pFirmwareStateMachineState);
 	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::running, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::running, *pFirmwareStateMachineState);
 	::sleep(2);
 
 	//Change Firmware Path
@@ -97,19 +97,19 @@ TEST(testFirmwareSupport, testVariables)
 
 	//Change FirmwareNode state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-Firm.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pFirmwareStateMachineState);
 	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareStateMachineState);
 
 	//Change FirmwareNode state:  ON -> (switchingOff) -> OFF
 	pInterface->writeCSValue("/rootNode-Firm.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pFirmwareStateMachineState);
 	::sleep(2);
-	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareSupStateMachineSwitchTime, pFirmwareSupStateMachineState);
-	EXPECT_EQ((std::int32_t)nds::state_t::off, *pFirmwareSupStateMachineState);
+	pInterface->getPushedInt32("/rootNode-Firm.StateMachine.getState", pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
+	EXPECT_EQ((std::int32_t)nds::state_t::off, *pFirmwareStateMachineState);
 
 	//Change Device state:  ON -> (switchingOff) -> OFF
 	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);

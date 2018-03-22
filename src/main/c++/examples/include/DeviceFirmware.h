@@ -31,12 +31,14 @@ public:
 	DeviceFirmware(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
 	~DeviceFirmware();
 
+#ifndef EPICS
 	/*
 	 * Allocation/deallocation
 	 *
 	 *******************************************************/
 	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	static void deallocateDevice(void* deviceName);
+#endif
 
 	/*
 	 * For test purposes we make it possible to retrieve running instances of
@@ -79,7 +81,7 @@ private:
 	/**
 	 * @brief Firmware node
 	 */
-	nds::FirmwareSup m_Firmware;
+	nds::Firmware m_Firmware;
 
 	/**
 	 * Methods to control the Firmware state machine

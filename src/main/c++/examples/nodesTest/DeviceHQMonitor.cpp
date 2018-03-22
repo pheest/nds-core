@@ -6,6 +6,9 @@
 
 #include "../include/DeviceHQMonitor.h"
 
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
+
 static std::map<std::string, DeviceHQMonitor*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
@@ -41,6 +44,10 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory, const std::string &Devic
 	//Add a PV to set the current time
 	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 	m_setCurrentTime.setDescription("Set timestamp (in seconds)");
+	// For testing purposes the current time is set to a constant bigger
+	// than 1 of January of 1990 which is the EPICS epoch.
+	timespec timestamp = {0, 0};
+	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
 	// Add Health Monitor node
 	m_HQMonitor = rootNode.addChild(nds::HealthMonitSup("HQMonitor",
@@ -105,21 +112,6 @@ DeviceHQMonitor* DeviceHQMonitor::getInstance(const std::string& DeviceName)
     return findDevice->second;
 }
 
-/*
- * Allocation function
- *********************/
-void* DeviceHQMonitor::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceHQMonitor(factory, DeviceName, parameters);
-}
-
-/*
- * Deallocation function
- ***********************/
-void DeviceHQMonitor::deallocateDevice(void* DeviceName)
-{
-    delete (DeviceHQMonitor*)DeviceName;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEST HEALTH MONITOR STATE MACHINE
@@ -333,3 +325,23 @@ timespec DeviceHQMonitor::getCurrentTime()
     return time;
 }
 
+#ifdef EPICS
+NDS_DEFINE_DRIVER(DeviceHQMonitor, DeviceHQMonitor)
+#else
+/*
+ * Allocation function
+ *********************/
+void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
+				     const std::string& DeviceName,
+				     const nds::namedParameters_t& parameters) {
+
+  return new DeviceHQMonitor(factory, DeviceName, parameters);
+}
+
+/*
+ * Deallocation function
+ ***********************/
+void DeviceHQMonitor::deallocateDevice(void* DeviceName) {
+  delete (DeviceHQMonitor*)DeviceName;
+}
+#endif

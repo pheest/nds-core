@@ -448,19 +448,19 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
 	    /**
-	     * Add FirmwareSup node
+	     * Add Firmware node
 	     */
-	    m_FirmwareSup = rootNode.addChild(nds::FirmwareSup("Firm",
-				std::bind(&Device::switchOn_FirmwareSup, this),
-				std::bind(&Device::switchOff_FirmwareSup, this),
-				std::bind(&Device::start_FirmwareSup, this),
-				std::bind(&Device::stop_FirmwareSup, this),
-				std::bind(&Device::recover_FirmwareSup, this),
-				std::bind(&Device::allow_FirmwareSup_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&Device::PV_FirmwareSup_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+	    m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+				std::bind(&Device::switchOn_Firmware, this),
+				std::bind(&Device::switchOff_Firmware, this),
+				std::bind(&Device::start_Firmware, this),
+				std::bind(&Device::stop_Firmware, this),
+				std::bind(&Device::recover_Firmware, this),
+				std::bind(&Device::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&Device::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
 
-	    m_FirmwareSup.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
-	    m_FirmwareSup.setLogLevel(nds::logLevel_t::debug);
+	    m_Firmware.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_Firmware.setLogLevel(nds::logLevel_t::debug);
 
 	    /**
 	     * Add Decimation node
@@ -617,19 +617,19 @@ void Device::switchOn_Device(){
 		//HW_CALL_INIT_FUNCTION
 
 		// Call API HW to retrieve FirmwareVersion
-		m_FirmwareSup.setFirmwareVersion(getCurrentTime(),"Firmware test version");
+		m_Firmware.setFirmwareVersion(getCurrentTime(),"Firmware test version");
 		// Call API HW to retrieve FirmwareStatus
-		m_FirmwareSup.setFirmwareStatus(getCurrentTime(),0);
+		m_Firmware.setFirmwareStatus(getCurrentTime(),0);
 		// Call API HW to retrieve HardwareRevision
-		m_FirmwareSup.setHardwareRevision(getCurrentTime(),"Firmware test hardware revision");
+		m_Firmware.setHardwareRevision(getCurrentTime(),"Firmware test hardware revision");
 		// Call API HW to retrieve SerialNumber
-		m_FirmwareSup.setSerialNumber(getCurrentTime(),"Firmware test serial number");
+		m_Firmware.setSerialNumber(getCurrentTime(),"Firmware test serial number");
 		// Call API HW to retrieve DeviceModel
-		m_FirmwareSup.setDeviceModel(getCurrentTime(),"Firmware test device model");
+		m_Firmware.setDeviceModel(getCurrentTime(),"Firmware test device model");
 		// Call API HW to retrieve DeviceType
-		m_FirmwareSup.setDeviceType(getCurrentTime(),"Firmware test device type");
+		m_Firmware.setDeviceType(getCurrentTime(),"Firmware test device type");
 		// Call API HW to retrieve FirmwarePath
-		m_FirmwareSup.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
+		m_Firmware.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
 
 }
 void Device::switchOff_Device(){
@@ -1868,78 +1868,78 @@ timespec Device::getCurrentTime()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
-* FirmwareSup State Machine
+* Firmware State Machine
 */
 
-// Called when the FirmwareSup node has to be switched on.
-void Device::switchOn_FirmwareSup(){
+// Called when the Firmware node has to be switched on.
+void Device::switchOn_Firmware(){
 
 }
 
-// Called when the FirmwareSup node has to be switched off.
-void Device::switchOff_FirmwareSup(){
+// Called when the Firmware node has to be switched off.
+void Device::switchOff_Firmware(){
 
 }
 
-// Called when the FirmwareSup node has to start acquiring. We start the FirmwareSup thread.
-void Device::start_FirmwareSup(){
+// Called when the Firmware node has to start acquiring. We start the Firmware thread.
+void Device::start_Firmware(){
 
-	m_bStop_FirmwareSup = false; //< We will set to true to stop the FirmwareSup thread
+	m_bStop_Firmware = false; //< We will set to true to stop the Firmware thread
 	/**
-	 *   Start the FirmwareSup thread.
+	 *   Start the Firmware thread.
 	 *   We don't need to check if the thread was already started because the state
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_FirmwareSup_Thread = std::thread(std::bind(&Device::FirmwareSup_thread_body, this));
+	m_Firmware_Thread = std::thread(std::bind(&Device::Firmware_thread_body, this));
 }
 
 // Stop the DataAcquisition node thread
-void Device::stop_FirmwareSup(){
-	m_bStop_FirmwareSup = true;
-	m_FirmwareSup_Thread.join();
+void Device::stop_Firmware(){
+	m_bStop_Firmware = true;
+	m_Firmware_Thread.join();
 }
 
 // A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
-void Device::recover_FirmwareSup(){
+void Device::recover_Firmware(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 // We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
-bool Device::allow_FirmwareSup_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool Device::allow_Firmware_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /*
 * Firmware support setters
 */
-void Device::PV_FirmwareSup_Path_Writer(const timespec& timestamp, const std::string& value){
+void Device::PV_Firmware_Path_Writer(const timespec& timestamp, const std::string& value){
 	std::string firmwarePath;
 	//firmwarePath has the firmware path to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real firmware path programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  firmwarePath are equal.
 	firmwarePath=value;
-	m_FirmwareSup.setFirmwarePath(timestamp,firmwarePath);
+	m_Firmware.setFirmwarePath(timestamp,firmwarePath);
 }
 
-void Device::FirmwareSup_thread_body(){
+void Device::Firmware_thread_body(){
 
 	// Get FirmwareVersion
-	std::string FirmwareVersion = m_FirmwareSup.getFirmwareVersion();
+	std::string FirmwareVersion = m_Firmware.getFirmwareVersion();
 	// Get FirmwareStatus
-	std::int32_t FirmwareStatus = m_FirmwareSup.getFirmwareStatus();
+	std::int32_t FirmwareStatus = m_Firmware.getFirmwareStatus();
 	// Get HardwareRevision
-	std::string HardwareRevision = m_FirmwareSup.getHardwareRevision();
+	std::string HardwareRevision = m_Firmware.getHardwareRevision();
 	// Get SerialNumber
-	std::string SerialNumber = m_FirmwareSup.getSerialNumber();
+	std::string SerialNumber = m_Firmware.getSerialNumber();
 	// Get DeviceModel
-	std::string DeviceModel = m_FirmwareSup.getDeviceModel();
+	std::string DeviceModel = m_Firmware.getDeviceModel();
 	// Get DeviceType
-	std::string DeviceType = m_FirmwareSup.getDeviceType();
+	std::string DeviceType = m_Firmware.getDeviceType();
 	// Get FirmwarePath
-	std::string FirmwarePath = m_FirmwareSup.getFirmwarePath();
-	std::string FirmwarePathOld=m_FirmwareSup.getFirmwarePath();
+	std::string FirmwarePath = m_Firmware.getFirmwarePath();
+	std::string FirmwarePathOld=m_Firmware.getFirmwarePath();
 
 
 	std::cout<<"Firmware support information:"<<std::endl;
@@ -1952,14 +1952,14 @@ void Device::FirmwareSup_thread_body(){
 	std::cout<<"\tFirmwarePath = "<<FirmwarePath<<std::endl;
 
 	// Run until the state machine stops us
-	while(!m_bStop_FirmwareSup){
+	while(!m_bStop_Firmware){
 
 
 		// Get FirmwarePath
-		std::string FirmwarePath = m_FirmwareSup.getFirmwarePath();
+		std::string FirmwarePath = m_Firmware.getFirmwarePath();
 		if(FirmwarePath.compare(FirmwarePathOld)!=0){
 			// Push the FirmwarePath to the control system
-			m_FirmwareSup.push(m_FirmwareSup.getTimestamp(), FirmwarePath);
+			m_Firmware.push(m_Firmware.getTimestamp(), FirmwarePath);
 			FirmwarePathOld=FirmwarePath;
 		}
 		// Rest for a while
@@ -2200,7 +2200,7 @@ bool Device::allow_Routing_Change(const nds::state_t, const nds::state_t, const 
  * Routing setters
  */
 void Device::PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t RoutingSetStatus;
+	std::int32_t RoutingSetCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates a clock routing set.
@@ -2211,23 +2211,23 @@ void Device::PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::int3
 
 		//Just check PVs have been written
 		if(clockSrc!=0 && clockDst!=0){
-			RoutingSetStatus=0;
+			RoutingSetCode=1;
 		}
 		else{
-			RoutingSetStatus=-1;
+			RoutingSetCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(RoutingSetStatus==0){
+		if(RoutingSetCode==1){
 			m_Routing.setClkSetStatus(timestamp,"OK");
-			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}else{
 			m_Routing.setClkSetStatus(timestamp,"WRONG");
-			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}
 	}else{
 		m_Routing.setClkSetStatus(timestamp,"OK");
-		m_Routing.setClkSetCode(timestamp,(std::int32_t)0);
+		m_Routing.setClkSetCode(timestamp,(std::int32_t)RoutingSetCode);
 	}
 
 }
@@ -2242,7 +2242,7 @@ void Device::PV_Routing_ClkDstRead_Writer(const timespec& timestamp, const std::
 }
 
 void Device::PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t RoutingSetStatus;
+	std::int32_t RoutingSetCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates a terminal routing set.
@@ -2255,23 +2255,23 @@ void Device::PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int
 
 		//Just check PVs have been written
 		if(terminalSrc!=0 && terminalDst!=0){
-			RoutingSetStatus=0;
+			RoutingSetCode=1;
 		}
 		else{
-			RoutingSetStatus=-1;
+			RoutingSetCode=-1;
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(RoutingSetStatus==0){
+		if(RoutingSetCode==1){
 			m_Routing.setTermSetStatus(timestamp,"OK");
-			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}else{
 			m_Routing.setTermSetStatus(timestamp,"WRONG");
-			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetStatus);
+			m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 		}
 	}else{
 		m_Routing.setTermSetStatus(timestamp,"OK");
-		m_Routing.setTermSetCode(timestamp,(std::int32_t)0);
+		m_Routing.setTermSetCode(timestamp,(std::int32_t)RoutingSetCode);
 	}
 
 }
@@ -2338,11 +2338,11 @@ bool Device::allow_FTE_Change(const nds::state_t, const nds::state_t, const nds:
 }
 
 /**
- * FTE setters
- */
+* FTE setters
+*/
 void Device::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& value){
 
-	std::int32_t FTESetStatus;
+	std::int32_t FTESetStatus=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){//Value==1 simulates on FTE set.
@@ -2365,7 +2365,7 @@ void Device::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& va
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(FTESetStatus!=0){
+		if(FTESetStatus==1){
 			m_FTE.setSetStatus(timestamp,"OK");
 			m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
 		}else{
@@ -2374,14 +2374,14 @@ void Device::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t& va
 		}
 	}else{
 		m_FTE.setSetStatus(timestamp,"OK");
-		m_FTE.setSetCode(timestamp,(std::int32_t)0);
+		m_FTE.setSetCode(timestamp,(std::int32_t)FTESetStatus);
 	}
 
 
 
 }
 void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTESuppressStatus;
+	std::int32_t FTESuppressStatus=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){
@@ -2393,7 +2393,7 @@ void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_
 		std::int32_t allSuppress = m_FTE.getAllSuppress();
 
 		//Just check if there some data in previous PVs
-		if(terminalSuppress>0 && modeSuppress>0 && allSuppress>0){
+		if(terminalSuppress>0 && modeSuppress>0 && allSuppress>0 && startTimeSuppress.tv_sec!=0 && startTimeSuppress.tv_nsec!=0){
 			FTESuppressStatus=1;
 		}
 		else{
@@ -2401,7 +2401,7 @@ void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_
 		}
 
 		//Fill the Status and Code PVs with some information
-		if(FTESuppressStatus!=0){
+		if(FTESuppressStatus==1){
 			m_FTE.setSuppressStatus(timestamp,"OK");
 			m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
 		}else{
@@ -2410,12 +2410,12 @@ void Device::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_
 		}
 	}else{
 		m_FTE.setSuppressStatus(timestamp,"OK");
-		m_FTE.setSuppressCode(timestamp,(std::int32_t)0);
+		m_FTE.setSuppressCode(timestamp,(std::int32_t)FTESuppressStatus);
 	}
 
 }
 void Device::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTEChgPeriodStatus;
+	std::int32_t FTEChgPeriodStatus=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
 	if(value==1){
@@ -2432,7 +2432,7 @@ void Device::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32
 			FTEChgPeriodStatus=-1;
 		}
 		//Fill the Status and Code PVs with some information
-		if(FTEChgPeriodStatus!=0){
+		if(FTEChgPeriodStatus==1){
 			m_FTE.setChgPeriodStatus(timestamp,"OK");
 			m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
 		}else{
@@ -2441,26 +2441,30 @@ void Device::PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32
 		}
 	}else{
 		m_FTE.setChgPeriodStatus(timestamp,"OK");
-		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)0);
+		m_FTE.setChgPeriodCode(timestamp,(std::int32_t)FTEChgPeriodStatus);
 	}
 }
+
 void Device::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value){
-	std::int32_t FTEPendingValue;
+	std::int32_t FTEPendingValue=0;
+	std::int32_t FTEPendingCode=0;
 
 	//This code has been developed just for testing purposes. Should be replaced with HW API.
-	if(value>0){ //If some terminal has been chosen
+	if(value>=0){ //If some terminal has been chosen
 		FTEPendingValue=1; //HWValue of pending FTEs for the terminal in value
+		FTEPendingCode=1;
 		m_FTE.setPendingValue(timestamp,FTEPendingValue);
 		m_FTE.setPendingStatus(timestamp,"OK");
-		m_FTE.setPendingCode(timestamp,1);
+		m_FTE.setPendingCode(timestamp,FTEPendingCode);
+
 	}
 	else{
-		FTEPendingValue=-1;
+		FTEPendingValue=0; //if terminal<0 not pending values
+		FTEPendingCode=-1;
 		m_FTE.setPendingValue(timestamp,FTEPendingValue);
 		m_FTE.setPendingStatus(timestamp,"WRONG");
-		m_FTE.setPendingCode(timestamp,-1);
+		m_FTE.setPendingCode(timestamp,FTEPendingCode);
 	}
-
 }
 
 
