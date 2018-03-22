@@ -1,5 +1,5 @@
 
-#include "../include/DeviceVectorI8.h"
+#include "DeviceVectorI8.h"
 
 #include <nds3/nds.h>
 #include <mutex>

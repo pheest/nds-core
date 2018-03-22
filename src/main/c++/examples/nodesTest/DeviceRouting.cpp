@@ -1,5 +1,5 @@
 
-#include "../include/DeviceRouting.h"
+#include "DeviceRouting.h"
 
 #include <nds3/nds.h>
 #include <mutex>

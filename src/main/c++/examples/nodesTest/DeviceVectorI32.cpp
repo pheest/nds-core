@@ -1,5 +1,5 @@
 
-#include "../include/DeviceVectorI32.h"
+#include "DeviceVectorI32.h"
 
 #include <nds3/nds.h>
 #include <mutex>

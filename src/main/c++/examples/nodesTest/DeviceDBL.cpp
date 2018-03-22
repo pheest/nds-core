@@ -1,5 +1,5 @@
 
-#include "../include/DeviceDBL.h"
+#include "DeviceDBL.h"
 
 #include <nds3/nds.h>
 #include <mutex>

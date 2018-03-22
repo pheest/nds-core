@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <functional>
 
-#include "../include/DeviceVectorUI8.h"
+#include "DeviceVectorUI8.h"
 
 static std::map<std::string, DeviceVectorUI8*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
