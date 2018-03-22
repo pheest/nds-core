@@ -55,26 +55,6 @@ private:
 	std::string m_Name;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  TEST DEVICE STATE MACHINE
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * @brief Device state machine
-	 */
-	nds::StateMachine m_StateMachine;
-
-	/**
-	 * Methods to control Device state machine
-	 */
-	void switchOn_Device();  ///< Called to switch on the Device (rootnode).
-	void switchOff_Device(); ///< Called to switch off the Device (rootnode).
-	void start_Device();     ///< Called to start the Device (rootnode).
-	void stop_Device();      ///< Called to stop the Device (rootnode).
-	void recover_Device();   ///< Called to recover the Device (rootnode) from a failure.
-	bool allow_Device_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	// TEST FIRMWARE NODE
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 

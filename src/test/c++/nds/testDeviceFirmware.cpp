@@ -97,9 +97,10 @@ TEST(testDeviceFirmware, fullTest)
   EXPECT_EQ(42, slotNumber);
 
   //Get the initial firmware path
-  std::string firmwarePath;
-  pInterface->readCSValue("/deviceFirmware-Firm.FilePath_RBV", &timestamp, &firmwarePath);
-  EXPECT_EQ("Firmware path to be uploaded", firmwarePath);
+  const std::string * firmwarePath;
+  pInterface->getPushedString("/deviceFirmware-Firm.FilePath_RBV",
+			      pFirmwareStateMachineSwitchTime, firmwarePath);
+  EXPECT_EQ((std::string)"Firmware path to be uploaded", *firmwarePath);
 
 
   //Change FirmwareNode state:  ON -> (starting) -> RUNNING
@@ -123,8 +124,10 @@ TEST(testDeviceFirmware, fullTest)
   //Change Firmware Path
   std::string NewFirmwarePath="New FirmwarePath";
   pInterface->writeCSValue("/deviceFirmware-Firm.FilePath", timestamp, NewFirmwarePath);
-  pInterface->readCSValue("/deviceFirmware-Firm.FilePath_RBV", &timestamp, &NewFirmwarePath);
-  EXPECT_EQ((std::string)"New FirmwarePath", NewFirmwarePath);
+  ::sleep(2);
+  pInterface->getPushedString("/deviceFirmware-Firm.FilePath_RBV",
+			      pFirmwareStateMachineSwitchTime, firmwarePath);
+  EXPECT_EQ((std::string)"New FirmwarePath", *firmwarePath);
 
   //Change FirmwareNode state:  RUNNING -> (stopping) -> ON
   pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState", 
@@ -152,5 +155,3 @@ TEST(testDeviceFirmware, fullTest)
   factory.destroyDevice("deviceFirmware");
 
 }
-
-

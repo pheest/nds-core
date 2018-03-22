@@ -8,8 +8,6 @@
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
-#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
-
 
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
@@ -53,6 +51,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 
 	// Add Firmware node
 	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+						     256, // Maximum string length.
 				std::bind(&DeviceFirmware::switchOn_Firmware, this),
 				std::bind(&DeviceFirmware::switchOff_Firmware, this),
 				std::bind(&DeviceFirmware::start_Firmware, this),
