@@ -8,8 +8,6 @@
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
-#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
-
 
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
