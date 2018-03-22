@@ -107,20 +107,41 @@ TEST(testDeviceHQMonitor, PVs)
 	const timespec* pTimestamp;
 
 	const double* power;
+	//Initial Power
+	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevPower", pTimestamp, power);
+	EXPECT_EQ((double) 0.42, *power);
+
+	//Updated Power
 	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevPower", pTimestamp, power);
 	EXPECT_EQ((double) 0.25, *power);
 
 	const double* temperature;
+	//Initial temperature
+	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevTemperature", pTimestamp, temperature);
+	EXPECT_EQ((double)296.5, *temperature);
+
+	//Updated temperature
 	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevTemperature", pTimestamp, temperature);
 	EXPECT_EQ((double)295.5, *temperature);
 
 	const double* voltage;
+	//Initial Voltage
+	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevVoltage", pTimestamp, voltage);
+	EXPECT_EQ((double)2.6, *voltage);
+
+	//Updated Voltage
 	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevVoltage", pTimestamp, voltage);
 	EXPECT_EQ((double)2.5, *voltage);
 
 	const double* current;
+	//Initial Current
+	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevCurrent", pTimestamp, current);
+	EXPECT_EQ((double)0.2, *current);
+
+	//Updated Current
 	pInterface->getPushedDouble("/deviceHQMonitor-HQMonitor.DevCurrent", pTimestamp, current);
 	EXPECT_EQ((double)0.1, *current);
+
 
 	const std::int32_t* SEUEnable;
 	pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.SEUEnable_RBV", pTimestamp, SEUEnable);
