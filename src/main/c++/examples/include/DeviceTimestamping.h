@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceTimeStamping
+class DeviceTimestamping
 {
 public:
   /**
@@ -28,18 +28,18 @@ public:
    * @param device     the name given to the device
    * @param parameters optional parameters passed to the device
    */
-  DeviceTimeStamping(nds::Factory& factory, const std::string& deviceName, 
+  DeviceTimestamping(nds::Factory& factory, const std::string& deviceName,
       const nds::namedParameters_t& );
-  ~DeviceTimeStamping();
+  ~DeviceTimestamping();
 
 #ifndef EPICS
   /*
    * Allocation/deallocation
    *
    *******************************************************/
-  static void* allocateDevice(nds::Factory& factory, 
-      const std::string& deviceName, 
-      const nds::namedParameters_t& parameters);
+  static void* allocateDevice(nds::Factory& factory,
+                              const std::string& deviceName,
+                              const nds::namedParameters_t& parameters);
   static void deallocateDevice(void* deviceName);
 #endif
 
@@ -47,7 +47,7 @@ public:
    * For test purposes we make it possible to retrieve running instances of
    *  the device
    */
-  static DeviceTimeStamping* getInstance(const std::string& deviceName);
+  static DeviceTimestamping* getInstance(const std::string& deviceName);
 
 
 private:
@@ -62,37 +62,44 @@ private:
   std::int32_t m_Ntimestamps;
 
 ///////////////////////////////////////////////////////////////////////////////
-// TEST TIMING NODE 
+// TEST TIMING NODE
 //////////////////////////////////////////////////////////////////////////////
   /**
-   * Methods to control the TimeStamping state machine
+   * Methods to control the Timestamping state machine
    */
-  void switchOn_TimeStamping();  ///< Called to switch on the TimeStamping node.
-  void switchOff_TimeStamping(); ///< Called to switch off the TimeStamping node.
-  void start_TimeStamping();     ///< Called to start the TimeStamping node.
-  void stop_TimeStamping();      ///< Called to stop the TimeStamping node.
-  void recover_TimeStamping();   ///< Called to recover the TimeStamping node from a failure.
-
+  void switchOn_Timestamping();  ///< Called to switch on the Timestamping node.
+  void switchOff_Timestamping(); ///< Called to switch off the Timestamping node.
+  void start_Timestamping();     ///< Called to start the Timestamping node.
+  void stop_Timestamping();      ///< Called to stop the Timestamping node.
+  void recover_Timestamping();   ///< Called to recover the Timestamping node from a failure.
+  ///< Called to verify if a state change is allowed
   bool allow_Device_Change(const nds::state_t,
-      const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+                           const nds::state_t, const nds::state_t);
+
+	/**
+	 * @brief Function that emulates the changes of status of the Timestamping node.
+	 *        It is launched by start_Timestamping() in a separate thread.
+	 */
+	void Timestamping_thread_body();
+
 
 
   /**
-   * TimeStamping setters
+   * Timestamping setters
    */
   void PV_Enable_Writer(const timespec& timestamp, const std::int32_t& value);
   void PV_Edge_Writer(const timespec& timestamp, const std::int32_t& value);
 
   /**
-   * @brief A thread that runs TimeStamping_thread_body().
+   * @brief A thread that runs Timestamping_thread_body().
    */
-  std::thread m_TimeStamping_Thread;
+  std::thread m_Timestamping_Thread;
 
   /**
-   * @brief A boolean flag that stop the TimeStamping loop in TimeStamping_thread_body()
+   * @brief A boolean flag that stop the Timestamping loop in Timestamping_thread_body()
    *        when true.
    */
-  volatile bool m_bStop_TimeStamping;
+  volatile bool m_bStop_Timestamping;
 
 ///////////////////////////////////////////////////////////////////////////////
 // TIMESTAMP HANDLING
