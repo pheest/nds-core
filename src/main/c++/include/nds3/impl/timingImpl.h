@@ -14,6 +14,7 @@
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/impl/pvVariableOutImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
 
 namespace nds {
@@ -118,15 +119,11 @@ class TimingImpl: public NodeImpl {
    // --------------------------- Setters ----------------------------------- //
    /** 
     * @brief  sets the UNIX Time (PV is Delegate, 
-    *         push is called)
+    *         push is called) It updates both Time and HTime
+    *
     *
     */
    void setTime(const timespec& timestamp, const timespec& value);
-   /** 
-    * @brief  sets the human readable time (UTC format) 
-    *
-    */
-   void setHumanTime(const timespec& timestamp, const std::string& value);
 
    /**
     * @brief Sets the value of the Clock frequency
@@ -175,6 +172,13 @@ class TimingImpl: public NodeImpl {
      */
     timespec m_StartTime;
 
+    /**
+     * @brief current time. Retrieved via the delegate
+     *        function associated to m_TimeVb
+     */
+    timespec m_CurrentTime;
+
+
     // PVs
 
     std::shared_ptr<PVDelegateInImpl<timespec>> m_Time_PV;
@@ -190,6 +194,8 @@ class TimingImpl: public NodeImpl {
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SecsLastSync_PV;
     
     std::shared_ptr<PVVariableInImpl<timespec> > m_RefTimeBase_PV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_Decimation_PV;
 
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 

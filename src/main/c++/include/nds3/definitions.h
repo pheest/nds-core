@@ -294,25 +294,36 @@ typedef std::function<void ()> threadFunction_t;
  */
 typedef std::list<std::string> enumerationStrings_t;
 
+
 typedef std::function<void (timespec* time, std::int32_t* val)> readerInt32_t;
 typedef std::function<void (timespec* time, double* val)> readerDouble_t;
+typedef std::function<void (timespec* time, std::vector<bool>* val)> readerVectorBool_t;
+typedef std::function<void (timespec* time, std::vector<std::uint8_t>* val)> readerVectorUInt8_t;
+typedef std::function<void (timespec* time, std::vector<std::uint16_t>* val)> readerVectorUInt16_t;
+typedef std::function<void (timespec* time, std::vector<std::uint32_t>* val)> readerVectorUInt32_t;
+typedef std::function<void (timespec* time, std::vector<std::int8_t>* val)> readerVectorInt8_t;
+typedef std::function<void (timespec* time, std::vector<std::int16_t>* val)> readerVectorInt16_t;
+typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
+typedef std::function<void (timespec* time, std::vector<double>* val)> readerVectorDouble_t;
 typedef std::function<void (timespec* time, std::string* val)> readerString_t;
 typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
+typedef std::function<void (timespec* time, std::vector<timespec>* val)> readerVectorTime_t;
 
 typedef std::function<void (const timespec&, const std::int32_t&)> writerInt32_t;
 typedef std::function<void (const timespec&, const double&)> writerDouble_t;
+typedef std::function<void (const timespec&, const std::vector<bool>&)> writerVectorBool_t;
+typedef std::function<void (const timespec&, const std::vector<std::uint8_t>&)> writerVectorUInt8_t;
+typedef std::function<void (const timespec&, const std::vector<std::uint16_t>&)> writerVectorUInt16_t;
+typedef std::function<void (const timespec&, const std::vector<std::uint32_t>&)> writerVectorUInt32_t;
+typedef std::function<void (const timespec&, const std::vector<std::int8_t>&)> writerVectorInt8_t;
+typedef std::function<void (const timespec&, const std::vector<std::int16_t>&)> writerVectorInt16_t;
+typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;
+typedef std::function<void (const timespec&, const std::vector<double>&)> writerVectorDouble_t;
 typedef std::function<void (const timespec&, const std::string&)> writerString_t;
 typedef std::function<void (const timespec&, const timespec&)> writerTime_t;
-typedef std::function<void (const timespec&, const std::vector<double>&)> writerVectorDouble_t;
+typedef std::function<void (const timespec&, const std::vector<timespec>&)> writerVectorTime_t;
 
-typedef std::function<void (timespec* time, std::vector<bool>* val)> readerVectorBool_t;
-typedef std::function<void (timespec* time, std::vector<std::int32_t>* val)> readerVectorInt32_t;
 
-typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
-typedef std::function<void (timespec* time, std::vector<double>* val)> readerVectorDouble_t;
-
-typedef std::function<void (const timespec&, const std::vector<bool>&)> writerVectorBool_t;
-typedef std::function<void (const timespec&, const std::vector<std::int32_t>&)> writerVectorInt32_t;
 
 } // namespace nds
 

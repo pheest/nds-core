@@ -7,14 +7,15 @@
  * By GMV & UPM
  */
 
-#ifndef NDSTIMESUPP_H
-#define NDSTIMESUPP_H
+#ifndef NDSTIMING_H
+#define NDSTIMING_H
 
 /**
  * @file timing.h
- * @brief TBD DESCRIBIR ALGO AQUI!!!! 
+ * @brief Defines the nds::timing node.
  *
- *
+ * Include nds.h instead of this one, since nds3.h takes care of including all the
+ * necessary header files (including this one).
  */
 
 #include "nds3/definitions.h"
@@ -139,15 +140,10 @@ class NDS3_API Timing: public Node  {
    // ----------------------------- Setters -------------------------------- //
    /** 
     * @brief  sets the UNIX Time (PV is Delegate, 
-    *         push is called)
+    *         push is called) It updates both Time and Htime
     *
     */
    void setTime(const timespec& timestamp, const timespec& value);
-   /** 
-    * @brief  sets the human readable time (UTC format) 
-    *
-    */
-   void setHumanTime(const timespec& timestamp, const std::string& value);
 
    /**
     * @brief Sets the value of the Clock frequency

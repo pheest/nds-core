@@ -106,10 +106,6 @@ void Timing::setTime(const timespec& timestamp, const timespec& value) {
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setTime(timestamp, value);
 }
 
-void Timing::setHumanTime(const timespec& timestamp, const std::string& value) {
-  std::static_pointer_cast<TimingImpl >(m_pImplementation)->setHumanTime(timestamp, value);
-}
-
 void Timing::setClkFrequency(const timespec& timestamp, const double& value) { 
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setClkFrequency(timestamp, value);
 }
