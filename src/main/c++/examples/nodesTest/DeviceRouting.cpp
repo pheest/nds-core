@@ -195,7 +195,7 @@ void DeviceRouting::PV_Routing_TermSet_Writer(const timespec& timestamp, const s
 		std::int32_t terminalInvertSet = m_Routing.getTermInvertSet();
 
 		//Just check PVs have been written
-		if(terminalSrc!=0 && terminalDst!=0){
+		if(terminalSrc!=0 && terminalDst!=0 && terminalSyncSet!=0 && terminalInvertSet!=0){
 			RoutingSetCode=1;
 		}
 		else{
