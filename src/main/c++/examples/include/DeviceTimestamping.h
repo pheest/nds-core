@@ -67,33 +67,33 @@ private:
   /**
    * Methods to control the Timestamping state machine
    */
-  void switchOn_Timestamping();  ///< Called to switch on the Timestamping node.
-  void switchOff_Timestamping(); ///< Called to switch off the Timestamping node.
-  void start_Timestamping();     ///< Called to start the Timestamping node.
-  void stop_Timestamping();      ///< Called to stop the Timestamping node.
-  void recover_Timestamping();   ///< Called to recover the Timestamping node from a failure.
+  void switchOn_timestamping();  ///< Called to switch on the Timestamping node.
+  void switchOff_timestamping(); ///< Called to switch off the Timestamping node.
+  void start_timestamping();     ///< Called to start the Timestamping node.
+  void stop_timestamping();      ///< Called to stop the Timestamping node.
+  void recover_timestamping();   ///< Called to recover the Timestamping node from a failure.
   ///< Called to verify if a state change is allowed
-  bool allow_Device_Change(const nds::state_t,
+  bool allow_device_change(const nds::state_t,
                            const nds::state_t, const nds::state_t);
 
 	/**
 	 * @brief Function that emulates the changes of status of the Timestamping node.
 	 *        It is launched by start_Timestamping() in a separate thread.
 	 */
-	void Timestamping_thread_body();
+	void timestamping_thread_body();
 
 
 
   /**
    * Timestamping setters
    */
-  void PV_Enable_Writer(const timespec& timestamp, const std::int32_t& value);
-  void PV_Edge_Writer(const timespec& timestamp, const std::int32_t& value);
+  void pv_enable_writer(const timespec& timestamp, const std::int32_t& value);
+  void pv_edge_writer(const timespec& timestamp, const std::int32_t& value);
 
   /**
-   * @brief A thread that runs Timestamping_thread_body().
+   * @brief A thread that runs timestamping_thread_body().
    */
-  std::thread m_Timestamping_Thread;
+  std::thread m_timestamping_thread;
 
   /**
    * @brief A boolean flag that stop the Timestamping loop in Timestamping_thread_body()

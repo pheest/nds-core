@@ -12,16 +12,19 @@ static std::mutex m_lockDevicesMap;
 
 
 
-DeviceTimestamping::DeviceTimestamping(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
+				       const std::string &DeviceName,
+				       const nds::namedParameters_t &parameters):
   m_Name(DeviceName), m_NTimeStamps(0),
-  m_bStop_Timestamping(true)
-{
+  m_bStop_Timestamping(true){
+
   //Verify that there is no devices of this type with the same name
   {
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    if(m_DevicesMap.find(DeviceName) != m_DevicesMap.end())
-    {
-      throw std::logic_error("Device with the same name already allocated. This should not happen");
+    if(m_DevicesMap.find(DeviceName) != m_DevicesMap.end()) {
+
+      throw std::logic_error("Device with the same name already allocated. "
+			     "This should not happen");
     }
     m_DevicesMap[DeviceName] = this;
   }
@@ -50,26 +53,26 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory, const std::string 
 
 
   // Add Timestamping node
-  m_Timestamping = rootNode.addChild(nds::Timestamping<std::vector<std::int32_t>>("Firm",
-        std::bind(&DeviceTimestamping::switchOn_Timestamping, this),
-        std::bind(&DeviceTimestamping::switchOff_Timestamping, this),
-        std::bind(&DeviceTimestamping::start_Timestamping, this),
-        std::bind(&DeviceTimestamping::stop_Timestamping, this),
-        std::bind(&DeviceTimestamping::recover_Timestamping, this),
-        std::bind(&DeviceTimestamping::allow_Timestamping_Change, this,
+  m_Timestamping = rootNode.addChild(nds::Timestamping<std::vector<std::int32_t>>("TimeStamping",
+        std::bind(&DeviceTimestamping::switchOn_timestamping, this),
+        std::bind(&DeviceTimestamping::switchOff_timestamping, this),
+        std::bind(&DeviceTimestamping::start_timestamping, this),
+        std::bind(&DeviceTimestamping::stop_timestamping, this),
+        std::bind(&DeviceTimestamping::recover_timestamping, this),
+        std::bind(&DeviceTimestamping::allow_timestamping_change, this,
           std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-        std::bind(&DeviceTimestamping::PV_Enable_Writer, this,
+        std::bind(&DeviceTimestamping::pv_enable_writer, this,
           std::placeholders::_1, std::placeholders::_2),
-        std::bind(&DeviceTimestamping::PV_Edge_Writer, this,
+        std::bind(&DeviceTimestamping::pv_edge_writer, this,
           std::placeholders::_1, std::placeholders::_2)));
 
-  m_Timestamping.setTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime,this));
+  m_Timestamping.setTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime, this));
 
   // We have declared all the nodes and PVs in our Device: now we register them
   // with the control system that called this constructor.
   ////////////////////////////////////////////////////////////////////////////////
   rootNode.initialize(this, factory);
-  rootNode.setTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime,this));
+  rootNode.setTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime, this));
 
   //Stream information for debugging purposes
   rootNode.setLogLevel(nds::logLevel_t::debug);
@@ -80,21 +83,22 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory, const std::string 
     << rootNode.getFullName() << " is created" << std::endl;
 }
 
-DeviceTimestamping::~DeviceTimestamping()
-{
+DeviceTimestamping::~DeviceTimestamping() {
+
   std::lock_guard<std::mutex> lock(m_lockDevicesMap);
   m_DevicesMap.erase(m_Name);
 }
 
-DeviceTimestamping* DeviceTimestamping::getInstance(const std::string& DeviceName)
-{
+DeviceTimestamping* DeviceTimestamping::getInstance(const std::string& DeviceName) {
+
   std::lock_guard<std::mutex> lock(m_lockDevicesMap);
   std::map<std::string, DeviceTimestamping*>::const_iterator findDevice =
     m_DevicesMap.find(DeviceName);
-  if(findDevice == m_DevicesMap.end())
-  {
+  if(findDevice == m_DevicesMap.end()){
+
     return 0;
   }
+
   return findDevice->second;
 }
 
@@ -103,14 +107,14 @@ DeviceTimestamping* DeviceTimestamping::getInstance(const std::string& DeviceNam
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief called when the Timestamping node has to be switched on 
- * */
+ * @brief called when the Timestamping node has to be switched on
+ */
 void  DeviceTimestamping::switchOn_Timestamping() {
   // set Timestamping status to 1
   m_Timestamping.setEnable(getCurrentTime(), 1);
-  // set Edge to RISING (1) 
+  // set Edge to RISING (1)
   m_Timestamping.setEdge(getCurrentTime(), 1);
-  // set maxTimestamps  to 5 
+  // set maxTimestamps  to 5
   m_Timestamping.setMaxTimestamps(getCurrentTime(), 5);
   // set Overflow to NO (0)
   m_Timestamping.setOverflow(getCurrentTime(), 0);
@@ -118,26 +122,29 @@ void  DeviceTimestamping::switchOn_Timestamping() {
 
 
 /**
- * @brief called when the Timestamping node has to be switched off 
- * */
+ * @brief called when the Timestamping node has to be switched off
+ */
 void DeviceTimestamping::switchOff_Timestamping() {
   // set Timestamping status to 0
   m_Timestamping.setEnable(getCurrentTime(), 0);
 }
 
-/** 
- * @brief called withn the Timestamping node has to start working. 
+/**
+ * @brief called withn the Timestamping node has to start working.
  *        we start the Timestamping thread.
- * */
+ */
 void DeviceTimestamping::start_Timestamping() {
 
-  m_bStop_Timestamping = false; //< We will set to true to stop the Timestamping thread
+  m_bStop_Timestamping = false; //< We will set to true to stop the Timestamping
+				//thread
+
   /**
    *   Start the Timestamping thread.
    *   We don't need to check if the thread was already started because the state
    *   machine guarantees that the start handler is called only while the state
    *   is ON.
    */
-  m_Timestamping_thread = std::thread(std::bind(&DeviceTimestamping::timing_thread_body, this));
- 
+  m_Timestamping_thread =
+    std::thread(std::bind(&DeviceTimestamping::timestamping_thread_body, this));
+
 }
