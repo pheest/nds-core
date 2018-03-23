@@ -49,6 +49,8 @@ template class PVDelegateOut<std::vector<std::int16_t> >;
 template class PVDelegateOut<std::vector<std::int32_t> >;
 template class PVDelegateOut<std::vector<double> >;
 template class PVDelegateOut<std::string>;
+template class PVDelegateOut<timespec>;
+template class PVDelegateOut<std::vector<timespec>>;
 
 
 }
