@@ -25,7 +25,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class testDevice
+class sampleDevice
 {
 public:
 	/**
@@ -35,7 +35,7 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	testDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
+	sampleDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters);
 
 private:
 
@@ -63,20 +63,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief testDevice state machine
+	 * @brief sampleDevice state machine
 	 */
-    nds::StateMachine m_testDevice_stateMachine;
+    nds::StateMachine m_sampleDevice_stateMachine;
 
 	/**
-	 * Methods to control testDevice state machine
+	 * Methods to control sampleDevice state machine
 	 */
-	void switchOn_testDevice();  ///< Called to switch on the testDevice (rootnode).
-	void switchOff_testDevice(); ///< Called to switch off the testDevice (rootnode).
-	void start_testDevice();     ///< Called to start the testDevice (rootnode).
-	void stop_testDevice();      ///< Called to stop the testDevice (rootnode).
-	void recover_testDevice();   ///< Called to recover the testDevice (rootnode) from a failure.
+	void switchOn_sampleDevice();  ///< Called to switch on the sampleDevice (rootnode).
+	void switchOff_sampleDevice(); ///< Called to switch off the sampleDevice (rootnode).
+	void start_sampleDevice();     ///< Called to start the sampleDevice (rootnode).
+	void stop_sampleDevice();      ///< Called to stop the sampleDevice (rootnode).
+	void recover_sampleDevice();   ///< Called to recover the sampleDevice (rootnode) from a failure.
 
-	bool allow__testDevice_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_sampleDevice_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION
