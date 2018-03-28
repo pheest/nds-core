@@ -16,6 +16,7 @@
 #include "DeviceStateMachine.h"
 #include "DeviceFirmware.h"
 #include "DeviceTiming.h"
+#include "DevicePVs.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -73,6 +74,9 @@ int main(int argc, char **argv)
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceStateMachine::deallocateDevice, std::placeholders::_1));
 
+    nds::Factory::registerDriver("DevicePVs",
+                           std::bind(&DevicePVs::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DevicePVs::deallocateDevice, std::placeholders::_1));
 
 
     //Devices which have been created for testing isolated nodes
@@ -88,5 +92,6 @@ int main(int argc, char **argv)
 
 
     ::testing::InitGoogleTest(&argc, argv);
+    ::testing::GTEST_FLAG(filter) = "*DevicePVs*";
     return RUN_ALL_TESTS();
 }
