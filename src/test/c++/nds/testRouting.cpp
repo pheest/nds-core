@@ -93,7 +93,7 @@ TEST(testRouting, testClockSet)
 	EXPECT_EQ((std::int32_t)1,clkDst);
 
 	////////////////////////////////////////////////////////////////
-	///TEST CLK SET with correct values
+	///TEST CLK SET with correct values ClkSet=1
 	////////////////////////////////////////////////////////////////
 
 	const std::int32_t* clkSetCode;
@@ -109,6 +109,20 @@ TEST(testRouting, testClockSet)
 	// Get SetCode
 	pInterface->getPushedInt32("/rootNode-RoutingNode.ClkSetCode",clkTimestamp,clkSetCode); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*clkSetCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST CLK SET with correct values ClkSet=0
+	////////////////////////////////////////////////////////////////
+	// Set ClkSet
+	pInterface->writeCSValue("/rootNode-RoutingNode.ClkSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+
+	// Get SetStatus
+	pInterface->getPushedString("/rootNode-RoutingNode.ClkSetStatus",clkTimestamp,clkSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*clkSetStatus);
+
+	// Get SetCode
+	pInterface->getPushedInt32("/rootNode-RoutingNode.ClkSetCode",clkTimestamp,clkSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*clkSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST CLK SET with incorrect values
@@ -186,7 +200,7 @@ TEST(testRouting, testTermSet)
 	EXPECT_EQ((std::int32_t)1,TermInvert);
 
 	////////////////////////////////////////////////////////////////
-	///TEST TERM SET with correct values
+	///TEST TERM SET with correct values TermSet=1
 	////////////////////////////////////////////////////////////////
 
 	const std::int32_t* termSetCode;
@@ -202,6 +216,20 @@ TEST(testRouting, testTermSet)
 	// Get SetCode
 	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSetCode",termTimestamp,termSetCode); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*termSetCode);
+
+	////////////////////////////////////////////////////////////////
+	///TEST TERM SET with correct values TermSet=0
+	////////////////////////////////////////////////////////////////
+	// Set TermSet
+	pInterface->writeCSValue("/rootNode-RoutingNode.TermSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
+
+	// Get SetStatus
+	pInterface->getPushedString("/rootNode-RoutingNode.TermSetStatus",termTimestamp,termSetStatus); // PVVariables are thread safe
+	EXPECT_EQ((std::string)"OK",*termSetStatus);
+
+	// Get SetCode
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSetCode",termTimestamp,termSetCode); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*termSetCode);
 
 	////////////////////////////////////////////////////////////////
 	///TEST TERM SET with incorrect values
@@ -238,6 +266,23 @@ TEST(testRouting, testTermSet)
 	// Get TermInvertRead
 	pInterface->getPushedInt32("/rootNode-RoutingNode.TermInvertRead",termTimestamp,termInvertRead); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*termInvertRead);
+
+	////////////////////////////////////////////////////////////////
+	///TEST TERM DST READ
+	////////////////////////////////////////////////////////////////
+	TermDstRead=0;
+
+	// Set TermDstRead
+	pInterface->writeCSValue("/rootNode-RoutingNode.TermDstRead",readTimestamp,TermDstRead); // PVVariables are thread safe
+	// Get TermSrcRead
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSrcRead",termTimestamp,termSrcRead); // PVVariables are thread safe
+	EXPECT_EQ(TermDstRead + 1,*termSrcRead);
+	// Get TermSyncRead
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermSyncRead",termTimestamp,termSyncRead); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*termSyncRead);
+	// Get TermInvertRead
+	pInterface->getPushedInt32("/rootNode-RoutingNode.TermInvertRead",termTimestamp,termInvertRead); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*termInvertRead);
 
 
 	factory.destroyDevice("rootNode");
