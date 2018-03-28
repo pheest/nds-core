@@ -92,7 +92,6 @@ TEST(testDevicePVs, PVTypes)
 	}
 	pInterface->getPushedString("/devicePVs-String_RBV", pTimestamp, pString);
 	EXPECT_EQ(stringData, *pString);
-	//TODO: Check timespec type and array
 	pInterface->getPushedTimespec("/devicePVs-Timespec_RBV", pTimestamp, pTimespec);
 	EXPECT_EQ(timespecData.tv_sec, pTimespec->tv_sec);
 	EXPECT_EQ(timespecData.tv_nsec, pTimespec->tv_nsec);
