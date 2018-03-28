@@ -136,7 +136,13 @@ private:
                            const timespec*& pTime,
                            const T*& pValue)
     {
-        storeInto[pvName].getValue(pTime, pValue);
+        try {
+		storeInto[pvName].getValue(pTime, pValue);
+	} catch (const std::runtime_error& ex) {
+		std::string msg = ex.what();
+		msg += " (PV name: " + pvName + ")";
+		throw std::runtime_error(msg);
+	}
     }
 
 };
