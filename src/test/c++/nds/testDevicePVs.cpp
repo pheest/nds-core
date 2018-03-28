@@ -5,7 +5,6 @@
 
 TEST(testDevicePVs, PVTypes)
 {
-	timespec timestamp = {0, 0};
 	const timespec* pTimestamp;
 	const std::int32_t* pInteger;
 	const double* pDouble;
@@ -38,16 +37,15 @@ TEST(testDevicePVs, PVTypes)
     //Create factory
     nds::Factory factory("test");
 
-    // Create test device of type deviceHQMonitor and name it deviceHQMonitor
+    // Create test device of type DevicePVs and name it devicePVs
     factory.createDevice("DevicePVs", "devicePVs", nds::namedParameters_t());
 
     //Get instance of the Test Control System
-    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("deviceHQMonitor");
+    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("devicePVs");
 
     //--------------------------------------------------------------------------------------
-    //TEST THE VALUES OF THE PVS THAT HAS BEEN PUSHED AT THE INITIALIZATION
+    //TEST THE VALUES OF THE PVS THAT HAVE BEEN PUSHED AT THE INITIALIZATION
     //--------------------------------------------------------------------------------------
-
     pInterface->getPushedInt32("/devicePVs-Integer_RBV", pTimestamp, pInteger);
 	EXPECT_EQ((std::int32_t) intData, *pInteger);
 	pInterface->getPushedDouble("/devicePVs-Double_RBV", pTimestamp, pDouble);
@@ -94,10 +92,11 @@ TEST(testDevicePVs, PVTypes)
 	}
 	pInterface->getPushedString("/devicePVs-String_RBV", pTimestamp, pString);
 	EXPECT_EQ(stringData, *pString);
+	//TODO: Check timespec type and array
 	pInterface->getPushedTimespec("/devicePVs-Timespec_RBV", pTimestamp, pTimespec);
 	EXPECT_EQ(timespecData.tv_sec, pTimespec->tv_sec);
 	EXPECT_EQ(timespecData.tv_nsec, pTimespec->tv_nsec);
-	pInterface->getPushedVectorTimespec("/devicePVs-TimespecArray", pTimestamp, pTimespecArray);
+	pInterface->getPushedVectorTimespec("/devicePVs-TimespecArray_RBV", pTimestamp, pTimespecArray);
 	EXPECT_EQ(timespecArrayData.size(), pTimespecArray->size());
 	for (std::uint32_t i = 0; i < timespecArrayData.size(); i++) {
 		timespec t = pTimespecArray->at(i);
