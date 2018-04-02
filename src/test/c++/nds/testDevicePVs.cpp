@@ -5,6 +5,7 @@
 
 TEST(testDevicePVs, PVTypes)
 {
+	timespec timestamp = {0, 0};
 	const timespec* pTimestamp;
 	const std::int32_t* pInteger;
 	const double* pDouble;
@@ -20,6 +21,10 @@ TEST(testDevicePVs, PVTypes)
 	const timespec* pTimespec;
 	const std::vector<timespec>* pTimespecArray;
 
+
+	//--------------------------------------------------------------------------------------
+	//VALUES OF THE PVS THAT HAVE BEEN PUSHED AT THE INITIALIZATION
+	//--------------------------------------------------------------------------------------
 	std::int32_t intData = 1;
 	double doubleData = 1.1;
 	std::vector<bool> boolArrayData = {true, true, false, true};
@@ -43,70 +48,106 @@ TEST(testDevicePVs, PVTypes)
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("devicePVs");
 
-    //--------------------------------------------------------------------------------------
-    //TEST THE VALUES OF THE PVS THAT HAVE BEEN PUSHED AT THE INITIALIZATION
-    //--------------------------------------------------------------------------------------
-    pInterface->getPushedInt32("/devicePVs-Integer_RBV", pTimestamp, pInteger);
-	EXPECT_EQ((std::int32_t) intData, *pInteger);
-	pInterface->getPushedDouble("/devicePVs-Double_RBV", pTimestamp, pDouble);
-	EXPECT_EQ((double) doubleData, *pDouble);
-	pInterface->getPushedVectorBool("/devicePVs-BoolArray_RBV", pTimestamp, pBoolArray);
-	EXPECT_EQ((size_t)boolArrayData.size(), (size_t)pBoolArray->size());
-	for (std::uint32_t i = 0; i < boolArrayData.size(); i++) {
-		EXPECT_EQ((bool)boolArrayData[i], pBoolArray->at(i));
-	}
-	pInterface->getPushedVectorUint8("/devicePVs-UInt8Array_RBV", pTimestamp, pUInt8Array);
-	EXPECT_EQ(uInt8ArrayData.size(), pUInt8Array->size());
-	for (std::uint32_t i = 0; i < uInt8ArrayData.size(); i++) {
-		EXPECT_EQ(uInt8ArrayData[i], pUInt8Array->at(i));
-	}
-	pInterface->getPushedVectorUint16("/devicePVs-UInt16Array_RBV", pTimestamp, pUInt16Array);
-	EXPECT_EQ(uInt16ArrayData.size(), pUInt16Array->size());
-	for (std::uint32_t i = 0; i < uInt16ArrayData.size(); i++) {
-		EXPECT_EQ(uInt16ArrayData[i], pUInt16Array->at(i));
-	}
-	pInterface->getPushedVectorUint32("/devicePVs-UInt32Array_RBV", pTimestamp, pUInt32Array);
-	EXPECT_EQ(uInt32ArrayData.size(), pUInt32Array->size());
-	for (std::uint32_t i = 0; i < uInt32ArrayData.size(); i++) {
-		EXPECT_EQ(uInt32ArrayData[i], pUInt32Array->at(i));
-	}
-	pInterface->getPushedVectorInt8("/devicePVs-Int8Array_RBV", pTimestamp, pInt8Array);
-	EXPECT_EQ(int8ArrayData.size(), pInt8Array->size());
-	for (std::uint32_t i = 0; i < int8ArrayData.size(); i++) {
-		EXPECT_EQ(int8ArrayData[i], pInt8Array->at(i));
-	}
-	pInterface->getPushedVectorInt16("/devicePVs-Int16Array_RBV", pTimestamp, pInt16Array);
-	EXPECT_EQ(int16ArrayData.size(), pInt16Array->size());
-	for (std::uint32_t i = 0; i < int16ArrayData.size(); i++) {
-		EXPECT_EQ(int16ArrayData[i], pInt16Array->at(i));
-	}
-	pInterface->getPushedVectorInt32("/devicePVs-Int32Array_RBV", pTimestamp, pInt32Array);
-	EXPECT_EQ(int32ArrayData.size(), pInt32Array->size());
-	for (std::uint32_t i = 0; i < int32ArrayData.size(); i++) {
-		EXPECT_EQ(int32ArrayData[i], pInt32Array->at(i));
-	}
-	pInterface->getPushedVectorDouble("/devicePVs-DoubleArray_RBV", pTimestamp, pDoubleArray);
-	EXPECT_EQ(doubleArrayData.size(), pDoubleArray->size());
-	for (std::uint32_t i = 0; i < doubleArrayData.size(); i++) {
-		EXPECT_EQ(doubleArrayData[i], pDoubleArray->at(i));
-	}
-	pInterface->getPushedString("/devicePVs-String_RBV", pTimestamp, pString);
-	EXPECT_EQ(stringData, *pString);
-	pInterface->getPushedTimespec("/devicePVs-Timespec_RBV", pTimestamp, pTimespec);
-	EXPECT_EQ(timespecData.tv_sec, pTimespec->tv_sec);
-	EXPECT_EQ(timespecData.tv_nsec, pTimespec->tv_nsec);
-	pInterface->getPushedVectorTimespec("/devicePVs-TimespecArray_RBV", pTimestamp, pTimespecArray);
-	EXPECT_EQ(timespecArrayData.size(), pTimespecArray->size());
-	for (std::uint32_t i = 0; i < timespecArrayData.size(); i++) {
-		timespec t = pTimespecArray->at(i);
-		EXPECT_EQ(timespecArrayData[i].tv_sec, t.tv_sec);
-		EXPECT_EQ(timespecArrayData[i].tv_nsec, t.tv_nsec);
-	}
+    for (int i = 0; i < 2; i++) {
 
+    	if (i == 1) {
 
-    //--------------------------------------------------------------------------------------
-    //TODO: CHANGE THE PVS VALUES AND VERIFIES IT THROUGH THE READBACKS
-    //--------------------------------------------------------------------------------------
+    	    //--------------------------------------------------------------------------------------
+    	    //CHANGE THE PVS VALUES AND VERIFIES IT THROUGH THE READBACKS
+    	    //--------------------------------------------------------------------------------------
+
+    		intData = 5;
+    		doubleData = 4.3;
+    		boolArrayData = {false, true};
+    		uInt8ArrayData = {2,1};
+    		uInt16ArrayData = {1,2};
+    		uInt32ArrayData = {0,6,5};
+    		int8ArrayData = {-1, -2};
+    		int16ArrayData = {-3,4};
+    		int32ArrayData = {-5,6,32};
+    		doubleArrayData = {-1.5, 2.4};
+    		stringData = "newText";
+    		timespecData = {10,25};
+    		timespecArrayData = {{3,4}, {10, 2}};
+    		pInterface->writeCSValue("/devicePVs-Integer", timestamp, intData);
+    		pInterface->writeCSValue("/devicePVs-Double", timestamp, doubleData);
+    		pInterface->writeCSValue("/devicePVs-BoolArray", timestamp, boolArrayData);
+    		pInterface->writeCSValue("/devicePVs-UInt8Array", timestamp, uInt8ArrayData);
+    		pInterface->writeCSValue("/devicePVs-UInt16Array", timestamp, uInt16ArrayData);
+    		pInterface->writeCSValue("/devicePVs-UInt32Array", timestamp, uInt32ArrayData);
+    		pInterface->writeCSValue("/devicePVs-Int8Array", timestamp, int8ArrayData);
+    		pInterface->writeCSValue("/devicePVs-Int16Array", timestamp, int16ArrayData);
+    		pInterface->writeCSValue("/devicePVs-Int32Array", timestamp, int32ArrayData);
+    		pInterface->writeCSValue("/devicePVs-DoubleArray", timestamp, doubleArrayData);
+    		pInterface->writeCSValue("/devicePVs-String", timestamp, stringData);
+    		pInterface->writeCSValue("/devicePVs-Timespec", timestamp, timespecData);
+    		pInterface->writeCSValue("/devicePVs-TimespecArray", timestamp, timespecArrayData);
+    	}
+
+		//--------------------------------------------------------------------------------------
+		//TEST THE VALUES OF THE PVS THAT HAVE BEEN PUSHED TO THE CONTROL SYSTEM
+		//--------------------------------------------------------------------------------------
+		pInterface->getPushedInt32("/devicePVs-Integer_RBV", pTimestamp, pInteger);
+		EXPECT_EQ((std::int32_t) intData, *pInteger);
+		pInterface->getPushedDouble("/devicePVs-Double_RBV", pTimestamp, pDouble);
+		EXPECT_EQ((double) doubleData, *pDouble);
+		pInterface->getPushedVectorBool("/devicePVs-BoolArray_RBV", pTimestamp, pBoolArray);
+		EXPECT_EQ((size_t)boolArrayData.size(), (size_t)pBoolArray->size());
+		for (std::uint32_t i = 0; i < boolArrayData.size(); i++) {
+			EXPECT_EQ((bool)boolArrayData[i], pBoolArray->at(i));
+		}
+		pInterface->getPushedVectorUint8("/devicePVs-UInt8Array_RBV", pTimestamp, pUInt8Array);
+		EXPECT_EQ(uInt8ArrayData.size(), pUInt8Array->size());
+		for (std::uint32_t i = 0; i < uInt8ArrayData.size(); i++) {
+			EXPECT_EQ(uInt8ArrayData[i], pUInt8Array->at(i));
+		}
+		pInterface->getPushedVectorUint16("/devicePVs-UInt16Array_RBV", pTimestamp, pUInt16Array);
+		EXPECT_EQ(uInt16ArrayData.size(), pUInt16Array->size());
+		for (std::uint32_t i = 0; i < uInt16ArrayData.size(); i++) {
+			EXPECT_EQ(uInt16ArrayData[i], pUInt16Array->at(i));
+		}
+		pInterface->getPushedVectorUint32("/devicePVs-UInt32Array_RBV", pTimestamp, pUInt32Array);
+		EXPECT_EQ(uInt32ArrayData.size(), pUInt32Array->size());
+		for (std::uint32_t i = 0; i < uInt32ArrayData.size(); i++) {
+			EXPECT_EQ(uInt32ArrayData[i], pUInt32Array->at(i));
+		}
+		pInterface->getPushedVectorInt8("/devicePVs-Int8Array_RBV", pTimestamp, pInt8Array);
+		EXPECT_EQ(int8ArrayData.size(), pInt8Array->size());
+		for (std::uint32_t i = 0; i < int8ArrayData.size(); i++) {
+			EXPECT_EQ(int8ArrayData[i], pInt8Array->at(i));
+		}
+		pInterface->getPushedVectorInt16("/devicePVs-Int16Array_RBV", pTimestamp, pInt16Array);
+		EXPECT_EQ(int16ArrayData.size(), pInt16Array->size());
+		for (std::uint32_t i = 0; i < int16ArrayData.size(); i++) {
+			EXPECT_EQ(int16ArrayData[i], pInt16Array->at(i));
+		}
+		pInterface->getPushedVectorInt32("/devicePVs-Int32Array_RBV", pTimestamp, pInt32Array);
+		EXPECT_EQ(int32ArrayData.size(), pInt32Array->size());
+		for (std::uint32_t i = 0; i < int32ArrayData.size(); i++) {
+			EXPECT_EQ(int32ArrayData[i], pInt32Array->at(i));
+		}
+		pInterface->getPushedVectorDouble("/devicePVs-DoubleArray_RBV", pTimestamp, pDoubleArray);
+		EXPECT_EQ(doubleArrayData.size(), pDoubleArray->size());
+		for (std::uint32_t i = 0; i < doubleArrayData.size(); i++) {
+			EXPECT_EQ(doubleArrayData[i], pDoubleArray->at(i));
+		}
+		pInterface->getPushedString("/devicePVs-String_RBV", pTimestamp, pString);
+		EXPECT_EQ(stringData, *pString);
+		pInterface->getPushedTimespec("/devicePVs-Timespec_RBV", pTimestamp, pTimespec);
+		EXPECT_EQ(timespecData.tv_sec, pTimespec->tv_sec);
+		EXPECT_EQ(timespecData.tv_nsec, pTimespec->tv_nsec);
+		pInterface->getPushedVectorTimespec("/devicePVs-TimespecArray_RBV", pTimestamp, pTimespecArray);
+		EXPECT_EQ(timespecArrayData.size(), pTimespecArray->size());
+		for (std::uint32_t i = 0; i < timespecArrayData.size(); i++) {
+			timespec t = pTimespecArray->at(i);
+			EXPECT_EQ(timespecArrayData[i].tv_sec, t.tv_sec);
+			EXPECT_EQ(timespecArrayData[i].tv_nsec, t.tv_nsec);
+		}
+
+		std::cout << "\tInteger value verified: " << intData << std::endl;
+		std::cout << "\tString value verified: " << stringData << std::endl;
+
+    }
 
     // Destroy test device
     factory.destroyDevice("devicePVs");
