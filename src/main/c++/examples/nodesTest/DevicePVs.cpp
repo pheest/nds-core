@@ -63,7 +63,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int_RBVPV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("Integer_RBV"));
 	m_int_RBVPV.setDescription("Integer that has been set (RBV)");
 	m_int_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_int_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_double_PV);
 	m_double_PV.setDescription("Double to be set");
@@ -72,7 +71,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_double_RBVPV = rootNode.addChild(nds::PVVariableIn<double>("Double_RBV"));
 	m_double_RBVPV.setDescription("Double that has been set (RBV)");
 	m_double_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_double_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_boolArray_PV);
 	m_boolArray_PV.setDescription("Bool array to be set");
@@ -82,7 +80,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_boolArray_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<bool>>("BoolArray_RBV"));
 	m_boolArray_RBVPV.setDescription("Bool that has been set (RBV)");
 	m_boolArray_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_boolArray_RBVPV.processAtInit(true);
 	m_boolArray_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_uInt8Array_PV);
@@ -93,7 +90,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_uInt8Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint8_t>>("UInt8Array_RBV"));
 	m_uInt8Array_RBVPV.setDescription("UInt8Array that has been set (RBV)");
 	m_uInt8Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_uInt8Array_RBVPV.processAtInit(true);
 	m_uInt8Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_uInt16Array_PV);
@@ -104,7 +100,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_uInt16Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint16_t>>("UInt16Array_RBV"));
 	m_uInt16Array_RBVPV.setDescription("UInt16Array that has been set (RBV)");
 	m_uInt16Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_uInt16Array_RBVPV.processAtInit(true);
 	m_uInt16Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_uInt32Array_PV);
@@ -115,7 +110,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_uInt32Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint32_t>>("UInt32Array_RBV"));
 	m_uInt32Array_RBVPV.setDescription("UInt16Array that has been set (RBV)");
 	m_uInt32Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_uInt32Array_RBVPV.processAtInit(true);
 	m_uInt32Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_int8Array_PV);
@@ -126,7 +120,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int8Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::int8_t>>("Int8Array_RBV"));
 	m_int8Array_RBVPV.setDescription("Int8Array that has been set (RBV)");
 	m_int8Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_int8Array_RBVPV.processAtInit(true);
 	m_int8Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_int16Array_PV);
@@ -137,7 +130,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int16Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::int16_t>>("Int16Array_RBV"));
 	m_int16Array_RBVPV.setDescription("Int16Array that has been set (RBV)");
 	m_int16Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_int16Array_RBVPV.processAtInit(true);
 	m_int16Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_int32Array_PV);
@@ -148,7 +140,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int32Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<std::int32_t>>("Int32Array_RBV"));
 	m_int32Array_RBVPV.setDescription("Int32Array that has been set (RBV)");
 	m_int32Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_int32Array_RBVPV.processAtInit(true);
 	m_int32Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_float64Array_PV);
@@ -159,7 +150,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_float64Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<double>>("DoubleArray_RBV"));
 	m_float64Array_RBVPV.setDescription("DoubleArray that has been set (RBV)");
 	m_float64Array_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_float64Array_RBVPV.processAtInit(true);
 	m_float64Array_RBVPV.setMaxElements(maxArrayElements);
 
 	rootNode.addChild(m_string_PV);
@@ -169,7 +159,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_string_RBVPV = rootNode.addChild(nds::PVVariableIn<std::string>("String_RBV"));
 	m_string_RBVPV.setDescription("String that has been set (RBV)");
 	m_string_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_string_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_timespec_PV);
 	m_timespec_PV.setDescription("Timespec to be set");
@@ -178,7 +167,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_timespec_RBVPV = rootNode.addChild(nds::PVVariableIn<timespec>("Timespec_RBV"));
 	m_timespec_RBVPV.setDescription("Timespec that has been set (RBV)");
 	m_timespec_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_timespec_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_timespecArray_PV);
 	m_timespecArray_PV.setDescription("TimespecArray to be set");
@@ -188,7 +176,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_timespecArray_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<timespec>>("TimespecArray_RBV"));
 	m_timespecArray_RBVPV.setDescription("TimespecArray that has been set (RBV)");
 	m_timespecArray_RBVPV.setScanType(nds::scanType_t::interrupt);
-	//m_timespecArray_RBVPV.processAtInit(true);
 	m_timespecArray_RBVPV.setMaxElements(4*maxArrayElements);
 
 
