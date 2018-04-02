@@ -74,7 +74,10 @@ private:
 	void stop_DeviceVectorI8();      ///< Called to stop the DeviceVectorI8 (rootnode).
 	void recover_DeviceVectorI8();   ///< Called to recover the DeviceVectorI8 (rootnode) from a failure.
 
-	bool allow__DeviceVectorI8_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceVectorI8_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	timespec getCurrentTime();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION

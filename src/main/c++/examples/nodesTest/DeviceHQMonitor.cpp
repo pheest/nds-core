@@ -3,8 +3,8 @@
 #include <mutex>
 #include <unistd.h>
 #include <functional>
+#include "DeviceHQMonitor.h"
 
-#include "../include/DeviceHQMonitor.h"
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
 
