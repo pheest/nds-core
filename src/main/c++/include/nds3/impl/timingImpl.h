@@ -174,7 +174,7 @@ class TimingImpl: public NodeImpl {
 
     /**
      * @brief current time. Retrieved via the delegate
-     *        function associated to m_TimeVb
+     *        function associated to m_TimeV
      */
     timespec m_CurrentTime;
 

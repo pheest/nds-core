@@ -101,7 +101,7 @@ namespace nds {
      addChild(m_StateMachine);
   }
 
-  // Commoon  functions
+  // Common  functions
   timespec TimingImpl::getStartTimestamp() const
   {
     return m_StartTime;

@@ -206,7 +206,7 @@ void DeviceTiming::timing_thread_body() {
   while(!m_bStop_timing){
 
     // Get Self-Test enable
-    timespec time_val =  {NDS_EPOCH, 10};
+    timespec time_val = m_Timing.getTime();
     m_Timing.setTime(getCurrentTime(), time_val);
     ::usleep(1000000);
   }
