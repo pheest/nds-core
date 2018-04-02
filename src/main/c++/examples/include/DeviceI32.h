@@ -74,7 +74,10 @@ private:
 	void stop_DeviceI32();      ///< Called to stop the DeviceI32 (rootnode).
 	void recover_DeviceI32();   ///< Called to recover the DeviceI32 (rootnode) from a failure.
 
-	bool allow__DeviceI32_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceI32_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	timespec getCurrentTime();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION

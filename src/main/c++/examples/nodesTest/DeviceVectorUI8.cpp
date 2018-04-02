@@ -4,7 +4,10 @@
 #include <unistd.h>
 #include <functional>
 
-#include "../include/DeviceVectorUI8.h"
+#include "DeviceVectorUI8.h"
+
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
 
 static std::map<std::string, DeviceVectorUI8*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
@@ -94,10 +97,15 @@ DeviceVectorUI8::DeviceVectorUI8(nds::Factory &factory, const std::string &devic
 			std::bind(&DeviceVectorUI8::PV_WaveformGeneration_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2)
 	));
 
-	// We have declared all the nodes and PVs in our device: now we register them
+    timespec timestamp={0,0};
+    m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
+    m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
+
+	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
+	rootNode.setTimestampDelegate(std::bind(&DeviceVectorUI8::getCurrentTime,this));
 }
 
 
@@ -119,6 +127,15 @@ DeviceVectorUI8* DeviceVectorUI8::getInstance(const std::string& deviceName)
         return 0;
     }
     return findDevice->second;
+}
+
+
+timespec DeviceVectorUI8::getCurrentTime()
+{
+    timespec time;
+    time.tv_sec = m_setCurrentTime.getValue();
+    time.tv_nsec = time.tv_sec + 10;
+    return time;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,6 +545,8 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
 	double SignalRef = m_WaveformGeneration.getSignalRef();
 	// Get Ground
 	double Ground = m_WaveformGeneration.getGround();
+	// Get impedance
+	std::int32_t impedance = m_WaveformGeneration.getImpedance();
 
 	std::cout<<"Signal generator configured with:"<<std::endl;
 	std::cout<<"\tRefFrequency = "<<RefFrequency<<std::endl;
@@ -538,12 +557,12 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
 	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
 	std::cout<<"\tSignalRef = "<<SignalRef<<std::endl;
 	std::cout<<"\tGround = "<<Ground<<std::endl;
+	std::cout<<"\tImpedance = "<<impedance<<std::endl;
 
 	// Run until the state machine stops us
 	while(!m_bStop_WaveformGeneration){
 
 		size_t scanVector(0);
-
 
 		// Get signalType
 		size_t signalType = m_WaveformGeneration.getSignalType();
@@ -557,8 +576,6 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
 		double offset = m_WaveformGeneration.getOffset();
 		// Get phase
 		double phase = m_WaveformGeneration.getPhase();
-		// Get phase
-		double impedance = m_WaveformGeneration.getImpedance();
 
 		switch(signalType){
 

@@ -24,15 +24,10 @@
 NDSLIBDIR:=$(realpath ../../../../target/lib)
 # Path from which the device source file will be obtained.
 EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nodesTest)
+EXINCLUDEDIR:=$(realpath ../../../main/c++/examples/include)
 
-# If ITER CCS
-ifneq (,$(wildcard ../../../main/c/include))
-INCLUDES :=-I../../../main/c/lib -I../../../main/c/driver -I../../../main/c++/include -I$(EXAMPLESDIR)
+INCLUDES :=-I../../../main/c++/include -I$(EXINCLUDEDIR) 
 LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
-else # NI
-INCLUDES :=-I../../src -I../../../driver/src -I../../../main/c++/include
-LIBPATH :=-L../../../../target/lib -Wl,-rpath=$(NDSLIBDIR)
-endif
 
 # Much of this code is copied from gtest/make/Makefile; it probably doesn't #
 # need to be modified #######################################################
@@ -49,7 +44,7 @@ GTEST_SRCS_ :=$(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS_)
 
 #############################################################################
 
-INCLUDES +=-I$(EXAMPLESDIR) -I$(GTEST_DIR) -I$(GTEST_DIR)/include
+INCLUDES +=-I$(GTEST_DIR) -I$(GTEST_DIR)/include
 
 CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++0x
 LDFLAGS +=$(LIBPATH) -lpthread -lnds3 -ldl -lrt

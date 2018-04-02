@@ -1,5 +1,5 @@
-#ifndef DEVICEDBL_H_
-#define DEVICEDBL_H_
+#ifndef DEVICEVECTORDBL_H_
+#define DEVICEVECTORDBL_H_
 
 #include <memory>
 
@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceDBL
+class DeviceVectorDBL
 {
 public:
 	/**
@@ -28,8 +28,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceDBL(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceDBL();
+	DeviceVectorDBL(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceVectorDBL();
 
 #ifndef EPICS
 	/*
@@ -39,11 +39,12 @@ public:
 	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	static void deallocateDevice(void* deviceName);
 #endif
+
 	/*
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceDBL* getInstance(const std::string& deviceName);
+	static DeviceVectorDBL* getInstance(const std::string& deviceName);
 
 
 private:
@@ -60,20 +61,23 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief DeviceDBL state machine
+	 * @brief DeviceVectorDBL state machine
 	 */
-	nds::StateMachine m_DeviceDBL_stateMachine;
+	nds::StateMachine m_DeviceVectorDBL_stateMachine;
 
 	/**
-	 * Methods to control DeviceDBL state machine
+	 * Methods to control DeviceVectorDBL state machine
 	 */
-	void switchOn_DeviceDBL();  ///< Called to switch on the DeviceDBL (rootnode).
-	void switchOff_DeviceDBL(); ///< Called to switch off the DeviceDBL (rootnode).
-	void start_DeviceDBL();     ///< Called to start the DeviceDBL (rootnode).
-	void stop_DeviceDBL();      ///< Called to stop the DeviceDBL (rootnode).
-	void recover_DeviceDBL();   ///< Called to recover the DeviceDBL (rootnode) from a failure.
+	void switchOn_DeviceVectorDBL();  ///< Called to switch on the DeviceVectorDBL (rootnode).
+	void switchOff_DeviceVectorDBL(); ///< Called to switch off the DeviceVectorDBL (rootnode).
+	void start_DeviceVectorDBL();     ///< Called to start the DeviceVectorDBL (rootnode).
+	void stop_DeviceVectorDBL();      ///< Called to stop the DeviceVectorDBL (rootnode).
+	void recover_DeviceVectorDBL();   ///< Called to recover the DeviceVectorDBL (rootnode) from a failure.
 
-	bool allow__DeviceDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceVectorDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
+	timespec getCurrentTime();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA ACQUISITION
@@ -82,7 +86,7 @@ private:
 	/**
 	 * @brief DataAcquisition node
 	 */
-	nds::DataAcquisition<double> m_DataAcquisition;
+	nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 
 	/**
 	 * Methods to control DataAcquisition state machine
@@ -126,15 +130,14 @@ private:
 	 */
 	volatile bool m_bStop_DataAcquisition;
 
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  WAVEFORM GENERATION
+	//  DATA GENERATION
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * @brief WaveformGeneration node
 	 */
-	nds::WaveformGeneration<double> m_WaveformGeneration;
+	nds::WaveformGeneration<std::vector<double>> m_WaveformGeneration;
 
 	/**
 	 * Methods to control WaveformGeneration state machine
@@ -185,4 +188,4 @@ private:
 
 };
 
-#endif // DEVICEDBL_H_
+#endif // DEVICEVECTORDBL_H_

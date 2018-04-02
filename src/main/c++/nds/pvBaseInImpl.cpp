@@ -71,12 +71,12 @@ void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue)
     ::memcpy(pValue->data(), temporaryValue.data(), temporaryValue.size());
 }
 
-void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint16_t>* pValue) const
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::uint16_t>* /* pValue */) const
 {
     throw;
 }
 
-void PVBaseInImpl::read(timespec* pTimestamp, std::vector<std::uint32_t>* pValue) const
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::uint32_t>* /* pValue */) const
 {
     throw;
 }

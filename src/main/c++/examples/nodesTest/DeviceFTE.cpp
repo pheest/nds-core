@@ -1,5 +1,5 @@
 
-#include "../include/DeviceFTE.h"
+#include "DeviceFTE.h"
 
 #include <nds3/nds.h>
 #include <mutex>

@@ -40,12 +40,19 @@ OBJECTS=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
 C=gcc
 CC=g++
-CFLAGS=-c -Wall -fPIC -g --coverage
-CXXFLAGS=-c -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden -DNDS3_DLL -DNDS3_DLL_EXPORTS -g --coverage
-LDFLAGS= -shared --coverage -g
+ifeq ($(RELEASE), YES)
+DBG_COV=
+else
+DBG_COV=-g --coverage
+endif
+STD=-std=c++0x
+DEFS=-DNDS3_DLL -DNDS3_DLL_EXPORTS
+CFLAGS=-c -Wall -fPIC $(DBG_COV)
+CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden $(DEFS) $(DBG_COV)
+LDFLAGS= -shared $(DBG_COV)
 
 
-.PHONY: all clean run 
+.PHONY: all clean run
 
 all: $(SOURCES) $(SHAREDLIBRARY) $(STATICLIBRARY)
 
@@ -57,11 +64,11 @@ run: $(SOURCES) $(SHAREDLIBRARY)
 
 $(SHAREDLIBRARY): $(OBJECTS)
 	mkdir -p $(LIBRARY_DIR)
-	$(CC) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $(SHAREDLIBRARY) 
+	$(CC) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $(SHAREDLIBRARY)
 
 $(STATICLIBRARY): $(OBJECTS)
 	$(AR) rcs $@ $^
-	
+
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(OBJECT_DIR)
 	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
 

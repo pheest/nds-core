@@ -1,5 +1,5 @@
 
-#include "../include/DeviceDigitalIO.h"
+#include "DeviceDigitalIO.h"
 
 #include <nds3/nds.h>
 #include <mutex>

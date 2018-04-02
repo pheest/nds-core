@@ -14,8 +14,8 @@ TEST(testDataAcquisition, testStateMachine)
 	//Create factory
 	nds::Factory factory("test");
 
-	// Create test device of type Device and named rootNode
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	// Create test device of type DeviceVectorDBL and named rootNode
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
@@ -75,7 +75,7 @@ TEST(testDataAcquisition, testPushDataAcquiredVDBL)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -939,7 +939,7 @@ TEST(testDataAcquisition, testDecimation)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -1107,7 +1107,7 @@ TEST(testDataAcquisition, testDMAParameters)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 

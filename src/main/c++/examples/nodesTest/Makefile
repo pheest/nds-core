@@ -4,7 +4,8 @@ CXXFLAGS = -std=c++0x -Wall -Wextra -pedantic -fPIC -pthread -DNDS3_DLL -I../../
 LDFLAGS = -L../../../../lib -L/opt/codac/lib -g
 
 
-INCLUDEDIR=../include/
+INCLUDEDIR=-I../include
+CXXFLAGS += $(INCLUDEDIR)
 TARGETDIR = ../../../../lib
 # Flags passed to gcc during linking
 LINK = -shared -fPIC -Wl,-as-needed
