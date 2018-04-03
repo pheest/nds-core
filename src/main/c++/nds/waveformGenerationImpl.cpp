@@ -572,6 +572,7 @@ template class WaveformGenerationImpl<std::int32_t>;
 template class WaveformGenerationImpl<double>;
 template class WaveformGenerationImpl<std::vector<std::int8_t> >;
 template class WaveformGenerationImpl<std::vector<std::uint8_t> >;
+template class WaveformGenerationImpl<std::vector<std::int16_t> >;
 template class WaveformGenerationImpl<std::vector<std::int32_t> >;
 template class WaveformGenerationImpl<std::vector<double> >;
 
