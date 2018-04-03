@@ -20,7 +20,7 @@
  */
 class DeviceTimestamping
 {
-public:
+ public:
   /**
    * @brief Constructor.
    *
@@ -29,7 +29,7 @@ public:
    * @param parameters optional parameters passed to the device
    */
   DeviceTimestamping(nds::Factory& factory, const std::string& deviceName,
-      const nds::namedParameters_t& );
+		     const nds::namedParameters_t& );
   ~DeviceTimestamping();
 
 #ifndef EPICS
@@ -50,7 +50,7 @@ public:
   static DeviceTimestamping* getInstance(const std::string& deviceName);
 
 
-private:
+ private:
   /**
    * @brief name of the device
    */
@@ -61,9 +61,15 @@ private:
    * */
   std::int32_t m_Ntimestamps;
 
-///////////////////////////////////////////////////////////////////////////////
-// TEST TIMING NODE
-//////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // TEST TIMESTAMPING NODE
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @brief Timestamping node
+   */
+  nds::Timestamping<std::vector<std::int32_t>> m_Timestamping;
+
   /**
    * Methods to control the Timestamping state machine
    */
@@ -72,17 +78,19 @@ private:
   void start_timestamping();     ///< Called to start the Timestamping node.
   void stop_timestamping();      ///< Called to stop the Timestamping node.
   void recover_timestamping();   ///< Called to recover the Timestamping node from a failure.
-  ///< Called to verify if a state change is allowed
-  bool allow_device_change(const nds::state_t,
-                           const nds::state_t, const nds::state_t);
+  /// Called to verify if a state change is allowed.
+  bool allow_timestamping_change(const nds::state_t,
+				 const nds::state_t,
+				 const nds::state_t);
 
-	/**
-	 * @brief Function that emulates the changes of status of the Timestamping node.
-	 *        It is launched by start_Timestamping() in a separate thread.
-	 */
-	void timestamping_thread_body();
+  /**
+   * @brief Function that emulates the changes of status of the Timestamping node.
+   *        It is launched by start_Timestamping() in a separate thread.
+   */
+  void timestamping_thread_body();
 
-
+  void push_timestamp(std::int32_t max_tstamps,
+		      std::vector<std::int32_t> pushed_timestamp);
 
   /**
    * Timestamping setters
@@ -101,9 +109,9 @@ private:
    */
   volatile bool m_bStop_Timestamping;
 
-///////////////////////////////////////////////////////////////////////////////
-// TIMESTAMP HANDLING
-//////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  // TIMESTAMP HANDLING
+  //////////////////////////////////////////////////////////////////////////////
   /**
    * @brief PV to set the timestamp of the device, in seconds
    */

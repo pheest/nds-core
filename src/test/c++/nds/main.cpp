@@ -16,6 +16,7 @@
 #include "DeviceStateMachine.h"
 #include "DeviceFirmware.h"
 #include "DeviceTiming.h"
+#include "DeviceTimestamping.h"
 #include "../include/ndsTestFactory.h"
 
 
@@ -69,13 +70,14 @@ int main(int argc, char **argv)
                            std::bind(&DeviceTiming::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceTiming::deallocateDevice, std::placeholders::_1));
 
+    nds::Factory::registerDriver("DeviceTimestamping",
+                           std::bind(&DeviceTimestamping::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceTimestamping::deallocateDevice, std::placeholders::_1));
+
+
     nds::Factory::registerDriver("DeviceStateMachine",
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceStateMachine::deallocateDevice, std::placeholders::_1));
-
-
-
-    //Devices which have been created for testing isolated nodes
 
     nds::Factory::registerDriver("DeviceFirmware",
                            std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -88,5 +90,6 @@ int main(int argc, char **argv)
 
 
     ::testing::InitGoogleTest(&argc, argv);
+    ::testing::GTEST_FLAG(filter) = "*Timestamping*";
     return RUN_ALL_TESTS();
 }
