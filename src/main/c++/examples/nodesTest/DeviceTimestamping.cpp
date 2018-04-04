@@ -53,7 +53,7 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
 
 
   // Add Timestamping node
-  m_Timestamping = rootNode.addChild(nds::Timestamping<std::vector<std::int32_t>>(
+  m_Timestamping = rootNode.addChild(nds::Timestamping<nds::timestamp_t>(
         "Timestamping", 4,
         std::bind(&DeviceTimestamping::switchOn_timestamping, this),
         std::bind(&DeviceTimestamping::switchOff_timestamping, this),
