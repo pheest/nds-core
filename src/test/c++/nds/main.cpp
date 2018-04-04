@@ -16,7 +16,9 @@
 #include "DeviceStateMachine.h"
 #include "DeviceFirmware.h"
 #include "DeviceTiming.h"
+#include "DeviceTimestamping.h"
 #include "DevicePVs.h"
+
 #include "../include/ndsTestFactory.h"
 
 
@@ -70,22 +72,22 @@ int main(int argc, char **argv)
                            std::bind(&DeviceTiming::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceTiming::deallocateDevice, std::placeholders::_1));
 
+    nds::Factory::registerDriver("DeviceTimestamping",
+                           std::bind(&DeviceTimestamping::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceTimestamping::deallocateDevice, std::placeholders::_1));
+
+
     nds::Factory::registerDriver("DeviceStateMachine",
                            std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceStateMachine::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DevicePVs",
-                           std::bind(&DevicePVs::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DevicePVs::deallocateDevice, std::placeholders::_1));
-
-
-    //Devices which have been created for testing isolated nodes
 
     nds::Factory::registerDriver("DeviceFirmware",
                            std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceFirmware::deallocateDevice, std::placeholders::_1));
 
-
+    nds::Factory::registerDriver("DevicePVs",
+                           std::bind(&DevicePVs::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DevicePVs::deallocateDevice, std::placeholders::_1));
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);
