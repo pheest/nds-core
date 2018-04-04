@@ -61,6 +61,7 @@ template class PVDelegateInImpl<std::vector<double> >;
 template class PVDelegateInImpl<std::string>;
 template class PVDelegateInImpl<timespec>;
 template class PVDelegateInImpl<std::vector<timespec>>;
+template class PVDelegateInImpl<timestamp_t>;
 }
 
 

@@ -102,6 +102,7 @@ template class PVVariableOutImpl<std::vector<double> >;
 template class PVVariableOutImpl<std::string>;
 template class PVVariableOutImpl<timespec>;
 template class PVVariableOutImpl<std::vector<timespec>>;
+template class PVVariableOutImpl<timestamp_t>;
 
 }
 
