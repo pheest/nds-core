@@ -10,6 +10,11 @@
 #ifndef NDSTIMINGIMPL_H
 #define NDSTIMINGIMPL_H
 
+/**
+ * @file timingImpl.h
+ * @brief Defines nds:Timing node.
+ *
+ */
 #include <memory>
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
@@ -20,7 +25,7 @@
 namespace nds {
 
 class TimingImpl: public NodeImpl {
-  public: 
+  public:
     TimingImpl( const std::string& name,
         stateChange_t switchOnFunction,
         stateChange_t switchOffFunction,
@@ -30,7 +35,7 @@ class TimingImpl: public NodeImpl {
         allowChange_t allowStateChangeFunction,
         readerTime_t PV_Time_Reader);
 
-   // Common functions 
+   // Common functions
    /**
     * @brief Returns the timestamp at start.
     *
