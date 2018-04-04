@@ -11,6 +11,7 @@ TEST(testDeviceTiming, fullTest){
   const timespec* pTimingStateMachineSwitchTime;
   const std::int32_t* pTimingStateMachineState;
   timespec timestamp = {0, 0};
+  const timespec *ptimestamp = &timestamp;
 
   //Create factory
   nds::Factory factory("test");
@@ -53,48 +54,37 @@ TEST(testDeviceTiming, fullTest){
   EXPECT_EQ((std::int32_t)nds::state_t::on, globalStateTiming);
 
 
-  //Get time (UTC).
-  timespec timeval = {0, 0};
-  pInterface->readCSValue("/deviceTiming-Timing.Time", &timestamp, &timeval);
-  EXPECT_EQ((time_t)1514764800, timeval.tv_sec);
-  EXPECT_EQ((long int)20091982, timeval.tv_nsec);
-
-  //Get human readable time (UTC).
-  std::string htime;
-  pInterface->readCSValue("/deviceTiming-Timing.HTime", &timestamp, &htime);
-  EXPECT_EQ((const char*)"Mon Jan  1 00:00:00 2018\n", htime);
-
   //Get clock frequency (UTC).
-  double ClkFreqVal;
-  pInterface->readCSValue("/deviceTiming-Timing.ClkFrequency",
-			  &timestamp, &ClkFreqVal);
-  EXPECT_EQ((double)100.001, ClkFreqVal);
+  const double *pClkFreqVal;
+  pInterface->getPushedDouble("/deviceTiming-Timing.ClkFrequency",
+			  ptimestamp, pClkFreqVal);
+  EXPECT_EQ((double)100.001, *pClkFreqVal);
 
   //Get clock multiplier (UTC).
-  int32_t ClkMultiplier;
-  pInterface->readCSValue("/deviceTiming-Timing.ClkMultiplier",
-			  &timestamp, &ClkMultiplier);
-  EXPECT_EQ((int32_t)2, ClkMultiplier);
+  const int32_t *pClkMultiplier;
+  pInterface->getPushedInt32("/deviceTiming-Timing.ClkMultiplier",
+			  ptimestamp, pClkMultiplier);
+  EXPECT_EQ((int32_t)2, *pClkMultiplier);
 
   //Get synchronizing status.
-  int32_t syncStatVal = -1;
-  pInterface->readCSValue("/deviceTiming-Timing.SyncStatus",
-			  &timestamp, &syncStatVal);
-  EXPECT_EQ((int32_t)1, syncStatVal);
+  const int32_t *psyncStatVal;
+  pInterface->getPushedInt32("/deviceTiming-Timing.SyncStatus",
+			  ptimestamp, psyncStatVal);
+  EXPECT_EQ((int32_t)1, *psyncStatVal);
 
   //Get seconds since last synchronization.
-  int32_t secsLastSyncVal = -1;
-  pInterface->readCSValue("/deviceTiming-Timing.SecsLastSync",
-			  &timestamp, &secsLastSyncVal);
-  EXPECT_EQ((int32_t)0, secsLastSyncVal);
+  const int32_t *psecsLastSyncVal;
+  pInterface->getPushedInt32("/deviceTiming-Timing.SecsLastSync",
+			 ptimestamp, psecsLastSyncVal);
+  EXPECT_EQ((int32_t)0, *psecsLastSyncVal);
 
   //Get reference base time.
-  timeval.tv_sec = 0;
-  timeval.tv_nsec = 0;
-  pInterface->readCSValue("/deviceTiming-Timing.RefTimeBase",
-			  &timestamp, &timeval);
-  EXPECT_EQ((time_t)1514764800, timeval.tv_sec);
-  EXPECT_EQ((long int)1514764810, timeval.tv_nsec);
+  timespec timeval = {0, 0};
+  const timespec *ptimeval = &timeval;
+  pInterface->getPushedTimespec("/deviceTiming-Timing.RefTimeBase",
+			  ptimestamp, ptimeval);
+  EXPECT_EQ((time_t)1514764800, ptimeval->tv_sec);
+  EXPECT_EQ((long int)1514764810, ptimeval->tv_nsec);
 
   //Change TimingNode state: ON -> (starting) -> RUNNING
   pInterface->writeCSValue("/deviceTiming-Timing.StateMachine.setState",
@@ -114,11 +104,20 @@ TEST(testDeviceTiming, fullTest){
       &timestamp, &globalStateTiming);
   EXPECT_EQ((std::int32_t)nds::state_t::running, globalStateTiming);
 
+  //Get time (UTC).
+  pInterface->getPushedTimespec("/deviceTiming-Timing.Time", ptimestamp, ptimeval);
+  EXPECT_EQ((time_t)1514764800, ptimeval->tv_sec);
+  EXPECT_EQ((long int)20091982, ptimeval->tv_nsec);
+
+  //Get human readable time (UTC).
+  const std::string *phtime;
+  pInterface->getPushedString("/deviceTiming-Timing.HTime", ptimestamp, phtime);
+  EXPECT_EQ((const char*)"Mon Jan  1 00:00:00 2018\n", *phtime);
+
   //Get Synchronization status.
-  syncStatVal = -1;
-  pInterface->readCSValue("/deviceTiming-Timing.SyncStatus",
-			  &timestamp, &syncStatVal);
-  EXPECT_EQ((int32_t)2, syncStatVal);
+  pInterface->getPushedInt32("/deviceTiming-Timing.SyncStatus",
+			  ptimestamp, psyncStatVal);
+  EXPECT_EQ((int32_t)2, *psyncStatVal);
 
 
   //Change TimingNode state: RUNNING -> (stopping) -> ON
@@ -144,16 +143,14 @@ TEST(testDeviceTiming, fullTest){
   EXPECT_EQ((std::int32_t)nds::state_t::off, *pTimingStateMachineState);
 
   //Get Syncronizing status.
-  syncStatVal = -1;
-  pInterface->readCSValue("/deviceTiming-Timing.SyncStatus",
-			  &timestamp, &syncStatVal);
-  EXPECT_EQ((int32_t)0, syncStatVal);
+  pInterface->getPushedInt32("/deviceTiming-Timing.SyncStatus",
+			  ptimestamp, psyncStatVal);
+  EXPECT_EQ((int32_t)0, *psyncStatVal);
 
   //Get Syncronizing status.
-  secsLastSyncVal = -1;
-  pInterface->readCSValue("/deviceTiming-Timing.SecsLastSync",
-			  &timestamp, &secsLastSyncVal);
-  EXPECT_EQ((int32_t)10, secsLastSyncVal);
+  pInterface->getPushedInt32("/deviceTiming-Timing.SecsLastSync",
+			  ptimestamp, psecsLastSyncVal);
+  EXPECT_EQ((int32_t)10, *psecsLastSyncVal);
 
   // Destroy test device
   factory.destroyDevice("deviceTiming");
