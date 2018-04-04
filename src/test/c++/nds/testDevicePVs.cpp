@@ -20,6 +20,7 @@ TEST(testDevicePVs, PVTypes)
 	const std::string* pString;
 	const timespec* pTimespec;
 	const std::vector<timespec>* pTimespecArray;
+	const nds::timestamp_t* pTimestampData;
 
 
 	//--------------------------------------------------------------------------------------
@@ -38,6 +39,7 @@ TEST(testDevicePVs, PVTypes)
 	std::string stringData = "text";
 	timespec timespecData = {1,2};
 	std::vector<timespec> timespecArrayData = {{1,2}, {3,4}};
+	nds::timestamp_t timestampData = {{10,1}, 0, true};
 
     //Create factory
     nds::Factory factory("test");
@@ -69,6 +71,7 @@ TEST(testDevicePVs, PVTypes)
     		stringData = "newText";
     		timespecData = {10,25};
     		timespecArrayData = {{3,4}, {10, 2}};
+    		timestampData = {{1000,10}, 1, true};
     		pInterface->writeCSValue("/devicePVs-Integer", timestamp, intData);
     		pInterface->writeCSValue("/devicePVs-Double", timestamp, doubleData);
     		pInterface->writeCSValue("/devicePVs-BoolArray", timestamp, boolArrayData);
@@ -82,6 +85,7 @@ TEST(testDevicePVs, PVTypes)
     		pInterface->writeCSValue("/devicePVs-String", timestamp, stringData);
     		pInterface->writeCSValue("/devicePVs-Timespec", timestamp, timespecData);
     		pInterface->writeCSValue("/devicePVs-TimespecArray", timestamp, timespecArrayData);
+    		pInterface->writeCSValue("/devicePVs-Timestamp", timestamp, timestampData);
     	}
 
 		//--------------------------------------------------------------------------------------
@@ -143,6 +147,11 @@ TEST(testDevicePVs, PVTypes)
 			EXPECT_EQ(timespecArrayData[i].tv_sec, t.tv_sec);
 			EXPECT_EQ(timespecArrayData[i].tv_nsec, t.tv_nsec);
 		}
+		pInterface->getPushedTimestamp("/devicePVs-Timestamp_RBV", pTimestamp, pTimestampData);
+		EXPECT_EQ(timestampData.timestamp.tv_sec, pTimestampData->timestamp.tv_sec);
+		EXPECT_EQ(timestampData.timestamp.tv_nsec, pTimestampData->timestamp.tv_nsec);
+		EXPECT_EQ(timestampData.id, pTimestampData->id);
+		EXPECT_EQ(timestampData.rising, pTimestampData->rising);
 
 		std::cout << "\tInteger value verified: " << intData << std::endl;
 		std::cout << "\tString value verified: " << stringData << std::endl;
