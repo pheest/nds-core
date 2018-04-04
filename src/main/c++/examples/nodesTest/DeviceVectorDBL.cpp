@@ -1,5 +1,4 @@
-
-#include "../include/DeviceVectorDBL.h"
+#include "DeviceVectorDBL.h"
 
 #include <nds3/nds.h>
 #include <mutex>

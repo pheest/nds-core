@@ -2,8 +2,6 @@
 #include <nds3/nds.h>
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
-#include <iostream>
-#include <cstdio>
 
 TEST(testDeviceTimestamping, StateMachineTest){
 
@@ -142,7 +140,7 @@ TEST(testDeviceTimestamping, SetGetTest){
   const std::int32_t * edge_val;
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Edge_RBV",
 			     pTimestampingStateMachineSwitchTime, edge_val);
-  EXPECT_EQ((std::int32_t)1 /* RISING */, *edge_val);
+  EXPECT_EQ((std::int32_t)1 /* FALLING */, *edge_val);
 
   // Get maximum number of timestamps.
   const std::int32_t * max_tstamp;
@@ -176,7 +174,7 @@ TEST(testDeviceTimestamping, SetGetTest){
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Enable_RBV",
 			     pTimestampingStateMachineSwitchTime, enable_val);
   EXPECT_EQ((std::int32_t)1 /* ON */, *enable_val);
-  ::sleep(2);
+  ::sleep(4);
 
   // Testing values of the timestamps pushed.
   const std::vector<std::int32_t> * pushed_timestamp;
