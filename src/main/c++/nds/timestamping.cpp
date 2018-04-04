@@ -123,6 +123,6 @@ void Timestamping<T>::setOverflow(const timespec& timestamp, const std::int32_t&
   std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setOverflow(timestamp, value);
 }
 
-template class Timestamping<std::vector<int32_t>>;
+template class Timestamping<timestamp_t>;
 
 }

@@ -73,12 +73,12 @@ namespace nds {
     m_ClearOverflow_PV->setScanType(scanType_t::passive, 0);
     addChild(m_ClearOverflow_PV);
 
-    m_Timestamps_PV.reset(new PVVariableInImpl<std::vector<std::int32_t>>("Timestamps"));
+    m_Timestamps_PV.reset(new PVVariableInImpl<T>("Timestamps"));
     m_Timestamps_PV->setDescription("Timestamps on terminal (timestamp, edge, ID)");
     m_Timestamps_PV->setScanType(scanType_t::interrupt, 0);
     //TODO
-    // Now: vector of 4 values: timestamp seconds, timestamp nanoseconds, edge, ID
-    // To be changed to a structure containing a timestamp and two integers
+    //Structure with 3 fields: timespec (seconds, nanoseconds), ID, edge
+    //It will be written in EPICS by means of a waveform of 4 integers
     m_Timestamps_PV->setMaxElements(4);
     addChild(m_Timestamps_PV);
 
@@ -228,5 +228,5 @@ namespace nds {
     m_Overflow_PV->push(timestamp, overflow);
   }
 
-template class TimestampingImpl<std::vector<int32_t>>;
+template class TimestampingImpl<timestamp_t>;
 }

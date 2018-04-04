@@ -202,36 +202,35 @@ void DeviceTimestamping::timestamping_thread_body() {
 
       // Six timestamps are  going to be pushed:
       // First timestamp
-      std::vector<std::int32_t> pushed_timestamp = {0, 0, 0 /* RISING */,
-						    ++m_Ntimestamps /* ID */};
+      nds::timestamp_t pushed_timestamp = {{0, 0}, ++m_Ntimestamps /* ID */, true /* RISING */};
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
 
       // Second timestamp
-      pushed_timestamp[1] = 10; /* nsec */
-      pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
+      pushed_timestamp.timestamp.tv_nsec = 10; /* nsec */
+      pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
 
       // Third Timestamp
-      pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
+      pushed_timestamp.id  = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
 
       // Fourth Timestamp
-      pushed_timestamp[2] = 1; /* FALLING */
-      pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
+      pushed_timestamp.rising = false; /* FALLING */
+      pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
 
       // Fifth Timestamp
-      pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
+      pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
 
       // Sixth Timestamp
-      pushed_timestamp[2] = 0; /* ID */
-      pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
+      pushed_timestamp.rising = true; /* RISING */
+      pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
 
       ::usleep(1000000);
@@ -275,13 +274,13 @@ void DeviceTimestamping::pv_clearoverflow_writer(const timespec& timestamp,
 }
 
 void DeviceTimestamping::push_timestamp(std::int32_t max_tstamps,
-					std::vector<std::int32_t> pushed_tstamp){
+					nds::timestamp_t pushed_tstamp){
 
   // Here we check manually the amount of timestamps in the queue.
-  if(pushed_tstamp[3] > max_tstamps) {
+  if(pushed_tstamp.id > max_tstamps) {
 
     m_Timestamping.setOverflow(getCurrentTime(), 1 /* OVERFLOWED */);
-  } else if (pushed_tstamp[3] == max_tstamps){
+  } else if (pushed_tstamp.id == max_tstamps){
 
     m_Timestamping.setOverflow(getCurrentTime(), 2 /* FULL */);
   }

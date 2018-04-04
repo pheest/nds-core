@@ -68,7 +68,7 @@ class DeviceTimestamping
   /**
    * @brief Timestamping node
    */
-  nds::Timestamping<std::vector<std::int32_t>> m_Timestamping;
+  nds::Timestamping<nds::timestamp_t> m_Timestamping;
 
   /**
    * Methods to control the Timestamping state machine
@@ -90,7 +90,7 @@ class DeviceTimestamping
   void timestamping_thread_body();
 
   void push_timestamp(std::int32_t max_tstamps,
-		      std::vector<std::int32_t> pushed_timestamp);
+		      nds::timestamp_t pushed_timestamp);
 
   /**
    * Timestamping setters

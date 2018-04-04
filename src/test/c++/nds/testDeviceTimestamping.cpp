@@ -177,59 +177,59 @@ TEST(testDeviceTimestamping, SetGetTest){
   ::sleep(4);
 
   // Testing values of the timestamps pushed.
-  const std::vector<std::int32_t> * pushed_timestamp;
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  const nds::timestamp_t * pushed_timestamp;
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)1, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)1, pushed_timestamp->id);
 
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)10, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)2, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)2, pushed_timestamp->id);
 
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)10, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)3, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)3, pushed_timestamp->id);
 
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)10, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)1, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)4, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)false, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)4, pushed_timestamp->id);
 
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)10, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)1, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)5, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)false, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)5, pushed_timestamp->id);
 
   // Get overflow state.
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",
 			     pTimestampingStateMachineSwitchTime, overflow_val);
   EXPECT_EQ((std::int32_t)2 /* FULL */, *overflow_val);
 
-  pInterface->getPushedVectorInt32("/deviceTimestamping-Timestamping.Timestamps",
+  pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   pTimestampingStateMachineSwitchTime,
 				   pushed_timestamp);
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(0));
-  EXPECT_EQ((std::int32_t)10, pushed_timestamp->at(1));
-  EXPECT_EQ((std::int32_t)0, pushed_timestamp->at(2));
-  EXPECT_EQ((std::int32_t)6, pushed_timestamp->at(3));
+  EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
+  EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
+  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((std::int32_t)6, pushed_timestamp->id);
 
   // Get overflow state.
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",

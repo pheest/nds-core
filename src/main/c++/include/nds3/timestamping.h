@@ -40,13 +40,13 @@ class NDS3_API Timestamping: public Node  {
      * @param right a holder from which the reference to
      *        the object implementation is copied
      */
-    Timestamping(const Timestamping& right);
+    Timestamping(const Timestamping<T>& right);
 
 
     /**
      * @brief overloading of assignment operator
      * */
-    Timestamping& operator=(const Timestamping& right);
+    Timestamping& operator=(const Timestamping<T>& right);
 
     /**
      * @brief Constructs the Time stamping node
