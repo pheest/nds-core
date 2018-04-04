@@ -14,7 +14,8 @@ static std::mutex m_lockDevicesMap;
 DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
 				       const std::string &DeviceName,
 				       const nds::namedParameters_t &parameters):
-  m_Name(DeviceName), m_Ntimestamps(0),
+  m_Name(DeviceName),
+  m_Ntimestamps(0), /* Number of timestamps in stack. */
   m_bStop_Timestamping(true){
 
   //Verify that there is no devices of this type with the same name
@@ -60,11 +61,13 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
         std::bind(&DeviceTimestamping::stop_timestamping, this),
         std::bind(&DeviceTimestamping::recover_timestamping, this),
         std::bind(&DeviceTimestamping::allow_timestamping_change, this,
-          std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+		  std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
         std::bind(&DeviceTimestamping::pv_enable_writer, this,
-          std::placeholders::_1, std::placeholders::_2),
+		  std::placeholders::_1, std::placeholders::_2),
         std::bind(&DeviceTimestamping::pv_edge_writer, this,
-          std::placeholders::_1, std::placeholders::_2)));
+		  std::placeholders::_1, std::placeholders::_2),
+        std::bind(&DeviceTimestamping::pv_clearoverflow_writer, this,
+		  std::placeholders::_1, std::placeholders::_2)));
 
   m_Timestamping.setStartTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime, this));
 
@@ -131,8 +134,8 @@ void DeviceTimestamping::switchOff_timestamping() {
 }
 
 /**
- * @brief called withn the Timestamping node has to start working.
- *        we start the Timestamping thread.
+ * @brief Called when the Timestamping node has to start working.
+ *        We start the Timestamping thread.
  */
 void DeviceTimestamping::start_timestamping() {
 
@@ -140,13 +143,14 @@ void DeviceTimestamping::start_timestamping() {
 				//  thread.
 
   /**
-   *  Start the Timestamping thread.
-   *  We don't need to check if the thread was already started because the state
-   *  machine guarantees that the start handler is called only while the state
-   *  is ON.
+   *  Start the Timestamping thread. This function is called when the state
+   *  machine goes from on to running. We don't need to check if the thread was
+   *  already started because the state machine guarantees that the start handler
+   *  is called only while the state is ON.
    */
   m_timestamping_thread =
     std::thread(std::bind(&DeviceTimestamping::timestamping_thread_body, this));
+
 }
 
 // Stop the Timestamping node thread
@@ -188,19 +192,20 @@ void DeviceTimestamping::timestamping_thread_body() {
   std::cout << "\tMaximum number of timestamps = " << max_tstamps << std::endl;
   std::cout << "\tOverflow state = " << overflow << std::endl;
 
+  std::int32_t once_flag = 0; // The pushes are done only once.
   // Run until the state machine stops us
   while(!m_bStop_Timestamping){
 
     enable = m_Timestamping.getEnable();
 
-    if (enable == 1 /* Enabled */) {
+    if (enable == 1 /* Enabled */ && once_flag++ == 0 /* Enter only once. */) {
 
       // Six timestamps are  going to be pushed:
       // First timestamp
       std::vector<std::int32_t> pushed_timestamp = {0, 0, 0 /* RISING */,
 						    ++m_Ntimestamps /* ID */};
       push_timestamp(max_tstamps, pushed_timestamp);
-      // m_Timestamping.push(m_Timestamping.getTimestamp(), pushed_timestamp);
+
 
       // Second timestamp
       pushed_timestamp[1] = 10; /* nsec */
@@ -225,13 +230,6 @@ void DeviceTimestamping::timestamping_thread_body() {
       pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
 
-      // TODO: ClearOverflow needs to be implemented. For the moment we clear
-      // the overflow state manually:
-      if (pushed_timestamp[3] >= max_tstamps) {
-	m_Ntimestamps = 0; /* ID resetted */
-	m_Timestamping.setOverflow(getCurrentTime(), 0 /* NO */);
-      }
-
       ::usleep(1000000);
     }
   }
@@ -243,7 +241,7 @@ void DeviceTimestamping::timestamping_thread_body() {
 void DeviceTimestamping::pv_enable_writer(const timespec& timestamp,
 					  const std::int32_t& value){
 
-  // TODO: This function shall interact with hardware api to enable or disbale.
+  // This function shall interact with hardware api to enable or disbale.
 
   m_Timestamping.setEnable(timestamp, value);
 
@@ -258,6 +256,17 @@ void DeviceTimestamping::pv_edge_writer(const timespec& timestamp,
   // This function shall interact with api hardware.
   m_Timestamping.setEdge(timestamp, value);
 
+}
+
+/*
+ * Clearoverflow writer.
+ */
+void DeviceTimestamping::pv_clearoverflow_writer(const timespec& timestamp,
+					const std::int32_t& value){
+
+  // This function may have to interact with api hardware.
+
+  m_Timestamping.setOverflow(getCurrentTime(), 0 /* NO */);
 }
 
 void DeviceTimestamping::push_timestamp(std::int32_t max_tstamps,

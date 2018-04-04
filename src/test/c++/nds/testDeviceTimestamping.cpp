@@ -238,6 +238,18 @@ TEST(testDeviceTimestamping, SetGetTest){
 			     pTimestampingStateMachineSwitchTime, overflow_val);
   EXPECT_EQ((std::int32_t)1 /* OVERFLOWED */, *overflow_val);
 
+  // Clear overflow
+  pInterface->writeCSValue("/deviceTimestamping-Timestamping.ClearOverflow",
+			   timestamp, (std::int32_t)2736);
+			   /*TODO: this function should not accept any value. */
+  ::sleep(2);
+
+  // Get overflow state.
+  pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",
+			     pTimestampingStateMachineSwitchTime, overflow_val);
+  EXPECT_EQ((std::int32_t)0 /* NO OVERFLOW */, *overflow_val);
+
+
   // Change TimestampingNode state: RUNNING -> (stopping) -> ON
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.StateMachine.setState",
 			   timestamp, (std::int32_t)nds::state_t::on);

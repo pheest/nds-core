@@ -75,7 +75,8 @@ class NDS3_API Timestamping: public Node  {
                  stateChange_t recoverFunction,
                  allowChange_t allowStateChangeFunction,
                  writerInt32_t PV_Enable_Writer, //Delegate function to enable/disable timestamping
-                 writerInt32_t PV_Edge_Writer);
+                 writerInt32_t PV_Edge_Writer,
+                 writerInt32_t PV_ClearOverflow_Writer);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**

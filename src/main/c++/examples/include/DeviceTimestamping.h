@@ -97,6 +97,7 @@ class DeviceTimestamping
    */
   void pv_enable_writer(const timespec& timestamp, const std::int32_t& value);
   void pv_edge_writer(const timespec& timestamp, const std::int32_t& value);
+  void pv_clearoverflow_writer(const timespec& timestamp, const std::int32_t& value);
 
   /**
    * @brief A thread that runs timestamping_thread_body().

@@ -36,7 +36,8 @@ namespace nds {
                  stateChange_t recoverFunction,
                  allowChange_t allowStateChangeFunction,
                  writerInt32_t PV_Enable_Writer,
-                 writerInt32_t PV_Edge_Writer);
+                 writerInt32_t PV_Edge_Writer,
+                 writerInt32_t PV_ClearOverflow_Writer);
 
     // ----------------------- Common functions ----------------------------- //
     /**

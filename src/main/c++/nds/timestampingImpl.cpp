@@ -25,7 +25,9 @@ namespace nds {
       stateChange_t recoverFunction,
       allowChange_t allowStateChangeFunction,
       writerInt32_t PV_Enable_Writer,
-      writerInt32_t PV_Edge_Writer):
+      writerInt32_t PV_Edge_Writer,
+      writerInt32_t PV_ClearOverflow_Writer):
+
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -66,7 +68,7 @@ namespace nds {
 
     //Not sure that it works as expected
     m_ClearOverflow_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClearOverflow",
-          std::bind(&TimestampingImpl::setOverflow, this, getTimestamp(), 0)));
+								 PV_ClearOverflow_Writer));
     m_ClearOverflow_PV->setDescription("Clear timestamp overflow error");
     m_ClearOverflow_PV->setScanType(scanType_t::passive, 0);
     addChild(m_ClearOverflow_PV);
