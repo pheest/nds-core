@@ -119,7 +119,7 @@ DeviceTimestamping* DeviceTimestamping::getInstance(const std::string& DeviceNam
 void  DeviceTimestamping::switchOn_timestamping() {
 
   m_Timestamping.setEnable(getCurrentTime(), 0 /* OFF */);
-  m_Timestamping.setEdge(getCurrentTime(), 1 /* RISING */);
+  m_Timestamping.setEdge(getCurrentTime(), 1 /* FALLING */);
   m_Timestamping.setMaxTimestamps(getCurrentTime(), 5);
   m_Timestamping.setOverflow(getCurrentTime(), 0 /* NO */);
 }
@@ -205,25 +205,29 @@ void DeviceTimestamping::timestamping_thread_body() {
       std::vector<std::int32_t> pushed_timestamp = {0, 0, 0 /* RISING */,
 						    ++m_Ntimestamps /* ID */};
       push_timestamp(max_tstamps, pushed_timestamp);
-
+      ::usleep(500000);
 
       // Second timestamp
       pushed_timestamp[1] = 10; /* nsec */
       pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
+      ::usleep(500000);
 
       // Third Timestamp
       pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
+      ::usleep(500000);
 
       // Fourth Timestamp
       pushed_timestamp[2] = 1; /* FALLING */
       pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
+      ::usleep(500000);
 
       // Fifth Timestamp
       pushed_timestamp[3] = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
+      ::usleep(500000);
 
       // Sixth Timestamp
       pushed_timestamp[2] = 0; /* ID */
@@ -266,6 +270,7 @@ void DeviceTimestamping::pv_clearoverflow_writer(const timespec& timestamp,
 
   // This function may have to interact with api hardware.
 
+  m_Ntimestamps = 0;
   m_Timestamping.setOverflow(getCurrentTime(), 0 /* NO */);
 }
 
