@@ -97,6 +97,9 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
   rootNode.initialize(this, factory);
   rootNode.setTimestampDelegate(std::bind(&DeviceHQMonitor::getCurrentTime,this));
 
+  /* For PVDelegateIn is necessary to instantiate them in the constructor. */
+  m_HQMonitor.getSelfTestTextResult();
+
   //Stream information for debugging purposes
   rootNode.setLogLevel(nds::logLevel_t::debug);
   rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger: "
@@ -206,7 +209,8 @@ bool DeviceHQMonitor::allow_HQMonitor_Change(const nds::state_t,
 /**
  * HQMonitor support getters
  */
-void DeviceHQMonitor::PV_HQMonitor_Power_Reader(timespec* timestamp, double* value) {
+void DeviceHQMonitor::PV_HQMonitor_Power_Reader(timespec* timestamp,
+						double* value) {
 
   *timestamp = getCurrentTime();
 
@@ -215,28 +219,32 @@ void DeviceHQMonitor::PV_HQMonitor_Power_Reader(timespec* timestamp, double* val
 
 }
 
-void DeviceHQMonitor::PV_HQMonitor_Temperature_Reader(timespec* timestamp, double* value){
+void DeviceHQMonitor::PV_HQMonitor_Temperature_Reader(timespec* timestamp,
+						      double* value){
 
   *timestamp = getCurrentTime();
   *value = 295.5;
   m_HQMonitor.setDeviceTemperature(*timestamp, *value );
 }
 
-void DeviceHQMonitor::PV_HQMonitor_Voltage_Reader(timespec* timestamp, double* value){
+void DeviceHQMonitor::PV_HQMonitor_Voltage_Reader(timespec* timestamp,
+						  double* value){
 
   *timestamp = getCurrentTime();
   *value = 2.5;
   m_HQMonitor.setDeviceVoltage(*timestamp, *value );
 }
 
-void DeviceHQMonitor::PV_HQMonitor_Current_Reader(timespec* timestamp, double* value){
+void DeviceHQMonitor::PV_HQMonitor_Current_Reader(timespec* timestamp,
+						  double* value){
 
   *timestamp = getCurrentTime();
   *value = 0.1;
   m_HQMonitor.setDeviceCurrent(*timestamp, *value );
 }
 
-void DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader(timespec* timestamp, std::string* value){
+void DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader(timespec* timestamp,
+						      std::string* value){
 
   std::string result = "";
   if (m_HQMonitor.getSelfTestEnable() == 1) {
@@ -255,7 +263,6 @@ void DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader(timespec* timestamp, std::
   }
   *timestamp = getCurrentTime();
   *value = result;
-  std::cout << "HII" << std::endl;
   m_HQMonitor.setSelfTestTextResult(*timestamp, *value );
 }
 
@@ -388,10 +395,10 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
 
     if(selfTestEnable != selfTestEnableOld){
       m_HQMonitor.push(getCurrentTime(), selfTestEnable);
-      selfTestEnableOld=selfTestEnable;
+      selfTestEnableOld = selfTestEnable;
     }
 
-    if(selfTestEnable!=0){
+    if(selfTestEnable != 0){
       // Call to the function that print the Result string and update (push) the
       // string
       if((SelfTestVerboseEnable != SelfTestVerboseEnableOld) ||
