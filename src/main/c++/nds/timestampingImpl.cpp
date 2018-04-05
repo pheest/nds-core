@@ -66,7 +66,7 @@ namespace nds {
     m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
     addChild(m_Decimation_PV);
 
-    //Not sure that it works as expected
+
     enumerationStrings_t clearEnumeratorString;
     edgeEnumeratorString.push_back("YES");
     edgeEnumeratorString.push_back("NO");
@@ -81,9 +81,6 @@ namespace nds {
     m_Timestamps_PV.reset(new PVVariableInImpl<std::vector<std::int32_t>>("Timestamps"));
     m_Timestamps_PV->setDescription("Timestamps on terminal (timestamp, edge, ID)");
     m_Timestamps_PV->setScanType(scanType_t::interrupt, 0);
-    //TODO
-    // Now: vector of 4 values: timestamp seconds, timestamp nanoseconds, edge, ID
-    // To be changed to a structure containing a timestamp and two integers
     m_Timestamps_PV->setMaxElements(4);
     addChild(m_Timestamps_PV);
 
