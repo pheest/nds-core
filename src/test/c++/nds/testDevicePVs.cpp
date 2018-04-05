@@ -37,7 +37,7 @@ TEST(testDevicePVs, PVTypes)
 	std::vector<std::int32_t> int32ArrayData = {-5,6,-7};
 	std::vector<double> doubleArrayData = {-0.1,0.2,1.5};
 	std::string stringData = "text";
-	timespec timespecData = {1,2};
+	timespec timespecData =  {11111111,2243354};
 	std::vector<timespec> timespecArrayData = {{1,2}, {3,4}};
 	nds::timestamp_t timestampData = {{10,1}, 0, true};
 

@@ -203,10 +203,13 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	rootNode.addChild(m_timestamp_PV);
 	m_timestamp_PV.setDescription("Timestamp to be set");
 	m_timestamp_PV.setScanType(nds::scanType_t::passive);
+	m_timestamp_PV.setMaxElements(4);
 
 	m_timestamp_RBVPV = rootNode.addChild(nds::PVVariableIn<nds::timestamp_t>("Timestamp_RBV"));
 	m_timestamp_RBVPV.setDescription("Timestamp that has been set (RBV)");
 	m_timestamp_RBVPV.setScanType(nds::scanType_t::interrupt);
+	m_timestamp_PViRV.setMaxElements(4);
+
 
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
@@ -290,7 +293,7 @@ void DevicePVs::initializePVs(void){
 	timestamp = {NDS_EPOCH, ns++};
 	setString(timestamp, string);
 
-	timespec timeTest ={11111111,2243354};
+	timespec timeTest = {11111111,2243354};
 	timestamp = {NDS_EPOCH, ns++};
 	setTimespec(timestamp, timeTest);
 
