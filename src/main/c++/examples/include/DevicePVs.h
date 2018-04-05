@@ -55,6 +55,9 @@ private:
 	 */
 	std::string m_Name;
 
+  std::thread m_thread; 
+  bool m_terminate;
+
 	/**
 	 * @brief maximum number of elements allowed for array structures
 	 */
@@ -205,6 +208,7 @@ private:
 	 * Set the PVs with a default value
 	 */
 	void initializePVs(void);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIST OF WRITERS METHODS FOR ALL SUPPORTED TYPES
