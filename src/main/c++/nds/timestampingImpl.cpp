@@ -67,10 +67,15 @@ namespace nds {
     addChild(m_Decimation_PV);
 
     //Not sure that it works as expected
+    enumerationStrings_t clearEnumeratorString;
+    edgeEnumeratorString.push_back("YES");
+    edgeEnumeratorString.push_back("NO");
+
     m_ClearOverflow_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClearOverflow",
 								 PV_ClearOverflow_Writer));
     m_ClearOverflow_PV->setDescription("Clear timestamp overflow error");
     m_ClearOverflow_PV->setScanType(scanType_t::passive, 0);
+    m_Edge_PV->setEnumeration(clearEnumeratorString);
     addChild(m_ClearOverflow_PV);
 
     m_Timestamps_PV.reset(new PVVariableInImpl<std::vector<std::int32_t>>("Timestamps"));
