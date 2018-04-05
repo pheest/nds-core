@@ -42,6 +42,16 @@ void PVBase::setEnumeration(const enumerationStrings_t &enumerations)
     std::static_pointer_cast<PVBaseImpl>(m_pImplementation)->setEnumeration(enumerations);
 }
 
+/*
+ * Specifies if the PV has to be processed during the device initialization
+ *
+ **************************************************************************/
+void PVBase::processAtInit(const bool bProcessAtInit)
+{
+    std::static_pointer_cast<PVBaseImpl>(m_pImplementation)->processAtInit(bProcessAtInit);
+}
+
+
 
 /*
  * Set the description
