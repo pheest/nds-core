@@ -3,46 +3,37 @@ namespace nds
 
 /**
 
-@example thermometer/thermometer.cpp
+@example ../examples/sampleDevice/sampleDevice.cpp
 
-This example shows a fictional thermometer.
-
-The Makefile for this sample is the following:
-@include thermometer/Makefile
-
-The code shows a simple delegate function that is called each time the control system wants to read the temperature.
-
-
-@example oscilloscope/oscilloscope.cpp
-
-This example shows a fictional oscilloscope with 2 channels: one channel acquires a sinusoidal
-wave while the other channel acquires a square wave.
+This example shows a basic sample device developed using NDS Core.
 
 The Makefile for this sample is the following:
-@include oscilloscope/Makefile
+@include ../examples/sampleDevice/Makefile
 
-The code shows how to add two channels to a root node by using Node::addChild() and how
-to use the DataAcquisition node.
-
+The code shows how to add PVs to a basic device and how to call some NDS nodes for Data Acquisition, etc.
 
 
-@example oscilloscopeMultiChannel/oscilloscopeMultiChannel.cpp
+@example ../examples/ndsex1/ndsex1.cpp
 
-This example shows a fictional multi-channel oscilloscope.
-When the acquisition is triggered on a channel then the channel pushes a sinusoidal wave
-to the control system.
+This is another example of how to create an NDS device driver including already defined NDS nodes.
 
-The example shows how to create the channels programmatically (useful when you have a large
-number of channel that offer the same functionality).
+The Makefile for this sample is the following:
+@include ../examples/ndsex1/Makefile
+
+
+
+@example ./examples/nodeTest/DeviceFirmware.cpp
+
+Folder nodeTest contains different cpp files with implementation of NDS Device Driver using the NDs nodes.
 
 The Makefile for the sample is the following:
-@include oscilloscopeMultiChannel/Makefile
+@include ../examples/nodeTest/Makefile
 
 
-The macro NDS_DEFINE_DRIVER tells that the Oscilloscope class is the one that must be allocated and
-initialized when the control system wants to use our "Oscilloscope" device.
+The macro NDS_DEFINE_DRIVER tells that the DeviceFirmware class is the one that must be allocated and
+initialized when the control system wants to use our "DeviceFirmware" device.
 
-The constructor of our oscilloscope creates a root node for the device and names it using the parameter
+The constructor creates a root node for the device and names it using the parameter
 <b>device</b> passed by the control system. It is not mandatory to call the root node using the <b>device</b>
 parameter.
 
@@ -50,15 +41,6 @@ The root node is declared as a Port: this means that it holds an interface with 
 We could have declared the root node as a simple Node and each channel as a Port: in this case each
 channel would keep an interface with the control system and all its callback would be executed
 on separate threads (one per channel).
-
-The Channel class is just a helper that add the acquisition nodes to the root one and keep few
-references to the channel's PVs and to the channel's acquisition node. For fewer number of channels
-we could have implemented this functionality directly in the Oscillocope class.
-
-
-@example rpcSquare/rpcSquare.cpp
-
-This example shows an PVAction node used for RPC-like functionality.
 
 */
 
