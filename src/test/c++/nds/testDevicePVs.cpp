@@ -2,6 +2,7 @@
 #include <nds3/nds.h>
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
+#include "../include/testUtils.h"
 
 TEST(testDevicePVs, PVTypes)
 {
@@ -37,7 +38,7 @@ TEST(testDevicePVs, PVTypes)
 	std::vector<std::int32_t> int32ArrayData = {-5,6,-7};
 	std::vector<double> doubleArrayData = {-0.1,0.2,1.5};
 	std::string stringData = "text";
-	timespec timespecData = {1,2};
+	timespec timespecData = {11111111,2243354};
 	std::vector<timespec> timespecArrayData = {{1,2}, {3,4}};
 	nds::timestamp_t timestampData = {{10,1}, 0, true};
 
@@ -153,8 +154,22 @@ TEST(testDevicePVs, PVTypes)
 		EXPECT_EQ(timestampData.id, pTimestampData->id);
 		EXPECT_EQ(timestampData.rising, pTimestampData->rising);
 
-		std::cout << "\tInteger value verified: " << intData << std::endl;
-		std::cout << "\tString value verified: " << stringData << std::endl;
+		std::cout << "\t--------------------------------------" << std::endl;
+		std::cout << "\t" << TestUtils::getString(intData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(doubleData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(boolArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(uInt8ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(uInt16ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(uInt32ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(int8ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(int16ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(int32ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(doubleArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(stringData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(timespecData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(timespecArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(timestampData) << std::endl;
+		std::cout << "\t--------------------------------------" << std::endl;
 
     }
 
