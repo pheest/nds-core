@@ -83,6 +83,9 @@
 			   				<include type="library" name="nds3-DeviceStateMachine" />
 			    			<include type="library" name="nds3-DeviceHQMonitor" />
 			   				<include type="library" name="nds3-DeviceFirmware" />
+			   				<include type="library" name="nds3-DeviceTiming" />
+			   				<include type="library" name="nds3-DeviceTimestamping" />
+			   				<include type="library" name="nds3-DevicePVs" />
                             <requires codac="true">nds3-core</requires>
                         </package>
                     </packaging>
