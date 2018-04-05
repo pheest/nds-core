@@ -35,8 +35,8 @@ namespace nds
  *  specify the actions to perform when the node's state changes.
  *
  * In particular, the transition from the state off to running should launch
- *  the acquisition generation thread which pushes the acquired data via pushData(),
- *  while the transition from running to on should stop the data acquisition thread.
+ *  the DigitalIO thread which pushes the data via push(), while the transition
+ *  from running to on should stop the DigitalIO thread.
  *
  * @tparam T  the PV data type.
  *            The following data types are supported:
@@ -63,7 +63,7 @@ public:
      * @brief Copies a data reference from another object.
      *
      * @param right a digitalIO holder from which the reference to
-     *        the acquisition object implementation is copied
+     *        the digitalIO object implementation is copied
      */
     DigitalIO(const DigitalIO<T>& right);
 
@@ -98,13 +98,13 @@ public:
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @brief Push acquired data to the control system.
+     * @brief Push the data to the control system.
      *
      * Usually your device implementation will call this function from the
-     *  data acquisition thread in order to push the acquired data.
+     *  DigitalIO thread in order to push the data.
      *
-     * @param timestamp the timestamp for the data
-     * @param data      the data to push to the control system
+     * @param timestamp timestamp for the data
+     * @param data      data to push to the control system
      */
     void push(const timespec& timestamp, const T& data);
 
@@ -142,26 +142,36 @@ public:
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
+     * @param timestamp timestamp for the value
+     * @param value Number of pushed data blocks during the data acquisition
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     /**
 	 * @brief Sets the value of the m_dataOutMask_RBV.
 	 *
-	 */
+     * @param timestamp timestamp for the value
+     * @param value Data Out Mask value. Each position of the array should be set to true or false.
+     */
 	void setDataOutMask(const timespec& timestamp, const std::vector<bool>& value);
     /**
      * @brief Sets the value of the m_voltLevelHigh_RBV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Voltage value for high voltage levels.
      */
     void setVoltLevelHigh(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_voltLevelLow_RBV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Voltage value for low voltage levels.
      */
     void setVoltLevelLow(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_channelDir_RBV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Channel direction. Each position of the array should be set to true or false.
      */
     void setChannelDir(const timespec& timestamp, const std::vector<bool>& value);
     /**

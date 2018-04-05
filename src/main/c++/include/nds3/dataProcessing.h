@@ -26,8 +26,8 @@ namespace nds
 {
 
 /**
- * This is a node that supplies a data acquisition PV and few control
- * PV that specifies how the acquisition should be performed.
+ * This is a node that supplies a data processing PV and few control
+ * PV that specifies how the processing should be performed.
  *
  * @tparam T  the PV data type.
  *            The following data types are supported:

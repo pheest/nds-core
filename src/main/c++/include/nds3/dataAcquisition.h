@@ -27,7 +27,7 @@ namespace nds
 
 /**
  * This is a node that supplies a data acquisition PV and few control
- * PV that specifies how the acquisition should be performed.
+ * PVs that specifies how the acquisition should be performed.
  *
  * It also provides a state machine that allows to start/stop the acquisition.
  *
@@ -35,18 +35,18 @@ namespace nds
  *  specify the actions to perform when the acquisition node's state changes.
  *
  * In particular, the transition from the state off to running should launch
- *  the data acquisition thread which pushes the acquired data via pushData(),
+ *  the data acquisition thread which pushes the acquired data via push(),
  *  while the transition from running to on should stop the data acquisition thread.
  *
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
  *            - std::double
- *            - std::vector<std::int8_t>
  *            - std::vector<std::uint8_t>
+ *            - std::vector<std::int8_t>
+ *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
  *            - std::vector<double>
- *            - std::string
  *
  */
 template <typename T>
@@ -63,7 +63,7 @@ public:
     /**
      * @brief Copies a data acquisition reference from another object.
      *
-     * @param right a data acquisition holder from which the reference to
+     * @param right data acquisition holder from which the reference to
      *        the acquisition object implementation is copied
      */
     DataAcquisition(const DataAcquisition<T>& right);
@@ -97,7 +97,7 @@ public:
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the data acquisition starts.
      *
-     * @param timestampDelegate the function that returns the exact starting time of the
+     * @param timestampDelegate function that returns the exact starting time of the
      *                           data acquisition
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
@@ -109,7 +109,7 @@ public:
      * Usually your device implementation will call this function from the
      *  data acquisition thread in order to push the acquired data.
      *
-     * @param timestamp the timestamp for the data
+     * @param timestamp timestamp for the data
      * @param data      the data to push to the control system
      */
     void push(const timespec& timestamp, const T& data);
@@ -229,79 +229,109 @@ public:
     */
     size_t getSamplingRate();
     /**
-     * @brief Sets the value of the m_Gain_RBV.
+     * @brief Sets the value of the m_Gain_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Gain value in data acquisition
      */
     void setGain(const timespec& timestamp, const double& value);
     /**
-     * @brief Sets the value of the m_Offset_RBV.
+     * @brief Sets the value of the m_Offset_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Offset value in data acquisition
      */
     void setOffset(const timespec& timestamp, const double& value);
 
     /**
-     * @brief Sets the value of the m_Bandwidth_RBV.
+     * @brief Sets the value of the m_Bandwidth_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Bandwidth value in data acquisition
      */
     void setBandwidth(const timespec& timestamp, const double& value);
     /**
-     * @brief Sets the value of the m_Resolution_RBV.
+     * @brief Sets the value of the m_Resolution_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Resolution value in data acquisition
      */
     void setResolution(const timespec& timestamp, const double& value);
     /**
-     * @brief Sets the value of the m_Impedance_RBV.
+     * @brief Sets the value of the m_Impedance_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Impedance value in data acquisition
      */
     void setImpedance(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_Coupling_RBV.
+     * @brief Sets the value of the m_Coupling_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Coupling value in data acquisition
      */
     void setCoupling(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_SignalRef_RBV.
+     * @brief Sets the value of the m_SignalRef_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value SignalRefType value in data acquisition
      */
     void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_Ground_RBV.
+     * @brief Sets the value of the m_Ground_RBV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Ground value in data acquisition
      */
     void setGround(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_NumberOfPushedDataBocks.
+     * @brief Sets the value of the m_NumberOfPushedDataBocks and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Number of pushed data blocks during the data acquisition
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMABufferSize_PV.
+     * @brief Sets the value of the m_DMABufferSize_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value DMA buffer size value in data acquisition
      */
     void setDMABufferSize(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMAEnable_PV.
+     * @brief Sets the value of the m_DMAEnable_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value DMA enable/disable in data acquisition
      */
     void setDMAEnable(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMANumChannels_PV.
+     * @brief Sets the value of the m_DMANumChannels_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value number of DMA channels
      */
     void setDMANumChannels(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMAFrameType_PV.
+     * @brief Sets the value of the m_DMAFrameType_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value DMA frame type
      */
     void setDMAFrameType(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMASampleSize_PV.
+     * @brief Sets the value of the m_DMASampleSize_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value DMA sample size
      */
     void setDMASampleSize(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_DMASamplingRate_PV.
+     * @brief Sets the value of the m_DMASamplingRate_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Sampling rate value during data acquisition
      */
     void setSamplingRate(const timespec& timestamp, const double& value);
 };
