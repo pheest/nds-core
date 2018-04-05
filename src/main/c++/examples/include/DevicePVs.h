@@ -199,6 +199,16 @@ private:
 	 */
 	nds::PVVariableIn<std::vector<timespec>> m_timespecArray_RBVPV;
 
+	//dataType_t: dataTimestamp -> timestamp_t
+	/*
+	 * @brief PV for testing an Output PV to set a timestamp
+	 */
+	nds::PVDelegateOut<nds::timestamp_t> m_timestamp_PV;
+	/*
+	 * @brief PV for testing an Input PV to get a timestamp
+	 */
+	nds::PVVariableIn<nds::timestamp_t> m_timestamp_RBVPV;
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// MEMBER METHODS THAT SUPPORT SPECIFIC OPERATIONS
@@ -278,6 +288,11 @@ private:
 	 * @brief Method to be used when an write action is required on the timespecs array PV
 	 */
 	void setTimespecArray(const timespec&, const std::vector<timespec>&);
+
+	/**
+	 * @brief Method to be used when an write action is required on the timestamp PV
+	 */
+	void setTimestamp(const timespec&, const nds::timestamp_t&);
 
 };
 

@@ -28,7 +28,8 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_float64Array_PV(nds::PVDelegateOut<std::vector<double>>("DoubleArray", std::bind(&DevicePVs::setDoubleArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_string_PV(nds::PVDelegateOut<std::string>("String", std::bind(&DevicePVs::setString, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timespec_PV(nds::PVDelegateOut<timespec>("Timespec", std::bind(&DevicePVs::setTimespec, this, std::placeholders::_1, std::placeholders::_2))),
-						m_timespecArray_PV(nds::PVDelegateOut<std::vector<timespec>>("TimespecArray", std::bind(&DevicePVs::setTimespecArray, this, std::placeholders::_1, std::placeholders::_2)))
+						m_timespecArray_PV(nds::PVDelegateOut<std::vector<timespec>>("TimespecArray", std::bind(&DevicePVs::setTimespecArray, this, std::placeholders::_1, std::placeholders::_2))),
+						m_timestamp_PV(nds::PVDelegateOut<nds::timestamp_t>("Timestamp", std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2)))
 	{
 
 	//Verify that there is no devices of this type with the same name
@@ -199,6 +200,14 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_timespecArray_RBVPV.processAtInit(true);
 
 
+	rootNode.addChild(m_timestamp_PV);
+	m_timestamp_PV.setDescription("Timestamp to be set");
+	m_timestamp_PV.setScanType(nds::scanType_t::passive);
+
+	m_timestamp_RBVPV = rootNode.addChild(nds::PVVariableIn<nds::timestamp_t>("Timestamp_RBV"));
+	m_timestamp_RBVPV.setDescription("Timestamp that has been set (RBV)");
+	m_timestamp_RBVPV.setScanType(nds::scanType_t::interrupt);
+
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +297,11 @@ void DevicePVs::initializePVs(void){
 	std::vector<timespec> timesTest ={{1,2}, {3,4}};
 	timestamp = {NDS_EPOCH, ns++};
 	setTimespecArray(timestamp, timesTest);
+
+	nds::timestamp_t timestampData = {{10,1}, 0, true};
+	timestamp = {NDS_EPOCH, ns++};
+	setTimestamp(timestamp, timestampData);
+
 }
 
 void DevicePVs::setInt(const timespec& timestamp, const std::int32_t& data){
@@ -345,16 +359,19 @@ void DevicePVs::setString(const timespec& timestamp, const std::string& data){
 	m_string_RBVPV.push(timestamp, data);
 }
 
-
 void DevicePVs::setTimespec(const timespec& timestamp, const timespec& data){
 	m_timespec_RBVPV.setValue(timestamp, data);
 	m_timespec_RBVPV.push(timestamp, data);
 }
 
-
 void DevicePVs::setTimespecArray(const timespec& timestamp, const std::vector<timespec>& data){
 	m_timespecArray_RBVPV.setValue(timestamp, data);
 	m_timespecArray_RBVPV.push(timestamp, data);
+}
+
+void DevicePVs::setTimestamp(const timespec& timestamp, const nds::timestamp_t& data){
+	m_timestamp_RBVPV.setValue(timestamp, data);
+	m_timestamp_RBVPV.push(timestamp, data);
 }
 
 #ifdef EPICS

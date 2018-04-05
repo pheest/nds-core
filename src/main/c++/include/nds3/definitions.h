@@ -65,8 +65,8 @@ enum class dataType_t
     dataFloat64Array, ///< Array of 64 bit floats
     dataString,       ///< String
 	dataTimespec,	  ///< Timespec
-	dataTimespecArray ///< Array of timespec
-
+	dataTimespecArray, ///< Array of timespec
+	dataTimestamp	//< Timestamp structure
 };
 
 /**
@@ -209,6 +209,20 @@ enum class outputPvType_t
  * @brief List of strings passed as parameters to nodes' commands.
  */
 typedef std::vector<std::string> parameters_t;
+
+/**
+ * @brief Type defined for handling a timestamp with its associated parameters
+ *
+ * It contains fields to represent:
+ * - timestamp
+ * - counter to identify the timestamp
+ * - boolean to indicate whether the timestamp happens with a rising or falling edge
+ */
+typedef struct {
+	timespec timestamp; //Moment at the timestamp happened
+	std::int32_t id; //Identifier of the timestamp
+	bool rising; //Type of edge that triggers the timestamp (rising=true; falling=false)
+} timestamp_t;
 
 /**
  * @brief Definition of a function called to execute a node's command.

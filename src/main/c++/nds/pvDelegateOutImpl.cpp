@@ -102,6 +102,7 @@ template class PVDelegateOutImpl<std::vector<double> >;
 template class PVDelegateOutImpl<std::string>;
 template class PVDelegateOutImpl<timespec>;
 template class PVDelegateOutImpl<std::vector<timespec>>;
+template class PVDelegateOutImpl<timestamp_t>;
 
 }
 

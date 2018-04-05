@@ -103,6 +103,7 @@ template class PVVariableInImpl<std::vector<double> >;
 template class PVVariableInImpl<std::string>;
 template class PVVariableInImpl<timespec>;
 template class PVVariableInImpl<std::vector<timespec>>;
+template class PVVariableInImpl<timestamp_t>;
 
 
 }
