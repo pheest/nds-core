@@ -13,7 +13,7 @@ static std::map<std::string, DevicePVs*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
 
-DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t & /*parameters*/):
 						m_Name(DeviceName),
 						maxArrayElements(5),
 						m_int_PV(nds::PVDelegateOut<std::int32_t>("Integer", std::bind(&DevicePVs::setInt, this, std::placeholders::_1, std::placeholders::_2))),
