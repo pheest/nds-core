@@ -208,7 +208,7 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_timestamp_RBVPV = rootNode.addChild(nds::PVVariableIn<nds::timestamp_t>("Timestamp_RBV"));
 	m_timestamp_RBVPV.setDescription("Timestamp that has been set (RBV)");
 	m_timestamp_RBVPV.setScanType(nds::scanType_t::interrupt);
-	m_timestamp_PViRV.setMaxElements(4);
+	m_timestamp_RBVPV.setMaxElements(4);
 
 
 	// We have declared all the nodes and PVs in our Device: now we register them
