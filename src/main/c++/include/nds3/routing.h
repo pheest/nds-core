@@ -75,13 +75,13 @@ public:
 					writerInt32_t PV_TermDstRead_Writer		///< Delegate function setter/getter to interact to the Low Level Driver API
     );
 
-    // TODO Is it necessary this delegate function?
 
+    // TODO Is it necessary this delegate function?
     /**
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the node starts.
      *
-     * @param timestampDelegate the function that returns the exact starting time
+     * @param timestampDelegate function that returns the exact starting time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
@@ -99,106 +99,94 @@ public:
     /**
      * @brief Retrieve the clock source
      *
-     * @return the clock source value
+     * @return clock source value
      */
     size_t getClkSrc();
     /**
      * @brief Retrieve the clock destination
      *
-     * @return the clock destination value
+     * @return clock destination value
      */
     size_t getClkDst();
     /**
      * @brief Retrieve the terminal source
      *
-     * @return the terminal source value
+     * @return terminal source value
      */
     size_t getTermSrc();
     /**
      * @brief Retrieve the terminal destination
      *
-     * @return the terminal destination value
+     * @return terminal destination value
      */
     size_t getTermDst();
     /**
      * @brief Retrieve the terminal sync mode
-     * @return the terminal sync mode value
+     * @return terminal sync mode value
      */
     size_t getTermSyncSet();
     /**
      * @brief Retrieve the terminal invert mode
      *
-     * @return the terminal invert mode value
+     * @return terminal invert mode value
      */
     size_t getTermInvertSet();
 
 
-    /** TODO Some setters are commented. Should they exist
-     *
-     */
-
-    /**
-     * @brief Makes the clock connection and sets the value of the m_ClkSetStatus_PV and
-     * m_ClkSetCode_PV
-     *
-     */
-//    void setClkSet(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_ClkSetStatus_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the clock setting
      */
     void setClkSetStatus(const timespec& timestamp, const std::string& value);
     /**
      * @brief Sets the value of the m_ClkSetCode_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error clock setting
      */
     void setClkSetCode(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_XX_PV.
-     *
-     */
-//    void setClkDstRead(const timespec& timestamp, const std::int32_t& value);
-    /**
      * @brief Update the value of the m_ClkSrcRead_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value clock source to read
      */
     void setClkSrcRead(const timespec& timestamp, const std::int32_t& value);
-
-
-    /**
-     * @brief Makes the terminal connection and sets the value of the m_TermSetStatus_PV and
-     * m_TermSetCode_PV
-     *
-     */
-//    void setTermSet(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_TermSetStatus_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the terminal setting
      */
     void setTermSetStatus(const timespec& timestamp, const std::string& value);
     /**
      * @brief Sets the value of the m_TermSetCode_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error terminal setting
      */
     void setTermSetCode(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Update the value of the m_TermSrcRead_PV, m_TermSyncRead_PV and m_TermInvertRead_PV.
-     *
-     */
-//    void setTermDstRead(const timespec& timestamp, const std::int32_t& value);
-    /**
      * @brief Sets the value of the m_TermSrcRead_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Terminal source to be read
      */
     void setTermSrcRead(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_TermSyncRead_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value terminal sync
      */
     void setTermSyncRead(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_TermInvertRead_PV.
      *
+     * @param timestamp timestamp for the value
+     * @param value Terminal Invert
      */
     void setTermInvertRead(const timespec& timestamp, const std::int32_t& value);
 

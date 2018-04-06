@@ -11,7 +11,7 @@
 static std::map<std::string, DeviceRouting*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
+DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.

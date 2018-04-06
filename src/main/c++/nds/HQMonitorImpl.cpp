@@ -8,8 +8,9 @@
  */
 
 
+#include "../include/nds3/impl/HQMonitorImpl.h"
+
 #include "nds3/definitions.h"
-#include "nds3/impl/healthMonitoringSupImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
 #include "nds3/impl/pvVariableOutImpl.h"
@@ -19,7 +20,7 @@
 namespace nds
 {
 
-HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
+HQMonitorImpl::HQMonitorImpl(  const std::string& name,
 					 stateChange_t switchOnFunction,
 					 stateChange_t switchOffFunction,
 					 stateChange_t startFunction,
@@ -179,7 +180,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
     m_StateMachine.reset(new StateMachineImpl(true,
 					      switchOnFunction,
 					      switchOffFunction,
-					      std::bind(&HealthMonitSupImpl::onStart, this),
+					      std::bind(&HQMonitorImpl::onStart, this),
 					      stopFunction,
 					      recoverFunction,
 					      allowStateChangeFunction));
@@ -187,22 +188,22 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
 }
   
   
-  timespec HealthMonitSupImpl::getStartTimestamp() const
+  timespec HQMonitorImpl::getStartTimestamp() const
   {
     return m_startTime;
   }
   
-  void HealthMonitSupImpl::push(const timespec& /*timestamp*/, const std::int32_t& /*data*/)
+  void HQMonitorImpl::push(const timespec& /*timestamp*/, const std::int32_t& /*data*/)
   {
     //TODO
   }
   
-  void HealthMonitSupImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
+  void HQMonitorImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
   {
     m_startTimestampFunction = timestampDelegate;
   }
   
-  void HealthMonitSupImpl::onStart()
+  void HQMonitorImpl::onStart()
   {
     m_startTime = m_startTimestampFunction();
     m_onStartDelegate();
@@ -215,7 +216,7 @@ HealthMonitSupImpl::HealthMonitSupImpl(  const std::string& name,
  * ---------------------------------------------------
  */
 
-double HealthMonitSupImpl::getDevicePower()
+double HQMonitorImpl::getDevicePower()
 {
 	double power;
 	timespec timestamp;
@@ -223,7 +224,7 @@ double HealthMonitSupImpl::getDevicePower()
 	return (double) power;
 }
 
-double HealthMonitSupImpl::getDeviceTemperature()
+double HQMonitorImpl::getDeviceTemperature()
 {
 	double temperature;
 	timespec timestamp;
@@ -231,7 +232,7 @@ double HealthMonitSupImpl::getDeviceTemperature()
 	return (double) temperature;
 }
 
-double HealthMonitSupImpl::getDeviceVoltage()
+double HQMonitorImpl::getDeviceVoltage()
 {
 	double voltage;
 	timespec timestamp;
@@ -240,7 +241,7 @@ double HealthMonitSupImpl::getDeviceVoltage()
 }
 
 
-double HealthMonitSupImpl::getDeviceCurrent()
+double HQMonitorImpl::getDeviceCurrent()
 {
 	double current;
 	timespec timestamp;
@@ -249,7 +250,7 @@ double HealthMonitSupImpl::getDeviceCurrent()
 }
 
 
-size_t HealthMonitSupImpl::getSEUEnable()
+size_t HQMonitorImpl::getSEUEnable()
 {
 	std::int32_t SEUenable;
 	timespec timestamp;
@@ -257,7 +258,7 @@ size_t HealthMonitSupImpl::getSEUEnable()
 	return (std::int32_t) SEUenable;
 }
 
-size_t HealthMonitSupImpl::getDAQMonitorEnable()
+size_t HQMonitorImpl::getDAQMonitorEnable()
 {
 	std::int32_t DAQMonEnable;
 	timespec timestamp;
@@ -265,7 +266,7 @@ size_t HealthMonitSupImpl::getDAQMonitorEnable()
 	return (std::int32_t) DAQMonEnable;
 }
 
-size_t HealthMonitSupImpl::getSelfTestEnable()
+size_t HQMonitorImpl::getSelfTestEnable()
 {
 	std::int32_t selfTestEnable;
 	timespec timestamp;
@@ -273,7 +274,7 @@ size_t HealthMonitSupImpl::getSelfTestEnable()
 	return (std::int32_t) selfTestEnable;
 }
 
-size_t HealthMonitSupImpl::getSelfTestType()
+size_t HQMonitorImpl::getSelfTestType()
 {
 	std::int32_t selfTestType;
 	timespec timestamp;
@@ -281,7 +282,7 @@ size_t HealthMonitSupImpl::getSelfTestType()
 	return (std::int32_t) selfTestType;
 }
 
-size_t HealthMonitSupImpl::getSelfTestVerboseEnable()
+size_t HQMonitorImpl::getSelfTestVerboseEnable()
 {
 	std::int32_t selfTestVerbose;
 	timespec timestamp;
@@ -289,7 +290,7 @@ size_t HealthMonitSupImpl::getSelfTestVerboseEnable()
 	return (std::int32_t) selfTestVerbose;
 }
 
-size_t HealthMonitSupImpl::getSelfTestIDEnable()
+size_t HQMonitorImpl::getSelfTestIDEnable()
 {
 	std::int32_t selfTestID;
 	timespec timestamp;
@@ -297,7 +298,7 @@ size_t HealthMonitSupImpl::getSelfTestIDEnable()
 	return (std::int32_t) selfTestID;
 }
 
-size_t HealthMonitSupImpl::getSelfTestTextEnable()
+size_t HQMonitorImpl::getSelfTestTextEnable()
 {
 	std::int32_t selfTestTxt;
 	timespec timestamp;
@@ -305,7 +306,7 @@ size_t HealthMonitSupImpl::getSelfTestTextEnable()
 	return (std::int32_t) selfTestTxt;
 }
 
-size_t HealthMonitSupImpl::getSelfTestCodeResultEnable()
+size_t HQMonitorImpl::getSelfTestCodeResultEnable()
 {
 	std::int32_t selfTestResult;
 	timespec timestamp;
@@ -313,7 +314,7 @@ size_t HealthMonitSupImpl::getSelfTestCodeResultEnable()
 	return (std::int32_t) selfTestResult;
 }
 
-std::string HealthMonitSupImpl::getSelfTextTxtResult()
+std::string HQMonitorImpl::getSelfTextTxtResult()
 {
 	std::string selfTestTextResult;
 	timespec timestamp;
@@ -321,7 +322,7 @@ std::string HealthMonitSupImpl::getSelfTextTxtResult()
 	return (std::string) selfTestTextResult;
 }
 
-size_t HealthMonitSupImpl::getSignalQualityFlag()
+size_t HQMonitorImpl::getSignalQualityFlag()
 {
 	std::int32_t signalQualityFlag;
 	timespec timestamp;
@@ -329,7 +330,7 @@ size_t HealthMonitSupImpl::getSignalQualityFlag()
 	return (std::int32_t) signalQualityFlag;
 }
 
-double HealthMonitSupImpl::getSignalQualityFlagLevel()
+double HQMonitorImpl::getSignalQualityFlagLevel()
 {
 	double signalQualityFlagLevel;
 	timespec timestamp;
@@ -344,84 +345,84 @@ double HealthMonitSupImpl::getSignalQualityFlagLevel()
  * ---------------------------------------------------
  */
 
-void HealthMonitSupImpl::setDevicePower(const timespec& timestamp, const double& value){
+void HQMonitorImpl::setDevicePower(const timespec& timestamp, const double& value){
 	m_DevPower_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setDeviceTemperature(const timespec& timestamp, const double& value)
+void HQMonitorImpl::setDeviceTemperature(const timespec& timestamp, const double& value)
 {
 	m_DevTemperature_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setDeviceVoltage(const timespec& timestamp, const double& value)
+void HQMonitorImpl::setDeviceVoltage(const timespec& timestamp, const double& value)
 {
 	m_DevVoltage_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setDeviceCurrent(const timespec& timestamp, const double& value)
+void HQMonitorImpl::setDeviceCurrent(const timespec& timestamp, const double& value)
 {
 	m_DevCurrent_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSEUEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSEUEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_SEUEnable_RBVPV->setValue(timestamp, value);
 	m_SEUEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setDAQMonitorEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_HQMonitorDAQEnable_RBVPV->setValue(timestamp, value);
 	m_HQMonitorDAQEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTestEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestEnable_RBVPV->setValue(timestamp, value);
 	m_TestEnable_RBVPV->push(timestamp, value);
 }
 
 
-void HealthMonitSupImpl::setSelfTestType(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestType(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestType_RBVPV->setValue(timestamp, value);
 	m_TestType_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestVerboseEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestVerboseEnable_RBVPV->setValue(timestamp, value);
 	m_TestVerboseEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestIDEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestIDEnable_RBVPV->setValue(timestamp, value);
 	m_TestIDEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestTextEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestTxtEnable_RBVPV->setValue(timestamp, value);
 	m_TestTxtEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTextTxtResult(const timespec& timestamp, const std::string& value){
+void HQMonitorImpl::setSelfTextTxtResult(const timespec& timestamp, const std::string& value){
 	m_TestTxtResult_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSelfTestCodeResultEnable(const timespec& timestamp, const std::int32_t& value)
 {
 	m_TestCodeResultEnable_RBVPV->setValue(timestamp, value);
 	m_TestCodeResultEnable_RBVPV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value)
+void HQMonitorImpl::setSignalQualityFlag(const timespec& timestamp, const std::int32_t& value)
 {
 	m_SignalQFlag_PV->push(timestamp, value);
 }
 
-void HealthMonitSupImpl::setSignalQualityFlagLevel(const timespec& timestamp, const double& value)
+void HQMonitorImpl::setSignalQualityFlagLevel(const timespec& timestamp, const double& value)
 {
 	m_SignalQFlagTrigLevel_RBVPV->setValue(timestamp, value);
 	m_SignalQFlagTrigLevel_RBVPV->push(timestamp, value);

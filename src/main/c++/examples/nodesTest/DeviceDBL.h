@@ -12,8 +12,8 @@
 #include <nds3/nds.h>
 
 /**
- * @brief Class that declares and implement a fictional device for testing purposes of nds-core V3.
- *
+ * @brief Class that declares and implement a fictional device with a Data Acquisition node and a Waveform Generator node
+ * 			of type double for testing purposes of nds-core V3.
  *
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().

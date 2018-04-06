@@ -109,7 +109,6 @@ TEST(testDeviceTimestamping, StateMachineTest){
 TEST(testDeviceTimestamping, SetGetTest){
 
   const timespec* pTimestampingStateMachineSwitchTime;
-  const std::int32_t* pTimestampingStateMachineState;
   timespec timestamp = {0, 0};
 
   //Create factory

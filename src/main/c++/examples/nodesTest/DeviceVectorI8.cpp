@@ -11,7 +11,7 @@
 static std::map<std::string, DeviceVectorI8*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceVectorI8::DeviceVectorI8(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
+DeviceVectorI8::DeviceVectorI8(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.

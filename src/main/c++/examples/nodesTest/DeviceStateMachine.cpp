@@ -12,7 +12,7 @@
 static std::map<std::string, DeviceStateMachine*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 						m_Name(DeviceName),
 						m_bStop_StateMachine(true)
 	{

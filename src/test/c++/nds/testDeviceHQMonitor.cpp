@@ -5,8 +5,6 @@
 
 TEST(testDeviceHQMonitor, stateMachine)
 {
-  const timespec* pDeviceStateMachineSwitchTime;
-  const std::int32_t* pDeviceStateMachineState;
   const timespec* pHQMonitorStateMachineSwitchTime;
   const std::int32_t* pHQMonitorStateMachineState;
   timespec timestamp = {0, 0};
