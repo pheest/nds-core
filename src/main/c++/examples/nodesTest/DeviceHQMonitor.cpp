@@ -50,7 +50,7 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
   m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
   // Add Health Monitor node
-  m_HQMonitor = rootNode.addChild(nds::HealthMonitSup("HQMonitor",
+  m_HQMonitor = rootNode.addChild(nds::HQMonitor("HQMonitor",
 	      std::bind(&DeviceHQMonitor::switchOn_HQMonitor, this),
 	      std::bind(&DeviceHQMonitor::switchOff_HQMonitor, this),
 	      std::bind(&DeviceHQMonitor::start_HQMonitor, this),
