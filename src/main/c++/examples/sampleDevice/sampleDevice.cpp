@@ -188,29 +188,29 @@ sampleDevice::sampleDevice(nds::Factory &factory, const std::string &deviceName,
     /**
      * Add a HealthMonitSup node.
      */
-    m_HealthMonitSup = rootNode.addChild(nds::HealthMonitSup(
+    m_HQMonitor = rootNode.addChild(nds::HQMonitor(
     		"HealthMonitSupNode",
-			std::bind(&sampleDevice::switchOn_HealthMonitSup, this),
-			std::bind(&sampleDevice::switchOff_HealthMonitSup, this),
-			std::bind(&sampleDevice::start_HealthMonitSup, this),
-			std::bind(&sampleDevice::stop_HealthMonitSup, this),
-			std::bind(&sampleDevice::recover_HealthMonitSup, this),
-			std::bind(&sampleDevice::allow_HealthMonitSup_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&sampleDevice::PV_HealthMonitSup_DevicePower_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_DeviceTemp_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_DeviceVoltage_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_DeviceCurrent_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableSEU_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableMonitorDAQ_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableShelfTest_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_ShelfTestType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_VerboseShelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableShelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableShelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_EnableCodeResultTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_SelfTestTxtResult_Reader, this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&sampleDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
+			std::bind(&sampleDevice::switchOn_HQMonitor, this),
+			std::bind(&sampleDevice::switchOff_HQMonitor, this),
+			std::bind(&sampleDevice::start_HQMonitor, this),
+			std::bind(&sampleDevice::stop_HQMonitor, this),
+			std::bind(&sampleDevice::recover_HQMonitor, this),
+			std::bind(&sampleDevice::allow_HQMonitor_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&sampleDevice::PV_HQMonitor_DevicePower_Reader,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_DeviceTemp_Reader,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_DeviceVoltage_Reader,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_DeviceCurrent_Reader,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableSEU_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableMonitorDAQ_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableShelfTest_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_SelfTestType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_VerboseSelfTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableSelfTestId_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableSelfTestText_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_EnableCodeResultTest_Writer,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_SelfTestTxtResult_Reader, this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_SignalQualityFlag_Reader,this, std::placeholders::_1, std::placeholders::_2),
+			std::bind(&sampleDevice::PV_HQMonitor_SignalQualityFlagLevel_Writer,this, std::placeholders::_1, std::placeholders::_2)
     ));
 
     /**
@@ -1507,76 +1507,76 @@ void sampleDevice::PV_imageAcquisition_ActualTemperature_Reader(timespec* /*time
 /**
  * Methods to control HealthMonitSup state machine
  */
-void sampleDevice::switchOn_HealthMonitSup(){
+void sampleDevice::switchOn_HQMonitor(){
 
 }
-void sampleDevice::switchOff_HealthMonitSup(){
+void sampleDevice::switchOff_HQMonitor(){
 
 }
-void sampleDevice::start_HealthMonitSup(){
+void sampleDevice::start_HQMonitor(){
 
 }
-void sampleDevice::stop_HealthMonitSup(){
+void sampleDevice::stop_HQMonitor(){
 
 }
-void sampleDevice::recover_HealthMonitSup(){
+void sampleDevice::recover_HQMonitor(){
 
 }
 
-bool sampleDevice::allow_HealthMonitSup_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool sampleDevice::allow_HQMonitor_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /**
  * HealthMonitSup setters
  */
-void sampleDevice::PV_HealthMonitSup_EnableSEU_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableSEU_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_EnableMonitorDAQ_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableMonitorDAQ_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_EnableShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_ShelfTestType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_SelfTestType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_VerboseShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_VerboseSelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableSelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableSelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
+void sampleDevice::PV_HQMonitor_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){
+void sampleDevice::PV_HQMonitor_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/){
 
 }
 
 /**
  * HealthMonitSup getters
  */
-void sampleDevice::PV_HealthMonitSup_DevicePower_Reader(timespec* /*timestamp*/, double* /*value*/){
+void sampleDevice::PV_HQMonitor_DevicePower_Reader(timespec* /*timestamp*/, double* /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/){
+void sampleDevice::PV_HQMonitor_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/){
+void sampleDevice::PV_HQMonitor_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/){
+void sampleDevice::PV_HQMonitor_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
+void sampleDevice::PV_HQMonitor_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/){
 
 }
-void sampleDevice::PV_HealthMonitSup_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/){
+void sampleDevice::PV_HQMonitor_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/){
 
 }
 

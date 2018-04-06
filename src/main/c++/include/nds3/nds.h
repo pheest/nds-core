@@ -18,6 +18,7 @@
  *
  */
 
+#include "HQMonitor.h"
 #include "nds3/definitions.h"
 #include "nds3/exceptions.h"
 #include "nds3/base.h"
@@ -35,7 +36,6 @@
 #include "nds3/waveformGeneration.h"
 #include "nds3/dataProcessing.h"
 #include "nds3/Streaming.h"
-#include "nds3/healthMonitoringSup.h"
 #include "nds3/imageAcquisition.h"
 #include "nds3/digitalIO.h"
 #include "nds3/firmware.h"
