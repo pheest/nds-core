@@ -13,7 +13,7 @@ static std::mutex m_lockDevicesMap;
 
 DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
 				       const std::string &DeviceName,
-				       const nds::namedParameters_t &parameters):
+				       const nds::namedParameters_t &/*parameters*/):
   m_Name(DeviceName),
   m_Ntimestamps(0), /* Number of timestamps in stack. */
   m_bStop_Timestamping(true){
@@ -265,8 +265,8 @@ void DeviceTimestamping::pv_edge_writer(const timespec& timestamp,
 /*
  * Clearoverflow writer.
  */
-void DeviceTimestamping::pv_clearoverflow_writer(const timespec& timestamp,
-					const std::int32_t& value){
+void DeviceTimestamping::pv_clearoverflow_writer(const timespec& /*timestamp*/,
+					const std::int32_t& /*value*/){
 
   // This function may have to interact with api hardware.
 

@@ -12,7 +12,7 @@ static std::mutex m_lockDevicesMap;
 
 DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
 				 const std::string &DeviceName,
-				 const nds::namedParameters_t &parameters):
+				 const nds::namedParameters_t &/*parameters*/):
   m_Name(DeviceName),
   m_bStop_HQMonitor(true){
 

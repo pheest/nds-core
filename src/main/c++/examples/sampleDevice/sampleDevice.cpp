@@ -13,7 +13,7 @@
 #include "sampleDevice.h"
 
 
-sampleDevice::sampleDevice(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
+sampleDevice::sampleDevice(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(deviceName),
 
 	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),
