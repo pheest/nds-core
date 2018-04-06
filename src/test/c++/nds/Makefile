@@ -24,9 +24,8 @@
 NDSLIBDIR:=$(realpath ../../../../target/lib)
 # Path from which the device source file will be obtained.
 EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nodesTest)
-EXINCLUDEDIR:=$(realpath ../../../main/c++/examples/include)
 
-INCLUDES :=-I../../../main/c++/include -I$(EXINCLUDEDIR) 
+INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR)
 LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 # Much of this code is copied from gtest/make/Makefile; it probably doesn't #

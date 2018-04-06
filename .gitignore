@@ -11,4 +11,5 @@ QtC-*
 .settings/
 .project
 .cproject
-*sw*
+.*sw*
+#*#

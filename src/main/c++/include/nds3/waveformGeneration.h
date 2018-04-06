@@ -31,15 +31,19 @@ namespace nds
  * The user of a WaveformGeneration class must declare few delegate functions that
  *  specify the actions to perform when the AWG node's state changes.
  *
+ * In particular, the transition from the state off to running should launch
+ *  the waveform generator thread which pushes the generated data via push(),
+ *  while the transition from running to on should stop the waveform generator thread.
+ *
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
  *            - std::double
- *            - std::vector<std::int8_t>
  *            - std::vector<std::uint8_t>
+ *            - std::vector<std::int8_t>
+ *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
  *            - std::vector<double>
- *            - std::string
  *
  */
 template <typename T>
@@ -67,7 +71,7 @@ public:
      * @brief Constructs the waveform generation node which generates vector of values
      *
      */
-    WaveformGeneration( const std::string& name,                  ///< The node's name
+    WaveformGeneration( const std::string& name,              ///< The node's name
 					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
 					stateChange_t switchOnFunction,           ///< Delegate function that performs the actions to switch the node on
 					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node off
@@ -83,9 +87,9 @@ public:
 					writerDouble_t PV_DutyCycle_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Gain_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Offset_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Bandwidth_Writer,              ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_Bandwidth_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_Resolution_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Impedance_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Impedance_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Coupling_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalRef_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalType_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
@@ -118,16 +122,16 @@ public:
      * @brief Push waveform generated data to the control system.
      *
      * Usually your device implementation will call this function from the
-     *  waveform generation thread in order to push the acquired data.
+     *  waveform generation thread in order to push the generated data.
      *
-     * @param timestamp the timestamp for the data
+     * @param timestamp timestamp for the data
      * @param data      the data to push to the control system
      */
     void push(const timespec& timestamp, const T& data);
 
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the
-     *        pushed array. This number is set in the WaveformAcquisition constructor.
+     *        pushed array. This number is set in the WaveformGeneration constructor.
      *
      * @return the maximum number of elements that can be stored in the pushed array
      */
@@ -226,82 +230,114 @@ public:
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
+     * @param timestamp timestamp for the value
+     * @param value Number of pushed data blocks during the data acquisition
      */
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_Amplitude_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Amplitude of the signal to be generated
      */
     void setAmplitude(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_SignalType_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Signal type of the signal to be generated
      */
     void setSignalType(const timespec& timestamp, const std::int32_t& value);
 
     /**
      * @brief Sets the value of the m_Frequency_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Frequency of the signal to be generated
      */
     void setFrequency(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_updateRate_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Waveform generator update rate value
      */
     void setUpdateRate(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_offSet_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Offset of the signal to be generated
      */
     void setOffset(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_phase_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Phase of the signal to be generated
      */
     void setPhase(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_impedance_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Waveform generator impedance value
      */
     void setImpedance(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_RefFrequency_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Reference frequency of the signal to be generated
      */
     void setRefFrequency(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_DutyCycle_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Duty cycle of the signal to be generated
      */
     void setDutyCycle(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Gain_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Waveform generator gain value
      */
     void setGain(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Bandwidth_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Bandwidth of the signal to be generated
      */
     void setBandwidth(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Resolution_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Resolution of the signal to be generated
      */
     void setResolution(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Coupling_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Signal coupled/decoupled
      */
     void setCoupling(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_SignalRef_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Reference signal
      */
     void setSignalRef(const timespec& timestamp, const std::int32_t& value);
     /**
      * @brief Sets the value of the m_Ground_RBV.
      *
+     * @param timestamp Timestamp for the value
+     * @param value Waveform generator grounded/degrounded
      */
     void setGround(const timespec& timestamp, const std::int32_t& value);
 

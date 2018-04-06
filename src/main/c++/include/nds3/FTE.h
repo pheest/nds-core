@@ -30,12 +30,12 @@ namespace nds
  * It also provides a state machine that allows to start/stop the node.
  *
  * The user of FTE class must declare few delegate functions that specify
- * the actions to perform when the acquisition node's state changes.
+ * the actions to perform when the FTE node's state changes.
  *
  * In particular, the transition from the state off to on should get
  * the hardware parameters.
  *
- * @tparam T  the PV data type. //TODO:template??
+ * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::string
  *
@@ -81,17 +81,17 @@ public:
 
 
     /**
-     * @ingroup
+     * @ingroup timing
      * @brief Set the function that retrieves the exact start time when starts.
      *
-     * @param
+     * @param timestampDelegate function that returns the exact starting time
      *
      */
     //TODO: Discuss if necessary
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @ingroup
+     * @ingroup timing
      * @brief Returns the timestamp at start.
      *
      * @return the time when started.
@@ -105,43 +105,43 @@ public:
     /**
      * @brief Retrieve the Terminal
      *
-     * @return the TerminalSet value
+     * @return TerminalSet value
      */
     std::int32_t getTerminalSet();
     /**
      * @brief Retrieve the Mode (Single, Pulse, Clk, InmLVL)
      *
-     * @return the ModeSet value
+     * @return ModeSet value
      */
     std::int32_t getModeSet();
     /**
      * @brief Retrieve the StartTime
      *
-     * @return the SignalRefSet value
+     * @return SignalRefSet value
      */
 	timespec getStartTimeSet();
     /**
      * @brief Retrieve the StopTime
      *
-     * @return the StopTimeSet value
+     * @return StopTimeSet value
      */
 	timespec getStopTimeSet();
     /**
      * @brief Retrieve the Level
      *
-     * @return the LevelSet value
+     * @return LevelSet value
      */
 	std::int32_t getLevelSet();
     /**
      * @brief Retrieve the Period in Nanoseconds
      *
-     * @return the PeriodNsecSet value
+     * @return PeriodNsecSet value
      */
 	std::int32_t getPeriodNsecSet();
     /**
      * @brief Retrieve the SignalRef
      *
-     * @return the DutyCycleSet value
+     * @return DutyCycleSet value
      */
 	std::int32_t getDutyCycleSet();
 
@@ -151,25 +151,25 @@ public:
     /**
      * @brief Retrieve the Terminal Suppress
      *
-     * @return the TerminalSuppress value
+     * @return TerminalSuppress value
      */
     std::int32_t getTerminalSuppress();
     /**
      * @brief Retrieve the Mode Suppress (FTE/Clock)
      *
-     * @return the ModeSuppress value
+     * @return ModeSuppress value
      */
     std::int32_t getModeSuppress();
     /**
      * @brief Retrieve the AllSuppress signal (Suppess All/Suppress One)
      *
-     * @return the AllSuppress value
+     * @return AllSuppress value
      */
 	std::int32_t getAllSuppress();
     /**
      * @brief Retrieve the Start Time of FTE to be suppressed
      *
-     * @return the StartTimeSuppress value
+     * @return StartTimeSuppress value
      */
 	timespec getStartTimeSuppress();
 
@@ -179,13 +179,13 @@ public:
     /**
      * @brief Retrieve the Terminal to change the period
      *
-     * @return the TerminalChgPeriod value
+     * @return TerminalChgPeriod value
      */
     std::int32_t getTerminalChgPeriod();
     /**
      * @brief Retrieve the Period to change the period
      *
-     * @return the PeriodChgPeriod value
+     * @return PeriodChgPeriod value
      */
     std::int32_t getPeriodChgPeriod();
 
@@ -193,13 +193,17 @@ public:
     // Setters of Set functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_SetStatus_PV.
+     * @brief Sets the value of the m_SetStatus_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the operation
      */
 	void setSetStatus(const timespec& timestamp, const std::string& value);
     /**
-     * @brief Sets the value of the m_SetCode_PV.
+     * @brief Sets the value of the m_SetCode_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error setting
      */
 	void setSetCode(const timespec& timestamp, const std::int32_t& value);
 
@@ -207,13 +211,17 @@ public:
     // Setters of Suppress functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_SuppressStatus_PV.
+     * @brief Sets the value of the m_SuppressStatus_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the operation
      */
 	void setSuppressStatus(const timespec& timestamp, const std::string& value);
     /**
-     * @brief Sets the value of the m_SuppressCode_PV.
+     * @brief Sets the value of the m_SuppressCode_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error suppressing
      */
 	void setSuppressCode(const timespec& timestamp, const std::int32_t& value);
 
@@ -221,13 +229,17 @@ public:
     // Setters of Change Period functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_ChgPeriodStatus_PV.
+     * @brief Sets the value of the m_ChgPeriodStatus_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the operation
      */
 	void setChgPeriodStatus(const timespec& timestamp, const std::string& value);
     /**
-     * @brief Sets the value of the m_ChgPeriodCode_PV.
+     * @brief Sets the value of the m_ChgPeriodCode_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error changing clock period
      */
 	void setChgPeriodCode(const timespec& timestamp, const std::int32_t& value);
 
@@ -235,18 +247,24 @@ public:
     // Setter of Pending functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_PendingValue_PV.
+     * @brief Sets the value of the m_PendingValue_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value number of pending FTEs
      */
 	void setPendingValue(const timespec& timestamp, const std::int32_t& value);
     /**
-     * @brief Sets the value of the m_PendingStatus_PV.
+     * @brief Sets the value of the m_PendingStatus_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Status of the operation
      */
 	void setPendingStatus(const timespec& timestamp, const std::string& value);
     /**
-     * @brief Sets the value of the m_PendingCode_PV.
+     * @brief Sets the value of the m_PendingCode_PV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Code of the success/error retrieving pending FTEs
      */
 	void setPendingCode(const timespec& timestamp, const std::int32_t& value);
 
@@ -254,8 +272,10 @@ public:
     // Setter of Maximum functionality
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @brief Sets the value of the m_Maximum_RBVPV.
+     * @brief Sets the value of the m_Maximum_RBVPV and pushes it to the control system.
      *
+     * @param timestamp timestamp for the value
+     * @param value Maximum FTEs that can be scheduled. Size of the FTE FIFO.
      */
 	void setMaximum(const timespec& timestamp, const std::int32_t& value);
 
