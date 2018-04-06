@@ -6,8 +6,6 @@
 
 TEST(testDeviceTiming, fullTest){
 
-  const timespec* pDeviceStateMachineSwitchTime;
-  const std::int32_t* pDeviceStateMachineState;
   const timespec* pTimingStateMachineSwitchTime;
   const std::int32_t* pTimingStateMachineState;
   timespec timestamp = {0, 0};
