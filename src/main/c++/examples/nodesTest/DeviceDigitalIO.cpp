@@ -6,11 +6,13 @@
 #include <unistd.h>
 #include <functional>
 
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
+
 
 static std::map<std::string, DeviceDigitalIO*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &parameters):
+DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -118,9 +120,9 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 	m_DigitalIO_I32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_I32.getStartTimestamp();
 
-
+    timespec timestamp={0,0};
     m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
-
+    m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
 	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
 	//  with the control system that called this constructor.

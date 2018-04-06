@@ -4,7 +4,7 @@
 #include <functional>
 #include <ctime>
 
-#include "../include/DeviceTiming.h"
+#include "DeviceTiming.h"
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
@@ -13,8 +13,8 @@ static std::map<std::string, DeviceTiming*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
 DeviceTiming::DeviceTiming(nds::Factory &factory,
-			   const std::string &DeviceName,
-			   const nds::namedParameters_t &parameters):
+         const std::string &DeviceName,
+         const nds::namedParameters_t &/*parameters*/):
   m_Name(DeviceName),
   m_bStop_timing(true) {
 
@@ -23,8 +23,8 @@ DeviceTiming::DeviceTiming(nds::Factory &factory,
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
     if(m_DevicesMap.find(DeviceName) != m_DevicesMap.end())
       {
-	throw std::logic_error("Device with the same name already allocated. "
-			       "This should not happen");
+  throw std::logic_error("Device with the same name already allocated. "
+             "This should not happen");
       }
     m_DevicesMap[DeviceName] = this;
   }
@@ -54,18 +54,18 @@ DeviceTiming::DeviceTiming(nds::Factory &factory,
 
   // Add Timing node
   m_Timing = rootNode.addChild(nds::Timing("Timing",
-					   std::bind(&DeviceTiming::switchOn_timing, this),
-					   std::bind(&DeviceTiming::switchOff_timing, this),
-					   std::bind(&DeviceTiming::start_timing, this),
-					   std::bind(&DeviceTiming::stop_timing, this),
-					   std::bind(&DeviceTiming::recover_timing, this),
-					   std::bind(&DeviceTiming::allow_timing_change, this,
-						     std::placeholders::_1,
-						     std::placeholders::_2,
-						     std::placeholders::_3),
-					   std::bind(&DeviceTiming::pv_timing_reader, this,
-						     std::placeholders::_1,
-						     std::placeholders::_2)));
+             std::bind(&DeviceTiming::switchOn_timing, this),
+             std::bind(&DeviceTiming::switchOff_timing, this),
+             std::bind(&DeviceTiming::start_timing, this),
+             std::bind(&DeviceTiming::stop_timing, this),
+             std::bind(&DeviceTiming::recover_timing, this),
+             std::bind(&DeviceTiming::allow_timing_change, this,
+                 std::placeholders::_1,
+                 std::placeholders::_2,
+                 std::placeholders::_3),
+             std::bind(&DeviceTiming::pv_timing_reader, this,
+                 std::placeholders::_1,
+                 std::placeholders::_2)));
 
   m_Timing.setStartTimestampDelegate(std::bind(&DeviceTiming::getCurrentTime,this));
 
@@ -78,12 +78,12 @@ DeviceTiming::DeviceTiming(nds::Factory &factory,
   //Stream information for debugging purposes
   rootNode.setLogLevel(nds::logLevel_t::debug);
   rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger: "
-					     << "the DeviceTiming is created."
-					     << std::endl;
+               << "the DeviceTiming is created."
+               << std::endl;
   ndsDebugStream(rootNode) << "This is the ndsDebugStream: "
-			   << "the DeviceTiming named "
-			   << rootNode.getFullName()
-			   << " is created." << std::endl;
+         << "the DeviceTiming named "
+         << rootNode.getFullName()
+         << " is created." << std::endl;
 
 }
 
@@ -146,9 +146,9 @@ void DeviceTiming::start_timing(){
   // Call API HW to set synching status.
   m_Timing.setSyncStatus(getCurrentTime(),2 /* SYNCED */);
 
-  m_bStop_timing = false; //< We will set to true to stop the HQMonitor thread
+  m_bStop_timing = false; //< We will set to true to stop the Timing thread
   /**
-   *   Start the HQMonitor thread.
+   *   Start the Timing thread.
    *   We don't need to check if the thread was already started because the state
    *   machine guarantees that the start handler is called only while the state
    *   is ON.
@@ -176,8 +176,8 @@ void DeviceTiming::recover_timing(){
 // function the state machine has already verified that the requested state
 // transition is legal.
 bool DeviceTiming::allow_timing_change(const nds::state_t,
-				       const nds::state_t,
-				       const nds::state_t){
+               const nds::state_t,
+               const nds::state_t){
   return true;
 }
 
@@ -200,14 +200,14 @@ void DeviceTiming::timing_thread_body() {
   std::cout << "\tSync. status = " << sync_status << std::endl;
   std::cout << "\tSeconds since last sync. = " << secs << std::endl;
   std::cout << "\tReference time base = {" << time_base.tv_sec
-	    << ", " << time_base.tv_nsec << "}" << std::endl;
+      << ", " << time_base.tv_nsec << "}" << std::endl;
 
   // Run until the state machine stops us
   while(!m_bStop_timing){
 
     // Get Self-Test enable
-    timespec time_val =  {NDS_EPOCH, 10};
-    m_Timing.push(getCurrentTime(), time_val);
+    timespec time_val = m_Timing.getTime();
+    m_Timing.setTime(getCurrentTime(), time_val);
     ::usleep(1000000);
   }
 }
@@ -236,8 +236,8 @@ NDS_DEFINE_DRIVER(DeviceTiming, DeviceTiming)
  * Allocation function
  *********************/
 void* DeviceTiming::allocateDevice(nds::Factory& factory,
-				   const std::string& DeviceName,
-				   const nds::namedParameters_t& parameters){
+           const std::string& DeviceName,
+           const nds::namedParameters_t& parameters){
 
   return new DeviceTiming(factory, DeviceName, parameters);
 }

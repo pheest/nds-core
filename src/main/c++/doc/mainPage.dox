@@ -2,21 +2,22 @@
 
 @mainpage
 
-NDS (Nominal Device Support) is a library that allows to write device supports for a variety of 
- control systems (CS) by hiding the details of the chosen CS and focusing on device functionalities.
+
+The NDS (Nominal Device Support) Core library gives the developer the possibility to organize its device support in a tree-like structure, with one or more NDS nodes, according to the functionality to be implemented. 
+These NDS nodes cover state machines, data acquisition, waveform generation, timing, data processing, digital acquisition, image acquisition, DMA acquisition, health monitoring, streaming, 
+and firmware control. As many nodes as needed can be added to each device. NDS also includes the possibility to add PVs to support extra functionality.
+NDS uses standard C++ types and UNIX EPOCH timing to communicate with the library. NDS Device Drivers need an underlying control system in charge of implementing the interface and the 
+management of the device driver. The user manual presents two possible implementations of the control system: a primary control system for test purposes and the interface with EPICS control 
+system using an additional software module called NDS EPICS.
 
 NDS provides the following features:
 
-- organizes your device in a tree-like structure, containing one or 
-  more devices, channels, attributes (PVs), state machine, etc.
-- provides the data pull mode (passive scanning on EPICS, polling on Tango) and the push mode (Interrupt
-  on EPICS, push on Tango)
+- organizes your device in a tree-like structure using nodes.
+- provides the data pull mode (passive scanning on EPICS) and the push mode (Interrupt
+  on EPICS )
 - your code uses standard C++ types and Unix EPOCH timing to communicate with the library
-- on EPICS there is no need to supply separate db files
 - supplies an hierarchical state machine
-- supplies a specialized data acquisition module
-- guaranteed binary compatibility between minor versions allow to easily upgrade existing installations
-  without recompiling the device support
+- supplies a collection of specialized data acquisition, waveform generation and timing nodes.
 
 
 */

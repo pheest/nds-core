@@ -1,5 +1,5 @@
-#ifndef DEVICEDBL_H_
-#define DEVICEDBL_H_
+#ifndef DEVICEVECTORI8_H_
+#define DEVICEVECTORI8_H_
 
 #include <memory>
 
@@ -12,13 +12,14 @@
 #include <nds3/nds.h>
 
 /**
- * @brief Class that declares and implement a fictional device for testing purposes of nds-core V3.
+ * @brief Class that declares and implement a fictional device with a Data Acquisition node and a Waveform Generator node
+ * 			of type vector<int8_t> for testing purposes of nds-core V3.
  *
  *
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceDBL
+class DeviceVectorI8
 {
 public:
 	/**
@@ -28,8 +29,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceDBL(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceDBL();
+	DeviceVectorI8(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceVectorI8();
 
 #ifndef EPICS
 	/*
@@ -38,13 +39,13 @@ public:
 	 *******************************************************/
 	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	static void deallocateDevice(void* deviceName);
-
 #endif
+
 	/*
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceDBL* getInstance(const std::string& deviceName);
+	static DeviceVectorI8* getInstance(const std::string& deviceName);
 
 
 private:
@@ -61,20 +62,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief DeviceDBL state machine
+	 * @brief DeviceVectorI8 state machine
 	 */
-	nds::StateMachine m_DeviceDBL_stateMachine;
+	nds::StateMachine m_DeviceVectorI8_stateMachine;
 
 	/**
-	 * Methods to control DeviceDBL state machine
+	 * Methods to control DeviceVectorI8 state machine
 	 */
-	void switchOn_DeviceDBL();  ///< Called to switch on the DeviceDBL (rootnode).
-	void switchOff_DeviceDBL(); ///< Called to switch off the DeviceDBL (rootnode).
-	void start_DeviceDBL();     ///< Called to start the DeviceDBL (rootnode).
-	void stop_DeviceDBL();      ///< Called to stop the DeviceDBL (rootnode).
-	void recover_DeviceDBL();   ///< Called to recover the DeviceDBL (rootnode) from a failure.
+	void switchOn_DeviceVectorI8();  ///< Called to switch on the DeviceVectorI8 (rootnode).
+	void switchOff_DeviceVectorI8(); ///< Called to switch off the DeviceVectorI8 (rootnode).
+	void start_DeviceVectorI8();     ///< Called to start the DeviceVectorI8 (rootnode).
+	void stop_DeviceVectorI8();      ///< Called to stop the DeviceVectorI8 (rootnode).
+	void recover_DeviceVectorI8();   ///< Called to recover the DeviceVectorI8 (rootnode) from a failure.
 
-	bool allow_DeviceDBL_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceVectorI8_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
 	timespec getCurrentTime();
@@ -86,7 +87,7 @@ private:
 	/**
 	 * @brief DataAcquisition node
 	 */
-	nds::DataAcquisition<double> m_DataAcquisition;
+	nds::DataAcquisition<std::vector<std::int8_t> > m_DataAcquisition;
 
 	/**
 	 * Methods to control DataAcquisition state machine
@@ -130,15 +131,14 @@ private:
 	 */
 	volatile bool m_bStop_DataAcquisition;
 
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  WAVEFORM GENERATION
+	//  DATA GENERATION
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * @brief WaveformGeneration node
 	 */
-	nds::WaveformGeneration<double> m_WaveformGeneration;
+	nds::WaveformGeneration<std::vector<std::int8_t>> m_WaveformGeneration;
 
 	/**
 	 * Methods to control WaveformGeneration state machine
@@ -189,4 +189,4 @@ private:
 
 };
 
-#endif // DEVICEDBL_H_
+#endif // DEVICEVECTORI8_H_

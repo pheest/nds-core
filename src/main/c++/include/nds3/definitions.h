@@ -322,6 +322,7 @@ typedef std::function<void (timespec* time, std::vector<double>* val)> readerVec
 typedef std::function<void (timespec* time, std::string* val)> readerString_t;
 typedef std::function<void (timespec* time, timespec* val)> readerTime_t;
 typedef std::function<void (timespec* time, std::vector<timespec>* val)> readerVectorTime_t;
+typedef std::function<void (timespec* time, timestamp_t* val)> readerTimestamp_t;
 
 typedef std::function<void (const timespec&, const std::int32_t&)> writerInt32_t;
 typedef std::function<void (const timespec&, const double&)> writerDouble_t;
@@ -336,7 +337,7 @@ typedef std::function<void (const timespec&, const std::vector<double>&)> writer
 typedef std::function<void (const timespec&, const std::string&)> writerString_t;
 typedef std::function<void (const timespec&, const timespec&)> writerTime_t;
 typedef std::function<void (const timespec&, const std::vector<timespec>&)> writerVectorTime_t;
-
+typedef std::function<void (const timespec&, const timestamp_t&)> writerTimestamp_t;
 
 
 } // namespace nds

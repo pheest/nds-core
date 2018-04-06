@@ -12,7 +12,7 @@
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 						m_Name(DeviceName),
 						m_bStop_Firmware(true)
 	{

@@ -484,60 +484,60 @@ private:
     	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     	  /**
-    	   * @brief HealthMonitSup node
+    	   * @brief HQMonitor node
     	   */
-    	  nds::HealthMonitSup m_HealthMonitSup;
+    	  nds::HQMonitor m_HQMonitor;
 
     	  /**
-    	   * Methods to control HealthMonitSup state machine
+    	   * Methods to control HQMonitor state machine
     	   */
-    	  void switchOn_HealthMonitSup();  ///< Called to switch on the HealthMonitSup node.
-    	  void switchOff_HealthMonitSup(); ///< Called to switch off the HealthMonitSup node.
-    	  void start_HealthMonitSup();     ///< Called to start the HealthMonitSup node.
-    	  void stop_HealthMonitSup();      ///< Called to stop the HealthMonitSup node.
-    	  void recover_HealthMonitSup();   ///< Called to recover the HealthMonitSup node from a failure.
+    	  void switchOn_HQMonitor();  ///< Called to switch on the HQMonitor node.
+    	  void switchOff_HQMonitor(); ///< Called to switch off the HQMonitor node.
+    	  void start_HQMonitor();     ///< Called to start the HQMonitor node.
+    	  void stop_HQMonitor();      ///< Called to stop the HQMonitor node.
+    	  void recover_HQMonitor();   ///< Called to recover the HQMonitor node from a failure.
 
-    	  bool allow_HealthMonitSup_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
-
-    	  /**
-    	   * HealthMonitSup setters
-    	   */
-    	  void PV_HealthMonitSup_EnableSEU_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_EnableMonitorDAQ_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_ShelfTestType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_VerboseShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_EnableShelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
-    	  void PV_HealthMonitSup_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+    	  bool allow_HQMonitor_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
     	  /**
-    	   * HealthMonitSup getters
+    	   * HQMonitor setters
     	   */
-    	  void PV_HealthMonitSup_DevicePower_Reader(timespec* /*timestamp*/, double* /*value*/);
-    	  void PV_HealthMonitSup_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/);
-    	  void PV_HealthMonitSup_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/);
-    	  void PV_HealthMonitSup_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/);
-    	  void PV_HealthMonitSup_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
-    	  void PV_HealthMonitSup_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/);
+    	  void PV_HQMonitor_EnableSEU_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_EnableMonitorDAQ_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_EnableShelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_SelfTestType_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_VerboseSelfTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_EnableSelfTestId_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_EnableSelfTestText_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_EnableCodeResultTest_Writer(const timespec& /*timestamp*/, const int32_t& /*value*/);
+    	  void PV_HQMonitor_SignalQualityFlagLevel_Writer(const timespec& /*timestamp*/, const double& /*value*/);
+
+    	  /**
+    	   * HQMonitor getters
+    	   */
+    	  void PV_HQMonitor_DevicePower_Reader(timespec* /*timestamp*/, double* /*value*/);
+    	  void PV_HQMonitor_DeviceTemp_Reader(timespec* /*timestamp*/, double* /*value*/);
+    	  void PV_HQMonitor_DeviceVoltage_Reader(timespec* /*timestamp*/, double* /*value*/);
+    	  void PV_HQMonitor_DeviceCurrent_Reader(timespec* /*timestamp*/, double* /*value*/);
+    	  void PV_HQMonitor_SignalQualityFlag_Reader(timespec* /*timestamp*/, int32_t* /*value*/);
+    	  void PV_HQMonitor_SelfTestTxtResult_Reader(timespec* /*timestamp*/, std::string* /*value*/);
 
     	  /**
     	   * @brief Function that continuously acquires data related with health monitoring.
-    	   *        It is launched by start_HealthMonitSup() in a separate thread.
+    	   *        It is launched by start_HQMonitor() in a separate thread.
     	   */
-    	  void HealthMonitSup_thread_body();
+    	  void HQ_thread_body();
 
     	  /**
-    	   * @brief A thread that runs HealthMonitSup_thread_body().
+    	   * @brief A thread that runs HQMonitor_thread_body().
     	   */
-    	  std::thread m_HealthMonitSup_Thread;
+    	  std::thread m_HQMonitor_Thread;
 
     	  /**
-    	   * @brief A boolean flag that stop the HealthMonitSup loop in HealthMonitSup_thread_body()
+    	   * @brief A boolean flag that stop the HQMonitor loop in HQMonitor_thread_body()
     	   *        when true.
     	   */
-    	  volatile bool m_bStop_HealthMonitSup;
+    	  volatile bool m_bStop_HQMonitor;
 
     	  ///////////////////////////////////////////////////////////////////////////////////////////////////////
     	  //  Routing SUPPORT

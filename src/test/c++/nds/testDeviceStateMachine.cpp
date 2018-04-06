@@ -5,8 +5,6 @@
 
 TEST(testDeviceStateMachine, stateMachine)
 {
-	const timespec* pDeviceStateMachineSwitchTime;
-	const std::int32_t* pDeviceStateMachineState;
 	const timespec* pStateMachineStateMachineSwitchTime;
 	const std::int32_t* pStateMachineStateMachineState;
 	timespec timestamp = {0, 0};
