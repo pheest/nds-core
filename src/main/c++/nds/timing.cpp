@@ -20,31 +20,26 @@ Timing::Timing(): Node()
 {
 }
 
-/**
- * @brief Constructs the firmware support node
- *
- * @param name        the node name
- */
 Timing::Timing(const std::string& name,
-		stateChange_t switchOnFunction,
-		stateChange_t switchOffFunction,
-		stateChange_t startFunction,
-		stateChange_t stopFunction,
-		stateChange_t recoverFunction,
-		allowChange_t allowStateChangeFunction,
-    readerTime_t PV_Time_Reader): 
-	  Node(std::shared_ptr<TimingImpl>(new TimingImpl(name,
-		switchOnFunction,
-		switchOffFunction,
-		startFunction,
-		stopFunction,
-		recoverFunction,
-		allowStateChangeFunction,
-		PV_Time_Reader))) 
-{ 
+    stateChange_t switchOnFunction,
+    stateChange_t switchOffFunction,
+    stateChange_t startFunction,
+    stateChange_t stopFunction,
+    stateChange_t recoverFunction,
+    allowChange_t allowStateChangeFunction,
+    readerTime_t PV_Time_Reader):
+    Node(std::shared_ptr<TimingImpl>(new TimingImpl(name,
+    switchOnFunction,
+    switchOffFunction,
+    startFunction,
+    stopFunction,
+    recoverFunction,
+    allowStateChangeFunction,
+    PV_Time_Reader)))
+{
 }
 
-Timing::Timing(const Timing& right): 
+Timing::Timing(const Timing& right):
      Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }
@@ -102,11 +97,11 @@ timespec Timing::getRefTimeBase() {
 }
 
 // -------------------------------- Setters --------------------------------- //
-void Timing::setTime(const timespec& timestamp, const timespec& value) { 
+void Timing::setTime(const timespec& timestamp, const timespec& value) {
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setTime(timestamp, value);
 }
 
-void Timing::setClkFrequency(const timespec& timestamp, const double& value) { 
+void Timing::setClkFrequency(const timespec& timestamp, const double& value) {
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setClkFrequency(timestamp, value);
 }
 

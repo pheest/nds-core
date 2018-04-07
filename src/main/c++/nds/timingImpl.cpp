@@ -17,79 +17,82 @@
 namespace nds {
 
   // TimingImpl Constructor
-  TimingImpl::TimingImpl( const std::string& name,  
+  TimingImpl::TimingImpl( const std::string& name,
         stateChange_t switchOnFunction,
         stateChange_t switchOffFunction,
         stateChange_t startFunction,
         stateChange_t stopFunction,
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
-        readerTime_t PV_Time_Reader): 
+        readerTime_t PV_Time_Reader):
         NodeImpl(name, nodeType_t::dataSourceChannel),
         m_OnStartDelegate(startFunction),
         m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)) {
 
-     // Add the children PVs
-  
-    // PV: time 
+
+    // Add the children PVs
+
+    // PV: time
     m_Time_PV.reset(new PVDelegateInImpl<timespec>("Time", PV_Time_Reader));
     m_Time_PV->setDescription("Get Time");
     m_Time_PV->setMaxElements(2);
     m_Time_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_Time_PV);
-  
-    // PV: human readable time 
-    m_HumanTime_PV.reset(new PVDelegateInImpl<std::string>("HTime", std::bind(&TimingImpl::PV_HTime_Reader, this,  std::placeholders::_1, std::placeholders::_2 )));
+
+    // PV: human readable time
+    m_HumanTime_PV.reset(new PVDelegateInImpl<std::string>("HTime",
+			 std::bind(&TimingImpl::PV_HTime_Reader, this,
+				   std::placeholders::_1, std::placeholders::_2 )));
     m_HumanTime_PV->setDescription("Get Time in UTC format");
     m_HumanTime_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_HumanTime_PV);
-  
-    // PV: Clock Frequency  
+
+    // PV: Clock Frequency
     m_ClkFrequency_PV.reset(new PVVariableInImpl<double>("ClkFrequency"));
     m_ClkFrequency_PV->setDescription("Clock frequency");
     m_ClkFrequency_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_ClkFrequency_PV);
-  
-    // PV: Clock Multiplier 
+
+    // PV: Clock Multiplier
     m_ClkMultiplier_PV.reset(new PVVariableInImpl<std::int32_t>("ClkMultiplier"));
     m_ClkMultiplier_PV->setDescription("Clock multiplier");
     m_ClkMultiplier_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_ClkMultiplier_PV);
-  
-    // PV: Sync Status 
+
+    // PV: Sync Status
     enumerationStrings_t SyncStatusEnumerationStrings;
     SyncStatusEnumerationStrings.push_back("NOT_SYNCED");
     SyncStatusEnumerationStrings.push_back("SYNCING");
     SyncStatusEnumerationStrings.push_back("SYNCED");
     SyncStatusEnumerationStrings.push_back("LOST_SYNC");
-  
+
     m_SyncStatus_PV.reset(new PVVariableInImpl<std::int32_t>("SyncStatus"));
     m_SyncStatus_PV->setDescription("Synchronization status");
     m_SyncStatus_PV->setScanType(scanType_t::interrupt, 0);
     m_SyncStatus_PV->setEnumeration(SyncStatusEnumerationStrings);
     addChild(m_SyncStatus_PV);
-  
+
     // PV: SecsLastSync
     m_SecsLastSync_PV.reset(new PVVariableInImpl<std::int32_t>("SecsLastSync"));
     m_SecsLastSync_PV->setDescription("Seconds since last synchronisation");
     m_SecsLastSync_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_SecsLastSync_PV);
-  
-    // PV: Reference Time Base  
+
+    // PV: Reference Time Base
     m_RefTimeBase_PV.reset(new PVVariableInImpl<timespec>("RefTimeBase"));
     m_RefTimeBase_PV->setDescription("Reference time Base");
     m_Time_PV->setMaxElements(2);
     m_RefTimeBase_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_RefTimeBase_PV);
 
-    // PV: Decimation 
+    // PV: Decimation
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
     m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
     addChild(m_Decimation_PV);
 
- 
+
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
                                      switchOnFunction,
@@ -101,49 +104,45 @@ namespace nds {
      addChild(m_StateMachine);
   }
 
-  // Common  functions
-  timespec TimingImpl::getStartTimestamp() const
-  {
+  // ------------------------ Common Functions ----------------------------- //
+  timespec TimingImpl::getStartTimestamp() const {
     return m_StartTime;
   }
 
-  void TimingImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)
-  {
+  void TimingImpl::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate) {
     m_StartTimestampFunction = timestampDelegate;
   }
 
-  void TimingImpl::push(const timespec& timestamp, const timespec& data)
-  {
+  void TimingImpl::push(const timespec& timestamp, const timespec& data) {
     m_Time_PV -> push(timestamp, data);
   }
 
 
-  void TimingImpl::onStart()
-  {
+  void TimingImpl::onStart() {
     m_StartTime = m_StartTimestampFunction();
     m_Time_PV->setDecimation((std::uint32_t)(m_Decimation_PV->getValue()));
     m_OnStartDelegate();
   }
-  
+
   // ------------------------ Delegate Functions ---------------------------- //
   void TimingImpl::PV_HTime_Reader(timespec* /*timestamp*/, std::string *value) {
-    tm *gmttm = gmtime(&m_CurrentTime.tv_sec); 
+    tm *gmttm = gmtime(&m_CurrentTime.tv_sec);
     *value = asctime(gmttm);
   }
 
 
   // ---------------------------- Getters ----------------------------------- //
   timespec TimingImpl::getTime() {
-    timespec timestamp; 
+    timespec timestamp;
     m_Time_PV -> read( &timestamp, &m_CurrentTime);
-    return m_CurrentTime;   
+    return m_CurrentTime;
   }
 
   std::string TimingImpl::getHumanTime() {
     std::string UTCTime;
-    timespec timestamp; 
+    timespec timestamp;
     m_HumanTime_PV -> read( &timestamp, &UTCTime);
-    return UTCTime;   
+    return UTCTime;
   }
   double TimingImpl::getClkFrequency() {
     double ClkFrequency;
@@ -172,7 +171,7 @@ namespace nds {
     m_SecsLastSync_PV -> read(&timestamp, &SecsLastSync);
     return SecsLastSync;
   }
-  
+
   timespec TimingImpl::getRefTimeBase() {
     timespec getRefTimeBase;
     timespec timestamp;
@@ -181,37 +180,36 @@ namespace nds {
   }
 
   // --------------------------- Setters ----------------------------------- //
- 
+
   void TimingImpl::setTime(const timespec& timestamp, const timespec& value) {
-     m_CurrentTime = value; 
-     m_Time_PV -> push(timestamp, value); 
+     m_CurrentTime = value;
+     m_Time_PV -> push(timestamp, value);
      std::string htime  = getHumanTime();
-     m_HumanTime_PV -> push(timestamp, htime);  
+     m_HumanTime_PV -> push(timestamp, htime);
   }
 
-
   void TimingImpl::setClkFrequency(const timespec& timestamp, const double& value) {
-     m_ClkFrequency_PV -> setValue(timestamp, value);  
-     m_ClkFrequency_PV -> push(timestamp, value);  
+     m_ClkFrequency_PV -> setValue(timestamp, value);
+     m_ClkFrequency_PV -> push(timestamp, value);
   }
 
   void TimingImpl::setClkMultiplier(const timespec& timestamp, const std::int32_t& value) {
-     m_ClkMultiplier_PV -> setValue(timestamp, value);  
-     m_ClkMultiplier_PV -> push(timestamp, value);  
+     m_ClkMultiplier_PV -> setValue(timestamp, value);
+     m_ClkMultiplier_PV -> push(timestamp, value);
   }
 
   void TimingImpl::setSyncStatus(const timespec& timestamp, const std::int32_t& value) {
-     m_SyncStatus_PV -> setValue(timestamp, value);  
-     m_SyncStatus_PV -> push(timestamp, value);  
+     m_SyncStatus_PV -> setValue(timestamp, value);
+     m_SyncStatus_PV -> push(timestamp, value);
   }
 
   void TimingImpl::setSecsLastSync(const timespec& timestamp, const std::int32_t& value) {
-     m_SecsLastSync_PV -> setValue(timestamp, value);  
-     m_SecsLastSync_PV -> push(timestamp, value);  
+     m_SecsLastSync_PV -> setValue(timestamp, value);
+     m_SecsLastSync_PV -> push(timestamp, value);
   }
 
   void TimingImpl::setRefTimeBase(const timespec& timestamp, const timespec& value) {
-     m_RefTimeBase_PV -> setValue(timestamp, value);  
-     m_RefTimeBase_PV -> push(timestamp, value);  
+     m_RefTimeBase_PV -> setValue(timestamp, value);
+     m_RefTimeBase_PV -> push(timestamp, value);
   }
 }

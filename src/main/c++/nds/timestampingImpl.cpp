@@ -33,16 +33,19 @@ namespace nds {
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
   {
     // Add the children PVs
+    // PV: Enable
     m_Enable_PV.reset(new PVDelegateOutImpl<std::int32_t>("Enable", PV_Enable_Writer));
     m_Enable_PV->setDescription("Enable/Disable timestamping");
     m_Enable_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Enable_PV);
 
+    // PV: Enable read back value
     m_Enable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Enable_RBV"));
     m_Enable_RBVPV->setDescription("Get timestamping status (Enabled/Disabled)");
     m_Enable_RBVPV->setScanType(scanType_t::interrupt, 0);
     addChild(m_Enable_RBVPV);
 
+    // PV: Edge
     enumerationStrings_t edgeEnumeratorString;
     edgeEnumeratorString.push_back("RISING");
     edgeEnumeratorString.push_back("FALLING");
@@ -54,19 +57,21 @@ namespace nds {
     m_Edge_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Edge_PV);
 
+    // PV: Edge read back value
     m_Edge_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Edge_RBV"));
     m_Edge_RBVPV->setDescription("Get timestamping edge detection");
     m_Edge_RBVPV->setScanType(scanType_t::interrupt, 0);
     m_Edge_RBVPV->setEnumeration(edgeEnumeratorString);
     addChild(m_Edge_RBVPV);
 
+    // PV: Decimation
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
     m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
     addChild(m_Decimation_PV);
 
-
+    // PV: ClearOverflow
     enumerationStrings_t clearEnumeratorString;
     edgeEnumeratorString.push_back("YES");
     edgeEnumeratorString.push_back("NO");
@@ -78,20 +83,20 @@ namespace nds {
     m_Edge_PV->setEnumeration(clearEnumeratorString);
     addChild(m_ClearOverflow_PV);
 
+    // PV: Timestamps
     m_Timestamps_PV.reset(new PVVariableInImpl<T>("Timestamps"));
     m_Timestamps_PV->setDescription("Timestamps on terminal (timestamp, edge, ID)");
     m_Timestamps_PV->setScanType(scanType_t::interrupt, 0);
-    //TODO
-    //Structure with 3 fields: timespec (seconds, nanoseconds), ID, edge
-    //It will be written in EPICS by means of a waveform of 4 integers
     m_Timestamps_PV->setMaxElements(4);
     addChild(m_Timestamps_PV);
 
+    // PV: Maxtimestamps
     m_MaxTimestamps_PV.reset(new PVVariableInImpl<std::int32_t>("MaxTimestamps"));
     m_MaxTimestamps_PV->setDescription("Get maximum number of timestamps (FIFO size)");
     m_MaxTimestamps_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_MaxTimestamps_PV);
 
+    // PV: Overflow
     enumerationStrings_t overflowEnumeratorString; //Move to definitions.h
     overflowEnumeratorString.push_back("NO");
     overflowEnumeratorString.push_back("OVERFLOWED");

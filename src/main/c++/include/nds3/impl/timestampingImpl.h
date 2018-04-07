@@ -27,6 +27,25 @@ namespace nds {
   class TimestampingImpl: public NodeImpl {
    public:
 
+    /**
+     * @ingroup
+     * @brief Constructs the Time stamping node
+     *
+     * @param name node name
+     * @param maxElements not used in this node
+     * @param switchOnFunction  Delegate function, performs the actions to switch the node on
+     * @param switchOffFunction Delegate function, performs the actions to switch the node off
+     * @param startFunction     Delegate function, performs the actions to start the timestamping
+     * @param stopFunction      Delegate function, performs the actions to stop the timestamping
+     * @param recoverFunction   Delegate function to execute to recover from an error state
+     * @param allowStateChangeFunction  Delegate function that can deny a state change.
+     *                                  Usually just returns true
+     * @param PV_Enable_Writer Delegate function to enable/disable timestamping
+     * @param PV_Edge_Writer   Delegate function, sets the edges at which the
+     *                         timestamping must be retrieved: RISING, FALLING, ANY.
+     * @param PV_ClearOverflowWriter    Delegate function, performs the actions to clear the overflow.
+     *
+     */
      TimestampingImpl(const std::string& name,
                  size_t maxElements,
                  stateChange_t switchOnFunction,
@@ -103,7 +122,7 @@ namespace nds {
     std::int32_t getMaxTimestamps();
 
     /**
-     * @brief Retreives overflow error status
+     * @brief Retreives overflow error status: NO(0), OVERFLOWED(1), FULL(2), ERROR(2)
      *
      * @return overflow error status
      */
@@ -120,7 +139,7 @@ namespace nds {
     void setEnable(const timespec& timestamp, const std::int32_t& value);
 
     /**
-    * @brief Sets detection Edge
+    * @brief Sets detection Edge: RISING(0), FALLING(1), ANY(2)
     *
     * @param timestamp timestamp
     * @param value detection edge
@@ -136,7 +155,7 @@ namespace nds {
     void setMaxTimestamps(const timespec& timestamp, const std::int32_t& value);
 
     /**
-    * @brief Sets overflow error status
+    * @brief Sets overflow error status: NO(0), OVERFLOWED(1), FULL(2), ERROR(2)
     *
     * @param timestamp timestamp
     * @param value overflow error status
