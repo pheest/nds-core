@@ -65,21 +65,21 @@ public:
 
 
     size_t getMaxElements();
-    size_t getGain();
-    size_t getOffset();
-    size_t getBandwidth();
-    size_t getResolution();
-    size_t getImpedance();
-    size_t getCoupling();
-    size_t getSignalRefType();
-    size_t getGround();
-    size_t getNumberOfPushedDataBlocks();
-    size_t getDMABufferSize();
-    size_t getDMAEnable();
-    size_t getDMANumChannels();
-    size_t getDMAFrameType();
-    size_t getDMASampleSize();
-    size_t getSamplingRate();
+    double getGain();
+    double getOffset();
+    double getBandwidth();
+    double getResolution();
+    int32_t getImpedance();
+    int32_t getCoupling();
+    int32_t getSignalRefType();
+    int32_t getGround();
+    int32_t getNumberOfPushedDataBlocks();
+    int32_t getDMABufferSize();
+    int32_t getDMAEnable();
+    int32_t getDMANumChannels();
+    int32_t getDMAFrameType();
+    int32_t getDMASampleSize();
+    double getSamplingRate();
 
     void setGain(const timespec& timestamp, const double& value);
     void setOffset(const timespec& timestamp, const double& value);

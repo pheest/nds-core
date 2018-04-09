@@ -119,56 +119,56 @@ public:
      *
      * @return the Gain value
      */
-    size_t getGain();
+    double getGain();
 
     /**
      * @brief Retrieve the Offset
      *
      * @return the Offset value
      */
-    size_t getOffset();
+    double getOffset();
 
     /**
      * @brief Retrieve the Bandwidth
      *
      * @return the Bandwidth value
      */
-    size_t getBandwidth();
+    double getBandwidth();
 
     /**
      * @brief Retrieve the Resolution
      *
      * @return the Resolution value
      */
-    size_t getResolution();
+    double getResolution();
 
     /**
      * @brief Retrieve the Impedance
      *
      * @return the Impedance value
      */
-    size_t getImpedance();
+    int32_t getImpedance();
 
     /**
      * @brief Retrieve the Coupling
      *
      * @return the Coupling value
      */
-    size_t getCoupling();
+    int32_t getCoupling();
 
     /**
      * @brief Retrieve the SignalRef
      *
      * @return the SignalRef value
      */
-    size_t getSignalRefType();
+    int32_t getSignalRefType();
 
     /**
      * @brief Retrieve the Ground
      *
      * @return the Ground value
      */
-    size_t getGround();
+    int32_t getGround();
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the
      *        pushed array. This number is set in the DataAcquisition constructor.
@@ -191,43 +191,43 @@ public:
      *
      * @return the Number Of Pushed Data Blocks
      */
-    size_t getNumberOfPushedDataBlocks();
+    int32_t getNumberOfPushedDataBlocks();
     /**
      * @brief Retrieve the DMA Buffer size value
      *
      * @return the m_DMABufferSize_PV value
      */
-    size_t getDMABufferSize();
+    int32_t getDMABufferSize();
     /**
      * @brief Retrieve the DMAEnable status
      *
      * @return the m_DMAEnable_PV value
      */
-    size_t getDMAEnable();
+    int32_t getDMAEnable();
      /**
      * @brief Retrieve the Number of DMA channels used by the DAQ node
      *
      * @return the m_DMANumChannels_PV value
      */
-    size_t getDMANumChannels();
+    int32_t getDMANumChannels();
     /**
     * @brief Retrieve the DMA Frame Type
     *
     * @return the m_DMAFrameType_PV value
     */
-    size_t getDMAFrameType();
+    int32_t getDMAFrameType();
     /**
     * @brief Retrieve the DMA sample size
     *
     * @return the m_DMASampleSize_PV value
     */
-    size_t getDMASampleSize();
+    int32_t getDMASampleSize();
     /**
     * @brief Retrieve the DMA sampling rate
     *
     * @return the m_DMASamplingRate_PV value
     */
-    size_t getSamplingRate();
+    double getSamplingRate();
     /**
      * @brief Sets the value of the m_Gain_RBV and pushes it to the control system.
      *
