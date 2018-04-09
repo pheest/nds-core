@@ -61,7 +61,7 @@ class channel {
   /**
    * @brief A thread that runs acquisition_thread_body().
    */
-  std::thread m_acquisition_Thread;
+  std::thread m_acquisition_thread;
 
   /**
    * @brief A boolean flag that stops the DataAcquisition loop in acquisition_thread_body()

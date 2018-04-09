@@ -30,11 +30,11 @@ class oscilloscope {
   /**
    *
    */
-  void switchOn_firmware();
+  void switchon_firmware();
   /**
    *
    */
-  void switchOff_firmware();
+  void switchoff_firmware();
   /**
    *
    */

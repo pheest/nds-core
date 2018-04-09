@@ -1,5 +1,6 @@
 #include <functional>
 #include <sstream>
+#include <iostream>
 
 #include "nds3/nds.h"
 #include "channel.h"
@@ -15,7 +16,7 @@ channel::channel(const std::string& name, nds::Node& parent) {
 
   nds::Node channel = parent.addChild(nds::Node(name));
 
-  m_acquisition = channel.addChild(nds::acquisition<std::vector<double>>(
+  m_acquisition = channel.addChild(nds::DataAcquisition<std::vector<double>>(
     "DAQ",
     100,
     std::bind(&channel::switchon_acquisition, this),
@@ -24,7 +25,7 @@ channel::channel(const std::string& name, nds::Node& parent) {
     std::bind(&channel::stop_acquisition, this),
     std::bind(&channel::recover_acquisition, this),
     std::bind(&channel::allowChange_acquisition, this,
-        std::placeholders::_1, std::placeholders::_2,std::placeholders::_3),
+	      std::placeholders::_1, std::placeholders::_2,std::placeholders::_3),
     std::bind(&channel::pv_gain_writer,
         this, std::placeholders::_1, std::placeholders::_2),
     std::bind(&channel::pv_offset_writer,
@@ -200,14 +201,14 @@ void channel::pv_samplingRate_writer(const timespec& timestamp, const double& va
 
 }
 
-void channel:acquisition_thread_body() {
+void channel::acquisition_thread_body() {
   // Let's allocate a vector that will contain the data that we will
   // push to the control system or to the data acquisition node
     double outputData(0);
 
     double counter(0);
 
-    //Counter for number of pushed data blocks
+    //Counter for number of pushed data blocks.
     std::int32_t NumberOfPushedDataBlocks(0);
 
     // Get Gain
@@ -262,13 +263,15 @@ void channel:acquisition_thread_body() {
       counter++;
 
     // Push the vector to the control system
-    m_acquisition.push(m_acquisition.getTimestamp(), outputData);
+      m_acquisition.push((const timespec)m_acquisition.getTimestamp(),
+			 (const std::vector<double>)outputData);
     ++NumberOfPushedDataBlocks;
 
     // Rest for a while
     ::usleep(100000);
     }
-    m_acquisition.setNumberOfPushedDataBlocks(m_acquisition.getTimestamp(),NumberOfPushedDataBlocks);
+    m_acquisition.setNumberOfPushedDataBlocks(m_acquisition.getTimestamp(),
+					      NumberOfPushedDataBlocks);
 
 
 }

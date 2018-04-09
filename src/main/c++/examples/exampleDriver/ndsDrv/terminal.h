@@ -54,6 +54,12 @@ class terminal {
    *
    */
   void  pv_timing_reader(timespec * timestamp, timespec * value);
+
+
+  /**
+   *  @brief Cuerpo de la funcion que se corre en el thread CAMBIAR ESTO
+   */
+  void timing_thread_body();
   /**
    *
    */
@@ -74,7 +80,7 @@ class terminal {
   /**
    * @brief Timestamping node
    */
-  nds::Timestamping<nds::timestamp_t> m_Timestamping;
+  nds::Timestamping<nds::timestamp_t> m_timestamping;
 
   /**
    * Methods to control timestamping  state machine
@@ -115,5 +121,7 @@ class terminal {
  protected:
 
  private:
+
+  std::int32_t m_Ntimestamps;
 
 };
