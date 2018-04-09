@@ -148,7 +148,7 @@
                                 </properties>
                             </include>
                         </package>
-			<package unitPrefix="false" name="nds3-examples">
+			<package unitPrefix="false" name="nds3-core-examples">
 
                             <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
                             <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />

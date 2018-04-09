@@ -26,6 +26,22 @@ namespace nds {
 
 class TimingImpl: public NodeImpl {
   public:
+    /**
+     * @ingroup
+     * @brief Constructs the Timing node
+     *
+     * @param name node name
+     * @param maxElements not used in this node
+     * @param switchOnFunction  Delegate function, performs the actions to switch the node on
+     * @param switchOffFunction Delegate function, performs the actions to switch the node off
+     * @param startFunction     Delegate function, performs the actions to start the timestamping
+     * @param stopFunction      Delegate function, performs the actions to stop the timestamping
+     * @param recoverFunction   Delegate function to execute to recover from an error state
+     * @param allowStateChangeFunction  Delegate function that can deny a state change.
+     *                                  Usually just returns true
+     * @param PV_Time_Reader Delegate function, reads Time PV
+     *
+     */
     TimingImpl( const std::string& name,
         stateChange_t switchOnFunction,
         stateChange_t switchOffFunction,
@@ -70,14 +86,14 @@ class TimingImpl: public NodeImpl {
     */
    void push(const timespec& timestamp, const timespec& data);
    /**
-    * @brief Called by the state machine. Store the current timestamp and 
+    * @brief Called by the state machine. Store the current timestamp and
     *        then calls the delegated onStart function.
     */
    void onStart();
 
    // ---------------------------- Getters ---------------------------------- //
    /**
-    * @brief Retrieve the UNIX time 
+    * @brief Retrieve the UNIX time
     *
     * @return UNIX time
     */
@@ -101,7 +117,7 @@ class TimingImpl: public NodeImpl {
     */
    std::int32_t getClkMultiplier();
    /**
-    * @brief Retrieve Synchronization status: NOT_SYNCED(0), 
+    * @brief Retrieve Synchronization status: NOT_SYNCED(0),
     * SYNCING(1), SYNCED(2), LOST_SYNC(3)
     *
     * @return Synchronization status
@@ -122,41 +138,52 @@ class TimingImpl: public NodeImpl {
    timespec getRefTimeBase();
 
    // --------------------------- Setters ----------------------------------- //
-   /** 
-    * @brief  sets the UNIX Time (PV is Delegate, 
+   /**
+    * @brief  sets the UNIX Time (PV is Delegate,
     *         push is called) It updates both Time and HTime
     *
-    *
+    * @param  timestamp timestamp
+    * @param  value Time
     */
    void setTime(const timespec& timestamp, const timespec& value);
-
    /**
     * @brief Sets the value of the Clock frequency
     *
+    * @param  timestamp timestamp
+    * @param  value clock frequency
     */
    void setClkFrequency(const timespec& timestamp, const double& value);
    /**
     * @brief Sets the value of the Clock multiplier
     *
+    * @param  timestamp timestamp
+    * @param  value clock multiplier
     */
    void setClkMultiplier(const timespec& timestamp, const std::int32_t& value);
    /**
-    * @brief Sets the value of the Clock frequency
+    * @brief Sets the value of synchronization status: NOT_SYNCED(0),
+    *   SYNCING(1), SYNCED(2), LOST_SYNCED(3)
     *
+    * @param  timestamp timestamp
+    * @param  value synchronization status
     */
    void setSyncStatus(const timespec& timestamp, const std::int32_t& value);
    /**
     * @brief Sets the value of the seconds since last Sync
     *
+    * @param  timestamp timestamp
+    * @param  value seconds since last sync
     */
    void setSecsLastSync(const timespec& timestamp, const std::int32_t& value);
    /**
     * @brief Sets the value of the Reference base time
     *
+    * @param  timestamp timestamp
+    * @param  value reference base time
     */
    void setRefTimeBase(const timespec& timestamp, const timespec& value);
 
-  protected: 
+  protected:
     /**
      * @brief In the state machine we set the start function to onStart(), so we
      *        remember here what to call from onStart().
@@ -187,7 +214,7 @@ class TimingImpl: public NodeImpl {
     // PVs
 
     std::shared_ptr<PVDelegateInImpl<timespec>> m_Time_PV;
-    
+
     std::shared_ptr<PVDelegateInImpl<std::string>> m_HumanTime_PV;
 
     std::shared_ptr<PVVariableInImpl<double> > m_ClkFrequency_PV;
@@ -195,9 +222,9 @@ class TimingImpl: public NodeImpl {
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_ClkMultiplier_PV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SyncStatus_PV;
-  
+
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_SecsLastSync_PV;
-    
+
     std::shared_ptr<PVVariableInImpl<timespec> > m_RefTimeBase_PV;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t>> m_Decimation_PV;
@@ -205,10 +232,8 @@ class TimingImpl: public NodeImpl {
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
    void PV_HTime_Reader(timespec *timestamp, std::string *value);
-   //readerString_t PV_HTime_Reader; 
 
 };
 }
-
 
 #endif //  NDSTIMINGIMPL_H
