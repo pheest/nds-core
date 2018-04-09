@@ -4,8 +4,10 @@ SOURCES =$(wildcard ndsDrv/*.cpp)
 OBJECTS =$(patsubst ndsDrv/%.cpp, ndsDrv/%.o, $(SOURCES))
 HEADERS =$(wildcard ndsDrv/*.h)
 
+STATICOBJ =$(patsubst simDev/%.cpp, simDev/%.o, $(wildcard simDev/*.cpp))
+
 STD =-std=c++0x
-INCLUDES =-I../../include -I/opt/codac/include
+INCLUDES =-I../../include -I/opt/codac/include -IsimDev
 DEFS =-DEPICS -DNDS3_DLL
 DBG =-g
 CXXFLAGS =$(STD) -Wall -Wextra -pedantic $(DBG) $(INCLUDES)
@@ -20,25 +22,29 @@ LDFLAGS =-L../../../../lib -L/opt/codac/lib
 
 TARGETDIR =$(realpath ../../../../lib)
 
-#STATICLIB =symDev/symulating-device.a
-STATICLIB =
+STATICLIB =simDev/simulated-signal.a
 DYNLIB =$(TARGETDIR)/libnds3-oscilloscope.so
+
 DEPENDENCIES =$(DYNLIB)
-#DEPENDENCIES +=$(STATICLIB)
+DEPENDENCIES +=$(STATICLIB)
 
 
 all: $(DEPENDENCIES)
 
-$(TARGETDIR)/libnds3-oscilloscope.so: $(OBJECTS)
+$(TARGETDIR)/libnds3-oscilloscope.so: $(OBJECTS) $(STATICLIB)
 	mkdir -p $(TARGETDIR)
 	$(CXX) $^ $(CXXFLAGS) $(LINK) $(LIBS) $(STATICLIB) $(LDFLAGS) -o $@
-
-$(STATICLIB): symDev/%.cpp
-	ar rc $@ $^
 
 ndsDrv/%.o: ndsDrv/%.cpp $(HEADERS)
 	$(CXX) $< $(CXXFLAGS) $(DEFS) $(NOLINK) -o $@
 
+$(STATICLIB): $(STATICOBJ)
+	ar rc $@ $^
+
+simDev/*.o: simDev/*.cpp
+	$(CXX) $< $(CXXFLAGS) $(NOLINK) -o $@
+
+
 .PHONY: clean
 clean:
-	$(RM) $(TARGET)
+	$(RM) $(TARGETDIR)/libnds3-oscilloscope.so ndsDrv/*.o $(STATICLIB)

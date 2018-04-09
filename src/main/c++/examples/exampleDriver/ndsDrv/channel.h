@@ -15,7 +15,6 @@ class channel {
    */
   ~channel();
 
-  // WARNING: por que' lo que viene por debajo es public y no private
 
   nds::PVVariableOut<double> m_amplitude;
 

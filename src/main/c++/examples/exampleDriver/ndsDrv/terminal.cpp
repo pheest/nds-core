@@ -1,5 +1,6 @@
 #include <functional>
 #include <iostream>
+#include <sys/time.h>
 
 #include <nds3/nds.h>
 #include "terminal.h"
@@ -27,10 +28,6 @@ terminal::terminal(const std::string& name, nds::Node& parent):
 	    std::bind(&terminal::pv_clearoverflow_writer, this,
 		      std::placeholders::_1, std::placeholders::_2)));
 
-
-  // INICIALIZAR TIMING
-
-  // Add Timing node
   m_timing = parent.addChild(nds::Timing("Timing",
 	   std::bind(&terminal::switchon_timing, this),
 	   std::bind(&terminal::switchoff_timing, this),
@@ -41,7 +38,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
 		     std::placeholders::_1,
 		     std::placeholders::_2,
 		     std::placeholders::_3),
-	   std::bind(&terminal::pv_timing_reader, this,
+	   std::bind(&terminal::pv_time_reader, this,
 		     std::placeholders::_1,
 		     std::placeholders::_2)));
 
@@ -49,37 +46,38 @@ terminal::terminal(const std::string& name, nds::Node& parent):
 
 
 
-terminal::~terminal() {
+terminal::~terminal(){
 
 }
 
 /* Timing methods. */
 
-void terminal::switchon_timing() {
-  // Call API HW to set clock grequency.
-  m_timing.setClkFrequency(m_timing.getTime(),100.001);
+void terminal::switchon_timing(){
+
+  // Call API HW to set clock frequency.
+  m_timing.setClkFrequency(m_timing.getTimestamp(), 100.001);
   // Call API HW to set Clock multiplier.
-  m_timing.setClkMultiplier(m_timing.getTime(),2);
+  //m_timing.setClkMultiplier(m_timing.getTimestamp(), 2);
   // Call API HW to set synching status.
-  m_timing.setSyncStatus(m_timing.getTime(),1 /* SYNCING */);
+  m_timing.setSyncStatus(m_timing.getTimestamp(), 1 /* SYNCING */);
   // Call API HW to set seconds since last sync.
-  m_timing.setSecsLastSync(m_timing.getTime(), 0);
+  //m_timing.setSecsLastSync(m_timing.getTimestamp(), 0);
   // Call API HW to set reference time base.
-  m_timing.setRefTimeBase(m_timing.getTime(), m_timing.getTime());
+  m_timing.setRefTimeBase(m_timing.getTimestamp(), m_timing.getTimestamp());
 }
 
-void terminal::switchoff_timing() {
+void terminal::switchoff_timing(){
 
   // Call API HW to set synching status.
-  m_timing.setSyncStatus(m_timing.getTime(),0 /* NOT_SYNC */);
+  m_timing.setSyncStatus(m_timing.getTimestamp(), 0 /* NOT_SYNC */);
   // Call API HW to set seconds since last sync.
-  m_timing.setSecsLastSync(m_timing.getTime(), 10);
+  m_timing.setSecsLastSync(m_timing.getTimestamp(), 10);
 }
 
-void terminal::start_timing() {
+void terminal::start_timing(){
 
   // Call API HW to set synching status.
-  m_timing.setSyncStatus(m_timing.getTime(),2 /* SYNCED */);
+  m_timing.setSyncStatus(m_timing.getTimestamp(),2 /* SYNCED */);
 
   m_stop_timing = false; //< We will set to true to stop the Timing thread
   /**
@@ -91,26 +89,32 @@ void terminal::start_timing() {
   m_timing_thread = std::thread(std::bind(&terminal::timing_thread_body, this));
 }
 
-void terminal::stop_timing() {
+void terminal::stop_timing(){
 
   m_stop_timing = true;
   m_timing_thread.join();
 }
 
-void terminal::recover_timing() {
+void terminal::recover_timing(){
 
   throw nds::StateMachineRollBack("Cannot recover");
 }
 
 bool terminal::allow_timing_change(const nds::state_t,
 				   const nds::state_t,
-				   const nds::state_t) {
+				   const nds::state_t){
 
   return true;
 
 }
 
-void terminal:: pv_timing_reader(timespec * timestamp, timespec * value) {
+void terminal::pv_time_reader(timespec * time, timespec* val){
+
+  /* Get time from linux. */
+  clock_gettime(CLOCK_REALTIME, val);
+}
+
+void terminal::timing_thread_body(){
 
   // Get clock grequency.
   double clk_freq = m_timing.getClkFrequency();
@@ -131,12 +135,12 @@ void terminal:: pv_timing_reader(timespec * timestamp, timespec * value) {
   std::cout << "\tReference time base = {" << time_base.tv_sec
 	    << ", " << time_base.tv_nsec << "}" << std::endl;
 
-  // Run until the state machine stops us
+  // Run until the state machine stops us.
   while(!m_stop_timing){
 
     // Get Self-Test enable
     timespec time_val = m_timing.getTime();
-    m_timing.setTime(m_timing.getTime(), time_val);
+    m_timing.setTime(m_timing.getTimestamp(), time_val);
     ::usleep(1000000);
   }
 }
@@ -149,27 +153,27 @@ void terminal:: pv_timing_reader(timespec * timestamp, timespec * value) {
 /**
  * @brief called when the Timestamping node has to be switched on
  */
-void terminal::switchon_timestamping() {
-  m_timestamping.setEnable(m_timing.getTime(), 0 /* OFF */);
-  m_timestamping.setEdge(m_timing.getTime(), 1 /* FALLING */);
-  m_timestamping.setMaxTimestamps(m_timing.getTime(), 5);
-  m_timestamping.setOverflow(m_timing.getTime(), 0 /* NO */);
+void terminal::switchon_timestamping(){
+  m_timestamping.setEnable(m_timing.getTimestamp(), 0 /* OFF */);
+  //m_timestamping.setEdge(m_timing.getTimestamp(), 1 /* FALLING */);
+  m_timestamping.setMaxTimestamps(m_timing.getTimestamp(), 5);
+  m_timestamping.setOverflow(m_timing.getTimestamp(), 0 /* NO */);
 }
 
 /**
  * @brief called when the Timestamping node has to be switched off
  */
-void terminal::switchoff_timestamping() {
-  m_timestamping.setEnable(m_timing.getTime(), 0 /* OFF */);
+void terminal::switchoff_timestamping(){
+  m_timestamping.setEnable(m_timing.getTimestamp(), 0 /* OFF */);
 }
 
 /**
  * @brief Called when the Timestamping node has to start working.
  *        We start the Timestamping thread.
  */
-void terminal::start_timestamping() {
+void terminal::start_timestamping(){
   m_stop_timestamping = false; //< We will set to true to stop the Timestamping
-				//  thread.
+                               //  thread.
   /**
    *  Start the Timestamping thread. This function is called when the state
    *  machine goes from on to running. We don't need to check if the thread was
@@ -181,7 +185,7 @@ void terminal::start_timestamping() {
 }
 
 // Stop the Timestamping node thread
-void terminal::stop_timestamping() {
+void terminal::stop_timestamping(){
   m_stop_timestamping = true;
   m_timestamping_thread.join();
 }
@@ -190,39 +194,53 @@ void terminal::stop_timestamping() {
 // the failure state. For now we don't plan for this and every time the
 // state machine wants to recover we throw StateMachineRollBack to force the
 // state machine to stay on the failure state.
-void terminal::recover_timestamping() {
+void terminal::recover_timestamping(){
   throw nds::StateMachineRollBack("Cannot recover");
 }
 
 // Always allow for change state.
 bool terminal::allow_timestamping_change(const nds::state_t,
-			       const nds::state_t,
-			       const nds::state_t) {
+					 const nds::state_t,
+					 const nds::state_t){
   return true;
 }
 
 // Timestamping setters
 
-void terminal::pv_enable_writer(const timespec& timestamp, const std::int32_t& value) {
+void terminal::pv_enable_writer(const timespec& timestamp,
+				const std::int32_t& value){
   // This function shall interact with hardware api to enable or disbale.
   m_timestamping.setEnable(timestamp, value);
 }
 
-void terminal::pv_edge_writer(const timespec& timestamp, const std::int32_t& value) {
+void terminal::pv_edge_writer(const timespec& timestamp,
+			      const std::int32_t& value){
   // This function shall interact with api hardware.
   m_timestamping.setEdge(timestamp, value);
 }
 
-void terminal::pv_clearoverflow_writer(const timespec& timestamp, const std::int32_t& value) {
+void terminal::pv_clearoverflow_writer(const timespec& timestamp,
+				       const std::int32_t& value){
+
   // This function may have to interact with api hardware.
   m_Ntimestamps = 0;
-  m_timestamping.setOverflow(m_timing.getTime(), 0 /* NO */);
+  m_timestamping.setOverflow(m_timing.getTimestamp(), 0 /* NO */);
 }
 
 
 
-void terminal::timestamping_thread_body() {
- /// BEEEP y aqui que hacemos
+void terminal::timestamping_thread_body(){
+
+  nds::timestamp_t timestamp;
+
+  while(!m_stop_timestamping){
+
+    timestamp.timestamp = m_timing.getTime();
+    timestamp.rising = true;
+    timestamp.id = ++m_Ntimestamps;
+    m_timestamping.push(m_timestamping.getTimestamp(), timestamp);
+    ::usleep(1000000);
+  }
 }
 
 /* End Timestmaping methods. */

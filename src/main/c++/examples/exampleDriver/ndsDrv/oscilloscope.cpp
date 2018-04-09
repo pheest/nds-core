@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "simulated_signal.h"
+
 #include <nds3/nds.h>
 #include "oscilloscope.h"
 
@@ -50,33 +52,40 @@ oscilloscope::~oscilloscope(){
 /* Firmware methods. */
 
 void oscilloscope::switchon_firmware(){
+
+  /*Call to HW to get a firmware description. */
+  hw_firm firmware = firmware_description();
+
   // Call API HW to retrieve FirmwareVersion
-  m_firmware.setFirmwareVersion(m_terminals[0]->m_timing.getTime(),
-				"Firmware test version");
+  m_firmware.setFirmwareVersion(m_firmware.getTimestamp(),
+				firmware.version);
   // Call API HW to retrieve FirmwareStatus
-  m_firmware.setFirmwareStatus(m_terminals[0]->m_timing.getTime(),0);
+  m_firmware.setFirmwareStatus(m_firmware.getTimestamp(),
+			       firmware.status);
   // Call API HW to retrieve HardwareRevision
-  m_firmware.setHardwareRevision(m_terminals[0]->m_timing.getTime(),
-				 "Firmware test hardware revision");
+  m_firmware.setHardwareRevision(m_firmware.getTimestamp(),
+				 firmware.revision);
   // Call API HW to retrieve SerialNumber
-  m_firmware.setSerialNumber(m_terminals[0]->m_timing.getTime(),
-			     "Firmware test serial number");
+  m_firmware.setSerialNumber(m_firmware.getTimestamp(),
+			     firmware.serialNumber);
   // Call API HW to retrieve DeviceModel
-  m_firmware.setDeviceModel(m_terminals[0]->m_timing.getTime(),
-			    "Firmware test device model");
+  m_firmware.setDeviceModel(m_firmware.getTimestamp(),
+			    firmware.deviceModel);
   // Call API HW to retrieve DeviceType
-  m_firmware.setDeviceType(m_terminals[0]->m_timing.getTime(),
-			   "Firmware test device type");
+  m_firmware.setDeviceType(m_firmware.getTimestamp(),
+			   firmware.deviceType);
   // Call API HW to retrieve DriverVersion
-  m_firmware.setDriverVersion(m_terminals[0]->m_timing.getTime(),
-			      "<major_id>.<minor_id>.<maintenance_id>");
+  m_firmware.setDriverVersion(m_firmware.getTimestamp(),
+			      firmware.driverVersion);
   // Call API HW to retrieve ChassisNumber
-  m_firmware.setChassisNumber(m_terminals[0]->m_timing.getTime(),42);
+  m_firmware.setChassisNumber(m_firmware.getTimestamp(),
+			      firmware.chassisNum);
   // Call API HW to retrieve SlotNumber
-  m_firmware.setSlotNumber(m_terminals[0]->m_timing.getTime(),42);
+  m_firmware.setSlotNumber(m_firmware.getTimestamp(),
+			   firmware.slotNum);
   // Call API HW to retrieve FirmwarePath
-  m_firmware.setFirmwarePath(m_terminals[0]->m_timing.getTime(),
-			     "Firmware path to be uploaded");
+  m_firmware.setFirmwarePath(m_firmware.getTimestamp(),
+			     firmware.firmPath);
 }
 
 
@@ -96,7 +105,8 @@ void oscilloscope::start_firmware(){
    *  machine guarantees that the start handler is called only while the state
    *  is ON.
    */
-  m_firmware_thread = std::thread(std::bind(&oscilloscope::firmware_thread_body, this));
+  m_firmware_thread = std::thread(std::bind(&oscilloscope::firmware_thread_body,
+					    this));
 }
 
 
@@ -109,7 +119,7 @@ void oscilloscope::stop_firmware(){
 
 
 void oscilloscope::recover_firmware(){
-  throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+  throw nds::StateMachineRollBack("Cannot recover");
 }
 
 
@@ -122,14 +132,18 @@ bool oscilloscope::allow_firmware_change(const nds::state_t,
 
 
 
-void oscilloscope::pv_path_writer(const timespec& timestamp, const std::string& value){
-  std::string firmwarePath;
-  // firmwarePath has the firmware path to be programmed on the hardware.
-  // Call to function programming the hardware. This function should return the
+void oscilloscope::pv_path_writer(const timespec& timestamp,
+				  const std::string& value){
+
+
+  // Call to function programming the hardware. This function returns the
   // real firmware path programmed. This value has to be set to the readback attribute.
-  // In the meantime, without real hardware value and  firmwarePath are equal.
-  firmwarePath = value;
-  m_firmware.setFirmwarePath(timestamp,firmwarePath);
+  hw_firm new_firmware = change_hw_firmware();
+
+  std::string new_firmwarePath = new_firmware.firmPath;
+
+  // firmwarePath has the new firmware path to be programmed on the hardware.
+  m_firmware.setFirmwarePath(timestamp, new_firmwarePath);
 }
 
 
@@ -156,7 +170,7 @@ void oscilloscope::firmware_thread_body(){
   std::int32_t SlotNumber = m_firmware.getSlotNumber();
   // Get FirmwarePath
   std::string FirmwarePath = m_firmware.getFirmwarePath();
-  std::string FirmwarePathOld=m_firmware.getFirmwarePath();
+  std::string FirmwarePathOld = m_firmware.getFirmwarePath();
 
 
   std::cout << "Firmware support information:" << std::endl;
@@ -177,7 +191,7 @@ void oscilloscope::firmware_thread_body(){
 
     // Get FirmwarePath
     std::string FirmwarePath = m_firmware.getFirmwarePath();
-    if(FirmwarePath.compare(FirmwarePathOld)!=0){
+    if(FirmwarePath.compare(FirmwarePathOld) != 0){
       // Push the Firmware data to the control system
       m_firmware.push(m_firmware.getTimestamp(), FirmwarePath);
       FirmwarePathOld = FirmwarePath;

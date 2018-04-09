@@ -2,15 +2,11 @@
 #include <sstream>
 #include <iostream>
 
+#include "simulated_signal.h"
+
 #include "nds3/nds.h"
 #include "channel.h"
 
-
-// LO QUE HACEN EN EL DEVICE DE DATA ACQUISITION ES AGNADIR UN NODO
-// WAVEGENERATION QUE GENERA LAS SEGNALES. HABEIS DESCARTADO HACERLO ASI
-// PORQUE IGUAL ES M'AS REALISTA HACER LA HISTORIA DE LA LIBRERIA EST'ATICA,
-// PERO VISTO QUE TENEMOS EL TIEMPO PEGADO AL CULO, TAMPOCO ES TAN MALA
-// OPCI'ON CONSIDERARLO AS'I, NO?
 
 channel::channel(const std::string& name, nds::Node& parent) {
 
@@ -46,6 +42,15 @@ channel::channel(const std::string& name, nds::Node& parent) {
         this, std::placeholders::_1, std::placeholders::_2),
     std::bind(&channel::pv_samplingRate_writer,
         this, std::placeholders::_1, std::placeholders::_2)));
+
+
+  m_amplitude = nds::PVVariableOut<double>("Amplitude");
+  channel.addChild(m_amplitude);
+
+  m_frequency = nds::PVVariableOut<double>("Frequency");
+  channel.addChild(m_frequency);
+
+
 }
 
 
@@ -87,8 +92,7 @@ void channel::recover_acquisition() {
 }
 
 bool channel::allowChange_acquisition(const nds::state_t,
-    const nds::state_t,
-    const nds::state_t) {
+    const nds::state_t,    const nds::state_t) {
   return true;
 }
 
@@ -193,10 +197,10 @@ void channel::pv_dmaEnable_writer(const timespec& timestamp, const std::int32_t&
 void channel::pv_samplingRate_writer(const timespec& timestamp, const double& value) {
   double HW_value;
   //Value has the SamplingRate to be programmed on the hardware.
-  //Call to function programming the hardware. This function should return the 
+  //Call to function programming the hardware. This function should return the
   //real SamplingRate programmed. This value has to be set to the readback attribute.
   //In the meantime, without real hardware value and  HW_value are equal.
-  HW_value=value;
+  HW_value = value;
   m_acquisition.setSamplingRate(timestamp,HW_value);
 
 }
@@ -262,9 +266,19 @@ void channel::acquisition_thread_body() {
 
       counter++;
 
-    // Push the vector to the control system
+      // Get desired amplitude and frequency from control system.
+      double amplitude = m_amplitude.getValue();
+      double frequency = m_frequency.getValue();
+      // Push the vector to the control system. The signal is generated taking
+      // into account different parameters related to the clock frequency which
+      // now are set hardcoded.
       m_acquisition.push((const timespec)m_acquisition.getTimestamp(),
-			 (const std::vector<double>)outputData);
+			 (const std::vector<double>)getDataBlock_sin(amplitude,
+								     frequency,
+								     100, /* Buffer length */
+								     100, /* Clock freq. */
+								     2, /* Edge*/
+								     SamplingRate));
     ++NumberOfPushedDataBlocks;
 
     // Rest for a while

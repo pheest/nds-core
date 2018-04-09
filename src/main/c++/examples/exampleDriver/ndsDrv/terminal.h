@@ -52,7 +52,7 @@ class terminal {
   /**
    *
    */
-  void  pv_timing_reader(timespec * timestamp, timespec * value);
+  void  pv_time_reader(timespec * timestamp, timespec * value);
 
 
   /**
