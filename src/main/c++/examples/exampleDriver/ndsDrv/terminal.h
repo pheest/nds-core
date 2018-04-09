@@ -1,6 +1,5 @@
 #include <nds3/nds.h>
 
-// POR QUE TODO PUBLICO? 
 
 class terminal {
 
@@ -94,7 +93,7 @@ class terminal {
                                   const nds::state_t,
 				 const nds::state_t); // Called to verify if a state change is allow 
   /**
-   *  Timestamping setters 
+   *  Timestamping setters
    */
   void pv_enable_writer(const timespec& timestamp, const std::int32_t& value);
   void pv_edge_writer(const timespec& timestamp, const std::int32_t& value);
@@ -102,7 +101,7 @@ class terminal {
 
 
   /**
-   *  @brief Cuerpo de la funcion que se corre en el thread CAMBIAR ESTO 
+   *  @brief Cuerpo de la funcion que se corre en el thread CAMBIAR ESTO
    */
   void timestamping_thread_body();
   /**
