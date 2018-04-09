@@ -23,7 +23,7 @@ LDFLAGS =-L../../../../lib -L/opt/codac/lib
 TARGETDIR =$(realpath ../../../../lib)
 
 STATICLIB =simDev/simulated-signal.a
-DYNLIB =$(TARGETDIR)/libnds3-oscilloscope.so
+DYNLIB =$(TARGETDIR)/libnds3-exampleDevice.so
 
 DEPENDENCIES =$(DYNLIB)
 DEPENDENCIES +=$(STATICLIB)
@@ -31,7 +31,7 @@ DEPENDENCIES +=$(STATICLIB)
 
 all: $(DEPENDENCIES)
 
-$(TARGETDIR)/libnds3-oscilloscope.so: $(OBJECTS) $(STATICLIB)
+$(DYNLIB): $(OBJECTS) $(STATICLIB)
 	mkdir -p $(TARGETDIR)
 	$(CXX) $^ $(CXXFLAGS) $(LINK) $(LIBS) $(STATICLIB) $(LDFLAGS) -o $@
 
@@ -41,7 +41,7 @@ ndsDrv/%.o: ndsDrv/%.cpp $(HEADERS)
 $(STATICLIB): $(STATICOBJ)
 	ar rc $@ $^
 
-simDev/*.o: simDev/*.cpp
+simDev/%.o: simDev/%.cpp
 	$(CXX) $< $(CXXFLAGS) $(NOLINK) -o $@
 
 
