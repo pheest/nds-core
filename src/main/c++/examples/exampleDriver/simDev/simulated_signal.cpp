@@ -17,10 +17,20 @@ std::vector<double> getDataBlock_sin(double amplitude, double frequency,
     increment = SamplingRate/(double)ClkFrequency;
   } else {
      std::cout  << "WARNING: edge should be 0(RAISING),1(FALLING),2(ANY)\n";
-     std::cout  << "         Empty vector returned\n";
+     std::cout  << "         Empty vector returned.\n";
      std::vector<double> data(nElements, 0);
      return data;
   }
+
+  if (amplitude <= 0 || frequency <= 0 || nElements <= 0
+      || ClkFrequency <= 0 || SamplingRate <= 0) {
+
+     std::cout  << "WARNING: incorrect arguments given.\n";
+     std::cout  << "         Empty vector returned.\n";
+     std::vector<double> data(nElements, 0);
+     return data;
+  }
+
   std::vector<double> data(nElements);
   for (auto it = data.begin(); it != data.end(); ++it) {
      *it  = amplitude * sin(2.0 * M_PI * frequency * t);

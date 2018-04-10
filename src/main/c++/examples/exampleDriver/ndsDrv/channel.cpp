@@ -272,6 +272,10 @@ void channel::acquisition_thread_body() {
     //Counter for number of pushed data blocks.
     std::int32_t NumberOfPushedDataBlocks(0);
 
+    // Get desired amplitude and frequency from control system.
+    double amplitude = m_amplitude.getValue();
+    double frequency = m_frequency.getValue();
+
     // Get Gain
     double Gain = m_acquisition.getGain();
     // Get Bandwidth
@@ -301,6 +305,8 @@ void channel::acquisition_thread_body() {
     // Get SamplingRate
     double SamplingRate = m_acquisition.getSamplingRate();
 
+    std::cout << "\tAmplitude = " << amplitude << std::endl;
+    std::cout << "\tFrequency = " << frequency << std::endl;
     std::cout << "\tGain = " << Gain<<std::endl;
     std::cout << "\tBandwidth = " << Bandwidth<<std::endl;
     std::cout << "\tResolution = " << Resolution<<std::endl;
@@ -318,9 +324,10 @@ void channel::acquisition_thread_body() {
 
     while(!m_stop_acquisition){
 
-      // Get desired amplitude and frequency from control system.
-      double amplitude = m_amplitude.getValue();
-      double frequency = m_frequency.getValue();
+      // Refresh desired amplitude, frequency and sampling rate from control system.
+      amplitude = m_amplitude.getValue();
+      frequency = m_frequency.getValue();
+      SamplingRate = m_acquisition.getSamplingRate();
       // Push the vector to the control system. The signal is generated taking
       // into account different parameters related to the clock frequency which
       // now are set hardcoded.
