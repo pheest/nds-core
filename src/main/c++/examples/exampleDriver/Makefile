@@ -23,7 +23,7 @@ LDFLAGS =-L../../../../lib -L/opt/codac/lib
 TARGETDIR =$(realpath ../../../../lib)
 
 STATICLIB =simDev/simulated-signal.a
-DYNLIB =$(TARGETDIR)/libnds3-exampleDevice.so
+DYNLIB =$(TARGETDIR)/libnds3-exampleDrv.so
 
 DEPENDENCIES =$(DYNLIB)
 DEPENDENCIES +=$(STATICLIB)
@@ -47,4 +47,4 @@ simDev/%.o: simDev/%.cpp
 
 .PHONY: clean
 clean:
-	$(RM) $(TARGETDIR)/libnds3-oscilloscope.so ndsDrv/*.o $(STATICLIB)
+	$(RM) $(DYNLIB) ndsDrv/*.o $(STATICLIB)

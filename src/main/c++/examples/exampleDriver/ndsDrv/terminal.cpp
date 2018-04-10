@@ -12,7 +12,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
 
   /**
    * This class will be a new child node of the given parent node, in this case
-   * the oscilloscope class that holds the Root Node.
+   * the exampleDrv class that holds the Root Node.
    */
   nds::Node terminal = parent.addChild(nds::Node(name));
 
@@ -21,7 +21,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
    * @brief Calling the Timestamping node constructor.
    *
    *   Adding Timestamping node to the control system. Note that in this case is
-   * added as a child of the parent node. See the oscilloscope cpp file for more
+   * added as a child of the parent node. See the exampleDrv cpp file for more
    * information.
    *
    *   All the delegate methods and the state machine functions must be passed

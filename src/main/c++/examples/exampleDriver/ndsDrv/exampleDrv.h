@@ -11,10 +11,10 @@
  * can be included in a driver. Depending on the driver being implemented the
  * developer can organize the driver in the more convenient way. For example,
  * in this case the terminal and channel classes are quite independent and the
- * oscilloscope class adds them independently. For a different device it may be
+ * exampleDrv class adds them independently. For a different device it may be
  * of interest that each channel class adds its own child terminal class.
  */
-class oscilloscope {
+class exampleDrv {
 
  public:
 
@@ -26,12 +26,12 @@ class oscilloscope {
    * of the device and to change it if necessary.
    *
    */
-  oscilloscope(nds::Factory& factory, const std::string& device,
+  exampleDrv(nds::Factory& factory, const std::string& device,
 	       const nds::namedParameters_t& parameters);
   /**
    * @brief Destructor of the class.
    */
-  ~oscilloscope();
+  ~exampleDrv();
 
 #ifndef EPICS
   /**

@@ -5,9 +5,9 @@
 #include "simulated_signal.h"
 
 #include <nds3/nds.h>
-#include "oscilloscope.h"
+#include "exampleDrv.h"
 
-oscilloscope::oscilloscope(nds::Factory& factory,
+exampleDrv::exampleDrv(nds::Factory& factory,
 			   const std::string& device,
 			   const nds::namedParameters_t& paramters){
 
@@ -51,7 +51,7 @@ oscilloscope::oscilloscope(nds::Factory& factory,
    * @brief Calling the Firmware node constructor.
    *
    *   Adding Firmware node to the control system. Note that in this case is
-   * added as a child of the Root node. See the oscilloscope cpp file for more
+   * added as a child of the Root node. See the exampleDrv cpp file for more
    * information.
    *
    *   All the delegate methods and the state machine functions must be passed
@@ -61,15 +61,15 @@ oscilloscope::oscilloscope(nds::Factory& factory,
   m_firmware = rootNode.addChild(nds::Firmware(
          "Firmware", /* Node name*/
 	 256, /* Max. string length. */
-	 std::bind(&oscilloscope::switchon_firmware, this),
-	 std::bind(&oscilloscope::switchoff_firmware, this),
-	 std::bind(&oscilloscope::start_firmware, this),
-	 std::bind(&oscilloscope::stop_firmware, this),
-	 std::bind(&oscilloscope::recover_firmware, this),
-	 std::bind(&oscilloscope::allow_firmware_change,
+	 std::bind(&exampleDrv::switchon_firmware, this),
+	 std::bind(&exampleDrv::switchoff_firmware, this),
+	 std::bind(&exampleDrv::start_firmware, this),
+	 std::bind(&exampleDrv::stop_firmware, this),
+	 std::bind(&exampleDrv::recover_firmware, this),
+	 std::bind(&exampleDrv::allow_firmware_change,
 		   this, std::placeholders::_1,
 		   std::placeholders::_2, std::placeholders::_3),
-	 std::bind(&oscilloscope::pv_path_writer, this,
+	 std::bind(&exampleDrv::pv_path_writer, this,
 		   std::placeholders::_1, std::placeholders::_2)));
 
   rootNode.initialize(this, factory);
@@ -78,7 +78,7 @@ oscilloscope::oscilloscope(nds::Factory& factory,
 
 
 
-oscilloscope::~oscilloscope(){
+exampleDrv::~exampleDrv(){
 
 }
 
@@ -96,7 +96,7 @@ oscilloscope::~oscilloscope(){
  * file.
  *
  */
-void oscilloscope::switchon_firmware(){
+void exampleDrv::switchon_firmware(){
 
   // This example simulates tha calls to the API interface to know the details
   // of the firmware:
@@ -138,13 +138,13 @@ void oscilloscope::switchon_firmware(){
 
 
 
-void oscilloscope::switchoff_firmware(){
+void exampleDrv::switchoff_firmware(){
 
 }
 
 
 
-void oscilloscope::start_firmware(){
+void exampleDrv::start_firmware(){
 
   m_stop_firmware = false;
   /**
@@ -153,25 +153,25 @@ void oscilloscope::start_firmware(){
    *
    */
   m_firmware_thread =
-    std::thread(std::bind(&oscilloscope::firmware_thread_body, this));
+    std::thread(std::bind(&exampleDrv::firmware_thread_body, this));
 }
 
 
 
-void oscilloscope::stop_firmware(){
+void exampleDrv::stop_firmware(){
   m_stop_firmware = true;
   m_firmware_thread.join();
 }
 
 
 
-void oscilloscope::recover_firmware(){
+void exampleDrv::recover_firmware(){
   throw nds::StateMachineRollBack("Cannot recover");
 }
 
 
 
-bool oscilloscope::allow_firmware_change(const nds::state_t,
+bool exampleDrv::allow_firmware_change(const nds::state_t,
 					 const nds::state_t,
 					 const nds::state_t){
   return true;
@@ -179,7 +179,7 @@ bool oscilloscope::allow_firmware_change(const nds::state_t,
 
 
 
-void oscilloscope::pv_path_writer(const timespec& timestamp,
+void exampleDrv::pv_path_writer(const timespec& timestamp,
 				  const std::string& value){
 
 
@@ -196,7 +196,7 @@ void oscilloscope::pv_path_writer(const timespec& timestamp,
 
 
 
-void oscilloscope::firmware_thread_body(){
+void exampleDrv::firmware_thread_body(){
 
   // Get FirmwareVersion
   std::string FirmwareVersion = m_firmware.getFirmwareVersion();
@@ -256,7 +256,7 @@ void oscilloscope::firmware_thread_body(){
 /**
  * This macro allows the driver to be included by EPICS.
  */
-NDS_DEFINE_DRIVER(oscilloscope, oscilloscope)
+NDS_DEFINE_DRIVER(exampleDrv, exampleDrv)
 #else
 /**
  * If this device is not going to be used in EPICS then function for allocating
@@ -266,18 +266,18 @@ NDS_DEFINE_DRIVER(oscilloscope, oscilloscope)
 /*
  * Allocation function
  *********************/
-void* oscilloscope::allocateDevice(nds::Factory& factory,
+void* exampleDrv::allocateDevice(nds::Factory& factory,
 				   const std::string& DeviceName,
 				   const nds::namedParameters_t& parameters){
 
-  return new oscilloscope(factory, DeviceName, parameters);
+  return new exampleDrv(factory, DeviceName, parameters);
 }
 
 /*
  * Deallocation function
  ***********************/
-void oscilloscope::deallocateDevice(void* DeviceName){
+void exampleDrv::deallocateDevice(void* DeviceName){
 
-  delete (oscilloscope*)DeviceName;
+  delete (exampleDrv*)DeviceName;
 }
 #endif

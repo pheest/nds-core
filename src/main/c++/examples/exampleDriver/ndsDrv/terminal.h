@@ -4,7 +4,7 @@
  * @brief Class which groups timing and timestamping functionalities.
  *
  *   This class shows how a generic time and timestamping node can be implemented
- * and then included by other class, in this case the oscilloscope, that wants to
+ * and then included by other class, in this case the exampleDrv, that wants to
  * use these functionalities.
  *
  */
