@@ -33,6 +33,25 @@ class oscilloscope {
    */
   ~oscilloscope();
 
+#ifndef EPICS
+  /**
+   * If this device is not going to be used in EPICS then functions for
+   * allocating and deallocating the class are given.
+   *
+   */
+
+  /*
+   * Allocation function
+   *********************/
+  void* allocateDevice(nds::Factory& factory, const std::string& DeviceName,
+		       const nds::namedParameters_t& parameters);
+
+  /*
+   * Deallocation function
+   ***********************/
+  void deallocateDevice(void* DeviceName);
+#endif
+
   //////////////////////////////////////////////////////////////////////////////
   /// Firmware Node ////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////

@@ -166,7 +166,7 @@ class terminal {
  private:
 
   /**
-   * @brief Attribute used  by the terminal class to keep track of the number of
+   * @brief Attribute used by the terminal class to keep track of the number of
    * the timestamps pushed.
    *
    */
