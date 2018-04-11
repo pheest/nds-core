@@ -41,7 +41,7 @@ namespace nds {
 
     // PV: Enable read back value
     m_Enable_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Enable_RBV"));
-    m_Enable_RBVPV->setDescription("Get timestamping status (Enabled/Disabled)");
+    m_Enable_RBVPV->setDescription("Timestamping status");
     m_Enable_RBVPV->setScanType(scanType_t::interrupt, 0);
     addChild(m_Enable_RBVPV);
 
@@ -78,21 +78,22 @@ namespace nds {
 
     m_ClearOverflow_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClearOverflow",
 								 PV_ClearOverflow_Writer));
-    m_ClearOverflow_PV->setDescription("Clear timestamp overflow error");
+    m_ClearOverflow_PV->setDescription("Clear timestamp overflow");
     m_ClearOverflow_PV->setScanType(scanType_t::passive, 0);
     m_Edge_PV->setEnumeration(clearEnumeratorString);
     addChild(m_ClearOverflow_PV);
 
+
     // PV: Timestamps
     m_Timestamps_PV.reset(new PVVariableInImpl<T>("Timestamps"));
-    m_Timestamps_PV->setDescription("Timestamp (sec,ns), ID, Edge");
+    m_Timestamps_PV->setDescription("Timestamps on terminal");
     m_Timestamps_PV->setScanType(scanType_t::interrupt, 0);
     m_Timestamps_PV->setMaxElements(4);
     addChild(m_Timestamps_PV);
 
     // PV: Maxtimestamps
     m_MaxTimestamps_PV.reset(new PVVariableInImpl<std::int32_t>("MaxTimestamps"));
-    m_MaxTimestamps_PV->setDescription("Maximum number of timestamps (FIFO size)");
+    m_MaxTimestamps_PV->setDescription("Max. number of timestamps");
     m_MaxTimestamps_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_MaxTimestamps_PV);
 
@@ -104,7 +105,7 @@ namespace nds {
     overflowEnumeratorString.push_back("ERROR");
 
     m_Overflow_PV.reset(new PVVariableInImpl<std::int32_t>("Overflow"));
-    m_Overflow_PV->setDescription("Get timestamps queue overflow status");
+    m_Overflow_PV->setDescription("Get overflow status");
     m_Overflow_PV->setScanType(scanType_t::interrupt, 0);
     m_Edge_PV->setEnumeration(overflowEnumeratorString);
     addChild(m_Overflow_PV);
