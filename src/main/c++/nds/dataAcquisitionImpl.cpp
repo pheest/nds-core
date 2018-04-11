@@ -230,7 +230,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getGain()
+double DataAcquisitionImpl<T>::getGain()
 {
 	double Gain;
     timespec timestamp;
@@ -239,7 +239,7 @@ size_t DataAcquisitionImpl<T>::getGain()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getOffset()
+double DataAcquisitionImpl<T>::getOffset()
 {
     double Offset;
     timespec timestamp;
@@ -248,7 +248,7 @@ size_t DataAcquisitionImpl<T>::getOffset()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getBandwidth()
+double DataAcquisitionImpl<T>::getBandwidth()
 {
     double Bandwidth;
     timespec timestamp;
@@ -257,7 +257,7 @@ size_t DataAcquisitionImpl<T>::getBandwidth()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getResolution()
+double DataAcquisitionImpl<T>::getResolution()
 {
     double Resolution;
     timespec timestamp;
@@ -266,7 +266,7 @@ size_t DataAcquisitionImpl<T>::getResolution()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getImpedance()
+int32_t DataAcquisitionImpl<T>::getImpedance()
 {
 	std::int32_t Impedance;
     timespec timestamp;
@@ -275,7 +275,7 @@ size_t DataAcquisitionImpl<T>::getImpedance()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getCoupling()
+int32_t DataAcquisitionImpl<T>::getCoupling()
 {
     std::int32_t Coupling;
     timespec timestamp;
@@ -284,7 +284,7 @@ size_t DataAcquisitionImpl<T>::getCoupling()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getSignalRefType()
+int32_t DataAcquisitionImpl<T>::getSignalRefType()
 {
 	std::int32_t SignalRefTYpe;
     timespec timestamp;
@@ -293,7 +293,7 @@ size_t DataAcquisitionImpl<T>::getSignalRefType()
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getGround()
+int32_t DataAcquisitionImpl<T>::getGround()
 {
 	std::int32_t Ground;
     timespec timestamp;
@@ -314,66 +314,66 @@ timespec DataAcquisitionImpl<T>::getStartTimestamp() const
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
+int32_t DataAcquisitionImpl<T>::getNumberOfPushedDataBlocks()
 {
        std::int32_t NumberOfPushedDataBlocks;
     timespec timestamp;
     m_NumberOfPushedDataBlocks->read(&timestamp, &NumberOfPushedDataBlocks);
-    return (std::int32_t)NumberOfPushedDataBlocks;
+    return NumberOfPushedDataBlocks;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMABufferSize()
+int32_t DataAcquisitionImpl<T>::getDMABufferSize()
 {
 	std::int32_t DMABufferSize;
     timespec timestamp;
     m_DMABufferSize_PV->read(&timestamp, &DMABufferSize);
-    return (std::int32_t)DMABufferSize;
+    return DMABufferSize;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMAEnable()
+int32_t DataAcquisitionImpl<T>::getDMAEnable()
 {
        std::int32_t DMAEnable;
     timespec timestamp;
     m_DMAEnable_RBVPV->read(&timestamp, &DMAEnable);
-    return (std::int32_t)DMAEnable;
+    return DMAEnable;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMANumChannels()
+int32_t DataAcquisitionImpl<T>::getDMANumChannels()
 {
        std::int32_t DMANumChannels;
     timespec timestamp;
     m_DMANumChannels_PV->read(&timestamp, &DMANumChannels);
-    return (std::int32_t)DMANumChannels;
+    return DMANumChannels;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMAFrameType()
+int32_t DataAcquisitionImpl<T>::getDMAFrameType()
 {
        std::int32_t DMAFrameType;
     timespec timestamp;
     m_DMAFrameType_PV->read(&timestamp, &DMAFrameType);
-    return (std::int32_t)DMAFrameType;
+    return DMAFrameType;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getDMASampleSize()
+int32_t DataAcquisitionImpl<T>::getDMASampleSize()
 {
        std::int32_t DMASampleSize;
     timespec timestamp;
     m_DMASampleSize_PV->read(&timestamp, &DMASampleSize);
-    return (std::int32_t)DMASampleSize;
+    return DMASampleSize;
 }
 
 template<typename T>
-size_t DataAcquisitionImpl<T>::getSamplingRate()
+double DataAcquisitionImpl<T>::getSamplingRate()
 {
        double SamplingRate;
     timespec timestamp;
     m_SamplingRate_RBVPV->read(&timestamp, &SamplingRate);
-    return (double)SamplingRate;
+    return SamplingRate;
 }
 
 template<typename T>

@@ -112,91 +112,91 @@ size_t WaveformGeneration<T>::getMaxElements()
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getSignalType()
+int32_t WaveformGeneration<T>::getSignalType()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getSignalType();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getAmplitude()
+double WaveformGeneration<T>::getAmplitude()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getAmplitude();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getFrequency()
+double WaveformGeneration<T>::getFrequency()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getFrequency();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getUpdateRate()
+double WaveformGeneration<T>::getUpdateRate()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getUpdateRate();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getOffset()
+double WaveformGeneration<T>::getOffset()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getOffset();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getPhase()
+double WaveformGeneration<T>::getPhase()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getPhase();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getImpedance()
+int32_t WaveformGeneration<T>::getImpedance()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getImpedance();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getRefFrequency()
+double WaveformGeneration<T>::getRefFrequency()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getRefFrequency();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getDutyCycle()
+double WaveformGeneration<T>::getDutyCycle()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getDutyCycle();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getGain()
+double WaveformGeneration<T>::getGain()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getGain();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getBandwidth()
+double WaveformGeneration<T>::getBandwidth()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getBandwidth();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getResolution()
+double WaveformGeneration<T>::getResolution()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getResolution();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getCoupling()
+int32_t WaveformGeneration<T>::getCoupling()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getCoupling();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getSignalRef()
+int32_t WaveformGeneration<T>::getSignalRef()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getSignalRef();
 }
 
 template <typename T>
-size_t WaveformGeneration<T>::getGround()
+int32_t WaveformGeneration<T>::getGround()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getGround();
 }

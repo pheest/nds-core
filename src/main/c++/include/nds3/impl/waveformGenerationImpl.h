@@ -72,22 +72,22 @@ public:
     void push(const timespec& timestamp, const T& data);
 
     size_t getMaxElements();
-    size_t getAmplitude();
-    size_t getSignalType();
-    size_t getFrequency();
-    size_t getUpdateRate();
-    size_t getOffset();
-    size_t getPhase();
-    size_t getImpedance();
-    size_t getRefFrequency();
-    size_t getDutyCycle();
-    size_t getGain();
-    size_t getBandwidth();
-    size_t getResolution();
-    size_t getCoupling();
-    size_t getSignalRef();
-    size_t getGround();
-    size_t getNumberOfPushedDataBlocks();
+    double getAmplitude();
+    int32_t getSignalType();
+    double getFrequency();
+    double getUpdateRate();
+    double getOffset();
+    double getPhase();
+    int32_t getImpedance();
+    double getRefFrequency();
+    double getDutyCycle();
+    double getGain();
+    double getBandwidth();
+    double getResolution();
+    int32_t getCoupling();
+    int32_t getSignalRef();
+    int32_t getGround();
+    int32_t getNumberOfPushedDataBlocks();
 
     void setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value);
     void setAmplitude(const timespec& timestamp, const double& value);

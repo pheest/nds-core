@@ -91,50 +91,50 @@ void DataAcquisition<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getGain()
+double DataAcquisition<T>::getGain()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGain();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getOffset()
+double DataAcquisition<T>::getOffset()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getOffset();
 }
 
 template <typename T>
 
-size_t DataAcquisition<T>::getBandwidth()
+double DataAcquisition<T>::getBandwidth()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getBandwidth();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getResolution()
+double DataAcquisition<T>::getResolution()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getResolution();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getImpedance()
+int32_t DataAcquisition<T>::getImpedance()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getImpedance();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getCoupling()
+int32_t DataAcquisition<T>::getCoupling()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getCoupling();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getSignalRefType()
+int32_t DataAcquisition<T>::getSignalRefType()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSignalRefType();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getGround()
+int32_t DataAcquisition<T>::getGround()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getGround();
 }
@@ -152,43 +152,43 @@ timespec DataAcquisition<T>::getStartTimestamp() const
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getNumberOfPushedDataBlocks()
+int32_t DataAcquisition<T>::getNumberOfPushedDataBlocks()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getNumberOfPushedDataBlocks();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMABufferSize()
+int32_t DataAcquisition<T>::getDMABufferSize()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMABufferSize();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMAEnable()
+int32_t DataAcquisition<T>::getDMAEnable()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAEnable();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMANumChannels()
+int32_t DataAcquisition<T>::getDMANumChannels()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMANumChannels();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMAFrameType()
+int32_t DataAcquisition<T>::getDMAFrameType()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMAFrameType();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getDMASampleSize()
+int32_t DataAcquisition<T>::getDMASampleSize()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getDMASampleSize();
 }
 
 template <typename T>
-size_t DataAcquisition<T>::getSamplingRate()
+double DataAcquisition<T>::getSamplingRate()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getSamplingRate();
 }

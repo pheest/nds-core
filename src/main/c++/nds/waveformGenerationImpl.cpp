@@ -313,138 +313,138 @@ size_t WaveformGenerationImpl<T>::getMaxElements()
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getSignalType()
+int32_t WaveformGenerationImpl<T>::getSignalType()
 {
 	std::int32_t signalType;
 	timespec timestamp;
 	m_SignalType_RBVPV->read(&timestamp, &signalType);
-	return (size_t)signalType;
+	return signalType;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getAmplitude()
+double WaveformGenerationImpl<T>::getAmplitude()
 {
 	double amplitude;
 	timespec timestamp;
 	m_Amplitude_RBVPV->read(&timestamp, &amplitude);
-	return (double)amplitude;
+	return amplitude;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getFrequency()
+double WaveformGenerationImpl<T>::getFrequency()
 {
 	double frequency;
 	timespec timestamp;
 	m_Frequency_RBVPV->read(&timestamp, &frequency);
-	return (double)frequency;
+	return frequency;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getUpdateRate()
+double WaveformGenerationImpl<T>::getUpdateRate()
 {
 	double updateRate;
 	timespec timestamp;
 	m_UpdateRate_RBVPV->read(&timestamp, &updateRate);
-	return (double)updateRate;
+	return updateRate;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getOffset()
+double WaveformGenerationImpl<T>::getOffset()
 {
 	double offset;
 	timespec timestamp;
 	m_Offset_RBVPV->read(&timestamp, &offset);
-	return (double)offset;
+	return offset;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getPhase()
+double WaveformGenerationImpl<T>::getPhase()
 {
 	double phase;
 	timespec timestamp;
 	m_Phase_RBVPV->read(&timestamp, &phase);
-	return (double)phase;
+	return phase;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getImpedance()
+int32_t WaveformGenerationImpl<T>::getImpedance()
 {
 	std::int32_t impedance;
 	timespec timestamp;
 	m_Impedance_RBVPV->read(&timestamp, &impedance);
-	return (std::int32_t)impedance;
+	return impedance;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getRefFrequency()
+double WaveformGenerationImpl<T>::getRefFrequency()
 {
 	double RefFrequency;
 	timespec timestamp;
 	m_RefFrequency_RBVPV->read(&timestamp, &RefFrequency);
-	return (double)RefFrequency;
+	return RefFrequency;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getDutyCycle()
+double WaveformGenerationImpl<T>::getDutyCycle()
 {
 	double DutyCycle;
 	timespec timestamp;
 	m_DutyCycle_RBVPV->read(&timestamp, &DutyCycle);
-	return (double)DutyCycle;
+	return DutyCycle;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getGain()
+double WaveformGenerationImpl<T>::getGain()
 {
 	double Gain;
 	timespec timestamp;
 	m_Gain_RBVPV->read(&timestamp, &Gain);
-	return (double)Gain;
+	return Gain;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getBandwidth()
+double WaveformGenerationImpl<T>::getBandwidth()
 {
 	double Bandwidth;
 	timespec timestamp;
 	m_Bandwidth_RBVPV->read(&timestamp, &Bandwidth);
-	return (double)Bandwidth;
+	return Bandwidth;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getResolution()
+double WaveformGenerationImpl<T>::getResolution()
 {
 	double Resolution;
 	timespec timestamp;
 	m_Resolution_RBVPV->read(&timestamp, &Resolution);
-	return (double)Resolution;
+	return Resolution;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getCoupling()
+int32_t WaveformGenerationImpl<T>::getCoupling()
 {
 	std::int32_t Coupling;
 	timespec timestamp;
 	m_Coupling_RBVPV->read(&timestamp, &Coupling);
-	return (std::int32_t)Coupling;
+	return Coupling;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getSignalRef()
+int32_t WaveformGenerationImpl<T>::getSignalRef()
 {
 	std::int32_t SignalRef;
 	timespec timestamp;
 	m_SignalRefType_RBVPV->read(&timestamp, &SignalRef);
-	return (std::int32_t)SignalRef;
+	return SignalRef;
 }
 
 template<typename T>
-size_t WaveformGenerationImpl<T>::getGround()
+int32_t WaveformGenerationImpl<T>::getGround()
 {
 	std::int32_t Ground;
 	timespec timestamp;
 	m_Ground_RBVPV->read(&timestamp, &Ground);
-	return (std::int32_t)Ground;
+	return Ground;
 }
 
 template<typename T>

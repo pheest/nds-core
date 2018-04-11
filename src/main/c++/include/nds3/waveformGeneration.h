@@ -142,91 +142,91 @@ public:
      *
      * @return the amplitude value
      */
-    size_t getAmplitude();
+    double getAmplitude();
     /**
      * @brief Retrieve the desired signal type to be generated.
      *
      * @return the signalType value
      */
-    size_t getSignalType();
+    int32_t getSignalType();
     /**
      * @brief Retrieve the frequency of the signal generated.
      *
      * @return the frequency value
      */
-    size_t getFrequency();
+    double getFrequency();
     /**
      * @brief Retrieve the UpdateRate of the signal generated.
      *
      * @return the UpdateRate value
      */
-    size_t getUpdateRate();
+    double getUpdateRate();
     /**
      * @brief Retrieve the Offset of the signal generated.
      *
      * @return the Offset value
      */
-    size_t getOffset();
+    double getOffset();
     /**
      * @brief Retrieve the Phase of the signal generated.
      *
      * @return the Phase value
      */
-    size_t getPhase();
+    double getPhase();
     /**
      * @brief Retrieve the Impedance of the signal generator.
      *
      * @return the Impedance value
      */
-    size_t getImpedance();
+    int32_t getImpedance();
     /**
      * @brief Retrieve the RefFrequency of the signal generator.
      *
      * @return the RefFrequency value
      */
-    size_t getRefFrequency();
+    double getRefFrequency();
     /**
      * @brief Retrieve the DutyCycle of the signal generator.
      *
      * @return the DutyCycle value
      */
-    size_t getDutyCycle();
+    double getDutyCycle();
     /**
      * @brief Retrieve the Gain of the signal generator.
      *
      * @return the Gain value
      */
-    size_t getGain();
+    double getGain();
     /**
      * @brief Retrieve the Bandwidth of the signal generator.
      *
      * @return the Bandwidth value
      */
-    size_t getBandwidth();
+    double getBandwidth();
     /**
      * @brief Retrieve the Resolution of the signal generator.
      *
      * @return the Resolution value
      */
-    size_t getResolution();
+    double getResolution();
     /**
      * @brief Retrieve the Coupling of the signal generator.
      *
      * @return the Coupling value
      */
-    size_t getCoupling();
+    int32_t getCoupling();
     /**
      * @brief Retrieve the SignalRef of the signal generator.
      *
      * @return the SignalRef value
      */
-    size_t getSignalRef();
+    int32_t getSignalRef();
     /**
       * @brief Retrieve the Ground of the signal generator.
       *
       * @return the Ground value
       */
-     size_t getGround();
+    int32_t getGround();
     /**
      * @brief Sets the value of the m_NumberOfPushedDataBocks.
      *
