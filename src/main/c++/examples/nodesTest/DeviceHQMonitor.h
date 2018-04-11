@@ -61,7 +61,7 @@ private:
 	/**
 	 * @brief HealthMonitor node
 	 */
-	nds::HealthMonitSup m_HQMonitor;
+	nds::HQMonitor m_HQMonitor;
 
 	/**
 	 * Methods to control the HQMonitor state machine

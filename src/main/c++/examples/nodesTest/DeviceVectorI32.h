@@ -1,5 +1,5 @@
-#ifndef DEVICEVECTORUI8_H_
-#define DEVICEVECTORUI8_H_
+#ifndef DEVICEVECTORI32_H_
+#define DEVICEVECTORI32_H_
 
 #include <memory>
 
@@ -12,13 +12,14 @@
 #include <nds3/nds.h>
 
 /**
- * @brief Class that declares and implement a fictional device for testing purposes of nds-core V3.
+ * @brief Class that declares and implement a fictional device with a Data Acquisition node and a Waveform Generator node
+ * 			of type vector<int32_t> for testing purposes of nds-core V3.
  *
  *
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceVectorUI8
+class DeviceVectorI32
 {
 public:
 	/**
@@ -28,8 +29,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceVectorUI8(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceVectorUI8();
+	DeviceVectorI32(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceVectorI32();
 
 #ifndef EPICS
 	/*
@@ -44,7 +45,8 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceVectorUI8* getInstance(const std::string& deviceName);
+	static DeviceVectorI32* getInstance(const std::string& deviceName);
+
 
 private:
 
@@ -60,20 +62,20 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @brief DeviceVectorUI8 state machine
+	 * @brief DeviceVectorI32 state machine
 	 */
-	nds::StateMachine m_DeviceVectorUI8_stateMachine;
+	nds::StateMachine m_DeviceVectorI32_stateMachine;
 
 	/**
-	 * Methods to control DeviceVectorUI8 state machine
+	 * Methods to control DeviceVectorI32 state machine
 	 */
-	void switchOn_DeviceVectorUI8();  ///< Called to switch on the DeviceVectorUI8 (rootnode).
-	void switchOff_DeviceVectorUI8(); ///< Called to switch off the DeviceVectorUI8 (rootnode).
-	void start_DeviceVectorUI8();     ///< Called to start the DeviceVectorUI8 (rootnode).
-	void stop_DeviceVectorUI8();      ///< Called to stop the DeviceVectorUI8 (rootnode).
-	void recover_DeviceVectorUI8();   ///< Called to recover the DeviceVectorUI8 (rootnode) from a failure.
+	void switchOn_DeviceVectorI32();  ///< Called to switch on the DeviceVectorI32 (rootnode).
+	void switchOff_DeviceVectorI32(); ///< Called to switch off the DeviceVectorI32 (rootnode).
+	void start_DeviceVectorI32();     ///< Called to start the DeviceVectorI32 (rootnode).
+	void stop_DeviceVectorI32();      ///< Called to stop the DeviceVectorI32 (rootnode).
+	void recover_DeviceVectorI32();   ///< Called to recover the DeviceVectorI32 (rootnode) from a failure.
 
-	bool allow_DeviceVectorUI8_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+	bool allow_DeviceVectorI32_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	nds::PVVariableOut<std::int32_t> m_setCurrentTime;
 	timespec getCurrentTime();
@@ -85,7 +87,7 @@ private:
 	/**
 	 * @brief DataAcquisition node
 	 */
-	nds::DataAcquisition<std::vector<std::uint8_t> > m_DataAcquisition;
+	nds::DataAcquisition<std::vector<std::int32_t> > m_DataAcquisition;
 
 	/**
 	 * Methods to control DataAcquisition state machine
@@ -129,7 +131,6 @@ private:
 	 */
 	volatile bool m_bStop_DataAcquisition;
 
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	//  DATA GENERATION
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +138,7 @@ private:
 	/**
 	 * @brief WaveformGeneration node
 	 */
-	nds::WaveformGeneration<std::vector<std::uint8_t>> m_WaveformGeneration;
+	nds::WaveformGeneration<std::vector<std::int32_t>> m_WaveformGeneration;
 
 	/**
 	 * Methods to control WaveformGeneration state machine
@@ -188,4 +189,4 @@ private:
 
 };
 
-#endif // DEVICEVECTORUI8_H_
+#endif // DEVICEVECTORI32_H_

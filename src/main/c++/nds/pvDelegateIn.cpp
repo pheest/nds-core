@@ -39,6 +39,9 @@ template class PVDelegateIn<std::vector<std::int16_t> >;
 template class PVDelegateIn<std::vector<std::int32_t> >;
 template class PVDelegateIn<std::vector<double> >;
 template class PVDelegateIn<std::string>;
+template class PVDelegateIn<timespec>;
+template class PVDelegateIn<std::vector<timespec>>;
+template class PVDelegateIn<timestamp_t>;
 
 
 }

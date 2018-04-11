@@ -241,22 +241,9 @@ size_t RoutingImpl<T>::getTermInvertSet()
 	return (std::int32_t)TermInvertSet;
 }
 
-/** TODO some setters have been commented. Should they exist?
- *
- */
-
 ///////////////////////////////////////////////////////////////
 // Route Clocks setters
 ///////////////////////////////////////////////////////////////
-
-//template<typename T>
-//void RoutingImpl<T>::setClkSet(const timespec& timestamp, const std::int32_t& value)
-//{
-//	m_ClkSet_PV->setValue(timestamp, value);
-//	m_ClkSet_PV->push(timestamp, value);
-//}
-
-
 template<typename T>
 void RoutingImpl<T>::setClkSetStatus(const timespec& timestamp, const std::string& value)
 {
@@ -277,15 +264,6 @@ void RoutingImpl<T>::setClkSetCode(const timespec& timestamp, const std::int32_t
 ////////////////////////////////////////////////////////////////////////////
 // Read Clock Route Status setters
 ////////////////////////////////////////////////////////////////////////////
-
-//template<typename T>
-//void RoutingImpl<T>::setClkDstRead(const timespec& timestamp, const std::int32_t& value)
-//{
-//	m_ClkDstRead_PV->setValue(timestamp, value);
-//	m_ClkDstRead_PV->push(timestamp, value);
-//}
-
-
 template<typename T>
 void RoutingImpl<T>::setClkSrcRead(const timespec& timestamp, const std::int32_t& value)
 {
@@ -298,15 +276,6 @@ void RoutingImpl<T>::setClkSrcRead(const timespec& timestamp, const std::int32_t
 ////////////////////////////////////////////////////////////////////////////
 // Route Terminals setters
 ////////////////////////////////////////////////////////////////////////////
-
-//template<typename T>
-//void RoutingImpl<T>::setTermSet(const timespec& timestamp, const std::int32_t& value)
-//{
-//	m_TermSe_PV->setValue(timestamp, value);
-//	m_TermSe_PV->push(timestamp, value);
-//}
-
-
 template<typename T>
 void RoutingImpl<T>::setTermSetStatus(const timespec& timestamp, const std::string& value)
 {
@@ -328,15 +297,6 @@ void RoutingImpl<T>::setTermSetCode(const timespec& timestamp, const std::int32_
 ////////////////////////////////////////////////////////////////////////////
 // Read Routing Configuration setters
 ////////////////////////////////////////////////////////////////////////////
-
-//template<typename T>
-//void RoutingImpl<T>::setTermDstRead(const timespec& timestamp, const std::int32_t& value)
-//{
-//	m_TermDstRead_PV->setValue(timestamp, value);
-//	m_TermDstRead_PV->push(timestamp, value);
-//}
-
-
 template<typename T>
 void RoutingImpl<T>::setTermSrcRead(const timespec& timestamp, const std::int32_t& value)
 {

@@ -7,14 +7,15 @@
  * By GMV & UPM
  */
 
-#ifndef NDSTIMESUPP_H
-#define NDSTIMESUPP_H
+#ifndef NDSTIMING_H
+#define NDSTIMING_H
 
 /**
  * @file timing.h
- * @brief TBD DESCRIBIR ALGO AQUI!!!! 
+ * @brief Defines the nds::timing node.
  *
- *
+ * Include nds.h instead of this one, since nds3.h takes care of including all the
+ * necessary header files (including this one).
  */
 
 #include "nds3/definitions.h"
@@ -48,7 +49,19 @@ class NDS3_API Timing: public Node  {
     Timing& operator=(const Timing& right);
 
     /**
-     * @brief Constructs the timing support device node.
+     * @ingroup
+     * @brief Constructs the Timing node
+     *
+     * @param name node name
+     * @param maxElements not used in this node
+     * @param switchOnFunction  Delegate function, performs the actions to switch the node on
+     * @param switchOffFunction Delegate function, performs the actions to switch the node off
+     * @param startFunction     Delegate function, performs the actions to start the timestamping
+     * @param stopFunction      Delegate function, performs the actions to stop the timestamping
+     * @param recoverFunction   Delegate function to execute to recover from an error state
+     * @param allowStateChangeFunction  Delegate function that can deny a state change.
+     *                                  Usually just returns true
+     * @param PV_Time_Reader Delegate function, reads  Time PV
      *
      */
     Timing( const std::string& name,
@@ -74,7 +87,7 @@ class NDS3_API Timing: public Node  {
      * @ingroup
      * @brief Push data to the control system.
      *
-     * Usually your device implementation will call this function from the
+     * Usually your device implementation will call th`is function from the
      *  data thread in order to push the data.
      *
      * @param timestamp the timestamp for the data
@@ -92,7 +105,7 @@ class NDS3_API Timing: public Node  {
 
    // ----------------------------- Getters -------------------------------- //
    /**
-    * @brief Retrieve the UNIX time 
+    * @brief Retrieve the UNIX time
     *
     * @return UNIX time
     */
@@ -104,22 +117,22 @@ class NDS3_API Timing: public Node  {
     */
    std::string getHumanTime();
    /**
-    * @brief Retrieve the Clock frequency
+    * @brief Retrieve the clock frequency
     *
-    * @return the  Clock frequency value
+    * @return the  clock frequency value
     */
    double getClkFrequency();
    /**
-    * @brief Retrieve the Clock multiplier
+    * @brief Retrieve the clock multiplier
     *
-    * @return the  Clock multiplier value
+    * @return clock multiplier value
     */
    std::int32_t getClkMultiplier();
    /**
-    * @brief Retrieve Synchronization status: NOT_SYNCED(0), 
-    * SYNCING(1), SYNCED(2), LOST_SYNC(3)
+    * @brief Retrieve synchronization status: NOT_SYNCED(0),
+    *   SYNCING(1), SYNCED(2), LOST_SYNC(3)
     *
-    * @return Synchronization status
+    * @return synchronization status
     *
     */
    std::int32_t getSyncStatus();
@@ -137,46 +150,52 @@ class NDS3_API Timing: public Node  {
    timespec getRefTimeBase();
 
    // ----------------------------- Setters -------------------------------- //
-   /** 
-    * @brief  sets the UNIX Time (PV is Delegate, 
-    *         push is called)
-    *
+   /**
+    * @brief  sets the UNIX Time (PV is Delegate,
+    *         push is called) It updates both Time and Htime
+    * @param  timestamp timestamp
+    * @param  value Time
     */
    void setTime(const timespec& timestamp, const timespec& value);
-   /** 
-    * @brief  sets the human readable time (UTC format) 
-    *
-    */
-   void setHumanTime(const timespec& timestamp, const std::string& value);
-
    /**
-    * @brief Sets the value of the Clock frequency
+    * @brief Sets the value of the clock frequency
     *
+    * @param  timestamp timestamp
+    * @param  value clock frequency
     */
    void setClkFrequency(const timespec& timestamp, const double& value);
    /**
-    * @brief Sets the value of the Clock multiplier
+    * @brief Sets the value of the clock multiplier
     *
+    * @param  timestamp timestamp
+    * @param  value clock multiplier
     */
    void setClkMultiplier(const timespec& timestamp, const std::int32_t& value);
    /**
-    * @brief Sets the value of the Clock frequency
+    * @brief Sets the value of synchronization status: NOT_SYNCED(0),
+    *   SYNCING(1), SYNCED(2), LOST_SYNCED(3)
     *
+    * @param  timestamp timestamp
+    * @param  value synchronization status
     */
    void setSyncStatus(const timespec& timestamp, const std::int32_t& value);
    /**
-    * @brief Sets the value of the seconds since last Sync
+    * @brief Sets the value of seconds since last sync
     *
+    * @param  timestamp timestamp
+    * @param  value seconds since last sync
     */
    void setSecsLastSync(const timespec& timestamp, const std::int32_t& value);
    /**
     * @brief Sets the value of the Reference base time
     *
+    * @param  timestamp timestamp
+    * @param  value reference base time
     */
    void setRefTimeBase(const timespec& timestamp, const timespec& value);
 
 };
 
-}  
+}
 
 #endif // NDSTIMING_H

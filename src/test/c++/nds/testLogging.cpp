@@ -103,17 +103,17 @@ TEST(testLogging, testLotOfPVs)
         std::ostringstream errorString;
         errorString << "Error string" << scanPVs << std::endl;
 
-        EXPECT_EQ(scanPVs < 200 ? 1 : 0, pFactory->countStringInLog(debugString.str()));
+        EXPECT_EQ(size_t(scanPVs < 200 ? 1 : 0), pFactory->countStringInLog(debugString.str()));
 
-        EXPECT_EQ(scanPVs < 400 ? 1 : 0, pFactory->countStringInLog(infoString.str()));
+        EXPECT_EQ(size_t(scanPVs < 400 ? 1 : 0), pFactory->countStringInLog(infoString.str()));
 
-        EXPECT_EQ(scanPVs < 600 ? 1 : 0, pFactory->countStringInLog(warningString.str()));
+        EXPECT_EQ(size_t(scanPVs < 600 ? 1 : 0), pFactory->countStringInLog(warningString.str()));
 
-        EXPECT_EQ(scanPVs < 800 ? 1 : 0, pFactory->countStringInLog(errorString.str()));
+        EXPECT_EQ(size_t(scanPVs < 800 ? 1 : 0), pFactory->countStringInLog(errorString.str()));
     }
 
     factory.destroyDevice("");
 
-    EXPECT_EQ(0, pFactory->getRegisteredCommandsNumber());
+    EXPECT_EQ(size_t(0), pFactory->getRegisteredCommandsNumber());
 
 }

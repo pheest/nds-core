@@ -42,6 +42,7 @@ public:
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value);
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value);
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value);
 
 
     template<typename T>
@@ -63,6 +64,7 @@ public:
     void getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue);
     void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue);
     void getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue);
+    void getPushedTimestamp(const std::string& pvName, const timespec*& pTime, const timestamp_t*& pValue);
 
 private:
     const std::string m_name;
@@ -119,6 +121,7 @@ private:
     std::map<std::string, PushedValues<std::string> >m_pushedString;
     std::map<std::string, PushedValues<timespec> >m_pushedTimespec;
     std::map<std::string, PushedValues<std::vector<timespec>> >m_pushedVectorTimespec;
+    std::map<std::string, PushedValues<timestamp_t> >m_pushedTimestamp;
 
 
     template <typename T>
@@ -136,7 +139,13 @@ private:
                            const timespec*& pTime,
                            const T*& pValue)
     {
-        storeInto[pvName].getValue(pTime, pValue);
+        try {
+		storeInto[pvName].getValue(pTime, pValue);
+	} catch (const std::runtime_error& ex) {
+		std::string msg = ex.what();
+		msg += " (PV name: " + pvName + ")";
+		throw std::runtime_error(msg);
+	}
     }
 
 };

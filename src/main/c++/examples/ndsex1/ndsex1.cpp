@@ -34,8 +34,7 @@ static std::map<std::string, Device*> m_DevicesMap;
 
 static std::mutex m_lockDevicesMap;
 
-//Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 m_name(DeviceName)
 
 {

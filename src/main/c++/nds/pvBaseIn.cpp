@@ -57,6 +57,7 @@ template void PVBaseIn::read<std::vector<double> >(timespec*, std::vector<double
 template void PVBaseIn::read<std::string >(timespec*, std::string*) const;
 template void PVBaseIn::read<timespec >(timespec*, timespec*) const;
 template void PVBaseIn::read<std::vector<timespec> >(timespec*, std::vector<timespec>*) const;
+template void PVBaseIn::read<timestamp_t>(timespec*, timestamp_t*) const;
 
 template void PVBaseIn::push<std::int32_t>(const timespec&, const std::int32_t&);
 template void PVBaseIn::push<double>(const timespec&, const double&);
@@ -71,6 +72,7 @@ template void PVBaseIn::push<std::vector<double> >(const timespec&, const std::v
 template void PVBaseIn::push<std::string >(const timespec&, const std::string&);
 template void PVBaseIn::push<timespec >(const timespec&, const timespec&);
 template void PVBaseIn::push<std::vector<timespec> >(const timespec&, const std::vector<timespec>&);
+template void PVBaseIn::push<timestamp_t>(const timespec&, const timestamp_t&);
 
 }
 

@@ -24,9 +24,12 @@
 NDSLIBDIR:=$(realpath ../../../../target/lib)
 # Path from which the device source file will be obtained.
 EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nodesTest)
-EXINCLUDEDIR:=$(realpath ../../../main/c++/examples/include)
+EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
+# Necessary for make to find the source files in a different directory.
+VPATH =$(EXAMPLESDIR)
 
-INCLUDES :=-I../../../main/c++/include -I$(EXINCLUDEDIR) 
+
+INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR)
 LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 # Much of this code is copied from gtest/make/Makefile; it probably doesn't #
@@ -49,27 +52,18 @@ INCLUDES +=-I$(GTEST_DIR) -I$(GTEST_DIR)/include
 CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++0x
 LDFLAGS +=$(LIBPATH) -lpthread -lnds3 -ldl -lrt
 
-TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp,./%.o,$(wildcard $(EXAMPLESDIR)/*.cpp))
+TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
-
-# TODO: support "make debug" as a way to build with this flag
-#CXXFLAGS += -DDEBUG
-
-# Sometimes during development it is convenient to focus on a smaller set of
-# terminals (e.g. NISYNC_PFI0,NISYNC_PFI1) or a single terminal (e.g.
-# NISYNC_PFI2)
-#CXXFLAGS += -DNISYNC_TEST_EVENT_TERMINALS=NISYNC_PFI0,NISYNC_PFI1,NISYNC_PFI2
-#CXXFLAGS += -DNISYNC_TEST_ROUTABLE_TERMINALS=NISYNC_PFI2
 
 TEST =nds3core-unit-tests
 
 all: $(TEST)
 
 $(TEST): $(TESTS_OBJS) gtest_main.a
-	$(CXX) --coverage -o $@ $^ $(LDFLAGS)
+	$(CXX) $^ --coverage -o $@ $(LDFLAGS)
 
-./Device%.o: $(EXAMPLESDIR)/Device%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $^
+%.o: $(EXAMPLESDIR)/%.cpp $(EXAMPLESHEADERS)
+	$(CXX) $< -c $(CXXFLAGS) -o $@
 
 clean:
 	@$(RM) $(TESTS) gtest.a gtest_main.a *.o *.d

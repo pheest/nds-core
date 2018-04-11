@@ -40,21 +40,20 @@ class NDS3_API Timestamping: public Node  {
      * @param right a holder from which the reference to
      *        the object implementation is copied
      */
-    Timestamping(const Timestamping& right);
+    Timestamping(const Timestamping<T>& right);
 
 
     /**
      * @brief overloading of assignment operator
      * */
-    Timestamping& operator=(const Timestamping& right);
+    Timestamping& operator=(const Timestamping<T>& right);
 
     /**
+     * @ingroup
      * @brief Constructs the Time stamping node
      *
-     * @description it calls the constructor of
-     *
-     * @param name
-     * @param maxElements
+     * @param name node name
+     * @param maxElements not used in this node
      * @param switchOnFunction  Delegate function, performs the actions to switch the node on
      * @param switchOffFunction Delegate function, performs the actions to switch the node off
      * @param startFunction     Delegate function, performs the actions to start the timestamping
@@ -63,7 +62,9 @@ class NDS3_API Timestamping: public Node  {
      * @param allowStateChangeFunction  Delegate function that can deny a state change.
      *                                  Usually just returns true
      * @param PV_Enable_Writer Delegate function to enable/disable timestamping
-     * @param PV_Edge_Writer   Delegate function, performs the actions to set
+     * @param PV_Edge_Writer   Delegate function, sets the edges at which the
+     *                         timestamping must be retrieved: RISING, FALLING, ANY.
+     * @param PV_ClearOverflowWriter    Delegate function, performs the actions to clear the overflow.
      *
      */
     Timestamping(const std::string& name,
@@ -74,7 +75,7 @@ class NDS3_API Timestamping: public Node  {
                  stateChange_t stopFunction,
                  stateChange_t recoverFunction,
                  allowChange_t allowStateChangeFunction,
-                 writerInt32_t PV_Enable_Writer, //Delegate function to enable/disable timestamping
+                 writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
                  writerInt32_t PV_ClearOverflow_Writer);
 
@@ -117,7 +118,7 @@ class NDS3_API Timestamping: public Node  {
     std::int32_t getEnable();
 
     /**
-     * @brief Retreives detection edge
+     * @brief Sets detection Edge: RISING(0), FALLING(1), ANY(2)
      *
      * @return detection edge
      */
@@ -163,7 +164,7 @@ class NDS3_API Timestamping: public Node  {
     void setMaxTimestamps(const timespec& timestamp, const std::int32_t& value);
 
     /**
-    * @brief Sets overflow error status
+    * @brief Sets overflow error status: NO(0), OVERFLOWED(1), FULL(2), ERROR(2)
     *
     * @param timestamp timestamp
     * @param value overflow error status

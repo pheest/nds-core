@@ -1,3 +1,5 @@
+*.tmp
+*.a
 *.pyc
 *.o
 *.so
@@ -11,4 +13,8 @@ QtC-*
 .settings/
 .project
 .cproject
-*sw*
+.*sw*
+\#*\#
+\#*
+*\#
+.\#*

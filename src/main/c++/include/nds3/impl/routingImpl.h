@@ -54,7 +54,6 @@ public:
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
-
     size_t getClkSrc();
     size_t getClkDst();
 
@@ -63,24 +62,15 @@ public:
     size_t getTermSyncSet();
     size_t getTermInvertSet();
 
-
-
-    //TODO Necesito los setters que están comentados?
-
-//    void setClkSet(const timespec& timestamp, const std::int32_t& value);		// Delegate
     void setClkSetStatus(const timespec& timestamp, const std::string& value);
     void setClkSetCode(const timespec& timestamp, const std::int32_t& value);
-//    void setClkDstRead(const timespec& timestamp, const std::int32_t& value);	// Delegate
     void setClkSrcRead(const timespec& timestamp, const std::int32_t& value);
 
-//    void setTermSet(const timespec& timestamp, const std::int32_t& value);		// Delegate
     void setTermSetStatus(const timespec& timestamp, const std::string& value);
     void setTermSetCode(const timespec& timestamp, const std::int32_t& value);
-//    void setTermDstRead(const timespec& timestamp, const std::int32_t& value);	// Delegate
     void setTermSrcRead(const timespec& timestamp, const std::int32_t& value);
     void setTermSyncRead(const timespec& timestamp, const std::int32_t& value);
     void setTermInvertRead(const timespec& timestamp, const std::int32_t& value);
-
 
     /**
      * @brief Returns the timestamp at the start.

@@ -74,6 +74,7 @@ template class PVVariableIn<std::vector<double> >;
 template class PVVariableIn<std::string>;
 template class PVVariableIn<timespec>;
 template class PVVariableIn<std::vector<timespec>>;
+template class PVVariableIn<timestamp_t>;
 
 }
 
