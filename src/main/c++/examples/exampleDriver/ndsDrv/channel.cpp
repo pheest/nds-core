@@ -164,7 +164,7 @@ void channel::pv_offset_writer(const timespec& timestamp, const double& value) {
 }
 
 void channel::pv_bandwidth_writer(const timespec& timestamp,
-				  const double& value){
+				  const double& value) {
 
   double HW_value;
   // Value has the Bandwidth to be programmed on the hardware.
@@ -177,7 +177,7 @@ void channel::pv_bandwidth_writer(const timespec& timestamp,
 }
 
 void channel::pv_resolution_writer(const timespec& timestamp,
-				   const double& value){
+				   const double& value) {
 
   double HW_value;
   // Value has the Resolution to be programmed on the hardware.
@@ -189,7 +189,7 @@ void channel::pv_resolution_writer(const timespec& timestamp,
   m_acquisition.setResolution(timestamp,HW_value);
 }
 
-void channel::pv_impedance_writer(const timespec& timestamp, const double& value){
+void channel::pv_impedance_writer(const timespec& timestamp, const double& value) {
 
   double HW_value;
   // Value has the Impedance to be programmed on the hardware.
@@ -202,7 +202,7 @@ void channel::pv_impedance_writer(const timespec& timestamp, const double& value
 }
 
 void channel::pv_coupling_writer(const timespec& timestamp,
-				 const std::int32_t& value){
+				 const std::int32_t& value) {
 
   std::int32_t HW_value;
   // Value has the Coupling to be programmed on the hardware.
@@ -216,7 +216,7 @@ void channel::pv_coupling_writer(const timespec& timestamp,
 
 
 void channel::pv_signalRefType_writer(const timespec& timestamp,
-				      const std::int32_t& value){
+				      const std::int32_t& value) {
 
   std::int32_t HW_value;
   // Value has the SignalRefType to be programmed on the hardware.
@@ -228,7 +228,7 @@ void channel::pv_signalRefType_writer(const timespec& timestamp,
 }
 
 void channel::pv_ground_writer(const timespec& timestamp,
-			       const std::int32_t& value){
+			       const std::int32_t& value) {
 
   std::int32_t HW_value;
   // Value has the Ground to be programmed on the hardware.
@@ -240,7 +240,7 @@ void channel::pv_ground_writer(const timespec& timestamp,
 }
 
 void channel::pv_dmaEnable_writer(const timespec& timestamp,
-				  const std::int32_t& value){
+				  const std::int32_t& value) {
 
   std::int32_t HW_value;
   // Value has the DMAEnable value to be programmed on the hardware.
@@ -254,7 +254,7 @@ void channel::pv_dmaEnable_writer(const timespec& timestamp,
 }
 
 void channel::pv_samplingRate_writer(const timespec& timestamp,
-				     const double& value){
+				     const double& value) {
 
   double HW_value;
   // Value has the SamplingRate to be programmed on the hardware.
@@ -322,7 +322,7 @@ void channel::acquisition_thread_body() {
     std::cout << "\tDMAEnable = " << DMAEnable << std::endl;
     std::cout << "\tSamplingRate = " << SamplingRate << std::endl;
 
-    while(!m_stop_acquisition){
+    while(!m_stop_acquisition) {
 
       // Refresh desired amplitude, frequency and sampling rate from control system.
       amplitude = m_amplitude.getValue();

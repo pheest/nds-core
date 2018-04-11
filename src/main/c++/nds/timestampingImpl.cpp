@@ -17,7 +17,7 @@ namespace nds {
 
   template<typename T>
   TimestampingImpl<T>::TimestampingImpl(const std::string& name,
-      size_t maxElements,
+      size_t /*maxElements*/,
       stateChange_t switchOnFunction,
       stateChange_t switchOffFunction,
       stateChange_t startFunction,
@@ -85,14 +85,14 @@ namespace nds {
 
     // PV: Timestamps
     m_Timestamps_PV.reset(new PVVariableInImpl<T>("Timestamps"));
-    m_Timestamps_PV->setDescription("Timestamps on terminal (timestamp, edge, ID)");
+    m_Timestamps_PV->setDescription("Timestamp (sec,ns), ID, Edge");
     m_Timestamps_PV->setScanType(scanType_t::interrupt, 0);
     m_Timestamps_PV->setMaxElements(4);
     addChild(m_Timestamps_PV);
 
     // PV: Maxtimestamps
     m_MaxTimestamps_PV.reset(new PVVariableInImpl<std::int32_t>("MaxTimestamps"));
-    m_MaxTimestamps_PV->setDescription("Get maximum number of timestamps (FIFO size)");
+    m_MaxTimestamps_PV->setDescription("Maximum number of timestamps (FIFO size)");
     m_MaxTimestamps_PV->setScanType(scanType_t::interrupt, 0);
     addChild(m_MaxTimestamps_PV);
 

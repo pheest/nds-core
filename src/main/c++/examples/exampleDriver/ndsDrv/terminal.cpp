@@ -29,7 +29,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
    *
    */
   m_timestamping = terminal.addChild(nds::Timestamping<nds::timestamp_t>
-	   ("Timestamping", /* Name of the node which will be used by the CS. */
+	   ("TS", /* Name of the node which will be used by the CS. */
 	    4, /* This may be deprecated in the future. */
 	    std::bind(&terminal::switchon_timestamping, this),
 	    std::bind(&terminal::switchoff_timestamping, this),
@@ -54,7 +54,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
    *   Timing node is also added to the CS via the addChild function.
    */
   m_timing = terminal.addChild(nds::Timing(
-	 "Timing", /* Name of the node used by the CS. */
+	 "TM", /* Name of the node used by the CS. */
 	 std::bind(&terminal::switchon_timing, this),
 	 std::bind(&terminal::switchoff_timing, this),
 	 std::bind(&terminal::start_timing, this),
@@ -72,7 +72,7 @@ terminal::terminal(const std::string& name, nds::Node& parent):
 
 
 
-terminal::~terminal(){
+terminal::~terminal() {
 
 }
 
@@ -89,7 +89,7 @@ terminal::~terminal(){
  *   Timing state machine. NDS makes sure these functions are called only once
  * during the state change.
  */
-void terminal::switchon_timing(){
+void terminal::switchon_timing() {
 
   // This function is called when turning the node from OFF to ON. Here all the
   // PVs, flags may be setted for other dependant nodes (and this node as well)
@@ -107,7 +107,7 @@ void terminal::switchon_timing(){
   m_timing.setRefTimeBase(m_timing.getTimestamp(), m_timing.getTimestamp());
 }
 
-void terminal::switchoff_timing(){
+void terminal::switchoff_timing() {
 
   // This function is called when turning the node from ON to OFF. It can be
   // useful to deallocate variables, set different PVs accordingly as well as
@@ -119,7 +119,7 @@ void terminal::switchoff_timing(){
   m_timing.setSecsLastSync(m_timing.getTimestamp(), 10);
 }
 
-void terminal::start_timing(){
+void terminal::start_timing() {
 
   // Function called when turning the node from  ON to RUNNING. This function
   // initializes the timing functionalities. In this case a thread is launched
@@ -138,7 +138,7 @@ void terminal::start_timing(){
   m_timing_thread = std::thread(std::bind(&terminal::timing_thread_body, this));
 }
 
-void terminal::stop_timing(){
+void terminal::stop_timing() {
 
   // Function called when turning the node from RUNNING to ON. In this case the
   // thread is closed and linux time is not pushed anymore to the CS.
@@ -146,7 +146,7 @@ void terminal::stop_timing(){
   m_timing_thread.join();
 }
 
-void terminal::recover_timing(){
+void terminal::recover_timing() {
 
   // Function called when there has been an error and the node needs to go back
   // from FAULT state to OFF. If the exception StateMachineTRollBack is thrown
@@ -157,7 +157,7 @@ void terminal::recover_timing(){
 }
 
 bool terminal::allow_timing_change(const nds::state_t, const nds::state_t,
-				   const nds::state_t){
+				   const nds::state_t) {
 
   // Function called by NDS when changing from one state to the other. It allows
   // a change of state only if a given condition is fulfilled. In this case all
@@ -166,14 +166,14 @@ bool terminal::allow_timing_change(const nds::state_t, const nds::state_t,
 
 }
 
-void terminal::pv_time_reader(timespec * time, timespec* val){
+void terminal::pv_time_reader(timespec * /* time */, timespec* val) {
 
   // Delegate method for the time PV which reads the time from the HW. In this
   // case the Linux time is published:
   clock_gettime(CLOCK_REALTIME, val);
 }
 
-void terminal::timing_thread_body(){
+void terminal::timing_thread_body() {
 
   // This thread only runs while the state machine is in RUNNING state.
   // Get clock frequency.
@@ -196,7 +196,7 @@ void terminal::timing_thread_body(){
 	    << ", " << time_base.tv_nsec << "}" << std::endl;
 
   // Run until the state machine stops us.
-  while(!m_stop_timing){
+  while(!m_stop_timing) {
 
     // For PV Delegates of type IN first a Get is done to read the PV value and
     // secondly a set is done to push it to the CS (is an IO interrupt PV).
@@ -218,7 +218,7 @@ void terminal::timing_thread_body(){
  * above.
  *
  */
-void terminal::switchon_timestamping(){
+void terminal::switchon_timestamping() {
 
   // In this case when the timestamping is switched to ON the following PVs are
   // set:
@@ -232,12 +232,12 @@ void terminal::switchon_timestamping(){
   m_timestamping.setOverflow(m_timing.getTimestamp(), 0 /* NO */);
 }
 
-void terminal::switchoff_timestamping(){
+void terminal::switchoff_timestamping() {
 
   m_timestamping.setEnable(m_timing.getTimestamp(), 0 /* OFF */);
 }
 
-void terminal::start_timestamping(){
+void terminal::start_timestamping() {
 
   m_stop_timestamping = false;
   /**
@@ -250,19 +250,19 @@ void terminal::start_timestamping(){
 }
 
 
-void terminal::stop_timestamping(){
+void terminal::stop_timestamping() {
 
   m_stop_timestamping = true;
   m_timestamping_thread.join();
 }
 
-void terminal::recover_timestamping(){
+void terminal::recover_timestamping() {
 
   throw nds::StateMachineRollBack("Cannot recover");
 }
 
 bool terminal::allow_timestamping_change(const nds::state_t, const nds::state_t,
-					 const nds::state_t){
+					 const nds::state_t) {
 
   return true;
 }
@@ -274,7 +274,7 @@ bool terminal::allow_timestamping_change(const nds::state_t, const nds::state_t,
  * These functions will write on the HW the passed value.
  */
 void terminal::pv_enable_writer(const timespec& timestamp,
-				const std::int32_t& value){
+				const std::int32_t& value) {
 
   // This function may interact with the api hardware to enable the timestamping
   // functionalities.
@@ -282,15 +282,15 @@ void terminal::pv_enable_writer(const timespec& timestamp,
 }
 
 void terminal::pv_edge_writer(const timespec& timestamp,
-			      const std::int32_t& value){
+			      const std::int32_t& value) {
 
   // This function may interact with the api hardware to set in which edge of the
   // clock frequency is the sampling done.
   m_timestamping.setEdge(timestamp, value);
 }
 
-void terminal::pv_clearoverflow_writer(const timespec& timestamp,
-				       const std::int32_t& value){
+void terminal::pv_clearoverflow_writer(const timespec& /* timestamp */,
+				       const std::int32_t& /*value*/) {
 
   // This function may have to interact with the api hardware to clear the HW
   // stack of timestamps.
@@ -300,13 +300,13 @@ void terminal::pv_clearoverflow_writer(const timespec& timestamp,
 
 
 
-void terminal::timestamping_thread_body(){
+void terminal::timestamping_thread_body() {
 
   nds::timestamp_t timestamp;
 
   // This loop performs a periodic push of timestamps while the node is in
   // RUNNING state. No control of overflow is done.
-  while(!m_stop_timestamping){
+  while(!m_stop_timestamping) {
 
     timestamp.timestamp = m_timing.getTime();
     timestamp.rising = false;

@@ -9,7 +9,7 @@
 
 exampleDrv::exampleDrv(nds::Factory& factory,
 			   const std::string& device,
-			   const nds::namedParameters_t& paramters){
+			   const nds::namedParameters_t& /*parameters*/) {
 
   /**
    *   This will be the main class of the driver. To enable interface with Asyn
@@ -25,7 +25,7 @@ exampleDrv::exampleDrv(nds::Factory& factory,
    *
    */
   size_t maxCh = 2; /* Number of channels. */
-  for(size_t i = 0; i < maxCh; i++){
+  for(size_t i = 0; i < maxCh; i++) {
 
     std::ostringstream chName;
     chName << "CH" << i;
@@ -39,7 +39,7 @@ exampleDrv::exampleDrv(nds::Factory& factory,
    *
    */
   size_t maxTr= 2; /* Number of channels. */
-  for(size_t i = 0; i < maxTr; i++){
+  for(size_t i = 0; i < maxTr; i++) {
 
     std::ostringstream trName;
     trName << "TR" << i;
@@ -78,7 +78,7 @@ exampleDrv::exampleDrv(nds::Factory& factory,
 
 
 
-exampleDrv::~exampleDrv(){
+exampleDrv::~exampleDrv() {
 
 }
 
@@ -96,7 +96,7 @@ exampleDrv::~exampleDrv(){
  * file.
  *
  */
-void exampleDrv::switchon_firmware(){
+void exampleDrv::switchon_firmware() {
 
   // This example simulates tha calls to the API interface to know the details
   // of the firmware:
@@ -138,13 +138,13 @@ void exampleDrv::switchon_firmware(){
 
 
 
-void exampleDrv::switchoff_firmware(){
+void exampleDrv::switchoff_firmware() {
 
 }
 
 
 
-void exampleDrv::start_firmware(){
+void exampleDrv::start_firmware() {
 
   m_stop_firmware = false;
   /**
@@ -158,14 +158,14 @@ void exampleDrv::start_firmware(){
 
 
 
-void exampleDrv::stop_firmware(){
+void exampleDrv::stop_firmware() {
   m_stop_firmware = true;
   m_firmware_thread.join();
 }
 
 
 
-void exampleDrv::recover_firmware(){
+void exampleDrv::recover_firmware() {
   throw nds::StateMachineRollBack("Cannot recover");
 }
 
@@ -173,15 +173,14 @@ void exampleDrv::recover_firmware(){
 
 bool exampleDrv::allow_firmware_change(const nds::state_t,
 					 const nds::state_t,
-					 const nds::state_t){
+					 const nds::state_t) {
   return true;
 }
 
 
 
 void exampleDrv::pv_path_writer(const timespec& timestamp,
-				  const std::string& value){
-
+				  const std::string& /*value*/) {
 
   // Call to function programming the hardware. This function returns the
   // path to the firmware to be installed. This value has to be set to the
@@ -196,7 +195,7 @@ void exampleDrv::pv_path_writer(const timespec& timestamp,
 
 
 
-void exampleDrv::firmware_thread_body(){
+void exampleDrv::firmware_thread_body() {
 
   // Get FirmwareVersion
   std::string FirmwareVersion = m_firmware.getFirmwareVersion();
@@ -233,12 +232,12 @@ void exampleDrv::firmware_thread_body(){
   std::cout << "\tSlotNumber = " << SlotNumber << std::endl;
   std::cout << "\tFirmwarePath = " << FirmwarePath << std::endl;
 
-  while(!m_stop_firmware){
+  while(!m_stop_firmware) {
 
 
     // Get FirmwarePath
     std::string FirmwarePath = m_firmware.getFirmwarePath();
-    if(FirmwarePath.compare(FirmwarePathOld) != 0){
+    if(FirmwarePath.compare(FirmwarePathOld) != 0) {
 
       // Push the Firmware data to the control system
       m_firmware.push(m_firmware.getTimestamp(), FirmwarePath);
@@ -268,7 +267,7 @@ NDS_DEFINE_DRIVER(exampleDrv, exampleDrv)
  *********************/
 void* exampleDrv::allocateDevice(nds::Factory& factory,
 				   const std::string& DeviceName,
-				   const nds::namedParameters_t& parameters){
+				   const nds::namedParameters_t& parameters) {
 
   return new exampleDrv(factory, DeviceName, parameters);
 }
@@ -276,7 +275,7 @@ void* exampleDrv::allocateDevice(nds::Factory& factory,
 /*
  * Deallocation function
  ***********************/
-void exampleDrv::deallocateDevice(void* DeviceName){
+void exampleDrv::deallocateDevice(void* DeviceName) {
 
   delete (exampleDrv*)DeviceName;
 }
