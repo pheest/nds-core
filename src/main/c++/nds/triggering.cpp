@@ -8,8 +8,8 @@
  */
 
 
-#include "nds3/timeSupp.h"
-#include "nds3/impl/timeSuppImpl.h"
+#include "nds3/triggering.h"
+#include "nds3/impl/triggeringImpl.h"
 
 namespace nds
 {

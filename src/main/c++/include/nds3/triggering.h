@@ -11,7 +11,7 @@
 #define NDSTIMESUPP_H
 
 /**
- * @file timeSupp.h
+ * @file triggering.h
  * @brief TBD
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the

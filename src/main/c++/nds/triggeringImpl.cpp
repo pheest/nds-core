@@ -9,7 +9,7 @@
 
 
 #include "nds3/definitions.h"
-#include "nds3/impl/timeSuppImpl.h"
+#include "nds3/impl/triggeringImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
 #include "nds3/impl/pvVariableOutImpl.h"
