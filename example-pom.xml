@@ -23,7 +23,7 @@ of the distribution package.
   <groupId>org.iter.codac.units</groupId>
   <artifactId>nds3-sample</artifactId>
   <packaging>codac</packaging>
-  <version>0.1.a1</version>
+  <version>3.2.0.0</version>
   <name>NDSv3 Example Application</name>
   <description>CODAC Core System NDSv3 Example Application</description>
   <url>http://www.iter.org/</url>

@@ -91,7 +91,7 @@ class terminal {
    * @brief Standard thread for runnning the timing_thread_body() function.
    *
    */
-  std::thread m_timing_thread;
+  nds::Thread m_timing_thread;
   /**
    * @brief Variable to be set to false when the timing state machine is set to
    * ON.
@@ -126,7 +126,7 @@ class terminal {
 				 const nds::state_t);
 
   void timestamping_thread_body();
-  std::thread m_timestamping_thread;
+  nds::Thread m_timestamping_thread;
   volatile bool m_stop_timestamping;
 
   /**

@@ -79,7 +79,7 @@ class exampleDrv {
 			     const nds::state_t);
 
   void firmware_thread_body();
-  std::thread m_firmware_thread;
+  nds::Thread m_firmware_thread;
   volatile bool m_stop_firmware;
 
 

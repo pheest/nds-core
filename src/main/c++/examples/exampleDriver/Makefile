@@ -20,7 +20,7 @@ LIBS =-lnds3
 LDFLAGS =-L../../../../lib -L/opt/codac/lib
 
 
-TARGETDIR =$(realpath ../../../../lib)
+TARGETDIR =../../../../lib
 
 STATICLIB =simDev/simulated-signal.a
 DYNLIB =$(TARGETDIR)/libnds3-exampleDrv.so
