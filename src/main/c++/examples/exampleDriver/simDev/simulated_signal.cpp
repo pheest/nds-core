@@ -25,7 +25,12 @@ std::vector<double> getDataBlock_sin(double amplitude, double frequency,
   if (amplitude <= 0 || frequency <= 0 || nElements <= 0
       || ClkFrequency <= 0 || SamplingRate <= 0) {
 
-     std::cout  << "WARNING: incorrect arguments given.\n";
+     std::cout  << "WARNING: make sure the variables below take values >=0:\n";
+     std::cout  << "         - Amplitude: " << amplitude << std::endl;
+     std::cout  << "         - Frequency: " << frequency << std::endl; 
+     std::cout  << "         - SamplingRate: " << SamplingRate << std::endl; 
+     std::cout  << "         - nElements: " << nElements << std::endl;
+     std::cout  << "         - ClkFrequency: " << ClkFrequency << std::endl;
      std::cout  << "         Empty vector returned.\n";
      std::vector<double> data(nElements, 0);
      return data;

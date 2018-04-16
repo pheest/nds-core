@@ -135,7 +135,8 @@ void terminal::start_timing() {
    *   state is ON.
    *
    */
-  m_timing_thread = std::thread(std::bind(&terminal::timing_thread_body, this));
+  m_timing_thread = m_timing.runInThread("Timing", 
+                        std::bind(&terminal::timing_thread_body, this));
 }
 
 void terminal::stop_timing() {
@@ -245,8 +246,8 @@ void terminal::start_timestamping() {
    *  the ID field and using the linux time retrieved by the timing node (via the
    *  Time PV) as a time value.
    */
-  m_timestamping_thread =
-    std::thread(std::bind(&terminal::timestamping_thread_body, this));
+  m_timestamping_thread = m_timestamping.runInThread("Timestamping", 
+                           std::bind(&terminal::timestamping_thread_body, this));
 }
 
 

@@ -402,7 +402,7 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
       // Call to the function that print the Result string and update (push) the
       // string
       if((SelfTestVerboseEnable != SelfTestVerboseEnableOld) ||
-	 (SelfTestTextEnable != SelfTestTextEnable) ||
+	 (SelfTestTextEnable != SelfTestTextEnableOld) ||
 	 (SelfTestCodeResultEnable !=  SelfTestCodeResultEnableOld)){
 	std::string result = m_HQMonitor.getSelfTestTextResult();
 
@@ -413,7 +413,7 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
     if(SelfTestVerboseEnable!= SelfTestVerboseEnableOld)
       SelfTestVerboseEnableOld = SelfTestVerboseEnable;
 
-    if(SelfTestTextEnable!= SelfTestTextEnable)
+    if(SelfTestTextEnable!= SelfTestTextEnableOld)
       SelfTestTextEnableOld = SelfTestTextEnable;
 
     if (SelfTestCodeResultEnable !=  SelfTestCodeResultEnableOld)

@@ -153,7 +153,7 @@ void exampleDrv::start_firmware() {
    *
    */
   m_firmware_thread =
-    std::thread(std::bind(&exampleDrv::firmware_thread_body, this));
+    m_firmware.runInThread("Firmware",std::bind(&exampleDrv::firmware_thread_body, this));
 }
 
 

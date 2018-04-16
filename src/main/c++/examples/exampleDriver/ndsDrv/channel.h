@@ -116,7 +116,7 @@ class channel {
   /**
    * @brief A standard thread that runs the acquisition_thread_body() function.
    */
-  std::thread m_acquisition_thread;
+  nds::Thread m_acquisition_thread;
 
   /**
    * @brief Variable to be set to false when the Data  state machine is set to

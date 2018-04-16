@@ -112,8 +112,8 @@ void channel::start_acquisition() {
    * retrieved the vector is pushed to the CS.
    *
    */
-  m_acquisition_thread =
-    std::thread(std::bind(&channel::acquisition_thread_body, this));
+  m_acquisition_thread = m_acquisition.runInThread("Aqcquisition",
+                         std::bind(&channel::acquisition_thread_body, this));
 
 }
 
