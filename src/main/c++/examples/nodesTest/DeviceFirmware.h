@@ -88,7 +88,7 @@ private:
 	/**
 	 * @brief A thread that runs Firmware_thread_body().
 	 */
-	std::thread m_Firmware_Thread;
+	nds::Thread m_Firmware_Thread;
 
 	/**
 	 * @brief A boolean flag that stop the Firmware loop in Firmware_thread_body()

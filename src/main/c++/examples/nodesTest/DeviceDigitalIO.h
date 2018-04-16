@@ -115,7 +115,7 @@ private:
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_Bool;
+	nds::Thread m_DigitalIO_Thread_Bool;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
@@ -160,7 +160,7 @@ private:
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_I8;
+	nds::Thread m_DigitalIO_Thread_I8;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
@@ -205,7 +205,7 @@ private:
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_I16;
+	nds::Thread m_DigitalIO_Thread_I16;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
@@ -250,7 +250,7 @@ private:
 	/**
 	 * @brief A thread that runs DataProcessing_thread_body().
 	 */
-	std::thread m_DigitalIO_Thread_I32;
+	nds::Thread m_DigitalIO_Thread_I32;
 
 	/**
 	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()

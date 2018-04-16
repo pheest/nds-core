@@ -82,7 +82,7 @@ private:
 	/**
 	 * @brief A thread that runs StateMachine_thread_body().
 	 */
-	std::thread m_StateMachine_Thread;
+	nds::Thread m_StateMachine_Thread;
 
 	/**
 	 * @brief A boolean flag that stop the StateMachine loop in StateMachine_thread_body()

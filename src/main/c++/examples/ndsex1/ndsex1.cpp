@@ -154,7 +154,9 @@ void Device::switchOff_DataAcquisition() {
 
 void Device::start_DataAcquisition() {
 	m_bStop_DataAcquisition=false;
-	m_DataAcquisition_Thread=std::thread(std::bind(&Device::DataAcquisition_thread_body,this));
+	m_DataAcquisition_Thread =
+	  m_DataAcquisition.runInThread("DAQ",
+					std::bind(&Device::DataAcquisition_thread_body,this));
 }
 
 void Device::stop_DataAcquisition() {

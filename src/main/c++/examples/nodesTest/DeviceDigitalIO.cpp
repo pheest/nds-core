@@ -182,7 +182,9 @@ void DeviceDigitalIO::start_DigitalIO(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DigitalIO_Thread_Bool = std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_Bool, this));
+	m_DigitalIO_Thread_Bool =
+	  m_DigitalIO_Bool.runInThread("DIOB",
+				       std::bind(&DeviceDigitalIO::DigitalIO_thread_body_Bool, this));
 
 
 }
@@ -311,7 +313,9 @@ void DeviceDigitalIO::start_DigitalIO_I8(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DigitalIO_Thread_I8	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I8, this));
+	m_DigitalIO_Thread_I8 =
+	  m_DigitalIO_I8.runInThread("DIOI8",
+				     std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I8, this));
 
 }
 void DeviceDigitalIO::stop_DigitalIO_I8(){
@@ -436,7 +440,9 @@ void DeviceDigitalIO::start_DigitalIO_I16(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DigitalIO_Thread_I16 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I16, this));
+	m_DigitalIO_Thread_I16 =
+	  m_DigitalIO_I16.runInThread("DIOI16",
+				      std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I16, this));
 
 }
 void DeviceDigitalIO::stop_DigitalIO_I16(){
@@ -557,7 +563,9 @@ void DeviceDigitalIO::start_DigitalIO_I32(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DigitalIO_Thread_I32 	= std::thread(std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I32, this));
+	m_DigitalIO_Thread_I32 =
+	  m_DigitalIO_I32.runInThread("DIOI32",
+				      std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I32, this));
 
 }
 void DeviceDigitalIO::stop_DigitalIO_I32(){

@@ -128,7 +128,9 @@ void DeviceStateMachine::start_StateMachine(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_StateMachine_Thread = std::thread(std::bind(&DeviceStateMachine::StateMachine_thread_body, this));
+	m_StateMachine_Thread =
+	  m_StateMachine.runInThread("SM",
+					    std::bind(&DeviceStateMachine::StateMachine_thread_body, this));
 }
 
 // Stop the StateMachine node thread

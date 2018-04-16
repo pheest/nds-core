@@ -145,7 +145,9 @@ void DeviceFirmware::start_Firmware(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_Firmware_Thread = std::thread(std::bind(&DeviceFirmware::Firmware_thread_body, this));
+	m_Firmware_Thread =
+	  m_Firmware.runInThread("Firmware",
+					std::bind(&DeviceFirmware::Firmware_thread_body, this));
 }
 
 // Stop the Firmware node thread

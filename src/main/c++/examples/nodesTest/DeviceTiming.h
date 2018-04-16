@@ -95,7 +95,7 @@ class DeviceTiming
   /**
    * @brief A thread that runs Timing_thread_body().
    */
-  std::thread m_timing_thread;
+  nds::thread m_timing_thread;
 
   /**
    * @brief A boolean flag that stop the Timing loop in Timing_thread_body()

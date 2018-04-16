@@ -180,7 +180,9 @@ void DeviceHQMonitor::start_HQMonitor(){
    *   machine guarantees that the start handler is called only while the state
    *   is ON.
    */
-  m_HQMonitor_Thread = std::thread(std::bind(&DeviceHQMonitor::HQMonitor_thread_body, this));
+  m_HQMonitor_Thread =
+    m_HQMonitor.runInThread("HQmon",
+				   std::bind(&DeviceHQMonitor::HQMonitor_thread_body, this));
 }
 
 // Stop the HQMonitor node thread
@@ -413,7 +415,7 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
     if(SelfTestVerboseEnable!= SelfTestVerboseEnableOld)
       SelfTestVerboseEnableOld = SelfTestVerboseEnable;
 
-    if(SelfTestTextEnable!= SelfTestTextEnable)
+    if(SelfTestTextEnable!= SelfTestTextEnableOld)
       SelfTestTextEnableOld = SelfTestTextEnable;
 
     if (SelfTestCodeResultEnable !=  SelfTestCodeResultEnableOld)

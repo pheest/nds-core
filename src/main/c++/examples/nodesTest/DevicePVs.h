@@ -55,7 +55,7 @@ private:
 	 */
 	std::string m_Name;
 
-  std::thread m_thread; 
+  nds::Thread m_thread;
   bool m_terminate;
 
 	/**

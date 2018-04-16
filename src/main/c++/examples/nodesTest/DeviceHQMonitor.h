@@ -106,7 +106,7 @@ private:
 	/**
 	 * @brief A thread that runs HQMonitor_thread_body().
 	 */
-	std::thread m_HQMonitor_Thread;
+	nds::Thread m_HQMonitor_Thread;
 
 	/**
 	 * @brief A boolean flag that stop the HQMonitor loop in HQMonitor_thread_body()

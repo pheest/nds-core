@@ -163,7 +163,9 @@ void DeviceVectorI32::start_DataAcquisition(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DataAcquisition_Thread = std::thread(std::bind(&DeviceVectorI32::DataAcquisition_thread_body, this));
+	m_DataAcquisition_Thread =
+	  m_DataAcquisition.runInThread("DAQ",
+					       std::bind(&DeviceVectorI32::DataAcquisition_thread_body, this));
 }
 
 // Stop the DataAcquisition node thread
@@ -369,7 +371,9 @@ void DeviceVectorI32::start_WaveformGeneration(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_WaveformGeneration_Thread = std::thread(std::bind(&DeviceVectorI32::WaveformGeneration_thread_body, this));
+	m_WaveformGeneration_Thread =
+	  m_WaveformGeneration.runInThread("WFG",
+						  std::bind(&DeviceVectorI32::WaveformGeneration_thread_body, this));
 }
 
 void DeviceVectorI32::stop_WaveformGeneration(){

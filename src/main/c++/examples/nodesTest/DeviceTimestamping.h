@@ -102,7 +102,7 @@ class DeviceTimestamping
   /**
    * @brief A thread that runs timestamping_thread_body().
    */
-  std::thread m_timestamping_thread;
+  nds::Thread m_timestamping_thread;
 
   /**
    * @brief A boolean flag that stop the Timestamping loop in Timestamping_thread_body()

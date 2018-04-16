@@ -153,7 +153,9 @@ void DeviceTiming::start_timing(){
    *   machine guarantees that the start handler is called only while the state
    *   is ON.
    */
-  m_timing_thread = std::thread(std::bind(&DeviceTiming::timing_thread_body, this));
+  m_timing_thread =
+    m_timing.runInThread("TM",
+				std::bind(&DeviceTiming::timing_thread_body, this));
 }
 
 // Stop the Timing node thread

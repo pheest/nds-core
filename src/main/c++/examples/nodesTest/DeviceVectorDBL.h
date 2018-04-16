@@ -123,7 +123,7 @@ private:
 	/**
 	 * @brief A thread that runs DataAcquisition_thread_body().
 	 */
-	std::thread m_DataAcquisition_Thread;
+	nds::Thread m_DataAcquisition_Thread;
 
 	/**
 	 * @brief A boolean flag that stop the DataAcquisition loop in DataAcquisition_thread_body()
@@ -174,18 +174,18 @@ private:
 	  * @brief Function that continuously generates a sinusoidal wave to m_WaveformGeneration.
 	  *        It is launched by start_WaveformGeneration() in a separate thread.
 	  */
-	 void WaveformGeneration_thread_body();
+	void WaveformGeneration_thread_body();
 
 	 /**
 	  * @brief A thread that runs WaveformGeneration_thread_body().
 	  */
-	 std::thread m_WaveformGeneration_Thread;
+	nds::Thread m_WaveformGeneration_Thread;
 
 	 /**
 	  * @brief A boolean flag that stop the WaveformGeneration loop in WaveformGeneration_thread_body()
 	  *        when true.
 	  */
-	 volatile bool m_bStop_WaveformGeneration;
+	volatile bool m_bStop_WaveformGeneration;
 
 };
 

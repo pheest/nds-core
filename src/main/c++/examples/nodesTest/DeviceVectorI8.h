@@ -123,7 +123,7 @@ private:
 	/**
 	 * @brief A thread that runs DataAcquisition_thread_body().
 	 */
-	std::thread m_DataAcquisition_Thread;
+	nds::Thread m_DataAcquisition_Thread;
 
 	/**
 	 * @brief A boolean flag that stop the DataAcquisition loop in DataAcquisition_thread_body()
@@ -179,7 +179,7 @@ private:
 	 /**
 	  * @brief A thread that runs WaveformGeneration_thread_body().
 	  */
-	 std::thread m_WaveformGeneration_Thread;
+	 nds::Thread m_WaveformGeneration_Thread;
 
 	 /**
 	  * @brief A boolean flag that stop the WaveformGeneration loop in WaveformGeneration_thread_body()

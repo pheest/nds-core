@@ -162,7 +162,9 @@ void DeviceDBL::start_DataAcquisition(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_DataAcquisition_Thread = std::thread(std::bind(&DeviceDBL::DataAcquisition_thread_body, this));
+	m_DataAcquisition_Thread =
+	  m_DataAcquisition.runInThread("DAQ",
+					       std::bind(&DeviceDBL::DataAcquisition_thread_body, this));
 }
 
 // Stop the DataAcquisition node thread
@@ -366,7 +368,9 @@ void DeviceDBL::start_WaveformGeneration(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_WaveformGeneration_Thread = std::thread(std::bind(&DeviceDBL::WaveformGeneration_thread_body, this));
+	m_WaveformGeneration_Thread =
+	  m_WaveformGeneration.runInThread("WFG",
+						  std::bind(&DeviceDBL::WaveformGeneration_thread_body, this));
 }
 
 void DeviceDBL::stop_WaveformGeneration(){

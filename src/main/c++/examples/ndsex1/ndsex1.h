@@ -81,7 +81,7 @@ nds::DataAcquisition<std::vector<double> > m_DataAcquisition;
 	void DataAcquisition_thread_body();
 
 //A thread that runs DataAcquisition_thread_body().
-	std::thread m_DataAcquisition_Thread;
+	nds::Thread m_DataAcquisition_Thread;
 
 //A boolean flag that stop the DataAcquisition loop in
 //DataAcquisition_thread_body() when true.
