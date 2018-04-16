@@ -154,8 +154,8 @@ void DeviceTiming::start_timing(){
    *   is ON.
    */
   m_timing_thread =
-    m_timing.runInThread("TM",
-				std::bind(&DeviceTiming::timing_thread_body, this));
+    m_Timing.runInThread("TM",
+			 std::bind(&DeviceTiming::timing_thread_body, this));
 }
 
 // Stop the Timing node thread

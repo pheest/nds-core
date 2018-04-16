@@ -149,8 +149,8 @@ void DeviceTimestamping::start_timestamping() {
    *  is called only while the state is ON.
    */
   m_timestamping_thread =
-    m_timestamping.runInThread("TS",
-				      std::bind(&DeviceTimestamping::timestamping_thread_body, this));
+    m_Timestamping.runInThread("TS",
+			       std::bind(&DeviceTimestamping::timestamping_thread_body, this));
 
 }
 
