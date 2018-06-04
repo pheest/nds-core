@@ -1,6 +1,7 @@
 #include <functional>
 #include <iostream>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include <nds3/nds.h>
 #include "terminal.h"
