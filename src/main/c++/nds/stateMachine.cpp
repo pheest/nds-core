@@ -43,6 +43,15 @@ StateMachine::StateMachine(bool bAsync,
 {
 }
 
+/*
+ * Constructor. Setup the delegates
+ *
+ **********************************/
+StateMachine::StateMachine(StateMachineArgs_t args):
+	Node(std::shared_ptr<NodeImpl>(new StateMachineImpl(args)))
+{
+}
+
 
 /*
  * Change the local state
