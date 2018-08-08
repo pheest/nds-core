@@ -49,7 +49,8 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 	timespec timestamp = {0, 0};
 	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
-	// Add Health Monitor node
+	// Add State Machine node
+	/*
 	m_StateMachine = rootNode.addChild(nds::StateMachine(true,
 				std::bind(&DeviceStateMachine::switchOn_StateMachine, this),
 				std::bind(&DeviceStateMachine::switchOff_StateMachine, this),
@@ -59,13 +60,26 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 				std::bind(&DeviceStateMachine::allow_StateMachine_Change, this,
 					  std::placeholders::_1,
 					  std::placeholders::_2,
-					  std::placeholders::_3)));
-
+					  std::placeholders::_3))); */
+	nds::StateMachineArgs_t stateMachineArgs = nds::StateMachineArgs_t(true,
+			std::bind(&DeviceStateMachine::switchOn_StateMachine, this),
+			std::bind(&DeviceStateMachine::switchOff_StateMachine, this),
+			std::bind(&DeviceStateMachine::start_StateMachine, this),
+			std::bind(&DeviceStateMachine::stop_StateMachine, this),
+			std::bind(&DeviceStateMachine::recover_StateMachine, this),
+			std::bind(&DeviceStateMachine::allow_StateMachine_Change, this,
+				  std::placeholders::_1,
+				  std::placeholders::_2,
+				  std::placeholders::_3));
+	m_StateMachine = rootNode.addChild(nds::StateMachine(stateMachineArgs));
 
 	// We have declared all the nodes and PVs in our Device: now we register
 	// them with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
+
+	std::cout << "Root node initialized in test." << std::endl;
+
 	rootNode.setTimestampDelegate(std::bind(&DeviceStateMachine::getCurrentTime,this));
 
 	//Stream information for debugging purposes
