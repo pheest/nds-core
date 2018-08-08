@@ -13,6 +13,7 @@
 #include <thread>
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
@@ -26,6 +27,7 @@ template <typename T> class PVDelegateInImpl;
  */
 class StateMachineImpl: public NodeImpl
 {
+
 public:
 
     /**
@@ -72,6 +74,12 @@ public:
                      stateChange_t stopFunction,
                      stateChange_t recoverFunction,
                      allowChange_t allowStateChangeFunction);
+
+   /**
+	 * @brief Simplified constructor of the state machine implementation class.
+	 * @param args Structure with the arguments required by the state machine.
+	 */
+	StateMachineImpl(StateMachineArgs_t args);
 
     ~StateMachineImpl();
 
@@ -230,6 +238,12 @@ protected:
 
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_pGetStatePV; ///< Delegate PV to which the local state change is pushed
 
+
+private:
+	/**
+	 * @brief Common source code to define the body of any constructor.
+	 */
+	void constructorBody(void);
 };
 
 

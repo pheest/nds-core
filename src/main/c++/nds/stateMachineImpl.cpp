@@ -17,6 +17,7 @@
 #include "nds3/impl/pvDelegateInImpl.h"
 #include "nds3/impl/pvBaseImpl.h"
 
+
 namespace nds
 {
 
@@ -43,6 +44,40 @@ StateMachineImpl::StateMachineImpl(bool bAsync,
             m_switchOn(switchOnFunction), m_switchOff(switchOffFunction), m_start(startFunction), m_stop(stopFunction), m_recover(recoverFunction),
             m_allowChange(allowStateChangeFunction)
 {
+	StateMachineImpl::constructorBody();
+}
+
+StateMachineImpl::StateMachineImpl(StateMachineArgs_t args) : NodeImpl("StateMachine", nodeType_t::stateMachine),
+	    m_bAsync(args.bAsync),
+		m_localState(state_t::off),
+		m_switchOn(args.switchOnFunction),
+		m_switchOff(args.switchOffFunction),
+		m_start(args.startFunction),
+		m_stop(args.stopFunction),
+		m_recover(args.recoverFunction),
+		m_allowChange(args.allowStateChangeFunction)
+{
+	StateMachineImpl::constructorBody();
+}
+
+/*
+ * Destructor
+ *
+ ************/
+StateMachineImpl::~StateMachineImpl()
+{
+    // Wait for pending transitions
+    ///////////////////////////////
+    std::lock_guard<std::mutex> lockThread(m_lockTransitionThread);
+    if(m_transitionThread.joinable())
+    {
+        m_transitionThread.join();
+    }
+}
+
+
+void StateMachineImpl::constructorBody(){
+
     // Prepare enumeration for states
     /////////////////////////////////
     enumerationStrings_t enumerationStrings;
@@ -85,22 +120,7 @@ StateMachineImpl::StateMachineImpl(bool bAsync,
     defineCommand("switchOff", "", 0, std::bind(&StateMachineImpl::commandSetState, this, state_t::off, std::placeholders::_1));
     defineCommand("start", "", 0, std::bind(&StateMachineImpl::commandSetState, this, state_t::running, std::placeholders::_1));
     defineCommand("stop", "", 0, std::bind(&StateMachineImpl::commandSetState, this, state_t::on, std::placeholders::_1));
-}
 
-
-/*
- * Destructor
- *
- ************/
-StateMachineImpl::~StateMachineImpl()
-{
-    // Wait for pending transitions
-    ///////////////////////////////
-    std::lock_guard<std::mutex> lockThread(m_lockTransitionThread);
-    if(m_transitionThread.joinable())
-    {
-        m_transitionThread.join();
-    }
 }
 
 
