@@ -91,12 +91,12 @@ struct StateMachineArgs_t {
 	 * @brief Constructor to create an instance of the given structure.
 	 * It must be used to ensure that compulsory fields are always provided in compilation time.
 	 * @param _bAsync Boolean to be set in @ref StateMachineArgs_t.bAsync.
-	 * @param _switchOnFunction Switch-on function to be set in StateMachineArgs_t.switchOnFunction.
-	 * @param _switchOffFunction Switch-off function to be set in StateMachineArgs_t.switchOffFunction.
-	 * @param _startFunction Start function to be set in StateMachineArgs_t.startFunction.
-	 * @param _stopFunction Stop function to be set in StateMachineArgs_t.stopFunction.
-	 * @param _recoverFunction Recover function to be set in StateMachineArgs_t.recoverFunction.
-	 * @param _allowStateChangeFunction Checking state transitions function to be set in StateMachineArgs_t.allowStateChangeFunction.
+	 * @param _switchOnFunction Switch-on function to be set in @ref StateMachineArgs_t.switchOnFunction.
+	 * @param _switchOffFunction Switch-off function to be set in @ref StateMachineArgs_t.switchOffFunction.
+	 * @param _startFunction Start function to be set in @ref StateMachineArgs_t.startFunction.
+	 * @param _stopFunction Stop function to be set in @ref StateMachineArgs_t.stopFunction.
+	 * @param _recoverFunction Recover function to be set in @ref StateMachineArgs_t.recoverFunction.
+	 * @param _allowStateChangeFunction Checking state transitions function to be set in @ref StateMachineArgs_t.allowStateChangeFunction.
 	 */
 	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,
