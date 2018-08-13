@@ -36,12 +36,15 @@ struct FirmwareArgs_t {
 	/**
 	 * @brief State Machine handler structure.
 	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure. @n
+	 * See @ref StateMachineArgs_t for further details.
 	 */
 	const StateMachineArgs_t handlerSTM;
 
 	/**
 	 * @brief Function to set the path of the new firmware file.
 	 * It sets the path to the firmware file to be loaded.
+	 * This is a compulsory field of the structure.
 	 */
 	const writerString_t PV_FirmwarePath_Writer;
 
@@ -53,6 +56,17 @@ struct FirmwareArgs_t {
 	 */
 	readerString_t PV_FirmwarePath_Initializer;
 
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
+	 * @param stopFunction Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_FirmwarePath_Writer Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 */
 	FirmwareArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
 					stateChange_t startFunction,
