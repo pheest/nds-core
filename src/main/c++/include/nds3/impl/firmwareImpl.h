@@ -15,6 +15,7 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
+#include "nds3/firmware.h"
 
 namespace nds
 {
@@ -31,6 +32,11 @@ namespace nds
           stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
           allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
           writerString_t PV_FirmwarePath_Writer); 	  ///< Delegate function that performs the actions to set the firmware path
+
+      FirmwareImpl(const std::string& name, ///< The node's name
+    		  	   size_t maxElements, ///< Maximum length of the PV strings.
+				   FirmwareArgs_t args); ///< Structure with delegate functions that perform the required actions.
+
 
       /**
        * @ingroup
@@ -265,7 +271,17 @@ namespace nds
        */
       std::shared_ptr<StateMachineImpl> m_StateMachine;
 
+
+    private:
+
+      /**
+       * Common source code to define the body of any constructor
+       * @param maxElements Maximum number of elements to allocate vectors (if any).
+       * @param args Structure containing both compulsory and optional functions.
+       */
+      void constructorBody(const size_t maxElements, const FirmwareArgs_t args);
   };
+
 
 }
 #endif // NDSFIRMWARESUPIMP_H
