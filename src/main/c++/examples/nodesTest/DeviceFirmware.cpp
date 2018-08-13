@@ -12,7 +12,7 @@
 static std::map<std::string, DeviceFirmware*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t & parameters):
 						m_Name(DeviceName),
 						m_bStop_Firmware(true)
 	{
@@ -49,16 +49,32 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
 
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 	// Add Firmware node
-	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
-						     256, // Maximum string length.
-				std::bind(&DeviceFirmware::switchOn_Firmware, this),
-				std::bind(&DeviceFirmware::switchOff_Firmware, this),
-				std::bind(&DeviceFirmware::start_Firmware, this),
-				std::bind(&DeviceFirmware::stop_Firmware, this),
-				std::bind(&DeviceFirmware::recover_Firmware, this),
-				std::bind(&DeviceFirmware::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceFirmware::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+	if (findParam == parameters.end()) {
+		m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+							     256, // Maximum string length.
+					std::bind(&DeviceFirmware::switchOn_Firmware, this),
+					std::bind(&DeviceFirmware::switchOff_Firmware, this),
+					std::bind(&DeviceFirmware::start_Firmware, this),
+					std::bind(&DeviceFirmware::stop_Firmware, this),
+					std::bind(&DeviceFirmware::recover_Firmware, this),
+					std::bind(&DeviceFirmware::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+					std::bind(&DeviceFirmware::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+	} else {
+		nds::FirmwareArgs_t handlers = nds::FirmwareArgs_t(
+					std::bind(&DeviceFirmware::switchOn_Firmware, this),
+					std::bind(&DeviceFirmware::switchOff_Firmware, this),
+					std::bind(&DeviceFirmware::start_Firmware, this),
+					std::bind(&DeviceFirmware::stop_Firmware, this),
+					std::bind(&DeviceFirmware::recover_Firmware, this),
+					std::bind(&DeviceFirmware::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+					std::bind(&DeviceFirmware::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2));
+		handlers.PV_FirmwarePath_Initializer = std::bind(&DeviceFirmware::PV_Firmware_Path_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+									     	 	 	 256,
+													 handlers));
+	}
 	m_Firmware.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 
 	// We have declared all the nodes and PVs in our Device: now we register them
@@ -177,6 +193,14 @@ void DeviceFirmware::PV_Firmware_Path_Writer(const timespec& timestamp, const st
 	//In the meantime, without real hardware value and  firmwarePath are equal.
 	firmwarePath=value;
 	m_Firmware.setFirmwarePath(timestamp,firmwarePath);
+}
+
+/*
+ * Firmware support initializers
+ */
+void DeviceFirmware::PV_Firmware_Path_Initializer(timespec* time, std::string* path){
+	*time = {0, 0};
+	*path = "not available";
 }
 
 void DeviceFirmware::Firmware_thread_body(){
