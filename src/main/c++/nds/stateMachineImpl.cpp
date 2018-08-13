@@ -76,7 +76,7 @@ StateMachineImpl::~StateMachineImpl()
 }
 
 
-void StateMachineImpl::constructorBody(){
+inline void StateMachineImpl::constructorBody(){
 
     // Prepare enumeration for states
     /////////////////////////////////
