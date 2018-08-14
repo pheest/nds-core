@@ -4,7 +4,7 @@
 #include "../include/ndsTestFactory.h"
 
 /**
- * @brief Internal function to test all PVs included in the Firmware node.
+ * @brief Internal function to test all PVs included in the HQMonitor node.
  * @param testInitializers Flag to set to @c true when the initializers of
  * output PVs shall be tested.
  * As the initialization of output PVs is the only difference between
