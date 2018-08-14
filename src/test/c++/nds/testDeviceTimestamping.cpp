@@ -3,6 +3,18 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+
+/**
+ * @brief Internal function to test all PVs included in the Timestamping node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * SetGetTest and SetGetInitializationTest test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonPVsTest(const bool testInitializers = false);
+
 TEST(testDeviceTimestamping, StateMachineTest){
 
   const timespec* pTimestampingStateMachineSwitchTime;
@@ -107,6 +119,15 @@ TEST(testDeviceTimestamping, StateMachineTest){
 
 
 TEST(testDeviceTimestamping, SetGetTest){
+	commonPVsTest();
+}
+
+TEST(testDeviceTimestamping, SetGetInitializationTest){
+	commonPVsTest(true);
+}
+
+
+static void commonPVsTest(bool testInitializers){
 
   const timespec* ptimestamp = NULL;
   timespec timestamp = {0, 0};
@@ -115,13 +136,17 @@ TEST(testDeviceTimestamping, SetGetTest){
   nds::Factory factory("test");
 
   // Create test device of type DeviceTimestamping and name it deviceTimestamping
+  nds::namedParameters_t parameters;
+  if (testInitializers) {
+	  parameters["INIT"]="YES";
+  }
   factory.createDevice("DeviceTimestamping",
 		       "deviceTimestamping",
-		       nds::namedParameters_t());
+			   parameters);
 
   //Get instance of the Test Control System
   nds::tests::TestControlSystemInterfaceImpl* pInterface =
-    nds::tests::TestControlSystemInterfaceImpl::getInstance("deviceTimestamping");
+  nds::tests::TestControlSystemInterfaceImpl::getInstance("deviceTimestamping");
 
 
   // Change TimestampingNode state:  OFF -> (initializing) -> ON
@@ -131,12 +156,26 @@ TEST(testDeviceTimestamping, SetGetTest){
 
   // Get enable status.
   const std::int32_t * enable_val = NULL;
+  if (testInitializers) {
+	  //Check initial value
+	  std::int32_t initialEnable;
+	  pInterface->readCSValue("/deviceTimestamping-Timestamping.Enable", &timestamp, &initialEnable);
+	  EXPECT_EQ((std::int32_t) 1, initialEnable);
+	  std::cout<<"\tInitial Enable = "<< initialEnable <<std::endl;
+  }
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Enable_RBV",
 			     ptimestamp, enable_val);
   EXPECT_EQ((std::int32_t)0 /* OFF */, *enable_val);
 
   // Get edge value.
   const std::int32_t * edge_val = NULL;
+  if (testInitializers) {
+	  //Check initial value
+	  std::int32_t initialEdge;
+	  pInterface->readCSValue("/deviceTimestamping-Timestamping.Edge", &timestamp, &initialEdge);
+	  EXPECT_EQ((std::int32_t) 2, initialEdge);
+	  std::cout<<"\tInitial Edge = "<< initialEdge <<std::endl;
+  }
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Edge_RBV",
 			     ptimestamp, edge_val);
   EXPECT_EQ((std::int32_t)1 /* FALLING */, *edge_val);
@@ -149,6 +188,13 @@ TEST(testDeviceTimestamping, SetGetTest){
 
   //Get overflow state.
   const std::int32_t * overflow_val = NULL;
+  if (testInitializers) {
+	  //Check initial value
+	  std::int32_t initialClearOverflow;
+	  pInterface->readCSValue("/deviceTimestamping-Timestamping.ClearOverflow", &timestamp, &initialClearOverflow);
+	  EXPECT_EQ((std::int32_t) -1, initialClearOverflow);
+	  std::cout<<"\tInitial ClearOverflow = "<< initialClearOverflow <<std::endl;
+  }
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",
 			     ptimestamp, overflow_val);
   EXPECT_EQ((std::int32_t)0, *overflow_val);
