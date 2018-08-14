@@ -15,6 +15,7 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/HQMonitor.h"
 
 namespace nds
 {
@@ -47,6 +48,9 @@ public:
 						readerString_t PV_SelfTestTextResult_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
 						writerDouble_t PV_SignalQualityFlagLevel_Writer);
+
+	HQMonitorImpl(const std::string& name,  ///< The node's name
+					HQMonitorArgs_t handlerHQM); ///< Structure with delegate functions that perform the required actions.
 
 
     /**
@@ -316,6 +320,14 @@ protected:
 
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
+
+private:
+
+	/**
+	* Common source code to define the body of any constructor
+	* @param args Structure containing both compulsory and optional functions.
+	*/
+	void constructorBody(const HQMonitorArgs_t args);
 
 };
 
