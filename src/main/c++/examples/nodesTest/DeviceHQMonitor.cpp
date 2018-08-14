@@ -12,7 +12,7 @@ static std::mutex m_lockDevicesMap;
 
 DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
 				 const std::string &DeviceName,
-				 const nds::namedParameters_t &/*parameters*/):
+				 const nds::namedParameters_t & parameters):
   m_Name(DeviceName),
   m_bStop_HQMonitor(true){
 
@@ -49,45 +49,102 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
   timespec timestamp = {0, 0};
   m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
+
+  nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
+
   // Add Health Monitor node
-  m_HQMonitor = rootNode.addChild(nds::HQMonitor("HQMonitor",
-	      std::bind(&DeviceHQMonitor::switchOn_HQMonitor, this),
-	      std::bind(&DeviceHQMonitor::switchOff_HQMonitor, this),
-	      std::bind(&DeviceHQMonitor::start_HQMonitor, this),
-	      std::bind(&DeviceHQMonitor::stop_HQMonitor, this),
-	      std::bind(&DeviceHQMonitor::recover_HQMonitor, this),
-	      std::bind(&DeviceHQMonitor::allow_HQMonitor_Change, this,
-			std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_Power_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_Temperature_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_Voltage_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_Current_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SEUEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_DAQEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestType_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestIDEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxtEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestCodeResultEnable_Writer, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlag_Reader, this,
-			std::placeholders::_1, std::placeholders::_2),
-	      std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlagLevel_Writer, this,
-			std::placeholders::_1, std::placeholders::_2)));
+  if (findParam == parameters.end()) {
+	  m_HQMonitor = rootNode.addChild(nds::HQMonitor("HQMonitor",
+			  std::bind(&DeviceHQMonitor::switchOn_HQMonitor, this),
+			  std::bind(&DeviceHQMonitor::switchOff_HQMonitor, this),
+			  std::bind(&DeviceHQMonitor::start_HQMonitor, this),
+			  std::bind(&DeviceHQMonitor::stop_HQMonitor, this),
+			  std::bind(&DeviceHQMonitor::recover_HQMonitor, this),
+			  std::bind(&DeviceHQMonitor::allow_HQMonitor_Change, this,
+				std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_Power_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_Temperature_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_Voltage_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_Current_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SEUEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_DAQEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestType_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestIDEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxtEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestCodeResultEnable_Writer, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlag_Reader, this,
+				std::placeholders::_1, std::placeholders::_2),
+			  std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlagLevel_Writer, this,
+				std::placeholders::_1, std::placeholders::_2)));
+  } else {
+	  //Set compulsory methods
+	  nds::HQMonitorArgs_t handlerHQM = nds::HQMonitorArgs_t(
+					  std::bind(&DeviceHQMonitor::switchOn_HQMonitor, this),
+					  std::bind(&DeviceHQMonitor::switchOff_HQMonitor, this),
+					  std::bind(&DeviceHQMonitor::start_HQMonitor, this),
+					  std::bind(&DeviceHQMonitor::stop_HQMonitor, this),
+					  std::bind(&DeviceHQMonitor::recover_HQMonitor, this),
+					  std::bind(&DeviceHQMonitor::allow_HQMonitor_Change, this,
+						std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_Power_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_Temperature_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_Voltage_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_Current_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SEUEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_DAQEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestType_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestIDEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxtEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestCodeResultEnable_Writer, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxt_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlag_Reader, this,
+						std::placeholders::_1, std::placeholders::_2),
+					  std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlagLevel_Writer, this,
+						std::placeholders::_1, std::placeholders::_2));
+	  //Set optional methods
+	  handlerHQM.PV_SEUEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SEUEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_DAQEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_DAQEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestType_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestType_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestVerboseEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestIDEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestIDEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestTxtEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestTxtEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SelfTestCodeResultEnable_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SelfTestCodeResultEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  handlerHQM.PV_SignalQualityFlagLevel_Initializer = std::bind(&DeviceHQMonitor::PV_HQMonitor_SignalQualityFlagLevel_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+	  //Add HQMonitor node to the rootNode
+	  m_HQMonitor = rootNode.addChild(nds::HQMonitor("HQMonitor", handlerHQM));
+  }
   m_HQMonitor.setTimestampDelegate(std::bind(&DeviceHQMonitor::getCurrentTime,this));
   m_HQMonitor.getStartTimestamp();
 
@@ -426,8 +483,67 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
   }
 }
 
-timespec DeviceHQMonitor::getCurrentTime(){
+/*
+ * --------------------------------------------------------------------------------
+ * Only for testing purpose and verifying different values in each
+ * initializer method, the value returned by the below methods is increased.
+ * --------------------------------------------------------------------------------
+ */
+void DeviceHQMonitor::PV_HQMonitor_SEUEnable_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 10};
+	*value = 101; //Note that this value has no sense and it is fixed only for testing purposes.
+}
 
+void DeviceHQMonitor::PV_HQMonitor_DAQEnable_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 20};
+	*value = 102; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Initializer(
+		timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 30};
+	*value = 103; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestType_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 40};
+	*value = 104; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Initializer(
+		timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 50};
+	*value = 105; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestIDEnable_Initializer(
+		timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 60};
+	*value = 106; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestTxtEnable_Initializer(
+		timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 70};
+	*value = 107; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SelfTestCodeResultEnable_Initializer(
+		timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 80};
+	*value = 108; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceHQMonitor::PV_HQMonitor_SignalQualityFlagLevel_Initializer(
+		timespec* timestamp, double* value) {
+	*timestamp = {NDS_EPOCH, 90};
+	*value = 1.65; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+timespec DeviceHQMonitor::getCurrentTime(){
   timespec time;
   time.tv_sec = m_setCurrentTime.getValue();
   time.tv_nsec = time.tv_sec + 10;
