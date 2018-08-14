@@ -39,6 +39,11 @@ Timing::Timing(const std::string& name,
 {
 }
 
+Timing::Timing(const std::string& name, TimingArgs_t handlerTM):
+		Node(std::shared_ptr<TimingImpl>(new TimingImpl(name, handlerTM)))
+{
+}
+
 Timing::Timing(const Timing& right):
      Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
