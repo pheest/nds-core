@@ -14,7 +14,7 @@ static std::mutex m_lockDevicesMap;
 
 DeviceTiming::DeviceTiming(nds::Factory &factory,
          const std::string &DeviceName,
-         const nds::namedParameters_t &/*parameters*/):
+         const nds::namedParameters_t & parameters):
   m_Name(DeviceName),
   m_bStop_timing(true) {
 
@@ -53,19 +53,37 @@ DeviceTiming::DeviceTiming(nds::Factory &factory,
 
 
   // Add Timing node
-  m_Timing = rootNode.addChild(nds::Timing("Timing",
-             std::bind(&DeviceTiming::switchOn_timing, this),
-             std::bind(&DeviceTiming::switchOff_timing, this),
-             std::bind(&DeviceTiming::start_timing, this),
-             std::bind(&DeviceTiming::stop_timing, this),
-             std::bind(&DeviceTiming::recover_timing, this),
-             std::bind(&DeviceTiming::allow_timing_change, this,
-                 std::placeholders::_1,
-                 std::placeholders::_2,
-                 std::placeholders::_3),
-             std::bind(&DeviceTiming::pv_timing_reader, this,
-                 std::placeholders::_1,
-                 std::placeholders::_2)));
+  nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
+  if (findParam == parameters.end()) {
+	  m_Timing = rootNode.addChild(nds::Timing("Timing",
+				 std::bind(&DeviceTiming::switchOn_timing, this),
+				 std::bind(&DeviceTiming::switchOff_timing, this),
+				 std::bind(&DeviceTiming::start_timing, this),
+				 std::bind(&DeviceTiming::stop_timing, this),
+				 std::bind(&DeviceTiming::recover_timing, this),
+				 std::bind(&DeviceTiming::allow_timing_change, this,
+					 std::placeholders::_1,
+					 std::placeholders::_2,
+					 std::placeholders::_3),
+				 std::bind(&DeviceTiming::pv_timing_reader, this,
+					 std::placeholders::_1,
+					 std::placeholders::_2)));
+  } else {
+	  nds::TimingArgs_t handlerTM = nds::TimingArgs_t(
+				 std::bind(&DeviceTiming::switchOn_timing, this),
+				 std::bind(&DeviceTiming::switchOff_timing, this),
+				 std::bind(&DeviceTiming::start_timing, this),
+				 std::bind(&DeviceTiming::stop_timing, this),
+				 std::bind(&DeviceTiming::recover_timing, this),
+				 std::bind(&DeviceTiming::allow_timing_change, this,
+					 std::placeholders::_1,
+					 std::placeholders::_2,
+					 std::placeholders::_3),
+				 std::bind(&DeviceTiming::pv_timing_reader, this,
+					 std::placeholders::_1,
+					 std::placeholders::_2));
+	  m_Timing = rootNode.addChild(nds::Timing("Timing", handlerTM));
+  }
 
   m_Timing.setStartTimestampDelegate(std::bind(&DeviceTiming::getCurrentTime,this));
 
