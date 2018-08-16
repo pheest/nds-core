@@ -136,12 +136,12 @@ public:
      * @brief Simplified constructor of the firmware node.
      * @param name Name (unique) to identify the instance of the node.
      * @param maxElements Maximum number of elements to allocate vectors (if any).
-     * @param args Structure with the arguments required by the firmware node.
+     * @param handlerFIRM Structure with the arguments required by the firmware node.
      * See @ref FirmwareArgs_t for further details.
      */
     Firmware(const std::string& name,
     			size_t maxElements,
-    			const FirmwareArgs_t args);
+    			const FirmwareArgs_t& handlerFIRM);
 
     /**
      * @ingroup

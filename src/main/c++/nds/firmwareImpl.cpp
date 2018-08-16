@@ -46,15 +46,15 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 
 FirmwareImpl::FirmwareImpl(const std::string& name,
 			   size_t maxElements,
-			   FirmwareArgs_t args):
+			   const FirmwareArgs_t& handlerFIRM):
 	NodeImpl(name, nodeType_t::inputChannel),
-	m_OnStartDelegate(args.handlerSTM.startFunction),
+	m_OnStartDelegate(handlerFIRM.handlerSTM.startFunction),
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
-	constructorBody(maxElements, args);
+	constructorBody(maxElements, handlerFIRM);
 }
 
-inline void FirmwareImpl::constructorBody(const size_t maxElements, const FirmwareArgs_t args) {
+inline void FirmwareImpl::constructorBody(const size_t maxElements, const FirmwareArgs_t& handlerFIRM) {
 
 	// Add the children PVs
 	m_FirmwareVersion_PV.reset(new PVVariableInImpl<std::string>("Version"));
@@ -119,12 +119,12 @@ inline void FirmwareImpl::constructorBody(const size_t maxElements, const Firmwa
 	m_SlotNumber_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SlotNumber_PV);
 
-	if (args.PV_FirmwarePath_Initializer) {
+	if (handlerFIRM.PV_FirmwarePath_Initializer) {
 		m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",
-																	args.PV_FirmwarePath_Writer,
-																	args.PV_FirmwarePath_Initializer));
+																	handlerFIRM.PV_FirmwarePath_Writer,
+																	handlerFIRM.PV_FirmwarePath_Initializer));
 	} else {
-		m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath", args.PV_FirmwarePath_Writer));
+		m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath", handlerFIRM.PV_FirmwarePath_Writer));
 	}
 	m_FirmwarePath_PV->setDescription("Path to the firmware file to load");
 	m_FirmwarePath_PV->setMaxElements(maxElements);
@@ -139,12 +139,12 @@ inline void FirmwareImpl::constructorBody(const size_t maxElements, const Firmwa
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
-                                   args.handlerSTM.switchOnFunction,
-								   args.handlerSTM.switchOffFunction,
+                                   handlerFIRM.handlerSTM.switchOnFunction,
+								   handlerFIRM.handlerSTM.switchOffFunction,
                                    std::bind(&FirmwareImpl::onStart, this),
-								   args.handlerSTM.stopFunction,
-								   args.handlerSTM.recoverFunction,
-								   args.handlerSTM.allowStateChangeFunction));
+								   handlerFIRM.handlerSTM.stopFunction,
+								   handlerFIRM.handlerSTM.recoverFunction,
+								   handlerFIRM.handlerSTM.allowStateChangeFunction));
     addChild(m_StateMachine);
 }
 

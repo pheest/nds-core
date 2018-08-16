@@ -46,10 +46,10 @@ Firmware::Firmware(const std::string& name,
 
 Firmware::Firmware(const std::string& name,
 				   size_t maxElements,
-				   FirmwareArgs_t args):
+				   const FirmwareArgs_t& handlerFIRM):
 			Node(std::shared_ptr<FirmwareImpl>(new FirmwareImpl(name,
 									    maxElements,
-										args)))
+										handlerFIRM)))
 {
 }
 

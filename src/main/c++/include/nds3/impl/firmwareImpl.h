@@ -35,7 +35,7 @@ namespace nds
 
       FirmwareImpl(const std::string& name, ///< The node's name
     		  	   size_t maxElements, ///< Maximum length of the PV strings.
-				   FirmwareArgs_t args); ///< Structure with delegate functions that perform the required actions.
+				   const FirmwareArgs_t& handlerFIRM); ///< Structure with delegate functions that perform the required actions.
 
 
       /**
@@ -277,9 +277,9 @@ namespace nds
       /**
        * Common source code to define the body of any constructor
        * @param maxElements Maximum number of elements to allocate vectors (if any).
-       * @param args Structure containing both compulsory and optional functions.
+       * @param handlerFIRM Structure containing both compulsory and optional functions.
        */
-      void constructorBody(const size_t maxElements, const FirmwareArgs_t args);
+      void constructorBody(const size_t maxElements, const FirmwareArgs_t& handlerFIRM);
   };
 
 
