@@ -15,6 +15,7 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/FTE.h"
 
 namespace nds
 {
@@ -38,6 +39,13 @@ public:
 			writerInt32_t PV_Suppress_Writer,
 			writerInt32_t PV_ChgPeriod_Writer,
 			writerInt32_t PV_PendingValue_Writer);
+
+	/**
+	 * @brief Constructs the FTE node by means of its structure of functions.
+	 * @param name Name of the ndoe.
+	 * @param handlerFTE Structure with delegate functions that perform the required actions.
+	 */
+	FTEImpl(const std::string& name, const FTEArgs_t& handlerFTE);
 
 
     /**
@@ -172,6 +180,13 @@ protected:
 
 	std::shared_ptr<StateMachineImpl> m_StateMachine;
 
+private:
+
+	/**
+	* Common source code to define the body of any constructor
+	* @param handlerFTE Structure containing both compulsory and optional functions.
+	*/
+	void constructorBody(const FTEArgs_t& handlerFTE);
 };
 
 }
