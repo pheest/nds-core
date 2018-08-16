@@ -57,7 +57,7 @@ class TimingImpl: public NodeImpl {
      * @param name Name of the node
      * @param handlerTM Structure with delegate functions that perform the required actions.
      */
-    TimingImpl(const std::string& name, TimingArgs_t handlerTM);
+    TimingImpl(const std::string& name, const TimingArgs_t& handlerTM);
 
    // Common functions
    /**
@@ -247,7 +247,7 @@ private:
   	* Common source code to define the body of any constructor
   	* @param handlerTM Structure containing both compulsory and optional functions.
   	*/
-  	void constructorBody(const TimingArgs_t handlerTM);
+  	void constructorBody(const TimingArgs_t& handlerTM);
 
 
 };

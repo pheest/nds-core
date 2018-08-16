@@ -39,7 +39,7 @@ Timing::Timing(const std::string& name,
 {
 }
 
-Timing::Timing(const std::string& name, TimingArgs_t handlerTM):
+Timing::Timing(const std::string& name, const TimingArgs_t& handlerTM):
 		Node(std::shared_ptr<TimingImpl>(new TimingImpl(name, handlerTM)))
 {
 }

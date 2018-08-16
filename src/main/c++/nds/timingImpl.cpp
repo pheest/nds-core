@@ -38,7 +38,7 @@ namespace nds {
 	  constructorBody(handlerTM);
   }
 
-  TimingImpl::TimingImpl(const std::string& name, TimingArgs_t handlerTM):
+  TimingImpl::TimingImpl(const std::string& name, const TimingArgs_t& handlerTM):
 		  NodeImpl(name, nodeType_t::dataSourceChannel),
 		  m_OnStartDelegate(handlerTM.handlerSTM.startFunction),
 		  m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -46,7 +46,7 @@ namespace nds {
 	  constructorBody(handlerTM);
   }
 
-  inline void TimingImpl::constructorBody(const TimingArgs_t handlerTM) {
+  inline void TimingImpl::constructorBody(const TimingArgs_t& handlerTM) {
 
 	    // Add the children PVs
 

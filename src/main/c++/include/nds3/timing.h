@@ -132,7 +132,7 @@ class NDS3_API Timing: public Node  {
      * @param handlerTM Structure with the arguments required by the Timing node.
      * See @ref TimingArgs_t for further details.
      */
-    Timing(const std::string& name, TimingArgs_t handlerTM);
+    Timing(const std::string& name, const TimingArgs_t& handlerTM);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**
