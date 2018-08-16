@@ -12,7 +12,7 @@
 static std::map<std::string, DeviceStateMachine*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t & parameters):
 						m_Name(DeviceName),
 						m_bStop_StateMachine(true)
 	{
@@ -49,9 +49,11 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 	timespec timestamp = {0, 0};
 	m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
+
 	// Add State Machine node
-	/*
-	m_StateMachine = rootNode.addChild(nds::StateMachine(true,
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		nds::StateMachineArgs_t stateMachineArgs = nds::StateMachineArgs_t(true,
 				std::bind(&DeviceStateMachine::switchOn_StateMachine, this),
 				std::bind(&DeviceStateMachine::switchOff_StateMachine, this),
 				std::bind(&DeviceStateMachine::start_StateMachine, this),
@@ -60,25 +62,25 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 				std::bind(&DeviceStateMachine::allow_StateMachine_Change, this,
 					  std::placeholders::_1,
 					  std::placeholders::_2,
-					  std::placeholders::_3))); */
-	nds::StateMachineArgs_t stateMachineArgs = nds::StateMachineArgs_t(true,
-			std::bind(&DeviceStateMachine::switchOn_StateMachine, this),
-			std::bind(&DeviceStateMachine::switchOff_StateMachine, this),
-			std::bind(&DeviceStateMachine::start_StateMachine, this),
-			std::bind(&DeviceStateMachine::stop_StateMachine, this),
-			std::bind(&DeviceStateMachine::recover_StateMachine, this),
-			std::bind(&DeviceStateMachine::allow_StateMachine_Change, this,
-				  std::placeholders::_1,
-				  std::placeholders::_2,
-				  std::placeholders::_3));
-	m_StateMachine = rootNode.addChild(nds::StateMachine(stateMachineArgs));
+					  std::placeholders::_3));
+		m_StateMachine = rootNode.addChild(nds::StateMachine(stateMachineArgs));
+	} else {
+		m_StateMachine = rootNode.addChild(nds::StateMachine(true,
+					std::bind(&DeviceStateMachine::switchOn_StateMachine, this),
+					std::bind(&DeviceStateMachine::switchOff_StateMachine, this),
+					std::bind(&DeviceStateMachine::start_StateMachine, this),
+					std::bind(&DeviceStateMachine::stop_StateMachine, this),
+					std::bind(&DeviceStateMachine::recover_StateMachine, this),
+					std::bind(&DeviceStateMachine::allow_StateMachine_Change, this,
+						  std::placeholders::_1,
+						  std::placeholders::_2,
+						  std::placeholders::_3)));
+	}
 
 	// We have declared all the nodes and PVs in our Device: now we register
 	// them with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
-
-	std::cout << "Root node initialized in test." << std::endl;
 
 	rootNode.setTimestampDelegate(std::bind(&DeviceStateMachine::getCurrentTime,this));
 
