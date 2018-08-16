@@ -50,7 +50,7 @@ public:
 						writerDouble_t PV_SignalQualityFlagLevel_Writer);
 
 	HQMonitorImpl(const std::string& name,  ///< The node's name
-					HQMonitorArgs_t handlerHQM); ///< Structure with delegate functions that perform the required actions.
+					const HQMonitorArgs_t& handlerHQM); ///< Structure with delegate functions that perform the required actions.
 
 
     /**
@@ -325,9 +325,9 @@ private:
 
 	/**
 	* Common source code to define the body of any constructor
-	* @param args Structure containing both compulsory and optional functions.
+	* @param handlerHQM Structure containing both compulsory and optional functions.
 	*/
-	void constructorBody(const HQMonitorArgs_t args);
+	void constructorBody(const HQMonitorArgs_t& handlerHQM);
 
 };
 

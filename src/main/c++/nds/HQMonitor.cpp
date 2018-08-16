@@ -73,7 +73,7 @@ HQMonitor::HQMonitor(  const std::string& name,
 }
 
 
-HQMonitor::HQMonitor(const std::string& name, HQMonitorArgs_t handlerHQM):
+HQMonitor::HQMonitor(const std::string& name, const HQMonitorArgs_t& handlerHQM):
 				Node(std::shared_ptr<HQMonitorImpl>(new HQMonitorImpl(name, handlerHQM)))
 {
 }

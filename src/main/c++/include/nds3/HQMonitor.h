@@ -332,7 +332,7 @@ public:
 	 * @param handlerHQM Structure with the arguments required by the HQMonitor node.
 	 * See @ref HQMonitorArgs_t for further details.
 	 */
-	HQMonitor(const std::string& name, HQMonitorArgs_t handlerHQM);
+	HQMonitor(const std::string& name, const HQMonitorArgs_t& handlerHQM);
 
     /**
      * @ingroup

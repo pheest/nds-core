@@ -70,7 +70,7 @@ HQMonitorImpl::HQMonitorImpl(  const std::string& name,
 	constructorBody(handlerHQM);
 }
 
-HQMonitorImpl::HQMonitorImpl(const std::string& name, HQMonitorArgs_t handlerHQM) :
+HQMonitorImpl::HQMonitorImpl(const std::string& name, const HQMonitorArgs_t& handlerHQM) :
 		  NodeImpl(name, nodeType_t::dataSourceChannel),
 		  m_onStartDelegate(handlerHQM.handlerSTM.startFunction),
 		  m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -78,7 +78,7 @@ HQMonitorImpl::HQMonitorImpl(const std::string& name, HQMonitorArgs_t handlerHQM
 	constructorBody(handlerHQM);
 }
   
-inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t handlerHQM) {
+inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t& handlerHQM) {
 
 	  // Add the children PVs
 	  m_DevPower_PV.reset(new PVDelegateInImpl<double>("DevPower",handlerHQM.PV_DevicePower_Reader));
