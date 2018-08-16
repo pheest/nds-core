@@ -215,7 +215,7 @@ struct DataAcquisitionArgs_t {
 	 * @param _PV_Gain_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Gain_Writer.
 	 * @param _PV_Offset_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Offset_Writer.
 	 * @param _PV_Bandwidth_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Bandwidth_Writer.
-	 * @param _PV_Resolution_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.Resolution_Writer.
+	 * @param _PV_Resolution_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Resolution_Writer.
 	 * @param _PV_Impedance_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Impedance_Writer.
 	 * @param _PV_Coupling_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Coupling_Writer
 	 * @param _PV_SignalRefType_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SignalRefType_Writer.
