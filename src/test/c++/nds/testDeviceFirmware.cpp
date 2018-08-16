@@ -196,6 +196,7 @@ static void commonPVsTest(bool testInitializers){
 		  std::string initialPath;
 		  pInterface->readCSValue("/deviceFirmware-Firm.FilePath", &timestamp, &initialPath);
 		  EXPECT_EQ((std::string)"not available", initialPath);
+		  std::cout<<"\tInitial FilePath = "<< initialPath <<std::endl;
 	  }
 	  pInterface->getPushedString("/deviceFirmware-Firm.FilePath_RBV",
 				      ptimestamp, firmwarePath);
