@@ -173,7 +173,7 @@ class NDS3_API Timestamping: public Node  {
                  writerInt32_t PV_ClearOverflow_Writer);
 
     /**
-     * Simplified constructor fo the Timestamping node.
+     * @brief Simplified constructor of the Timestamping node.
      * @param name Name (unique) to identify the instance of the node.
      * @param handlerTMS Structure with the arguments required by the Timestamping node.
      * See @ref TimestampingArgs_t for further details.

@@ -60,7 +60,7 @@ namespace nds {
                  writerInt32_t PV_ClearOverflow_Writer);
 
      /**
-      * @brief Constructs the Timestamping node by means of its structure of fucntions.
+      * @brief Constructs the Timestamping node by means of its structure of functions.
       * @param name Name of the node
       * @param handlerTMS Structure with delegate functions that perform the required actions.
       */
