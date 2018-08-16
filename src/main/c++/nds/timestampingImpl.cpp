@@ -43,7 +43,7 @@ namespace nds {
 	  constructorBody(handlerTMS);
   }
   template <typename T>
-  TimestampingImpl<T>::TimestampingImpl(const std::string& name, const TimestampingArgs_t handlerTMS) :
+  TimestampingImpl<T>::TimestampingImpl(const std::string& name, const TimestampingArgs_t& handlerTMS) :
 	  NodeImpl(name, nodeType_t::dataSourceChannel),
 	  m_OnStartDelegate(handlerTMS.handlerSTM.startFunction),
 	  m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))

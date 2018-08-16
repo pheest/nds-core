@@ -64,7 +64,7 @@ namespace nds {
       * @param name Name of the node
       * @param handlerTMS Structure with delegate functions that perform the required actions.
       */
-     TimestampingImpl(const std::string& name, TimestampingArgs_t handlerTMS);
+     TimestampingImpl(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ----------------------- Common functions ----------------------------- //
     /**

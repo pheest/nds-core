@@ -178,7 +178,7 @@ class NDS3_API Timestamping: public Node  {
      * @param handlerTMS Structure with the arguments required by the Timestamping node.
      * See @ref TimestampingArgs_t for further details.
      */
-    Timestamping(const std::string& name, const TimestampingArgs_t handlerTMS);
+    Timestamping(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**
