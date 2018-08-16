@@ -51,17 +51,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 
 	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 	// Add Firmware node
-	if (findParam == parameters.end()) {
-		m_Firmware = rootNode.addChild(nds::Firmware("Firm",
-							     256, // Maximum string length.
-					std::bind(&DeviceFirmware::switchOn_Firmware, this),
-					std::bind(&DeviceFirmware::switchOff_Firmware, this),
-					std::bind(&DeviceFirmware::start_Firmware, this),
-					std::bind(&DeviceFirmware::stop_Firmware, this),
-					std::bind(&DeviceFirmware::recover_Firmware, this),
-					std::bind(&DeviceFirmware::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-					std::bind(&DeviceFirmware::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
-	} else {
+	if (findParam != parameters.end() && findParam->second=="YES") {
 		nds::FirmwareArgs_t handlers = nds::FirmwareArgs_t(
 					std::bind(&DeviceFirmware::switchOn_Firmware, this),
 					std::bind(&DeviceFirmware::switchOff_Firmware, this),
@@ -74,6 +64,16 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 		m_Firmware = rootNode.addChild(nds::Firmware("Firm",
 									     	 	 	 256,
 													 handlers));
+	} else {
+		m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+							     256, // Maximum string length.
+					std::bind(&DeviceFirmware::switchOn_Firmware, this),
+					std::bind(&DeviceFirmware::switchOff_Firmware, this),
+					std::bind(&DeviceFirmware::start_Firmware, this),
+					std::bind(&DeviceFirmware::stop_Firmware, this),
+					std::bind(&DeviceFirmware::recover_Firmware, this),
+					std::bind(&DeviceFirmware::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+					std::bind(&DeviceFirmware::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
 	}
 	m_Firmware.setTimestampDelegate(std::bind(&DeviceFirmware::getCurrentTime,this));
 

@@ -54,23 +54,7 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
   nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 
   // Add Timestamping node
-  if (findParam == parameters.end()) {
-	  m_Timestamping = rootNode.addChild(nds::Timestamping<nds::timestamp_t>(
-			"Timestamping", 4,
-			std::bind(&DeviceTimestamping::switchOn_timestamping, this),
-			std::bind(&DeviceTimestamping::switchOff_timestamping, this),
-			std::bind(&DeviceTimestamping::start_timestamping, this),
-			std::bind(&DeviceTimestamping::stop_timestamping, this),
-			std::bind(&DeviceTimestamping::recover_timestamping, this),
-			std::bind(&DeviceTimestamping::allow_timestamping_change, this,
-			  std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceTimestamping::pv_enable_writer, this,
-			  std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceTimestamping::pv_edge_writer, this,
-			  std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceTimestamping::pv_clearoverflow_writer, this,
-			  std::placeholders::_1, std::placeholders::_2)));
-  } else {
+  if (findParam != parameters.end() && findParam->second=="YES") {
 	  //Set compulsory methods
 	  nds::TimestampingArgs_t handlerTMS =  nds::TimestampingArgs_t(
 				std::bind(&DeviceTimestamping::switchOn_timestamping, this),
@@ -93,6 +77,22 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
 	  m_Timestamping = rootNode.addChild(nds::Timestamping<nds::timestamp_t>(
 																	"Timestamping",
 																	handlerTMS));
+  } else {
+	  m_Timestamping = rootNode.addChild(nds::Timestamping<nds::timestamp_t>(
+			"Timestamping", 4,
+			std::bind(&DeviceTimestamping::switchOn_timestamping, this),
+			std::bind(&DeviceTimestamping::switchOff_timestamping, this),
+			std::bind(&DeviceTimestamping::start_timestamping, this),
+			std::bind(&DeviceTimestamping::stop_timestamping, this),
+			std::bind(&DeviceTimestamping::recover_timestamping, this),
+			std::bind(&DeviceTimestamping::allow_timestamping_change, this,
+			  std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceTimestamping::pv_enable_writer, this,
+			  std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceTimestamping::pv_edge_writer, this,
+			  std::placeholders::_1, std::placeholders::_2),
+			std::bind(&DeviceTimestamping::pv_clearoverflow_writer, this,
+			  std::placeholders::_1, std::placeholders::_2)));
   }
 
   m_Timestamping.setStartTimestampDelegate(std::bind(&DeviceTimestamping::getCurrentTime, this));
