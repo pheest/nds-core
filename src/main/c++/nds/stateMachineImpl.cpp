@@ -47,15 +47,15 @@ StateMachineImpl::StateMachineImpl(bool bAsync,
 	StateMachineImpl::constructorBody();
 }
 
-StateMachineImpl::StateMachineImpl(StateMachineArgs_t args) : NodeImpl("StateMachine", nodeType_t::stateMachine),
-	    m_bAsync(args.bAsync),
+StateMachineImpl::StateMachineImpl(const StateMachineArgs_t& handlerSTM) : NodeImpl("StateMachine", nodeType_t::stateMachine),
+	    m_bAsync(handlerSTM.bAsync),
 		m_localState(state_t::off),
-		m_switchOn(args.switchOnFunction),
-		m_switchOff(args.switchOffFunction),
-		m_start(args.startFunction),
-		m_stop(args.stopFunction),
-		m_recover(args.recoverFunction),
-		m_allowChange(args.allowStateChangeFunction)
+		m_switchOn(handlerSTM.switchOnFunction),
+		m_switchOff(handlerSTM.switchOffFunction),
+		m_start(handlerSTM.startFunction),
+		m_stop(handlerSTM.stopFunction),
+		m_recover(handlerSTM.recoverFunction),
+		m_allowChange(handlerSTM.allowStateChangeFunction)
 {
 	StateMachineImpl::constructorBody();
 }

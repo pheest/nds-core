@@ -47,8 +47,8 @@ StateMachine::StateMachine(bool bAsync,
  * Constructor. Setup the delegates
  *
  **********************************/
-StateMachine::StateMachine(StateMachineArgs_t args):
-	Node(std::shared_ptr<NodeImpl>(new StateMachineImpl(args)))
+StateMachine::StateMachine(const StateMachineArgs_t& handlerSTM):
+	Node(std::shared_ptr<NodeImpl>(new StateMachineImpl(handlerSTM)))
 {
 }
 

@@ -196,10 +196,10 @@ public:
 
     /**
      * @brief Simplified constructor of the state machine.
-     * @param args Structure with the arguments required by the state machine.
+     * @param handlerSTM Structure with the arguments required by the state machine.
      * See @ref StateMachineArgs_t for further details.
      */
-    StateMachine(StateMachineArgs_t args);
+    StateMachine(const StateMachineArgs_t& handlerSTM);
 
     /**
      * @brief Instruct the state machine to change the local state to the requested one.

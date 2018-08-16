@@ -77,9 +77,9 @@ public:
 
    /**
 	 * @brief Simplified constructor of the state machine implementation class.
-	 * @param args Structure with the arguments required by the state machine.
+	 * @param handlerSTM Structure with the arguments required by the state machine.
 	 */
-	StateMachineImpl(StateMachineArgs_t args);
+	StateMachineImpl(const StateMachineArgs_t& handlerSTM);
 
     ~StateMachineImpl();
 
