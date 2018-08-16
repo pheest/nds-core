@@ -3,6 +3,51 @@
 
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
+#include "../include/testUtils.h"
+
+/**
+ * @brief Internal function to test the Set-PVs included in the FTE node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testSetPVManaging and testSetPVManagingInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonSetPVsTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the Suppress-PVs included in the FTE node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testSuppressPVManaging and testSuppressPVManagingInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonSuppressPVsTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the ChgPeriod-PVs included in the FTE node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testChgPeriodPVManaging and testChgPeriodPVManagingInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonChgPeriodPVsTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the Pending-PVs included in the FTE node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPendingAndMaximumPVManaging and testPendingAndMaximumPVManagingInit test,
+ * this function shares the full test and the evaluation or not of the
+ * initialization features depends on the @a testInitializers flag.
+ */
+static void commonPendingPVsTest(const bool testInitializers = false);
 
 TEST(testFTE, testStateMachineFTE)
 {
@@ -62,9 +107,44 @@ TEST(testFTE, testStateMachineFTE)
 
 TEST(testFTE, testSetPVManaging)
 {
+	commonSetPVsTest();
+}
+TEST(testFTE, testSetPVManagingInit)
+{
+	commonSetPVsTest(true);
+}
 
-	//const timespec* pStateMachineSwitchTime;
-	//const std::int32_t* pStateMachineState;
+TEST(testFTE, testSuppressPVManaging)
+{
+	commonSuppressPVsTest();
+}
+TEST(testFTE, testSuppressPVManagingInit)
+{
+	commonSuppressPVsTest(true);
+}
+
+TEST(testFTE, testChgPeriodPVManaging)
+{
+	commonChgPeriodPVsTest();
+}
+
+TEST(testFTE, testChgPeriodPVManagingInit)
+{
+	commonChgPeriodPVsTest(true);
+}
+
+TEST(testFTE, testPendingAndMaximumPVManaging)
+{
+	commonPendingPVsTest();
+}
+
+TEST(testFTE, testPendingAndMaximumPVManagingInit)
+{
+	commonPendingPVsTest(true);
+}
+
+static void commonSetPVsTest(const bool testInitializers) {
+
 	const std::string* setStatus;
 	const std::int32_t* setCode;
 	const timespec* timestampSet;
@@ -72,7 +152,11 @@ TEST(testFTE, testSetPVManaging)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceFTE", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -80,6 +164,52 @@ TEST(testFTE, testSetPVManaging)
 	/////////////////////
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+		timespec initialTimespecValue;
+		bool validValue = false;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.Set", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 101, initialInt32Value);
+		std::cout<<"\tInitial Set = "<< initialInt32Value <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.TerminalSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		std::cout<<"\tInitial TerminalSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.ModeSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial ModeSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.StartTimeSet", &timestamp, &initialTimespecValue);
+		validValue = (initialTimespecValue.tv_sec == 10) && (initialTimespecValue.tv_nsec == 20);
+		EXPECT_EQ((bool) true, validValue);
+		std::cout<<"\tInitial StartTimeSet = "<< TestUtils::getString(initialTimespecValue) <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.StopTimeSet", &timestamp, &initialTimespecValue);
+		validValue = (initialTimespecValue.tv_sec == 20) && (initialTimespecValue.tv_nsec == 10);
+		EXPECT_EQ((bool) true, validValue);
+		std::cout<<"\tInitial StopTimeSet = "<< TestUtils::getString(initialTimespecValue) <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.LevelSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		std::cout<<"\tInitial LevelSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.PeriodNsecSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1000, initialInt32Value);
+		std::cout<<"\tInitial PeriodNsecSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.DutyCycleSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 80, initialInt32Value);
+		std::cout<<"\tInitial DutyCycleSet = "<< initialInt32Value <<std::endl;
+	}
 
 	////////////////////////////////////////////////////////////////
 	///TEST SET with correct values
@@ -171,10 +301,8 @@ TEST(testFTE, testSetPVManaging)
 
 }
 
-TEST(testFTE, testSuppressPVManaging)
-{
-	//const timespec* pStateMachineSwitchTime;
-	//const std::int32_t* pStateMachineState;
+static void commonSuppressPVsTest(const bool testInitializers) {
+
 	const std::string* suppressStatus;
 	const std::int32_t* suppressCode;
 	const timespec* timestampSuppress;
@@ -182,7 +310,11 @@ TEST(testFTE, testSuppressPVManaging)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceFTE", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
@@ -190,6 +322,39 @@ TEST(testFTE, testSuppressPVManaging)
 	/////////////////////
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+		timespec initialTimespecValue;
+		bool validValue = false;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.Suppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 102, initialInt32Value);
+		std::cout<<"\tInitial Suppress = "<< initialInt32Value <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.TerminalSuppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -2, initialInt32Value);
+		std::cout<<"\tInitial TerminalSuppress = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.ModeSuppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		std::cout<<"\tInitial ModeSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.AllSuppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial AllSuppress = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.StartTimeSuppress", &timestamp, &initialTimespecValue);
+		validValue = (initialTimespecValue.tv_sec == 20) && (initialTimespecValue.tv_nsec == 20);
+		EXPECT_EQ((bool) true, validValue);
+		std::cout<<"\tInitial StartTimeSuppress = "<< TestUtils::getString(initialTimespecValue) <<std::endl;
+	}
 
 	////////////////////////////////////////////////////////////////
 	///TEST SUPPRESS with correct values
@@ -259,11 +424,8 @@ TEST(testFTE, testSuppressPVManaging)
 
 }
 
-TEST(testFTE, testChgPeriodPVManaging)
-{
+static void commonChgPeriodPVsTest(const bool testInitializers){
 
-//	const timespec* pStateMachineSwitchTime;
-//	const std::int32_t* pStateMachineState;
 	const std::string* ChgPeriodStatus;
 	const std::int32_t* ChgPeriodCode;
 	const timespec* timestampChgPeriod;
@@ -271,14 +433,39 @@ TEST(testFTE, testChgPeriodPVManaging)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
-
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceFTE", "rootNode", parameters);
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set the start time
 	/////////////////////
 	std::int32_t startTimestamp = 200; //TODO Study this
 	pInterface->writeCSValue("/rootNode-setCurrentTime", timestamp, startTimestamp);
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.ChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 103, initialInt32Value);
+		std::cout<<"\tInitial ChgPeriod = "<< initialInt32Value <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.TerminalChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -3, initialInt32Value);
+		std::cout<<"\tInitial TerminalChgPeriod = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.PeriodChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 500, initialInt32Value);
+		std::cout<<"\tInitial PeriodChgPeriod = "<< initialInt32Value <<std::endl;
+	}
 
 	////////////////////////////////////////////////////////////////
 	///TEST CHG PERIOD with correct values
@@ -333,8 +520,7 @@ TEST(testFTE, testChgPeriodPVManaging)
 
 }
 
-TEST(testFTE, testPendingAndMaximumPVManaging)
-{
+static void commonPendingPVsTest(const bool testInitializers){
 
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
@@ -342,8 +528,11 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
-
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceFTE", "rootNode", parameters);
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	// Set the start time
@@ -362,6 +551,17 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
     ::sleep(1);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.TerminalPending", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 104, initialInt32Value);
+		std::cout<<"\tInitial TerminalPending = "<< initialInt32Value <<std::endl;
+	}
 
 	////////////////////////////////////////////////////////////////
 	///TEST read MAXIMUM FTEs PV
@@ -423,7 +623,6 @@ TEST(testFTE, testPendingAndMaximumPVManaging)
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	factory.destroyDevice("rootNode");
-
 }
 
 
