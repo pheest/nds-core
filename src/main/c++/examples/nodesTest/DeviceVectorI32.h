@@ -184,6 +184,25 @@ private:
 	void PV_WaveformGeneration_SignalType_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_WaveformGeneration_Ground_Writer(const timespec& timestamp, const std::int32_t& value);
 
+	/**
+	 * WaveformGeneration Initializers
+	 */
+	void PV_WaveformGeneration_Frequency_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_RefFrequency_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Amp_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Phase_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_UpdateRate_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_DutyCycle_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Gain_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Offset_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Bandwidth_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Resolution_Initializer(timespec* timestamp, double* value);
+	void PV_WaveformGeneration_Impedance_Initializer(timespec* timestamp, std::int32_t* value);
+	void PV_WaveformGeneration_Coupling_Initializer(timespec* timestamp, std::int32_t* value);
+	void PV_WaveformGeneration_SignalRef_Initializer(timespec* timestamp, std::int32_t* value);
+	void PV_WaveformGeneration_SignalType_Initializer(timespec* timestamp, std::int32_t* value);
+	void PV_WaveformGeneration_Ground_Initializer(timespec* timestamp, std::int32_t* value);
+
 	 /**
 	  * @brief Function that continuously generates a sinusoidal wave to m_WaveformGeneration.
 	  *        It is launched by start_WaveformGeneration() in a separate thread.
