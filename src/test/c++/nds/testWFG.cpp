@@ -5,6 +5,85 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for vectors of type @c double.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedVDBL and testPushDataGeneratedVDBLInit test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsVDBLTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for vectors of type @c int32_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedVI32 and testPushDataGeneratedVI32Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsVI32Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for vectors of type @c int8_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedVI8 and testPushDataGeneratedVI8Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsVI8Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for vectors of type @c uint8_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedVUI8 and testPushDataGeneratedVUI8Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsVUI8Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for data type @c double.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedDBL and testPushDataGeneratedDBLInit test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsDBLTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the WFG node for data type @c int32_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataGeneratedI32 and testPushDataGeneratedI32Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsI32Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the decimation PVs included in the WFG node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testdecimation and testdecimationInit test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonDecimationTest(const bool testInitializers = false);
+
+
 TEST(testWFG, testStateMachine)
 {
     const timespec* pStateMachineSwitchTime;
@@ -68,16 +147,113 @@ TEST(testWFG, testStateMachine)
 
 TEST(testWFG, testPushDataGeneratedVDBL)
 {
+	commonPVsVDBLTest();
+}
 
+TEST(testWFG, testPushDataGeneratedVDBLInit)
+{
+	commonPVsVDBLTest(true);
+}
+
+static void commonPVsVDBLTest(const bool testInitializers) {
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+    factory.createDevice("DeviceVectorDBL", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		std::vector<double> initialVDoubleValues;
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialVDoubleValues);
+		std::vector<double> expectedValues(128, 4.25); //128 doubles with value 4.25
+		EXPECT_EQ((bool) true, (expectedValues == initialVDoubleValues));
+		std::cout<<"\tInitial DataAWG = 128 doubles with value 4.25"<< std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -318,16 +494,115 @@ TEST(testWFG, testPushDataGeneratedVDBL)
 
 TEST(testWFG, testPushDataGeneratedVI8)
 {
+	commonPVsVI8Test();
+}
 
+TEST(testWFG, testPushDataGeneratedVI8Init)
+{
+	commonPVsVI8Test(true);
+}
+
+static void commonPVsVI8Test(const bool testInitializers)
+{
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorI8", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+    factory.createDevice("DeviceVectorI8", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		std::vector<std::int8_t> initialVInt8Values;
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialVInt8Values);
+		std::vector<std::int8_t> expectedValues(128, 2); //128 integers(8) with value 2
+		EXPECT_EQ((bool) true, (expectedValues == initialVInt8Values));
+		std::cout<<"\tInitial DataAWG = 128 integers(8) with value 2"<< std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -558,16 +833,115 @@ TEST(testWFG, testPushDataGeneratedVI8)
 
 TEST(testWFG, testPushDataGeneratedVUI8)
 {
+	commonPVsVUI8Test();
+}
 
+TEST(testWFG, testPushDataGeneratedVUI8Init)
+{
+	commonPVsVUI8Test(true);
+}
+
+static void commonPVsVUI8Test(const bool testInitializers)
+{
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorUI8", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+    factory.createDevice("DeviceVectorUI8", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		std::vector<std::uint8_t> initialVUInt8Values;
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialVUInt8Values);
+		std::vector<std::uint8_t> expectedValues(128, 2); //128 integers(8) with value 2
+		EXPECT_EQ((bool) true, (expectedValues == initialVUInt8Values));
+		std::cout<<"\tInitial DataAWG = 128 unsigned integers(8) with value 2"<< std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -799,16 +1173,115 @@ TEST(testWFG, testPushDataGeneratedVUI8)
 
 TEST(testWFG, testPushDataGeneratedVI32)
 {
+	commonPVsVI32Test();
+}
 
+TEST(testWFG, testPushDataGeneratedVI32Init)
+{
+	commonPVsVI32Test(true);
+}
+
+static void commonPVsVI32Test(const bool testInitializers)
+{
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorI32", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+    factory.createDevice("DeviceVectorI32", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		std::vector<std::int32_t> initialVInt32Values;
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialVInt32Values);
+		std::vector<std::int32_t> expectedValues(128, 5); //128 integers(32) with value 5
+		EXPECT_EQ((bool) true, (expectedValues == initialVInt32Values));
+		std::cout<<"\tInitial DataAWG = 128 integers(32) with value 5"<< std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -1040,16 +1513,112 @@ TEST(testWFG, testPushDataGeneratedVI32)
 
 TEST(testWFG, testPushDataGeneratedDBL)
 {
+	commonPVsDBLTest();
+}
 
+TEST(testWFG, testPushDataGeneratedDBLInit)
+{
+	commonPVsDBLTest(true);
+}
+
+static void commonPVsDBLTest(const bool testInitializers)
+{
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
 
-    factory.createDevice("DeviceDBL", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceDBL", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double)  2.25, initialDoubleValue);
+		std::cout<<"\tInitial DataAWG = "<< initialDoubleValue << std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -1271,16 +1840,113 @@ TEST(testWFG, testPushDataGeneratedDBL)
 
 TEST(testWFG, testPushDataGeneratedI32)
 {
+	commonPVsI32Test();
+}
 
+TEST(testWFG, testPushDataGeneratedI32Init)
+{
+	commonPVsI32Test(true);
+}
+
+static void commonPVsI32Test(const bool testInitializers)
+{
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
     timespec timestamp = {0, 0}, readTimestamp{0,0};
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceI32", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+    factory.createDevice("DeviceI32", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Frequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5e6, initialDoubleValue);
+		std::cout<<"\tInitial Frequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.RefFrequency", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.0e3, initialDoubleValue);
+		std::cout<<"\tInitial RefFrequency = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Amplitude", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial Amplitude = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Phase", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 60.0, initialDoubleValue);
+		std::cout<<"\tInitial Phase = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.UpdateRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 4.0, initialDoubleValue);
+		std::cout<<"\tInitial UpdateRate = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DutyCycle", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 75.0, initialDoubleValue);
+		std::cout<<"\tInitial DutyCycle = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 5.0, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 20.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial SignalType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-WFGNode.DataAWG", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -5, initialInt32Value);
+		std::cout<<"\tInitial DataAWG = " << initialInt32Value << std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
@@ -1498,6 +2164,16 @@ TEST(testWFG, testPushDataGeneratedI32)
 
 TEST(testWFG, testdecimation)
 {
+	commonDecimationTest();
+}
+
+TEST(testWFG, testdecimationInit)
+{
+	commonDecimationTest(true);
+}
+
+static void commonDecimationTest(const bool testInitializers)
+{
 
     const timespec* pStateMachineSwitchTime;
     const std::int32_t* pStateMachineState;
@@ -1505,9 +2181,21 @@ TEST(testWFG, testdecimation)
 
     nds::Factory factory("test");
 
-    factory.createDevice("DeviceVectorDBL", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+    factory.createDevice("DeviceVectorDBL", "rootNode", parameters);
 
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+		pInterface->readCSValue("/rootNode-WFGNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+	}
 
     // Set/Get Amplitude = 5
     double amplitude;
