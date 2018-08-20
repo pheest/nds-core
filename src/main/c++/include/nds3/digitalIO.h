@@ -21,9 +21,151 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+/**
+ * @brief Type defined to gather the arguments required by @ref DigitalIO constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ * @tparam T  the PV data type.
+ * 		The following data types are supported:
+ * 		- std::vector<bool>
+ * 		- std::vector<std::int8_t>
+ * 		- std::vector<std::int16_t>
+ * 		- std::vector<std::int32_t>
+ */
+template<typename T>
+struct DigitalIOArgs_t{
+
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to write the mask for the output data.
+	 * This is a compulsory field of the structure
+	 */
+	const writerVectorBool_t PV_dataOutMask_Writer;
+
+	/**
+	 * @brief Function to load the initial mask for the output data.
+	 * It reads the mask configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerVectorBool_t PV_dataOutMask_Initializer;
+
+	/**
+	 * @brief Function to write the voltage for high level.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_voltLevelHigh_Writer;
+
+	/**
+	 * @brief Function to load the initial voltage for high level.
+	 * It reads the voltage configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_voltLevelHigh_Initializer;
+
+	/**
+	 * @brief Function to write the voltage for low level.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_voltLevelLow_Writer;
+
+	/**
+	 * @brief Function to load the initial voltage for low level.
+	 * It reads the voltage configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_voltLevelLow_Initializer;
+
+	/**
+	 * @brief Function to write the direction of the channels.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerVectorBool_t PV_ChannelDir_Writer;
+
+	/**
+	 * @brief Function to load the initial direction of the channels.
+	 * It reads the directions configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerVectorBool_t PV_ChannelDir_Initializer;
+
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * List of default values that are used to initialize the PVVariableOutput member
+	 * variables. They can be edited by the user.
+	 * -----------------------------------------------------------------------------------------
+	 */
+	/**
+	 * @brief Initial value of the output data.
+	 */
+	T m_DataOut_Init;
+
+	/**
+	 * @brief Initial value of the decimation factor.
+	 */
+	std::int32_t m_Decimation_Init;
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * End of default values
+	 * -----------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref DigitalIOArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref DigitalIOArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref DigitalIOArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref DigitalIOArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref DigitalIOArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref DigitalIOArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param _PV_dataOutMask_Writer Function to write the mask for output data. To be set in @ref DigitalIOArgs_t.PV_dataOutMask_Writer.
+	 * @param _PV_voltLevelHigh_Writer Function to write the voltage for high level. To be set in @ref DigitalIOArgs_t.PV_voltLevelHigh_Writer.
+	 * @param _PV_voltLevelLow_Writer Function to write the voltage for low level. To be set in @ref DigitalIOArgs_t.PV_voltLevelLow_Writer.
+	 * @param _PV_ChannelDir_Writer Function to write the channels directions. To be set in @ref DigitalIOArgs_t.PV_ChannelDir_Writer.
+	 */
+	DigitalIOArgs_t(stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					writerVectorBool_t _PV_dataOutMask_Writer,
+					writerDouble_t _PV_voltLevelHigh_Writer,
+					writerDouble_t _PV_voltLevelLow_Writer,
+					writerVectorBool_t _PV_ChannelDir_Writer) :
+		   handlerSTM (true, ///Asynchronous state transitions.
+				   switchOnFunction,
+				   switchOffFunction,
+				   startFunction,
+				   stopFunction,
+				   recoverFunction,
+				   allowStateChangeFunction),
+		   PV_dataOutMask_Writer(_PV_dataOutMask_Writer),
+		   PV_voltLevelHigh_Writer(_PV_voltLevelHigh_Writer),
+		   PV_voltLevelLow_Writer(_PV_voltLevelLow_Writer),
+		   PV_ChannelDir_Writer(_PV_ChannelDir_Writer),
+		   m_DataOut_Init(T()), //Default value of the underlying data type
+	   	   m_Decimation_Init(1) {}
+};
+template class DigitalIOArgs_t<std::vector<bool>>;
+template class DigitalIOArgs_t<std::vector<std::int8_t>>;
+template class DigitalIOArgs_t<std::vector<std::int16_t>>;
+template class DigitalIOArgs_t<std::vector<std::int32_t>>;
 
 /**
  * This is a node that supplies PVs that specifies how the IO acquisition
@@ -86,7 +228,16 @@ public:
 			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerVectorBool_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
 
-
+    /**
+     * @brief Simplified constructor of the DigitalIO node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum size of the data to be handled.
+     * @param handlerDIO Structure with the arguments required by the DigitalIO node.
+     * See @ref DigitalIOArgs_t for further details.
+     */
+    DigitalIO( const std::string& name,
+               size_t maxElements,
+			   const DigitalIOArgs_t<T>& handlerDIO);
 
     /**
      * @ingroup timing
