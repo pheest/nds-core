@@ -15,6 +15,7 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/routing.h"
 
 #include <vector>
 
@@ -41,6 +42,13 @@ public:
 				writerInt32_t PV_TermSet_Writer,
 				writerInt32_t PV_TermDstRead_Writer
 			);
+
+    /**
+     * @brief Constructs the Routing node by means of its structure of functions.
+     * @param name Name of the node.
+     * @param handlerRTN Structure with delegate functions that perform the required actions.
+     */
+    RoutingImpl(const std::string& name, const RoutingArgs_t& handlerRTN);
 
     /**
      * @brief Specifies the function to call to get the routing start timestamp.
@@ -151,6 +159,14 @@ protected:
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TermSrcRead_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TermSyncRead_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_TermInvertRead_PV;
+
+private:
+
+	/**
+	* Common source code to define the body of any constructor
+	* @param handlerRTN Structure containing both compulsory and optional functions.
+	*/
+	void constructorBody(const RoutingArgs_t& handlerRTN);
 
 };
 
