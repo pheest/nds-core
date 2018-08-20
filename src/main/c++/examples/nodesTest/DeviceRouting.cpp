@@ -269,24 +269,6 @@ void DeviceRouting::PV_Routing_TermDstRead_Writer(const timespec& timestamp, con
 	}
 }
 
-#ifdef EPICS
- NDS_DEFINE_DRIVER(DeviceRouting, DeviceRouting)
-#else
-/**
- * Allocation function
- *********************/
-void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
-{
-    return new DeviceRouting(factory, deviceName, parameters);
-}
-
-/**
- * Deallocation function
- ***********************/
-void DeviceRouting::deallocateDevice(void* deviceName)
-{
-    delete (DeviceRouting*)deviceName;
-}
 
 void DeviceRouting::PV_Routing_ClkSet_Initializer(timespec* timestamp,
 		int32_t* value) {
@@ -310,6 +292,26 @@ void DeviceRouting::PV_Routing_TermDstRead_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 40};
 	*value = 3;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+
+#ifdef EPICS
+ NDS_DEFINE_DRIVER(DeviceRouting, DeviceRouting)
+#else
+/**
+ * Allocation function
+ *********************/
+void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+{
+    return new DeviceRouting(factory, deviceName, parameters);
+}
+
+/**
+ * Deallocation function
+ ***********************/
+void DeviceRouting::deallocateDevice(void* deviceName)
+{
+    delete (DeviceRouting*)deviceName;
 }
 
 #endif
