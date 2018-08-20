@@ -42,7 +42,7 @@ public:
 
 	/**
 	 * @brief Constructs the FTE node by means of its structure of functions.
-	 * @param name Name of the ndoe.
+	 * @param name Name of the node.
 	 * @param handlerFTE Structure with delegate functions that perform the required actions.
 	 */
 	FTEImpl(const std::string& name, const FTEArgs_t& handlerFTE);
