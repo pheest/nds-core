@@ -510,7 +510,7 @@ void DeviceHQMonitor::PV_HQMonitor_SelfTestEnable_Initializer(
 void DeviceHQMonitor::PV_HQMonitor_SelfTestType_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 40};
-	*value = 104; //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceHQMonitor::PV_HQMonitor_SelfTestVerboseEnable_Initializer(

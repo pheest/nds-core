@@ -265,7 +265,7 @@ static void commonPVsTest(bool testInitializers){
 		  //Check initial value
 		  std::int32_t initialTestType;
 		  pInterface->readCSValue("/deviceHQMonitor-HQMonitor.TestType", &timestamp, &initialTestType);
-		  EXPECT_EQ((std::int32_t) 104, initialTestType);
+		  EXPECT_EQ((std::int32_t) 1, initialTestType);
 		  std::cout<<"\tInitial TestType = "<< initialTestType <<std::endl;
 	  }
 	  pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.TestType_RBV",
