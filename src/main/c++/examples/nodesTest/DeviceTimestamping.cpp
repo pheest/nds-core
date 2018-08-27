@@ -326,13 +326,13 @@ void DeviceTimestamping::PV_Enable_Initializer(timespec* timestamp,
 void DeviceTimestamping::PV_Edge_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 20};
-	*value = 2; //ANY
+	*value = 1; //ANY
 }
 
 void DeviceTimestamping::PV_ClearOverflow_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 30};
-	*value = -1;
+	*value = 1;
 }
 
 timespec DeviceTimestamping::getCurrentTime() {

@@ -173,7 +173,7 @@ static void commonPVsTest(bool testInitializers){
 	  //Check initial value
 	  std::int32_t initialEdge;
 	  pInterface->readCSValue("/deviceTimestamping-Timestamping.Edge", &timestamp, &initialEdge);
-	  EXPECT_EQ((std::int32_t) 2, initialEdge);
+	  EXPECT_EQ((std::int32_t) 1, initialEdge);
 	  std::cout<<"\tInitial Edge = "<< initialEdge <<std::endl;
   }
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Edge_RBV",
@@ -192,7 +192,7 @@ static void commonPVsTest(bool testInitializers){
 	  //Check initial value
 	  std::int32_t initialClearOverflow;
 	  pInterface->readCSValue("/deviceTimestamping-Timestamping.ClearOverflow", &timestamp, &initialClearOverflow);
-	  EXPECT_EQ((std::int32_t) -1, initialClearOverflow);
+	  EXPECT_EQ((std::int32_t) 1, initialClearOverflow);
 	  std::cout<<"\tInitial ClearOverflow = "<< initialClearOverflow <<std::endl;
   }
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",
