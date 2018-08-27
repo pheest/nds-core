@@ -174,8 +174,20 @@ static void commonSetPVsTest(const bool testInitializers) {
 		//Verifies values provided by initializers methods
 		//--------------------------------------------------------------
 		pInterface->readCSValue("/rootNode-FTENode.Set", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 101, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Set = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.Suppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Suppress = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.ChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ChgPeriod = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.TerminalPending", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TerminalPending = "<< initialInt32Value <<std::endl;
 
 		//--------------------------------------------------------------
 		//Verifies values provided by initialization variables
@@ -199,7 +211,7 @@ static void commonSetPVsTest(const bool testInitializers) {
 		std::cout<<"\tInitial StopTimeSet = "<< TestUtils::getString(initialTimespecValue) <<std::endl;
 
 		pInterface->readCSValue("/rootNode-FTENode.LevelSet", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial LevelSet = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-FTENode.PeriodNsecSet", &timestamp, &initialInt32Value);
@@ -331,9 +343,21 @@ static void commonSuppressPVsTest(const bool testInitializers) {
 		//--------------------------------------------------------------
 		//Verifies values provided by initializers methods
 		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.Set", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Set = "<< initialInt32Value <<std::endl;
+
 		pInterface->readCSValue("/rootNode-FTENode.Suppress", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 102, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial Suppress = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.ChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ChgPeriod = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.TerminalPending", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TerminalPending = "<< initialInt32Value <<std::endl;
 
 		//--------------------------------------------------------------
 		//Verifies values provided by initialization variables
@@ -343,7 +367,7 @@ static void commonSuppressPVsTest(const bool testInitializers) {
 		std::cout<<"\tInitial TerminalSuppress = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-FTENode.ModeSuppress", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial ModeSet = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-FTENode.AllSuppress", &timestamp, &initialInt32Value);
@@ -451,9 +475,21 @@ static void commonChgPeriodPVsTest(const bool testInitializers){
 		//--------------------------------------------------------------
 		//Verifies values provided by initializers methods
 		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.Set", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Set = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.Suppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Suppress = "<< initialInt32Value <<std::endl;
+
 		pInterface->readCSValue("/rootNode-FTENode.ChgPeriod", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 103, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial ChgPeriod = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.TerminalPending", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TerminalPending = "<< initialInt32Value <<std::endl;
 
 		//--------------------------------------------------------------
 		//Verifies values provided by initialization variables
@@ -558,8 +594,20 @@ static void commonPendingPVsTest(const bool testInitializers){
 		//--------------------------------------------------------------
 		//Verifies values provided by initializers methods
 		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-FTENode.Set", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Set = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.Suppress", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Suppress = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-FTENode.ChgPeriod", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ChgPeriod = "<< initialInt32Value <<std::endl;
+
 		pInterface->readCSValue("/rootNode-FTENode.TerminalPending", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 104, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial TerminalPending = "<< initialInt32Value <<std::endl;
 	}
 

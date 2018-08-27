@@ -62,11 +62,11 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 		handlerFTE.m_ModeSet_Init = 1;
 		handlerFTE.m_StartTimeSet_Init = {10,20};
 		handlerFTE.m_StopTimeSet_Init = {20,10};
-		handlerFTE.m_LevelSet_Init = 2;
+		handlerFTE.m_LevelSet_Init = 1;
 		handlerFTE.m_PeriodNsecSet_Init = 1000;
 		handlerFTE.m_DutyCycleSet_Init = 80;
 		handlerFTE.m_TerminalSuppress_Init = -2;
-		handlerFTE.m_ModeSuppress_Init = 2;
+		handlerFTE.m_ModeSuppress_Init = 0;
 		handlerFTE.m_AllSuppress_Init = 1;
 		handlerFTE.m_StartTimeSuppress_Init = {20,20};
 		handlerFTE.m_TerminalChgPeriod_Init = -3;
@@ -313,25 +313,25 @@ void DeviceFTE::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std:
 
 void DeviceFTE::PV_FTE_Set_Initializer(timespec* timestamp, int32_t* value) {
 	*timestamp = {NDS_EPOCH, 10};
-	*value = 101;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceFTE::PV_FTE_Suppress_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 20};
-	*value = 102;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 1;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceFTE::PV_FTE_ChgPeriod_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 30};
-	*value = 103;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceFTE::PV_FTE_PendingValue_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 40};
-	*value = 104;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 #ifdef EPICS
