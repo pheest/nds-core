@@ -220,7 +220,7 @@ static void commonPVsVDBLTest(const bool testInitializers) {
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -228,7 +228,7 @@ static void commonPVsVDBLTest(const bool testInitializers) {
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
@@ -569,7 +569,7 @@ static void commonPVsVI8Test(const bool testInitializers)
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -577,7 +577,7 @@ static void commonPVsVI8Test(const bool testInitializers)
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
@@ -908,7 +908,7 @@ static void commonPVsVUI8Test(const bool testInitializers)
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -916,7 +916,7 @@ static void commonPVsVUI8Test(const bool testInitializers)
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
@@ -1248,7 +1248,7 @@ static void commonPVsVI32Test(const bool testInitializers)
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -1256,7 +1256,7 @@ static void commonPVsVI32Test(const bool testInitializers)
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
@@ -1587,7 +1587,7 @@ static void commonPVsDBLTest(const bool testInitializers)
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -1595,7 +1595,7 @@ static void commonPVsDBLTest(const bool testInitializers)
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);
@@ -1915,7 +1915,7 @@ static void commonPVsI32Test(const bool testInitializers)
 		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Impedance", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 50, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Impedance = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.Coupling", &timestamp, &initialInt32Value);
@@ -1923,7 +1923,7 @@ static void commonPVsI32Test(const bool testInitializers)
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 5, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);

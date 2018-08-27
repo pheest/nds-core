@@ -219,7 +219,7 @@ static void commonPVsVDBLTest(const bool testInitializers)
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -445,7 +445,7 @@ static void commonPVsVI32Test(const bool testInitializers)
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -663,7 +663,7 @@ static void commonPVsVI8Test(const bool testInitializers){
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -880,7 +880,7 @@ static void commonPVsVUI8Test(const bool testInitializers){
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -1098,7 +1098,7 @@ static void commonPVsDBLTest(const bool testInitializers){
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -1308,7 +1308,7 @@ static void commonPVsI32Test(const bool testInitializers){
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
@@ -1521,7 +1521,7 @@ static void commonDecimationTest(const bool testInitializers) {
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);

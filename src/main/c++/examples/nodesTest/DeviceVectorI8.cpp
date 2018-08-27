@@ -407,7 +407,7 @@ void DeviceVectorI8::PV_DataAcquisition_SignalRefType_Initializer(
 void DeviceVectorI8::PV_DataAcquisition_Ground_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 80};
-	*value = -1; //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceVectorI8::PV_DataAcquisition_DMAEnable_Initializer(timespec* timestamp,
@@ -485,7 +485,7 @@ void DeviceVectorI8::PV_WaveformGeneration_Resolution_Initializer(
 void DeviceVectorI8::PV_WaveformGeneration_Impedance_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 210};
-	*value = 50; //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceVectorI8::PV_WaveformGeneration_Coupling_Initializer(timespec* timestamp,
@@ -497,7 +497,7 @@ void DeviceVectorI8::PV_WaveformGeneration_Coupling_Initializer(timespec* timest
 void DeviceVectorI8::PV_WaveformGeneration_SignalRef_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 230};
-	*value = 5; //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceVectorI8::PV_WaveformGeneration_SignalType_Initializer(
