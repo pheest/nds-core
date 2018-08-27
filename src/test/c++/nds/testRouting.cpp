@@ -124,7 +124,7 @@ static void commonClkSetPVsTest(const bool testInitializers)
 		std::cout<<"\tInitial ClkDstRead = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-RoutingNode.TermSet", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial TermSet = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-RoutingNode.TermDstRead", &timestamp, &initialInt32Value);
@@ -285,7 +285,7 @@ static void commonTermSetPVsTest(const bool testInitializers)
 		std::cout<<"\tInitial ClkDstRead = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-RoutingNode.TermSet", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial TermSet = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-RoutingNode.TermDstRead", &timestamp, &initialInt32Value);

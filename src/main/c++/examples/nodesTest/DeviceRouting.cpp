@@ -285,7 +285,7 @@ void DeviceRouting::PV_Routing_ClkDstRead_Initializer(timespec* timestamp,
 void DeviceRouting::PV_Routing_TermSet_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 30};
-	*value = 2;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceRouting::PV_Routing_TermDstRead_Initializer(timespec* timestamp,
