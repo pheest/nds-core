@@ -228,7 +228,7 @@ static void commonPVsVDBLTest(const bool testInitializers) {
 		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalRefType", &timestamp, &initialInt32Value);
-		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
 		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
 
 		pInterface->readCSValue("/rootNode-WFGNode.SignalType", &timestamp, &initialInt32Value);

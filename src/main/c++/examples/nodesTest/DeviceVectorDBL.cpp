@@ -514,7 +514,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Coupling_Initializer(timespec* times
 void DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 230};
-	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceVectorDBL::PV_WaveformGeneration_SignalType_Initializer(
