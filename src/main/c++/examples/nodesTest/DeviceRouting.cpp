@@ -67,7 +67,7 @@ DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceNam
 		handlerRTN.m_TermSrc_Init = -3;
 		handlerRTN.m_TermDst_Init = -4;
 		handlerRTN.m_TermSyncSet_Init = 0;
-		handlerRTN.m_TermInvertSet_Init = 1;
+		handlerRTN.m_TermInvertSet_Init = 0;
 		//Add the routing node
 		m_Routing = rootNode.addChild(nds::Routing<std::string>(
 				"RoutingNode", handlerRTN));
@@ -279,7 +279,7 @@ void DeviceRouting::PV_Routing_ClkSet_Initializer(timespec* timestamp,
 void DeviceRouting::PV_Routing_ClkDstRead_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 20};
-	*value = 1;  //Note that this value has no sense and it is fixed only for testing purposes.
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void DeviceRouting::PV_Routing_TermSet_Initializer(timespec* timestamp,
