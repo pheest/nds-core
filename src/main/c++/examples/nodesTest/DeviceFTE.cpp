@@ -59,15 +59,15 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 		handlerFTE.PV_PendingValue_Initializer = std::bind(&DeviceFTE::PV_FTE_PendingValue_Initializer, this, std::placeholders::_1, std::placeholders::_2),
 		//Set init values: Note that these value have no actual sense and they are fixed only for testing purposes.
 		handlerFTE.m_TerminalSet_Init = -1;
-		handlerFTE.m_ModeSet_Init = 1;
+		handlerFTE.m_ModeSet_Init = 0;
 		handlerFTE.m_StartTimeSet_Init = {10,20};
 		handlerFTE.m_StopTimeSet_Init = {20,10};
-		handlerFTE.m_LevelSet_Init = 1;
+		handlerFTE.m_LevelSet_Init = 0;
 		handlerFTE.m_PeriodNsecSet_Init = 1000;
 		handlerFTE.m_DutyCycleSet_Init = 80;
 		handlerFTE.m_TerminalSuppress_Init = -2;
 		handlerFTE.m_ModeSuppress_Init = 0;
-		handlerFTE.m_AllSuppress_Init = 1;
+		handlerFTE.m_AllSuppress_Init = 0;
 		handlerFTE.m_StartTimeSuppress_Init = {20,20};
 		handlerFTE.m_TerminalChgPeriod_Init = -3;
 		handlerFTE.m_PeriodChgPeriod_Init = 500;
