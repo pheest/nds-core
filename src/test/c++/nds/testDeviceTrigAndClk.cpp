@@ -202,7 +202,7 @@ TEST(testTrigAndClk, testTrigConf)
 	EXPECT_EQ((std::int32_t)0,*DAQStartTimeDelayRBV);
 
 	// Get TriggPeriod
-	pInterface->getPushedInt32("/rootNode-TrigAndClk.TriggPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.TrigPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,*TriggPeriodRBV);
 
 	// Get Level
@@ -238,8 +238,8 @@ TEST(testTrigAndClk, testTrigConf)
 	EXPECT_EQ((std::int32_t)1,DAQStartTimeDelay);
 
 	// Set/Get TriggPeriod
-	pInterface->writeCSValue("/rootNode-TrigAndClk.TriggPeriod",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
-	pInterface->readCSValue("/rootNode-TrigAndClk.TriggPeriod",&readTimestamp,&TriggPeriod); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-TrigAndClk.TrigPeriod",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->readCSValue("/rootNode-TrigAndClk.TrigPeriod",&readTimestamp,&TriggPeriod); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,TriggPeriod);
 
 	// Set/Get Level
@@ -291,7 +291,7 @@ TEST(testTrigAndClk, testTrigConf)
 	EXPECT_EQ((std::int32_t)1,*DAQStartTimeDelayRBV);
 
 	// Get TriggPeriod
-	pInterface->getPushedInt32("/rootNode-TrigAndClk.TriggPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.TrigPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*TriggPeriodRBV);
 
 	// Get Level
@@ -338,7 +338,7 @@ TEST(testTrigAndClk, testTrigConf)
 	EXPECT_EQ((std::int32_t)1,*DAQStartTimeDelayRBV);
 
 	// Get TriggPeriod
-	pInterface->getPushedInt32("/rootNode-TrigAndClk.TriggPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.TrigPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*TriggPeriodRBV);
 
 	// Get Level
@@ -389,7 +389,7 @@ TEST(testTrigAndClk, testTrigConf)
 	EXPECT_EQ((std::int32_t)0,*DAQStartTimeDelayRBV);
 
 	// Get TriggPeriod
-	pInterface->getPushedInt32("/rootNode-TrigAndClk.TriggPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.TrigPeriod_RBV",pushedTimestamp, TriggPeriodRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,*TriggPeriodRBV);
 
 	// Get Level

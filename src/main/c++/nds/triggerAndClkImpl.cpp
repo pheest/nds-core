@@ -65,11 +65,11 @@ TriggerAndClkImpl<T>::TriggerAndClkImpl(
 	m_DAQStartTimeDelay_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DAQStartTimeDelay_RBVPV);
 
-    m_TriggPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("TriggPeriod"));
+    m_TriggPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("TrigPeriod"));
     m_TriggPeriod_PV->setDescription("Trigger Period");
 	addChild(m_TriggPeriod_PV);
 
-	m_TriggPeriod_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TriggPeriod_RBV"));
+	m_TriggPeriod_RBVPV.reset(new PVVariableInImpl<std::int32_t>("TrigPeriod_RBV"));
 	m_TriggPeriod_RBVPV->setDescription("Trigger Period ReadBack");
 	m_TriggPeriod_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_TriggPeriod_RBVPV);
