@@ -122,6 +122,7 @@ of the distribution package.
               <include type="library" name="nds3-DeviceVectorI8"  />
               <include type="library" name="nds3-DeviceVectorUI8"  />
               <include type="library" name="nds3-DeviceVectorDBL"  /> 
+              <include type="library" name="nds3-DeviceTrigAndClk"  />
 	   
               <requires codac="true">nds-core-devel</requires> 
             </package>
