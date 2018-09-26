@@ -36,7 +36,31 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 		NodeImpl(name, nodeType_t::dataSourceChannel),
 		m_OnStartDelegate(startFunction),
 		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
-		{
+{
+	FTEArgs_t handlerFTE = FTEArgs_t(switchOnFunction,
+									 switchOffFunction,
+									 startFunction,
+									 stopFunction,
+									 recoverFunction,
+									 allowStateChangeFunction,
+									 PV_Set_Writer,
+									 PV_Suppress_Writer,
+									 PV_ChgPeriod_Writer,
+									 PV_PendingValue_Writer);
+	constructorBody(handlerFTE);
+}
+
+template<typename T>
+FTEImpl<T>::FTEImpl(const std::string& name, const FTEArgs_t& handlerFTE):
+		NodeImpl(name, nodeType_t::dataSourceChannel),
+		m_OnStartDelegate(handlerFTE.handlerSTM.startFunction),
+		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(handlerFTE);
+}
+
+template<typename T>
+inline void FTEImpl<T>::constructorBody(const FTEArgs_t& handlerFTE) {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Set FTE PVs
@@ -48,42 +72,52 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_TerminalSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalSet"));
 	m_TerminalSet_PV->setDescription("Terminal to set FTE");
 	m_TerminalSet_PV->setScanType(scanType_t::passive, 0);
-	m_TerminalSet_PV->write(tst,0); //Initial value
+	m_TerminalSet_PV->write(tst,handlerFTE.m_TerminalSet_Init); //Initial value
 	addChild(m_TerminalSet_PV);
 
 	m_ModeSet_PV.reset(new PVVariableOutImpl<std::int32_t>("ModeSet"));
 	m_ModeSet_PV->setDescription("Mode (Single, Pulse, Clk, InmLVL)");
 	m_ModeSet_PV->setScanType(scanType_t::passive, 0);
-	m_ModeSet_PV->write(tst,0);
+	m_ModeSet_PV->write(tst,handlerFTE.m_ModeSet_Init);
 	addChild(m_ModeSet_PV);
 
 	m_StartTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StartTimeSet"));
 	m_StartTimeSet_PV->setDescription("Start Time of FTE");
 	m_StartTimeSet_PV->setScanType(scanType_t::passive, 0);
-	m_StartTimeSet_PV->write(tst,tst);
+	m_StartTimeSet_PV->write(tst,handlerFTE.m_StartTimeSet_Init);
 	addChild(m_StartTimeSet_PV);
 
 	m_StopTimeSet_PV.reset(new PVVariableOutImpl<timespec>("StopTimeSet"));
 	m_StopTimeSet_PV->setDescription("Stop Time of FTE");
 	m_StopTimeSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_StopTimeSet_PV->write(tst, handlerFTE.m_StopTimeSet_Init);
 	addChild(m_StopTimeSet_PV);
 
 	m_LevelSet_PV.reset(new PVVariableOutImpl<std::int32_t>("LevelSet"));
 	m_LevelSet_PV->setDescription("Signal level of FTE");
 	m_LevelSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_LevelSet_PV->write(tst, handlerFTE.m_LevelSet_Init);
 	addChild(m_LevelSet_PV);
 
 	m_PeriodNsecSet_PV.reset(new PVVariableOutImpl<std::int32_t>("PeriodNsecSet"));
 	m_PeriodNsecSet_PV->setDescription("Period in Nanoseconds");
 	m_PeriodNsecSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_PeriodNsecSet_PV->write(tst, handlerFTE.m_PeriodNsecSet_Init);
 	addChild(m_PeriodNsecSet_PV);
 
 	m_DutyCycleSet_PV.reset(new PVVariableOutImpl<std::int32_t>("DutyCycleSet"));
 	m_DutyCycleSet_PV->setDescription("Duty Cycle percentage");
 	m_DutyCycleSet_PV->setScanType(scanType_t::interrupt, 0);
+	m_DutyCycleSet_PV->write(tst, handlerFTE.m_DutyCycleSet_Init);
 	addChild(m_DutyCycleSet_PV);
 
-	m_Set_PV.reset(new PVDelegateOutImpl<std::int32_t>("Set",PV_Set_Writer));
+	if (handlerFTE.PV_Set_Initializer) {
+		m_Set_PV.reset(new PVDelegateOutImpl<std::int32_t>("Set",
+														   handlerFTE.PV_Set_Writer,
+														   handlerFTE.PV_Set_Initializer));
+	} else {
+		m_Set_PV.reset(new PVDelegateOutImpl<std::int32_t>("Set",handlerFTE.PV_Set_Writer));
+	}
 	m_Set_PV->setDescription("Set FTE");
 	m_Set_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Set_PV);
@@ -104,24 +138,34 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_TerminalSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalSuppress"));
 	m_TerminalSuppress_PV->setDescription("Terminal to suppress FTE");
 	m_TerminalSuppress_PV->setScanType(scanType_t::interrupt, 0);
+	m_TerminalSuppress_PV->write(tst, handlerFTE.m_TerminalSuppress_Init);
 	addChild(m_TerminalSuppress_PV);
 
 	m_ModeSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("ModeSuppress"));
 	m_ModeSuppress_PV->setDescription("Mode of suppress FTE/clock");
 	m_ModeSuppress_PV->setScanType(scanType_t::interrupt, 0);
+	m_ModeSuppress_PV->write(tst, handlerFTE.m_ModeSuppress_Init);
 	addChild(m_ModeSuppress_PV);
 
 	m_AllSuppress_PV.reset(new PVVariableOutImpl<std::int32_t>("AllSuppress"));
 	m_AllSuppress_PV->setDescription("Suppress one or Suppress all FTEs");
 	m_AllSuppress_PV->setScanType(scanType_t::interrupt, 0);
+	m_AllSuppress_PV->write(tst, handlerFTE.m_AllSuppress_Init);
 	addChild(m_AllSuppress_PV);
 
 	m_StartTimeSuppress_PV.reset(new PVVariableOutImpl<timespec>("StartTimeSuppress"));
 	m_StartTimeSuppress_PV->setDescription("Start Time on FTE suppression");
 	m_StartTimeSuppress_PV->setScanType(scanType_t::interrupt, 0);
+	m_StartTimeSuppress_PV->write(tst, handlerFTE.m_StartTimeSuppress_Init);
 	addChild(m_StartTimeSuppress_PV);
 
-	m_Suppress_PV.reset(new PVDelegateOutImpl<std::int32_t>("Suppress",PV_Suppress_Writer));
+	if (handlerFTE.PV_Suppress_Initializer) {
+		m_Suppress_PV.reset(new PVDelegateOutImpl<std::int32_t>("Suppress",
+																handlerFTE.PV_Suppress_Writer,
+																handlerFTE.PV_Suppress_Initializer));
+	} else {
+		m_Suppress_PV.reset(new PVDelegateOutImpl<std::int32_t>("Suppress",handlerFTE.PV_Suppress_Writer));
+	}
 	m_Suppress_PV->setDescription("Suppress");
 	m_Suppress_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Suppress_PV);
@@ -142,17 +186,22 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	m_TerminalChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("TerminalChgPeriod"));
 	m_TerminalChgPeriod_PV->setDescription("Terminal to change the period of FTE");
 	m_TerminalChgPeriod_PV->setScanType(scanType_t::interrupt, 0);
-
-	m_TerminalChgPeriod_PV->write(tst,50);
-
+	m_TerminalChgPeriod_PV->write(tst,handlerFTE.m_TerminalChgPeriod_Init);
 	addChild(m_TerminalChgPeriod_PV);
 
 	m_PeriodChgPeriod_PV.reset(new PVVariableOutImpl<std::int32_t>("PeriodChgPeriod"));
 	m_PeriodChgPeriod_PV->setDescription("Period in nanoseconds to change on FTE");
 	m_PeriodChgPeriod_PV->setScanType(scanType_t::interrupt, 0);
+	m_PeriodChgPeriod_PV->write(tst, handlerFTE.m_PeriodChgPeriod_Init);
 	addChild(m_PeriodChgPeriod_PV);
 
-	m_ChgPeriod_PV.reset(new PVDelegateOutImpl<std::int32_t>("ChgPeriod",PV_ChgPeriod_Writer));
+	if (handlerFTE.PV_ChgPeriod_Initializer) {
+		m_ChgPeriod_PV.reset(new PVDelegateOutImpl<std::int32_t>("ChgPeriod",
+																 handlerFTE.PV_ChgPeriod_Writer,
+																 handlerFTE.PV_ChgPeriod_Initializer));
+	} else {
+		m_ChgPeriod_PV.reset(new PVDelegateOutImpl<std::int32_t>("ChgPeriod",handlerFTE.PV_ChgPeriod_Writer));
+	}
 	m_ChgPeriod_PV->setDescription("ChgPeriod");
 	m_ChgPeriod_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_ChgPeriod_PV);
@@ -170,7 +219,13 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Pending FTEs PV
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_TerminalPending_PV.reset(new PVDelegateOutImpl<std::int32_t>("TerminalPending",PV_PendingValue_Writer));
+	if (handlerFTE.PV_PendingValue_Initializer) {
+		m_TerminalPending_PV.reset(new PVDelegateOutImpl<std::int32_t>("TerminalPending",
+																	   handlerFTE.PV_PendingValue_Writer,
+																	   handlerFTE.PV_PendingValue_Initializer));
+	} else {
+		m_TerminalPending_PV.reset(new PVDelegateOutImpl<std::int32_t>("TerminalPending",handlerFTE.PV_PendingValue_Writer));
+	}
 	m_TerminalPending_PV->setDescription("Terminal Pending");
 	m_TerminalPending_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_TerminalPending_PV);
@@ -200,14 +255,14 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 
 	// Add state machine
 	m_StateMachine.reset(new StateMachineImpl(true,
-			switchOnFunction,
-			switchOffFunction,
+			handlerFTE.handlerSTM.switchOnFunction,
+			handlerFTE.handlerSTM.switchOffFunction,
 			std::bind(&FTEImpl::onStart, this),
-			stopFunction,
-			recoverFunction,
-			allowStateChangeFunction));
+			handlerFTE.handlerSTM.stopFunction,
+			handlerFTE.handlerSTM.recoverFunction,
+			handlerFTE.handlerSTM.allowStateChangeFunction));
 	addChild(m_StateMachine);
-		}
+}
 
 template<typename T>
 timespec FTEImpl<T>::getStartTimestamp() const

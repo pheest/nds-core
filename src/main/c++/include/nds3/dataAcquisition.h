@@ -21,9 +21,244 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+/**
+ * @brief Type defined to gather the arguments required by @ref DataAcquisition constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ */
+struct DataAcquisitionArgs_t {
+
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to write the gain for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Gain_Writer;
+
+	/**
+	 * @brief Function to load the initial value of gain.
+	 * It reads the gain configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Gain_Initializer;
+
+	/**
+	 * @brief Function to write the offset for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Offset_Writer;
+
+	/**
+	 * @brief Function to load the initial value of offset.
+	 * It reads the offset configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Offset_Initializer;
+
+	/**
+	 * @brief Function to write the bandwidth for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Bandwidth_Writer;
+
+	/**
+	 * @brief Function to load the initial value of bandwidth.
+	 * It reads the bandwidth configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Bandwidth_Initializer;
+
+	/**
+	 * @brief Function to write the resolution for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Resolution_Writer;
+
+	/**
+	 * @brief Function to load the initial value of resolution.
+	 * It reads the resolution configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Resolution_Initializer;
+
+	/**
+	 * @brief Function to write the impedance for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Impedance_Writer;
+
+	/**
+	 * @brief Function to load the initial value of impedance.
+	 * It reads the impedance configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Impedance_Initializer;
+
+	/**
+	 * @brief Function to write the coupling for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_Coupling_Writer;
+
+	/**
+	 * @brief Function to load the initial value of coupling.
+	 * It reads the coupling configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_Coupling_Initializer;
+
+	/**
+	 * @brief Function to write the type of signal reference for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_SignalRefType_Writer;
+
+	/**
+	 * @brief Function to load the initial type of signal reference .
+	 * It reads the type of signal reference configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_SignalRefType_Initializer;
+
+	/**
+	 * @brief Function to write the ground for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_Ground_Writer;
+
+	/**
+	 * @brief Function to load the initial ground.
+	 * It reads the ground configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_Ground_Initializer;
+
+	/**
+	 * @brief Function to write (enable/disable) the DMA for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_DMAEnable_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the flag for enabling DMA.
+	 * It reads the status of the flag to enable DMA in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_DMAEnable_Initializer;
+
+	/**
+	 * @brief Function to write the sampling rate for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_SamplingRate_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the sampling rate.
+	 * It reads the sampling rate configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_SamplingRate_Initializer;
+
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * List of default values that are used to initialize the PVVariableOutput member
+	 * variables. They can be edited by the user.
+	 * -----------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * @brief Initial value of the decimation factor for data acquisition.
+	 */
+	std::int32_t m_Decimation_Init;
+
+	/**
+	 * @brief Initial value of the type of decimation for data acquisition.
+	 */
+	std::int32_t m_DecimationType_Init;
+
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * End of default values
+	 * -----------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref DataAcquisitionArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref DataAcquisitionArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref DataAcquisitionArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref DataAcquisitionArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref DataAcquisitionArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref DataAcquisitionArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param _PV_Gain_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Gain_Writer.
+	 * @param _PV_Offset_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Offset_Writer.
+	 * @param _PV_Bandwidth_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Bandwidth_Writer.
+	 * @param _PV_Resolution_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Resolution_Writer.
+	 * @param _PV_Impedance_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Impedance_Writer.
+	 * @param _PV_Coupling_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Coupling_Writer
+	 * @param _PV_SignalRefType_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SignalRefType_Writer.
+	 * @param _PV_Ground_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Ground_Writer.
+	 * @param _PV_DMAEnable_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_DMAEnable_Writer
+	 * @param _PV_SamplingRate_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SamplingRate_Writer.
+	 */
+	DataAcquisitionArgs_t(stateChange_t switchOnFunction,
+						  stateChange_t switchOffFunction,
+						  stateChange_t startFunction,
+						  stateChange_t stopFunction,
+						  stateChange_t recoverFunction,
+						  allowChange_t allowStateChangeFunction,
+						  writerDouble_t _PV_Gain_Writer,
+						  writerDouble_t _PV_Offset_Writer,
+						  writerDouble_t _PV_Bandwidth_Writer,
+						  writerDouble_t _PV_Resolution_Writer,
+						  writerDouble_t _PV_Impedance_Writer,
+						  writerInt32_t _PV_Coupling_Writer,
+						  writerInt32_t _PV_SignalRefType_Writer,
+						  writerInt32_t _PV_Ground_Writer,
+						  writerInt32_t _PV_DMAEnable_Writer,
+						  writerDouble_t _PV_SamplingRate_Writer):
+				   handlerSTM (true, ///Asynchronous state transitions.
+						   switchOnFunction,
+						   switchOffFunction,
+						   startFunction,
+						   stopFunction,
+						   recoverFunction,
+						   allowStateChangeFunction),
+				   PV_Gain_Writer(_PV_Gain_Writer),
+				   PV_Offset_Writer(_PV_Offset_Writer),
+				   PV_Bandwidth_Writer(_PV_Bandwidth_Writer),
+				   PV_Resolution_Writer(_PV_Resolution_Writer),
+				   PV_Impedance_Writer(_PV_Impedance_Writer),
+				   PV_Coupling_Writer(_PV_Coupling_Writer),
+				   PV_SignalRefType_Writer(_PV_SignalRefType_Writer),
+				   PV_Ground_Writer(_PV_Ground_Writer),
+				   PV_DMAEnable_Writer(_PV_DMAEnable_Writer),
+				   PV_SamplingRate_Writer(_PV_SamplingRate_Writer),
+				   m_Decimation_Init(1),
+				   m_DecimationType_Init(0){}
+};
 
 /**
  * This is a node that supplies a data acquisition PV and few control
@@ -93,6 +328,18 @@ public:
 					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SamplingRate_Writer   ///< Delegate function to interact to the low level driver API
     );
+
+    /**
+     * @brief Simplified constructor of the DataAcquisition node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum size of the acquired array. Set to @c 1 for scalar values.
+     * @param handlerDAQ Structure with the arguments required by the DataAcquisition node.
+     * See @ref DataAcquisitionArgs_t for further details.
+     */
+    DataAcquisition(const std::string& name,
+                    size_t maxElements,
+					const DataAcquisitionArgs_t& handlerDAQ);
+
     /**
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the data acquisition starts.
@@ -147,7 +394,7 @@ public:
      *
      * @return the Impedance value
      */
-    int32_t getImpedance();
+    double getImpedance();
 
     /**
      * @brief Retrieve the Coupling
@@ -263,7 +510,7 @@ public:
      * @param timestamp timestamp for the value
      * @param value Impedance value in data acquisition
      */
-    void setImpedance(const timespec& timestamp, const std::int32_t& value);
+    void setImpedance(const timespec& timestamp, const double& value);
     /**
      * @brief Sets the value of the m_Coupling_RBV and pushes it to the control system.
      *

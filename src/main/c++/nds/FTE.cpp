@@ -56,6 +56,14 @@ FTE<T>::FTE(
 }
 
 template <typename T>
+FTE<T>::FTE(
+        const std::string& name,
+		const FTEArgs_t& handlerFTE ):
+						Node(std::shared_ptr<FTEImpl<T> >(new FTEImpl<T>(name, handlerFTE)))
+{
+}
+
+template <typename T>
 FTE<T>::FTE(const FTE<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }

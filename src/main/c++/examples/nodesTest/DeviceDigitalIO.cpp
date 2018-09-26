@@ -12,7 +12,7 @@
 static std::map<std::string, DeviceDigitalIO*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -39,84 +39,200 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 	 */
 	nds::Port rootNode(deviceName);
 
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 
 	/**
 	 * Add a Digital I/O node for boolean PV:
 	 */
-	m_DigitalIO_Bool = rootNode.addChild(nds::DigitalIO<std::vector<bool> >(
-			"DigitalIOBoolNode",
-			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
-	));
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		 //Set compulsory methods
+		nds::DigitalIOArgs_t<std::vector<bool>> handlerDIO = nds::DigitalIOArgs_t<std::vector<bool>>(
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerDIO.PV_dataOutMask_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelHigh_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelLow_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_ChannelDir_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values
+		handlerDIO.m_Decimation_Init = 1;
+		handlerDIO.m_DataOut_Init = std::vector<bool> (128, true); //128 booleans with value true
+
+		m_DigitalIO_Bool = rootNode.addChild(nds::DigitalIO<std::vector<bool> >(
+				"DigitalIOBoolNode",
+				128,
+				handlerDIO));
+	} else {
+		m_DigitalIO_Bool = rootNode.addChild(nds::DigitalIO<std::vector<bool> >(
+				"DigitalIOBoolNode",
+				128,
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
 	m_DigitalIO_Bool.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_Bool.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint8_t PV:
 	 */
-	m_DigitalIO_I8 = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t> >(
-			"DigitalIOI8Node",
-			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I8, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I8, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO_I8, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO_I8, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO_I8, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I8, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I8,this, std::placeholders::_1, std::placeholders::_2)
-	));
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		 //Set compulsory methods
+		nds::DigitalIOArgs_t<std::vector<std::int8_t>> handlerDIO = nds::DigitalIOArgs_t<std::vector<std::int8_t>>(
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I8, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I8,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerDIO.PV_dataOutMask_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I8, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelHigh_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelLow_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_ChannelDir_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I8, this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values
+		handlerDIO.m_Decimation_Init = 1;
+		handlerDIO.m_DataOut_Init = std::vector<std::int8_t> (128, 100); //128 integers(8) with value 100
+
+		m_DigitalIO_I8 = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t>>(
+				"DigitalIOI8Node",
+				128,
+				handlerDIO));
+
+	} else {
+		m_DigitalIO_I8 = rootNode.addChild(nds::DigitalIO<std::vector<std::int8_t> >(
+				"DigitalIOI8Node",
+				128,
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I8, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I8, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I8,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I8,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
 	m_DigitalIO_I8.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_I8.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint16_t PV:
 	 */
-	m_DigitalIO_I16 = rootNode.addChild(nds::DigitalIO<std::vector<std::int16_t> >(
-			"DigitalIOI16Node",
-			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I16, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I16, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO_I16, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO_I16, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO_I16, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I16, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I16,this, std::placeholders::_1, std::placeholders::_2)
-	));
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		 //Set compulsory methods
+		nds::DigitalIOArgs_t<std::vector<std::int16_t>> handlerDIO = nds::DigitalIOArgs_t<std::vector<std::int16_t>>(
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I16, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I16,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerDIO.PV_dataOutMask_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I16, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelHigh_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelLow_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_ChannelDir_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I16, this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values
+		handlerDIO.m_Decimation_Init = 1;
+		handlerDIO.m_DataOut_Init = std::vector<std::int16_t> (128, 200); //128 integers(16) with value 200
+
+		m_DigitalIO_I16 = rootNode.addChild(nds::DigitalIO<std::vector<std::int16_t>>(
+				"DigitalIOI16Node",
+				128,
+				handlerDIO));
+
+	} else {
+		m_DigitalIO_I16 = rootNode.addChild(nds::DigitalIO<std::vector<std::int16_t> >(
+				"DigitalIOI16Node",
+				128,
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I16, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I16, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I16,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I16,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
 	m_DigitalIO_I16.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_I16.getStartTimestamp();
 
 	/**
 	 * Add a Digital I/O node for uint32_t PV:
 	 */
-	m_DigitalIO_I32 = rootNode.addChild(nds::DigitalIO<std::vector<std::int32_t> >(
-			"DigitalIOI32Node",
-			128,
-			std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I32, this),
-			std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I32, this),
-			std::bind(&DeviceDigitalIO::start_DigitalIO_I32, this),
-			std::bind(&DeviceDigitalIO::stop_DigitalIO_I32, this),
-			std::bind(&DeviceDigitalIO::recover_DigitalIO_I32, this),
-			std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I32, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I32,this, std::placeholders::_1, std::placeholders::_2)
-	));
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		 //Set compulsory methods
+		nds::DigitalIOArgs_t<std::vector<std::int32_t>> handlerDIO = nds::DigitalIOArgs_t<std::vector<std::int32_t>>(
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I32, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I32,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerDIO.PV_dataOutMask_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I32, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelHigh_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelLow_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_ChannelDir_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I32, this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values
+		handlerDIO.m_Decimation_Init = 1;
+		handlerDIO.m_DataOut_Init = std::vector<std::int32_t> (128, 300); //128 integers(32) with value 300
+
+		m_DigitalIO_I32 = rootNode.addChild(nds::DigitalIO<std::vector<std::int32_t>>(
+				"DigitalIOI32Node",
+				128,
+				handlerDIO));
+
+	} else {
+		m_DigitalIO_I32 = rootNode.addChild(nds::DigitalIO<std::vector<std::int32_t> >(
+				"DigitalIOI32Node",
+				128,
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I32, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I32, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I32,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I32,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
 	m_DigitalIO_I32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_I32.getStartTimestamp();
 
@@ -617,6 +733,67 @@ void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I32(const timespec& timesta
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
 	m_DigitalIO_I32.setChannelDir(timestamp,HW_value);
+}
+
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer(timespec* timestamp,
+		std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 10};
+	*value = std::vector<bool>(1, true); //Vector with one data to true.
+
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer(timespec* timestamp,
+		double* value) {
+	*timestamp = {NDS_EPOCH, 20};
+	*value = 3.3;
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer(timespec* timestamp,
+		double* value) {
+	*timestamp = {NDS_EPOCH, 30};
+	*value = 1.1;
+}
+
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer(timespec* timestamp,
+		std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 40};
+	*value = std::vector<bool>(1, false); //Vector with one data to false.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I8(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 50};
+	*value = std::vector<bool>(8, false); //Vector with 8 data to false.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I8(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 60};
+	*value = std::vector<bool>(8, true); //Vector with 8 data to true.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I16(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 70};
+	*value = std::vector<bool>(16, true); //Vector with 16 data to true.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I16(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 80};
+	*value = std::vector<bool>(16, false); //Vector with 16 data to false.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I32(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 90};
+	*value = std::vector<bool>(32, false); //Vector with 32 data to false.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I32(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 100};
+	*value = std::vector<bool>(32, true); //Vector with 32 data to true.
 }
 
 /**

@@ -16,6 +16,7 @@
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
 #include "nds3/impl/pvVariableOutImpl.h"
+#include "nds3/timestamping.h"
 
 namespace nds {
 
@@ -57,6 +58,13 @@ namespace nds {
                  writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
                  writerInt32_t PV_ClearOverflow_Writer);
+
+     /**
+      * @brief Constructs the Timestamping node by means of its structure of functions.
+      * @param name Name of the node
+      * @param handlerTMS Structure with delegate functions that perform the required actions.
+      */
+     TimestampingImpl(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ----------------------- Common functions ----------------------------- //
     /**
@@ -201,6 +209,16 @@ namespace nds {
      std::shared_ptr<PVVariableInImpl<std::int32_t>> m_Overflow_PV;
 
      std::shared_ptr<StateMachineImpl> m_StateMachine;
+
+   private:
+
+   	/**
+   	* @brief Common source code to define the body of any constructor.
+   	* @param hanlderTMS Structure containing both compulsory and optional functions.
+   	*/
+   	void constructorBody(const TimestampingArgs_t& hanlderTMS);
+
+
   };
 }
 

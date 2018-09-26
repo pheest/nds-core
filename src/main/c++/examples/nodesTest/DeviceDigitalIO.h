@@ -107,6 +107,14 @@ private:
 	void PV_DigitalIO_ChannelDir_Writer(const timespec& timestamp, const std::vector<bool>& value);
 
 	/**
+	 * DigitalIO initializers for std::vector<bool>
+	 */
+	void PV_DigitalIO_dataOutMask_Initializer(timespec* timestamp, std::vector<bool>* value);
+	void PV_DigitalIO_voltLevelHigh_Initializer(timespec* timestamp, double* value);
+	void PV_DigitalIO_voltLevelLow_Initializer(timespec* timestamp, double* value);
+	void PV_DigitalIO_ChannelDir_Initializer(timespec* timestamp, std::vector<bool>* value);
+
+	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
 	 */
@@ -150,6 +158,12 @@ private:
 	void PV_DigitalIO_voltLevelHigh_Writer_I8(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_voltLevelLow_Writer_I8(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_ChannelDir_Writer_I8(const timespec& timestamp, const std::vector<bool>& value);
+
+	/**
+	 * DigitalIO initializers for std::vector<std::int8_t>
+	 */
+	void PV_DigitalIO_dataOutMask_Initializer_I8(timespec* timestamp, std::vector<bool>* value);
+	void PV_DigitalIO_ChannelDir_Initializer_I8(timespec* timestamp, std::vector<bool>* value);
 
 	/**
 	 * @brief Function that continuously acquires digital IO data.
@@ -196,6 +210,13 @@ private:
 	void PV_DigitalIO_voltLevelHigh_Writer_I16(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_voltLevelLow_Writer_I16(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_ChannelDir_Writer_I16(const timespec& timestamp, const std::vector<bool>& value);
+
+	/**
+	 * DigitalIO initializers for std::vector<std::int16_t>
+	 */
+	void PV_DigitalIO_dataOutMask_Initializer_I16(timespec* timestamp, std::vector<bool>* value);
+	void PV_DigitalIO_ChannelDir_Initializer_I16(timespec* timestamp, std::vector<bool>* value);
+
 	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.
@@ -241,6 +262,13 @@ private:
 	void PV_DigitalIO_voltLevelHigh_Writer_I32(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_voltLevelLow_Writer_I32(const timespec& timestamp, const double& value);
 	void PV_DigitalIO_ChannelDir_Writer_I32(const timespec& timestamp, const std::vector<bool>& value);
+
+	/**
+	 * DigitalIO initializers for std::vector<std::int32_t>
+	 */
+	void PV_DigitalIO_dataOutMask_Initializer_I32(timespec* timestamp, std::vector<bool>* value);
+	void PV_DigitalIO_ChannelDir_Initializer_I32(timespec* timestamp, std::vector<bool>* value);
+
 	/**
 	 * @brief Function that continuously acquires digital IO data.
 	 *        It is launched by start_DigitalIO() in a separate thread.

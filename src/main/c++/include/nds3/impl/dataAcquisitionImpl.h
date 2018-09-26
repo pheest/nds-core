@@ -15,6 +15,8 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/stateMachine.h"
+#include "nds3/dataAcquisition.h"
 
 #include <vector>
 
@@ -50,6 +52,16 @@ public:
 			);
 
     /**
+     * @brief Constructs the DadaAcquisition node by means of its structure of functions.
+     * @param name Name of the node.
+     * @param maxElements Maximum number of data to be acquired.
+     * @param handlerDAQ Structure with delegate functions that perform the required actions.
+     */
+    DataAcquisitionImpl(const std::string& name,
+            size_t maxElements,
+			const DataAcquisitionArgs_t& handlerDAQ);
+
+    /**
      * @brief Specifies the function to call to get the acquisition start timestamp.
      *
      * The function is called only once at each start of the acquisition and its result
@@ -69,7 +81,7 @@ public:
     double getOffset();
     double getBandwidth();
     double getResolution();
-    int32_t getImpedance();
+    double getImpedance();
     int32_t getCoupling();
     int32_t getSignalRefType();
     int32_t getGround();
@@ -85,7 +97,7 @@ public:
     void setOffset(const timespec& timestamp, const double& value);
     void setBandwidth(const timespec& timestamp, const double& value);
     void setResolution(const timespec& timestamp, const double& value);
-    void setImpedance(const timespec& timestamp, const std::int32_t& value);
+    void setImpedance(const timespec& timestamp, const double& value);
     void setCoupling(const timespec& timestamp, const std::int32_t& value);
     void setSignalRefType(const timespec& timestamp, const std::int32_t& value);
     void setGround(const timespec& timestamp, const std::int32_t& value);
@@ -155,9 +167,9 @@ protected:
     std::shared_ptr<PVVariableInImpl<double> > m_Bandwidth_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<double> > m_Resolution_PV;
     std::shared_ptr<PVVariableInImpl<double> > m_Resolution_RBVPV;
+    std::shared_ptr<PVDelegateOutImpl<double> > m_Impedance_PV;
+    std::shared_ptr<PVVariableInImpl<double> > m_Impedance_RBVPV;
 
-    std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Impedance_PV;
-    std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Impedance_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_Coupling_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Coupling_RBVPV;
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_SignalRefType_PV;
@@ -175,6 +187,15 @@ protected:
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_DMASampleSize_PV;
 	std::shared_ptr<PVDelegateOutImpl<double> > m_SamplingRate_PV;
 	std::shared_ptr<PVVariableInImpl<double> > m_SamplingRate_RBVPV;
+
+
+private:
+   	/**
+   	* @brief Common source code to define the body of any constructor.
+   	* @param maxElements Maximum number of data to be handled.
+   	* @param hanlderDAQ Structure containing both compulsory and optional functions.
+   	*/
+   	void constructorBody(size_t maxElements, const DataAcquisitionArgs_t& hanlderDAQ);
 
 };
 

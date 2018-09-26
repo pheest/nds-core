@@ -11,7 +11,7 @@
 static std::map<std::string, DeviceRouting*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -41,19 +41,51 @@ DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceNam
     /**
       * Add a Routing node:
       */
-    m_Routing = rootNode.addChild(nds::Routing<std::string>(
-     		"RoutingNode",
- 			std::bind(&DeviceRouting::switchOn_Routing, this),
- 			std::bind(&DeviceRouting::switchOff_Routing, this),
- 			std::bind(&DeviceRouting::start_Routing, this),
- 			std::bind(&DeviceRouting::stop_Routing, this),
- 			std::bind(&DeviceRouting::recover_Routing, this),
- 			std::bind(&DeviceRouting::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
- 			std::bind(&DeviceRouting::PV_Routing_ClkSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&DeviceRouting::PV_Routing_ClkDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&DeviceRouting::PV_Routing_TermSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceRouting::PV_Routing_TermDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2)
-    ));
+
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		//Set compulsory methods
+		nds::RoutingArgs_t handlerRTN = nds::RoutingArgs_t(
+				std::bind(&DeviceRouting::switchOn_Routing, this),
+				std::bind(&DeviceRouting::switchOff_Routing, this),
+				std::bind(&DeviceRouting::start_Routing, this),
+				std::bind(&DeviceRouting::stop_Routing, this),
+				std::bind(&DeviceRouting::recover_Routing, this),
+				std::bind(&DeviceRouting::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceRouting::PV_Routing_ClkSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_ClkDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_TermSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_TermDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerRTN.PV_ClkSet_Initializer = std::bind(&DeviceRouting::PV_Routing_ClkSet_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+		handlerRTN.PV_ClkDstRead_Initializer = std::bind(&DeviceRouting::PV_Routing_ClkDstRead_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+		handlerRTN.PV_TermSet_Initializer = std::bind(&DeviceRouting::PV_Routing_TermSet_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+		handlerRTN.PV_TermDstRead_Initializer = std::bind(&DeviceRouting::PV_Routing_TermDstRead_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values: Note that these value have no actual sense and they are fixed only for testing purposes.
+		handlerRTN.m_ClkSrc_Init = -1;
+		handlerRTN.m_ClkDst_Init = -2;
+		handlerRTN.m_TermSrc_Init = -3;
+		handlerRTN.m_TermDst_Init = -4;
+		handlerRTN.m_TermSyncSet_Init = 0;
+		handlerRTN.m_TermInvertSet_Init = 0;
+		//Add the routing node
+		m_Routing = rootNode.addChild(nds::Routing<std::string>(
+				"RoutingNode", handlerRTN));
+	} else {
+		m_Routing = rootNode.addChild(nds::Routing<std::string>(
+				"RoutingNode",
+				std::bind(&DeviceRouting::switchOn_Routing, this),
+				std::bind(&DeviceRouting::switchOff_Routing, this),
+				std::bind(&DeviceRouting::start_Routing, this),
+				std::bind(&DeviceRouting::stop_Routing, this),
+				std::bind(&DeviceRouting::recover_Routing, this),
+				std::bind(&DeviceRouting::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceRouting::PV_Routing_ClkSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_ClkDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_TermSet_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceRouting::PV_Routing_TermDstRead_Writer,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
 
     m_Routing.setStartTimestampDelegate(std::bind(&DeviceRouting::getCurrentTime,this));
     m_Routing.setLogLevel(nds::logLevel_t::debug);
@@ -237,6 +269,32 @@ void DeviceRouting::PV_Routing_TermDstRead_Writer(const timespec& timestamp, con
 	}
 }
 
+
+void DeviceRouting::PV_Routing_ClkSet_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 10};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceRouting::PV_Routing_ClkDstRead_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 20};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceRouting::PV_Routing_TermSet_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 30};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceRouting::PV_Routing_TermDstRead_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 40};
+	*value = 3;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+
 #ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceRouting, DeviceRouting)
 #else
@@ -255,5 +313,6 @@ void DeviceRouting::deallocateDevice(void* deviceName)
 {
     delete (DeviceRouting*)deviceName;
 }
+
 #endif
 

@@ -20,9 +20,62 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+
+/**
+ * @brief Type defined to gather the arguments required by @ref Timing constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ */
+struct TimingArgs_t {
+
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to read the time from the device.
+	 * This is a compulsory field of the structure.
+	 */
+	const readerTime_t PV_Time_Reader;
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref TimingArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref TimingArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref TimingArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref TimingArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref TimingArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref TimingArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param _PV_Time_Reader Time reader to be set in @ref TimingArgs_t.PV_Time_Reader.
+	 */
+	TimingArgs_t(stateChange_t switchOnFunction,
+				 stateChange_t switchOffFunction,
+				 stateChange_t startFunction,
+				 stateChange_t stopFunction,
+				 stateChange_t recoverFunction,
+				 allowChange_t allowStateChangeFunction,
+				 readerTime_t _PV_Time_Reader):
+			handlerSTM(	true, ///Asynchronous state transitions.
+						switchOnFunction,
+						switchOffFunction,
+						startFunction,
+						stopFunction,
+						recoverFunction,
+						allowStateChangeFunction),
+						PV_Time_Reader(_PV_Time_Reader)
+	{
+	}
+};
+
 
 class NDS3_API Timing: public Node  {
   public:
@@ -72,6 +125,14 @@ class NDS3_API Timing: public Node  {
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
         readerTime_t PV_Time_Reader);
+
+    /**
+     * @brief Simplified constructor of the Timing node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param handlerTM Structure with the arguments required by the Timing node.
+     * See @ref TimingArgs_t for further details.
+     */
+    Timing(const std::string& name, const TimingArgs_t& handlerTM);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**
