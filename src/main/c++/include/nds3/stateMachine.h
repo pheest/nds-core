@@ -28,6 +28,90 @@ namespace nds
 {
 
 /**
+ * @brief Type defined to gather the arguments required by @ref StateMachine constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify its number
+ * of arguments required.
+ */
+struct StateMachineArgs_t {
+	/**
+	 * @brief Flag to be set as @c true to run the state transition in a parallel thread.
+	 * 		If @c true then the state transitions are executed in a dedicated thread, if @c false then the state transitions block
+	 */
+	const bool bAsync;
+	/**
+	 * @brief Function to run the transition @c state_t::off -> @c state_t::initializing -> @c state_t::on
+	 * 		Function to be called to switch the node state_t::on. @n
+	 * 		The function is guaranteed to be called only when the current state is state_t::off.
+	 * 		The state machine sets the state to state_t::initializing before
+	 * 		calling the function and to state_t::on after the function returns.
+	 */
+	const stateChange_t switchOnFunction;
+	/**
+	 * @brief Function to run the transition @c state_t::on -> @c state_t::switchingOff -> @c state_t::off
+	 * 		Function to be called to switch the node @c state_t::off. @n
+	 * 		The function is guaranteed to be called only when the current state
+	 * 		is @c state_t::on. The state machine sets the state to state_t::switchingOff before
+	 * 		calling the function and to @c state_t::off after the function returns.
+	 */
+	const stateChange_t switchOffFunction;
+	/**
+	 * @brief Function to run the transition @c state_t::on -> @c state_t::starting -> @c state_t::running
+	 * 		Function to be called to switch to the @c state_t::running state. @n
+	 * 		The function is guaranteed to be called only when the current state
+	 * 		is @c state_t::on. The state machine sets the state to @c state_t::starting before
+	 * 		calling the function and to @c state_t::running after the function returns.
+	 */
+	const stateChange_t startFunction;
+	/**
+	 * @brief Function to run the transition @c state_t::running -> @c state_t::stopping -> @c state_t::on
+	 * 		Function to be called to switch to the @c state_t::off state. @n
+	 * 		The function is guaranteed to be called only when the current state
+	 * 		is @c state_t::running. The state machine sets the state to @c state_t::switchingOff
+	 * 		before calling the function and to @c state_t::off after the function returns
+	 */
+	const stateChange_t stopFunction;
+	/**
+	 * @brief Function to run the transition @c state_t::fault -> @c state_t::off
+	 * 		Function to be called to switch the state from @c state_t::fault to @c state_t::off. @n
+	 * 		The function is guaranteed to be called only when the current state
+	 * 		is @c state_t::fault. The state machine sets the state to @c state_t::switchingOff
+	 * 		before calling the function and to @c state_t::off after the function returns.
+	 */
+	const stateChange_t recoverFunction;
+	/**
+	 * @brief Function to allow or not the transition between states.
+	 * 		Function to be called before every state switching to receive a confirmation
+	 * 		that the state switch is allowed. @n
+	 * 		The function is called only after other internal checks clear
+	 * 		the state switch.
+	 */
+	const allowChange_t allowStateChangeFunction;
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param _bAsync Boolean to be set in @ref StateMachineArgs_t.bAsync.
+	 * @param _switchOnFunction Switch-on function to be set in @ref StateMachineArgs_t.switchOnFunction.
+	 * @param _switchOffFunction Switch-off function to be set in @ref StateMachineArgs_t.switchOffFunction.
+	 * @param _startFunction Start function to be set in @ref StateMachineArgs_t.startFunction.
+	 * @param _stopFunction Stop function to be set in @ref StateMachineArgs_t.stopFunction.
+	 * @param _recoverFunction Recover function to be set in @ref StateMachineArgs_t.recoverFunction.
+	 * @param _allowStateChangeFunction Checking state transitions function to be set in @ref StateMachineArgs_t.allowStateChangeFunction.
+	 */
+	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
+			stateChange_t _switchOffFunction, stateChange_t _startFunction,
+			stateChange_t _stopFunction, stateChange_t _recoverFunction,
+			allowChange_t _allowStateChangeFunction):
+				bAsync(_bAsync),
+				switchOnFunction(_switchOnFunction),
+				switchOffFunction(_switchOffFunction),
+				startFunction(_startFunction),
+				stopFunction(_stopFunction),
+				recoverFunction(_recoverFunction),
+				allowStateChangeFunction(_allowStateChangeFunction) {}
+};
+
+/**
  * @brief Represents a state machine to be attached to a node.
  *
  * Attach the state machine to a node by using Node::addChild().
@@ -91,7 +175,7 @@ public:
      *                                  state is state_t::running.
      *                                 The state machine sets the state to state_t::switchingOff before
      *                                  calling the function and to state_t::off after the function returns
-     * @param recoverFunction          function to be called to switch the state fron state_t::fault to
+     * @param recoverFunction          function to be called to switch the state from state_t::fault to
      *                                  state_t::off.
      *                                 The function is guaranteed to be called only when the current
      *                                  state is state_t::fault.
@@ -109,6 +193,13 @@ public:
                  stateChange_t stopFunction,
                  stateChange_t recoverFunction,
                  allowChange_t allowStateChangeFunction);
+
+    /**
+     * @brief Simplified constructor of the state machine.
+     * @param handlerSTM Structure with the arguments required by the state machine.
+     * See @ref StateMachineArgs_t for further details.
+     */
+    StateMachine(const StateMachineArgs_t& handlerSTM);
 
     /**
      * @brief Instruct the state machine to change the local state to the requested one.

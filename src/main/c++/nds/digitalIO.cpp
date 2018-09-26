@@ -53,6 +53,16 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 }
 
 template <typename T>
+DigitalIO<T>::DigitalIO( const std::string& name,
+						 size_t maxElements,
+						 const DigitalIOArgs_t<T>& handlerDIO):
+	Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
+																  maxElements,
+																  handlerDIO)))
+{
+}
+
+template <typename T>
 DigitalIO<T>::DigitalIO(const DigitalIO<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }

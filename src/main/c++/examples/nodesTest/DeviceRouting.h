@@ -82,6 +82,14 @@ private:
   	void PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int32_t& value);
   	void PV_Routing_TermDstRead_Writer(const timespec& timestamp, const std::int32_t& value);
 
+  	/**
+  	 * Routing initializers
+  	 */
+  	void PV_Routing_ClkSet_Initializer(timespec* timestamp, int32_t* value);
+  	void PV_Routing_ClkDstRead_Initializer(timespec* timestamp, int32_t* value);
+  	void PV_Routing_TermSet_Initializer(timespec* timestamp, int32_t* value);
+  	void PV_Routing_TermDstRead_Initializer(timespec* timestamp, int32_t* value);
+
 };
 
 #endif // DeviceRouting_H_

@@ -21,6 +21,7 @@
 #include "nds3/impl/pvDelegateInImpl.h"
 #include "nds3/impl/pvVariableOutImpl.h"
 #include "nds3/impl/pvVariableInImpl.h"
+#include "nds3/timing.h"
 
 namespace nds {
 
@@ -50,6 +51,13 @@ class TimingImpl: public NodeImpl {
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
         readerTime_t PV_Time_Reader);
+
+    /**
+     * @brief Construct the Timing node by means of its structure of functions.
+     * @param name Name of the node
+     * @param handlerTM Structure with delegate functions that perform the required actions.
+     */
+    TimingImpl(const std::string& name, const TimingArgs_t& handlerTM);
 
    // Common functions
    /**
@@ -232,6 +240,15 @@ class TimingImpl: public NodeImpl {
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
    void PV_HTime_Reader(timespec *timestamp, std::string *value);
+
+private:
+
+  	/**
+  	* Common source code to define the body of any constructor
+  	* @param handlerTM Structure containing both compulsory and optional functions.
+  	*/
+  	void constructorBody(const TimingArgs_t& handlerTM);
+
 
 };
 }

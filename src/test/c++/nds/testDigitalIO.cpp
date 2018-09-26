@@ -6,6 +6,52 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+
+/**
+ * @brief Internal function to test the PVs included in the DigitalIO node for vectors of type @c bool.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataBool and testPushDataBoolInit test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsBoolTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the DigitalIO node for vectors of type @c int8_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataI8 and testPushDataI8Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsInt8Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the DigitalIO node for vectors of type @c int16_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataI16 and testPushDataI16Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsInt16Test(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PVs included in the DigitalIO node for vectors of type @c int32_t.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataI32 and testPushDataI32Init test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsInt32Test(const bool testInitializers = false);
+
+
 TEST(testDigitalIO, testStateMachineBool)
 {
     const timespec* pStateMachineSwitchTime;
@@ -64,6 +110,16 @@ TEST(testDigitalIO, testStateMachineBool)
 
 TEST(testDigitalIO, testPushDataBool)
 {
+	commonPVsBoolTest();
+}
+
+TEST(testDigitalIO, testPushDataBoolInit)
+{
+	commonPVsBoolTest(true);
+}
+
+static void commonPVsBoolTest(const bool testInitializers)
+{
 
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
@@ -71,9 +127,57 @@ TEST(testDigitalIO, testPushDataBool)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceDigitalIO", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+	factory.createDevice("DeviceDigitalIO", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+		std::vector<bool> initialVBoolValues;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.DataOutMask", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolMask(1, true); //Vector with one data to true.
+		EXPECT_EQ((bool) true, (expectedBoolMask == initialVBoolValues));
+		std::cout<<"\tInitial DataOutMask = 1 bool with value true" <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.VoltLevelHigh", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.VoltLevelLow", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.ChannelDir", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolDir(1, false); //Vector with one data to false.
+		EXPECT_EQ((bool) true, (expectedBoolDir == initialVBoolValues));
+		std::cout<<"\tInitial ChannelDir = 1 bool with value false" <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOBoolNode.DataOut", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolData(128, true); //Vector with 128 data to true.
+		EXPECT_EQ((bool) true, (expectedBoolData == initialVBoolValues));
+		std::cout<<"\tInitial DataOut = 128 bools with value true" <<std::endl;
+
+	}
 
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
@@ -191,7 +295,6 @@ TEST(testDigitalIO, testPushDataBool)
 
 }
 
-
 TEST(testDigitalIO, testStateMachineI8)
 {
     const timespec* pStateMachineSwitchTime;
@@ -248,18 +351,77 @@ TEST(testDigitalIO, testStateMachineI8)
 
 }
 
+
 TEST(testDigitalIO, testPushDataI8)
 {
+	commonPVsInt8Test();
+}
 
+TEST(testDigitalIO, testPushDataI8Init)
+{
+	commonPVsInt8Test(true);
+}
+
+static void commonPVsInt8Test(const bool testInitializers)
+{
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceDigitalIO", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+	factory.createDevice("DeviceDigitalIO", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+		std::vector<bool> initialVBoolValues;
+		std::vector<std::int8_t> initialVInt8Values;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.DataOutMask", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolMask(8, false); //Vector with 8 data to false.
+		EXPECT_EQ((bool) true, (expectedBoolMask == initialVBoolValues));
+		std::cout<<"\tInitial DataOutMask = 8 bool with value false" <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.VoltLevelHigh", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.VoltLevelLow", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.ChannelDir", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolDir(8, true); //Vector with 8 data to true.
+		EXPECT_EQ((bool) true, (expectedBoolDir == initialVBoolValues));
+		std::cout<<"\tInitial ChannelDir = 8 bool with value true" <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI8Node.DataOut", &timestamp, &initialVInt8Values);
+		std::vector<std::int8_t> expectedInt8Dir(128, 100); //Vector with 128 data to 100.
+		EXPECT_EQ((bool) true, (expectedInt8Dir == initialVInt8Values));
+		std::cout<<"\tInitial DataOut = 128 int8 data with value 100" <<std::endl;
+
+	}
 
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
@@ -431,19 +593,76 @@ TEST(testDigitalIO, testStateMachineI16)
 
 }
 
-
 TEST(testDigitalIO, testPushDataI16)
 {
+	commonPVsInt16Test();
+}
 
+TEST(testDigitalIO, testPushDataI16Init)
+{
+	commonPVsInt16Test(true);
+}
+
+static void commonPVsInt16Test(const bool testInitializers)
+{
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceDigitalIO", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+	factory.createDevice("DeviceDigitalIO", "rootNode",  parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+		std::vector<bool> initialVBoolValues;
+		std::vector<std::int16_t> initialVInt16Values;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.DataOutMask", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolMask(16, true); //Vector with 16 data to true.
+		EXPECT_EQ((bool) true, (expectedBoolMask == initialVBoolValues));
+		std::cout<<"\tInitial DataOutMask = 16 bool with value true" <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.VoltLevelHigh", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.VoltLevelLow", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.ChannelDir", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolDir(16, false); //Vector with 16 data to false.
+		EXPECT_EQ((bool) true, (expectedBoolDir == initialVBoolValues));
+		std::cout<<"\tInitial ChannelDir = 16 bool with value false" <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI16Node.DataOut", &timestamp, &initialVInt16Values);
+		std::vector<std::int16_t> expectedInt16Dir(128, 200); //Vector with 128 data to 200.
+		EXPECT_EQ((bool) true, (expectedInt16Dir == initialVInt16Values));
+		std::cout<<"\tInitial DataOut = 128 int16 data with value 200" <<std::endl;
+
+	}
 
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};
@@ -570,7 +789,7 @@ TEST(testDigitalIO, testStateMachineI32)
     nds::Factory factory("test");
 
     // Create test device of type DeviceDigitalIO and named rootNode
-    factory.createDevice("DeviceDigitalIO", "rootNode", nds::namedParameters_t());
+    factory.createDevice("DeviceDigitalIO", "rootNode",  nds::namedParameters_t());
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
@@ -616,8 +835,17 @@ TEST(testDigitalIO, testStateMachineI32)
 
 }
 
-
 TEST(testDigitalIO, testPushDataI32)
+{
+	commonPVsInt32Test();
+}
+
+TEST(testDigitalIO, testPushDataI32Init)
+{
+	commonPVsInt32Test(true);
+}
+
+static void commonPVsInt32Test(const bool testInitializers)
 {
 
 	const timespec* pStateMachineSwitchTime;
@@ -626,9 +854,58 @@ TEST(testDigitalIO, testPushDataI32)
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceDigitalIO", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+	factory.createDevice("DeviceDigitalIO", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+		std::vector<bool> initialVBoolValues;
+		std::vector<std::int32_t> initialVInt32Values;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.DataOutMask", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolMask(32, false); //Vector with 32 data to false.
+		EXPECT_EQ((bool) true, (expectedBoolMask == initialVBoolValues));
+		std::cout<<"\tInitial DataOutMask = 32 bool with value false" <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.VoltLevelHigh", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.3, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.VoltLevelLow", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 1.1, initialDoubleValue);
+		std::cout<<"\tInitial VoltLevelHigh = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.ChannelDir", &timestamp, &initialVBoolValues);
+		std::vector<bool> expectedBoolDir(32, true); //Vector with 32 data to true.
+		EXPECT_EQ((bool) true, (expectedBoolDir == initialVBoolValues));
+		std::cout<<"\tInitial ChannelDir = 32 bool with value true" <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DigitalIOI32Node.DataOut", &timestamp, &initialVInt32Values);
+		std::vector<std::int32_t> expectedInt32Dir(128, 300); //Vector with 128 data to 300.
+		EXPECT_EQ((bool) true, (expectedInt32Dir == initialVInt32Values));
+		std::cout<<"\tInitial DataOut = 128 int32 data with value 300" <<std::endl;
+
+	}
 
 	// Set/Get dataOutMask
 	std::vector<bool> dataOutMaskIn = {1,1,0,1,0};

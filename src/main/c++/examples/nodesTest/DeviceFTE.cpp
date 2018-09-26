@@ -11,7 +11,7 @@
 static std::map<std::string, DeviceFTE*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -38,22 +38,59 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 	 */
 	nds::Port rootNode(deviceName);
 
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		//Set compulsory methods
+		nds::FTEArgs_t handlerFTE = nds::FTEArgs_t(
+	 			std::bind(&DeviceFTE::switchOn_FTE, this),
+	 			std::bind(&DeviceFTE::switchOff_FTE, this),
+	 			std::bind(&DeviceFTE::start_FTE, this),
+	 			std::bind(&DeviceFTE::stop_FTE, this),
+	 			std::bind(&DeviceFTE::recover_FTE, this),
+	 			std::bind(&DeviceFTE::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&DeviceFTE::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&DeviceFTE::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerFTE.PV_Set_Initializer = std::bind(&DeviceFTE::PV_FTE_Set_Initializer, this, std::placeholders::_1, std::placeholders::_2),
+		handlerFTE.PV_Suppress_Initializer = std::bind(&DeviceFTE::PV_FTE_Suppress_Initializer, this, std::placeholders::_1, std::placeholders::_2),
+		handlerFTE.PV_ChgPeriod_Initializer = std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Initializer, this, std::placeholders::_1, std::placeholders::_2),
+		handlerFTE.PV_PendingValue_Initializer = std::bind(&DeviceFTE::PV_FTE_PendingValue_Initializer, this, std::placeholders::_1, std::placeholders::_2),
+		//Set init values: Note that these value have no actual sense and they are fixed only for testing purposes.
+		handlerFTE.m_TerminalSet_Init = -1;
+		handlerFTE.m_ModeSet_Init = 0;
+		handlerFTE.m_StartTimeSet_Init = {10,20};
+		handlerFTE.m_StopTimeSet_Init = {20,10};
+		handlerFTE.m_LevelSet_Init = 0;
+		handlerFTE.m_PeriodNsecSet_Init = 1000;
+		handlerFTE.m_DutyCycleSet_Init = 80;
+		handlerFTE.m_TerminalSuppress_Init = -2;
+		handlerFTE.m_ModeSuppress_Init = 0;
+		handlerFTE.m_AllSuppress_Init = 0;
+		handlerFTE.m_StartTimeSuppress_Init = {20,20};
+		handlerFTE.m_TerminalChgPeriod_Init = -3;
+		handlerFTE.m_PeriodChgPeriod_Init = 500;
+	    m_FTE = rootNode.addChild(nds::FTE<std::string>("FTENode", handlerFTE));
+	} else {
+	    m_FTE = rootNode.addChild(nds::FTE<std::string>(
+	     		"FTENode",
+	 			std::bind(&DeviceFTE::switchOn_FTE, this),
+	 			std::bind(&DeviceFTE::switchOff_FTE, this),
+	 			std::bind(&DeviceFTE::start_FTE, this),
+	 			std::bind(&DeviceFTE::stop_FTE, this),
+	 			std::bind(&DeviceFTE::recover_FTE, this),
+	 			std::bind(&DeviceFTE::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+	 			std::bind(&DeviceFTE::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&DeviceFTE::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
+	 			std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
+	    ));
+	}
+
     /**
       * Add a FTE node:
       */
-    m_FTE = rootNode.addChild(nds::FTE<std::string>(
-     		"FTENode",
- 			std::bind(&DeviceFTE::switchOn_FTE, this),
- 			std::bind(&DeviceFTE::switchOff_FTE, this),
- 			std::bind(&DeviceFTE::start_FTE, this),
- 			std::bind(&DeviceFTE::stop_FTE, this),
- 			std::bind(&DeviceFTE::recover_FTE, this),
- 			std::bind(&DeviceFTE::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
- 			std::bind(&DeviceFTE::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&DeviceFTE::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
- 			std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
-			std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
-    ));
 
     //m_FTE.setStartTimestampDelegate(std::bind(&DeviceFTE::getCurrentTime,this));
     m_FTE.setLogLevel(nds::logLevel_t::debug);
@@ -274,6 +311,29 @@ void DeviceFTE::PV_FTE_PendingValue_Writer(const timespec& timestamp, const std:
 	}
 }
 
+void DeviceFTE::PV_FTE_Set_Initializer(timespec* timestamp, int32_t* value) {
+	*timestamp = {NDS_EPOCH, 10};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceFTE::PV_FTE_Suppress_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 20};
+	*value = 1;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceFTE::PV_FTE_ChgPeriod_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 30};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void DeviceFTE::PV_FTE_PendingValue_Initializer(timespec* timestamp,
+		int32_t* value) {
+	*timestamp = {NDS_EPOCH, 40};
+	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
 #ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceFTE, DeviceFTE)
 #else
@@ -292,5 +352,7 @@ void DeviceFTE::deallocateDevice(void* deviceName)
 {
     delete (DeviceFTE*)deviceName;
 }
+
+
 #endif
 
