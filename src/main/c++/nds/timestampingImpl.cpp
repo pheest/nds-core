@@ -148,7 +148,7 @@ namespace nds {
 	    m_Overflow_PV.reset(new PVVariableInImpl<std::int32_t>("Overflow"));
 	    m_Overflow_PV->setDescription("Get overflow status");
 	    m_Overflow_PV->setScanType(scanType_t::interrupt, 0);
-	    m_Edge_PV->setEnumeration(overflowEnumeratorString);
+	    m_Overflow_PV->setEnumeration(overflowEnumeratorString);
 	    addChild(m_Overflow_PV);
 
 	    // Add state machine
