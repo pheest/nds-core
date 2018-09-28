@@ -11,7 +11,7 @@
 static std::map<std::string, DeviceTrigAndClk*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -38,6 +38,7 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
 	 */
 	nds::Port rootNode(deviceName);
 
+        nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 
 	routingNode = nds::Routing<std::string>(
 			"Route",
@@ -56,7 +57,48 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
     /**
       * Add a Routing node:
       */
-    m_TriggerAndClk = rootNode.addChild(nds::TriggerAndClk<std::vector<timespec>>(
+    if (findParam != parameters.end() && findParam->second=="YES") {
+        //Set compulsory methods
+        nds::TriggerAndClkArgs_t handlerTrig = nds::TriggerAndClkArgs_t(
+            std::bind(&DeviceTrigAndClk::switchOn_Routing, this),
+            std::bind(&DeviceTrigAndClk::switchOff_Routing, this),
+            std::bind(&DeviceTrigAndClk::start_Routing, this),
+            std::bind(&DeviceTrigAndClk::stop_Routing, this),
+            std::bind(&DeviceTrigAndClk::recover_Routing, this),
+            std::bind(&DeviceTrigAndClk::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+            std::bind(&DeviceTrigAndClk::PV_SetSW_Writer,this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&DeviceTrigAndClk::PV_LoadTrigConf_Writer,this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&DeviceTrigAndClk::PV_ResetTrigConf_Writer,this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&DeviceTrigAndClk::PV_PLLSyncSET_Writer,this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&DeviceTrigAndClk::PV_EnableDisablePLL_Writer,this, std::placeholders::_1, std::placeholders::_2),
+            routingNode);
+        //Set optional methods
+        handlerTrig.PV_SetSW_Initializer = std::bind(&DeviceTrigAndClk::PV_SetSW_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+        handlerTrig.PV_LoadTrigConf_Initializer = std::bind(&DeviceTrigAndClk::PV_LoadTrigConf_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+        handlerTrig.PV_ResetTrigConf_Initializer = std::bind(&DeviceTrigAndClk::PV_ResetTrigConf_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+        handlerTrig.PV_PLLSyncSet_Initializer = std::bind(&DeviceTrigAndClk::PV_PLLSyncSET_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+        handlerTrig.PV_EnableDisablePLL_Initializer = std::bind(&DeviceTrigAndClk::PV_EnableDisablePLL_Initializer,this, std::placeholders::_1, std::placeholders::_2);
+        //Set init values: Note that these value have no actual sense and they are fixed only for testing purposes.
+        handlerTrig.m_HWBlock_Init = 1;
+        handlerTrig.m_DAQStartTimeDelay_Init = 1;
+        handlerTrig.m_TriggPeriod_Init = 1;
+        handlerTrig.m_Level_Init = 1;
+        handlerTrig.m_Edge_Init = 1;
+        handlerTrig.m_Change_Init = 1;
+        handlerTrig.m_Mode_Init = 1;
+        handlerTrig.m_PreTrigSamples_Init = 1;
+        handlerTrig.m_PostTrigSamples_Init = 1;
+        handlerTrig.m_SyncMode_Init = 1;
+        handlerTrig.m_PLLRefFreq_Init = 1;
+        handlerTrig.m_PLLRefDiv_Init = 1;
+        handlerTrig.m_PLLRefMult_Init = 1;
+        handlerTrig.m_PLLRefDivAll_Init = 1;
+
+      m_TriggerAndClk = rootNode.addChild(nds::TriggerAndClk<std::vector<timespec>>("TrigAndClk",handlerTrig));
+
+
+    } else {
+        m_TriggerAndClk = rootNode.addChild(nds::TriggerAndClk<std::vector<timespec>>(
     		"TrigAndClk",
 			std::bind(&DeviceTrigAndClk::switchOn_Routing, this),
 			std::bind(&DeviceTrigAndClk::switchOff_Routing, this),
@@ -70,7 +112,8 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
 			std::bind(&DeviceTrigAndClk::PV_PLLSyncSET_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceTrigAndClk::PV_EnableDisablePLL_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			routingNode
-    ));
+        ));
+    }
 
     m_TriggerAndClk.setStartTimestampDelegate(std::bind(&DeviceTrigAndClk::getCurrentTime,this));
     m_TriggerAndClk.setLogLevel(nds::logLevel_t::debug);
@@ -465,6 +508,48 @@ void DeviceTrigAndClk::PV_Routing_TermDstRead_Writer(const timespec& timestamp, 
 		m_TriggerAndClk.m_Routing.setTermSyncRead(timestamp,1);
 		m_TriggerAndClk.m_Routing.setTermInvertRead(timestamp,1);
 	}
+}
+
+
+
+void
+DeviceTrigAndClk::PV_SetSW_Initializer (timespec* timestamp,
+                                        std::int32_t* value)
+{
+  *timestamp = m_TriggerAndClk.getTimestamp();
+  *value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void
+DeviceTrigAndClk::PV_LoadTrigConf_Initializer (timespec* timestamp,
+                                               std::int32_t* value)
+{
+  *timestamp = m_TriggerAndClk.getTimestamp();
+  *value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void
+DeviceTrigAndClk::PV_ResetTrigConf_Initializer (timespec* timestamp,
+                                                std::int32_t* value)
+{
+  *timestamp = m_TriggerAndClk.getTimestamp();
+  *value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void
+DeviceTrigAndClk::PV_PLLSyncSET_Initializer (timespec* timestamp,
+                                             std::int32_t* value)
+{
+  *timestamp = m_TriggerAndClk.getTimestamp();
+  *value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
+}
+
+void
+DeviceTrigAndClk::PV_EnableDisablePLL_Initializer (timespec* timestamp,
+                                                   std::int32_t* value)
+{
+  *timestamp = m_TriggerAndClk.getTimestamp();
+  *value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 #ifdef EPICS

@@ -12,6 +12,7 @@
 
 #include <memory>
 #include "nds3/definitions.h"
+#include "nds3/triggerAndClk.h"
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
@@ -38,7 +39,15 @@ public:
 			writerInt32_t PV_LoadTrigConf_Writer,
 			writerInt32_t PV_ResetTrigConf_Writer,
 			writerInt32_t PV_PLLSyncSET_Writer,
-			writerInt32_t PV_EnableDisablePLL_Writer);
+			writerInt32_t PV_EnableDisablePLL_Writer,
+			const nds::Routing<std::string>& _routingNode);
+
+        /**
+         * @brief Constructs the TriggerAndClk node by means of its structure of functions.
+         * @param name Name of the node.
+         * @param handlerTrig Structure with delegate functions that perform the required actions.
+         */
+	TriggerAndClkImpl(const std::string& name, const TriggerAndClkArgs_t& handlerTrig);
 
     /**
      * @brief Specifies the function to call to get the start timestamp.
@@ -195,6 +204,26 @@ protected:
 
     std::shared_ptr<PVDelegateOutImpl<std::int32_t> > m_EnableDisablePLL_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> >  m_EnableDisablePLL_RBVPV;
+
+
+private:
+    /**
+     * @brief Common source code to define the body of any constructor.
+     * @param handlerTrig Structure containing both compulsory and optional functions.
+     */
+    void constructorBody(const TriggerAndClkArgs_t& handlerTrig);
+
+    /**
+     *@brief Reference to the routing node required for triggering purposes.
+     * Note that it is the same reference that is assigned to the TriggerAndClk
+     * class.
+     * @internal
+     * By the moment, this member variable is never used in this class,
+     * but it is added just to be consistent in constructor of classes
+     * TriggerAndClk and TriggerAndClkImpl.
+     * @endinternal
+     */
+    const nds::Routing<std::string>& routingNode;
 
 
 };

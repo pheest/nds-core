@@ -3,6 +3,102 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+
+/**
+ * @brief Internal function to test the trigger by software included in the TriggerAndClk node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testSWTrig and testSWTrigInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonSWTriggerTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the Load-PVs included in the TriggerAndClk node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testConfigTrig and testConfigTrigInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonConfigTriggerTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PLLSync-PVs included in the TriggerAndClk node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPLLSync and testPLLSyncInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonPLLSyncTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the PLLEnabling-PVs included in the TriggerAndClk node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testEnablePLL and testEnablePLLInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonEnablePLLTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the ResetConfiguration-PVs included in the TriggerAndClk node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testResetConfigTrigger and testResetConfigTriggerInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonResetConfigTriggerTest(const bool testInitializers = false);
+
+TEST(testTrigAndClk, testSWTrig) {
+  commonSWTriggerTest();
+}
+
+TEST(testTrigAndClk, testSWTrigInit) {
+  commonSWTriggerTest(true);
+}
+
+TEST(testTrigAndClk, testConfigTrig) {
+  commonConfigTriggerTest();
+}
+
+TEST(testTrigAndClk, testConfigTrigInit) {
+  commonConfigTriggerTest(true);
+}
+
+TEST(testTrigAndClk, testPLLSync){
+  commonPLLSyncTest();
+}
+
+TEST(testTrigAndClk, testPLLSyncInit) {
+  commonPLLSyncTest(true);
+}
+
+TEST(testTrigAndClk, testEnablePLL) {
+  commonEnablePLLTest();
+}
+
+TEST(testTrigAndClk, testEnablePLLInit) {
+  commonEnablePLLTest(true);
+}
+
+TEST(testTrigAndClk, testResetConfigTrigger) {
+  commonResetConfigTriggerTest();
+}
+
+TEST(testTrigAndClk, testResetConfigTriggerInit) {
+  commonResetConfigTriggerTest(true);
+}
+
 TEST(testTrigAndClk, testStateMachine_TrigAndClk)
 {
 	const timespec* pStateMachineSwitchTime;
@@ -116,7 +212,7 @@ TEST(testTrigAndClk, testStateMachine_TrigAndClk_RoutingNode)
 
 }
 
-TEST(testTrigAndClk, testSWTrig)
+static void commonSWTriggerTest(const bool testInitializers)
 {
 	timespec readTimestamp{0,0};
 
@@ -126,11 +222,33 @@ TEST(testTrigAndClk, testSWTrig)
 	//Output/Input local variables
 	std::int32_t HWBlock;
 
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+                parameters["INIT"]="YES";
+        }
 	// Create test device of type Device and named rootNode
-	factory.createDevice("DeviceTrigAndClk", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceTrigAndClk", "rootNode", parameters);
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+        if (testInitializers) {
+            std::int32_t initialInt32Value;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initializers methods
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.SetSW", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial SetSW = "<< initialInt32Value <<std::endl;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initialization variables
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.HWBlock", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial HWBlock = "<< initialInt32Value <<std::endl;
+        }
 
 	// Set/Get DAQStartTimeDelay
 	pInterface->writeCSValue("/rootNode-TrigAndClk.HWBlock",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -145,7 +263,7 @@ TEST(testTrigAndClk, testSWTrig)
 
 
 
-TEST(testTrigAndClk, testTrigConf)
+static void commonConfigTriggerTest(const bool testInitializers)
 {
 	timespec readTimestamp{0,0};
 
@@ -177,11 +295,62 @@ TEST(testTrigAndClk, testTrigConf)
 	const std::int32_t* preTrigSamplesRBV;
 	const std::int32_t* postTrigSamplesRBV;
 
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+                parameters["INIT"]="YES";
+        }
 	// Create test device of type Device and named rootNode
-	factory.createDevice("DeviceTrigAndClk", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceTrigAndClk", "rootNode", parameters);
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+            std::int32_t initialInt32Value;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initializers methods
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.LoadTrigConf", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial SetSW = "<< initialInt32Value <<std::endl;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initialization variables
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.DAQStartTimeDelay", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial DAQStartTimeDelay = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.TrigPeriod", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial TrigPeriod = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.Level", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial Level = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.Edge", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial Edge = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.Change", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial Change = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.Mode", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial Mode = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PreTrigSamples", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PreTrigSamples = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PostTrigSamples", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PostTrigSamples = "<< initialInt32Value <<std::endl;
+	}
 
 	////////////////////////////////////////////////////////////////
 	///TEST Load Trigger configuration with correct values LoadTrigConf=0
@@ -421,8 +590,7 @@ TEST(testTrigAndClk, testTrigConf)
 
 }
 
-
-TEST(testTrigAndClk, testPLLSyncSET)
+static void commonPLLSyncTest(const bool testInitializers)
 {
 	timespec readTimestamp{0,0};
 
@@ -446,12 +614,53 @@ TEST(testTrigAndClk, testPLLSyncSET)
 	const std::string* PLLLoadStatus;
 	const std::int32_t* PLLLoadCode;
 
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+            parameters["INIT"]="YES";
+        }
 
 	// Create test device of type Device and named rootNode
-	factory.createDevice("DeviceTrigAndClk", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceTrigAndClk", "rootNode", parameters);
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+
+        if (testInitializers) {
+
+            std::int32_t initialInt32Value;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initializers methods
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.PLLSyncSET", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PLLSyncSET = "<< initialInt32Value <<std::endl;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initialization variables
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.SyncMode", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial SyncMode = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefFreq", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PLLRefFreq = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefDiv", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PLLRefDiv_RBV = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefMult", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PLLRefMult = "<< initialInt32Value <<std::endl;
+
+            pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefDivALL", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            std::cout<<"\tInitial PLLRefDivALL = "<< initialInt32Value <<std::endl;
+
+        }
 
 	// Set/Get syncMode
 	pInterface->writeCSValue("/rootNode-TrigAndClk.SyncMode",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -531,7 +740,7 @@ TEST(testTrigAndClk, testPLLSyncSET)
 }
 
 
-TEST(testTrigAndClk, testEnableDisablePLL)
+static void commonEnablePLLTest(const bool testInitializers)
 {
 	timespec readTimestamp{0,0};
 
@@ -542,11 +751,29 @@ TEST(testTrigAndClk, testEnableDisablePLL)
 	const timespec* pushedTimestamp;
 	const std::int32_t* enabledFlag;
 
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+            parameters["INIT"]="YES";
+        }
+
 	// Create test device of type Device and named rootNode
-	factory.createDevice("DeviceTrigAndClk", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceTrigAndClk", "rootNode", parameters);
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+        if (testInitializers) {
+
+            std::int32_t initialInt32Value;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initializers methods
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.EnableDisablePLL", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+            std::cout<<"\tInitial EnableDisablePLL = "<< initialInt32Value <<std::endl;
+
+        }
 
 	// Set EnableDisablePLL
 	pInterface->writeCSValue("/rootNode-TrigAndClk.EnableDisablePLL",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -562,7 +789,7 @@ TEST(testTrigAndClk, testEnableDisablePLL)
 	factory.destroyDevice("rootNode");
 }
 
-TEST(testTrigAndClk, testResetTrigConf)
+static void commonResetConfigTriggerTest(const bool testInitializers)
 {
 	timespec  readTimestamp{0,0};
 
@@ -574,11 +801,30 @@ TEST(testTrigAndClk, testResetTrigConf)
 	const std::int32_t* trigLoadCode;
 	const timespec* pushedTimestamp;
 
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+            parameters["INIT"]="YES";
+        }
+
 	// Create test device of type Device and named rootNode
-	factory.createDevice("DeviceTrigAndClk", "rootNode", nds::namedParameters_t());
+	factory.createDevice("DeviceTrigAndClk", "rootNode", parameters);
 
 	//Get instance of the Test Control System
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+
+        if (testInitializers) {
+
+            std::int32_t initialInt32Value;
+
+            //--------------------------------------------------------------
+            //Verifies values provided by initializers methods
+            //--------------------------------------------------------------
+            pInterface->readCSValue("/rootNode-TrigAndClk.ResetTrigConf", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+            std::cout<<"\tInitial ResetTrigConf = "<< initialInt32Value <<std::endl;
+
+        }
 
 	// Set/Get DAQStartTimeDelay
 	pInterface->writeCSValue("/rootNode-TrigAndClk.ResetTrigConf",readTimestamp,(std::int32_t)0); // PVVariables are thread safe

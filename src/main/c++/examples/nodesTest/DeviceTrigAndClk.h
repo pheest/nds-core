@@ -96,6 +96,15 @@ private:
 	void PV_PLLSyncSET_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_EnableDisablePLL_Writer(const timespec& timestamp, const std::int32_t& value);
 
+        /**
+         * TriggerAndClk initializers
+         */
+        void PV_SetSW_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_LoadTrigConf_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_ResetTrigConf_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_PLLSyncSET_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_EnableDisablePLL_Initializer(timespec* timestamp, std::int32_t* value);
+
 	/**
   	 * Routing setters
   	 */

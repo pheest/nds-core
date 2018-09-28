@@ -50,9 +50,20 @@ TriggerAndClk<T>::TriggerAndClk(
 				PV_LoadTrigConf_Writer,
 				PV_ResetTrigConf_Writer,
 				PV_PLLSyncSET_Writer,
-				PV_EnableDisablePLL_Writer))),m_Routing(routingNode)
+				PV_EnableDisablePLL_Writer,
+				routingNode))),m_Routing(routingNode)
 {
 	addChild(m_Routing);
+}
+
+
+template <typename T>
+TriggerAndClk<T>::TriggerAndClk(const std::string& name,
+                                const TriggerAndClkArgs_t& handlerTrig) :   //Routing PV Delegate
+                                Node(std::shared_ptr<TriggerAndClkImpl<T> >(new TriggerAndClkImpl<T>(name,handlerTrig))),
+                                m_Routing(handlerTrig.routingNode)
+{
+  addChild(m_Routing);
 }
 
 template <typename T>
