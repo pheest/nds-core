@@ -227,8 +227,7 @@ inline void TriggerAndClkImpl<T>::constructorBody(const TriggerAndClkArgs_t& han
                                                                   handlerTrig.PV_PLLSyncSet_Initializer));
     } else {
         m_PLLSyncSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("PLLSyncSET",
-                                                                  handlerTrig.PV_PLLSyncSet_Writer,
-                                                                  handlerTrig.PV_PLLSyncSet_Initializer));
+                                                                  handlerTrig.PV_PLLSyncSet_Writer));
     }
     m_PLLSyncSet_PV->setDescription("Write PLL configuration to hardware");
 	addChild(m_PLLSyncSet_PV);
