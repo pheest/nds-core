@@ -71,6 +71,10 @@ void PortImpl::deregisterPV(std::shared_ptr<PVBaseImpl> pv)
     m_pInterface->deregisterPV(pv);
 }
 
+void PortImpl::registerReporter(reporter_t reporter){
+  m_pInterface->registerReporter(reporter);
+}
+
 template<typename T>
 void PortImpl::push(std::shared_ptr<PVBaseImpl> pv, const timespec& timestamp, const T& value)
 {

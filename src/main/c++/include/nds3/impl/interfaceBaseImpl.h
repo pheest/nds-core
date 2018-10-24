@@ -53,6 +53,12 @@ public:
      *        perform additional tasks.
      */
     virtual void registrationTerminated() = 0;
+    /**
+     * @brief Register a Reporter function. Reporters allow the control system display
+     * more complete information, e.g., with a file that the driver can write to.
+     * @param reporter function object to be registered.
+     */
+    virtual void registerReporter(reporter_t reporter) =0;
 
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const double& value) = 0;
@@ -68,6 +74,7 @@ public:
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value) = 0;
+
 
 };
 
