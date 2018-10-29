@@ -342,6 +342,7 @@ typedef std::function<void (const timespec&, const timestamp_t&)> writerTimestam
  * @brief Reporter function typedef.
  */
 typedef std::function<void (FILE*, int)> reporter_t;
+typedef std::function<void (void)> dbParser_t;
 
 } // namespace nds
 
