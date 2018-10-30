@@ -7,8 +7,8 @@
  * By GMV & UPM
  */
 
-#ifndef NDSTIMESUPP_H
-#define NDSTIMESUPP_H
+#ifndef NDSTRIGGERANDCLK_H
+#define NDSTRIGGERANDCLK_H
 
 /**
  * @file TriggerAndClk.h
@@ -182,6 +182,11 @@ struct TriggerAndClkArgs_t{
   std::int32_t m_Mode_Init;
 
   /**
+   * @brief Initial value of the clock Divider for the trigger clock source.
+   */
+  std::int32_t m_ClkDivider_Init;
+
+  /**
    * @brief Initial value of the number of samples to be acquired before a trigger is met.
    * It is only taken into account when the @e Mode is set to @e REF-RETRIGGER.
    */
@@ -273,6 +278,7 @@ struct TriggerAndClkArgs_t{
       m_Edge_Init(0),
       m_Change_Init(0),
       m_Mode_Init(0),
+	  m_ClkDivider_Init(0),
       m_PreTrigSamples_Init(0),
       m_PostTrigSamples_Init(0),
       m_SyncMode_Init(0),
@@ -408,6 +414,12 @@ public:
     std::int32_t getMode();
 
     /**
+     * @brief Retrieve the selected divider value.
+     *
+     * @return Divider value
+     */
+    std::int32_t getClkDivider();
+    /**
      * @brief Retrieve the number of samples to be acquired BEFORE the trigger condition is met(only if REF-RETRIGERABLE is configured).
      *
      * @return PreTrigSamples value
@@ -526,7 +538,13 @@ public:
     * @param value ModeRBV
     */
     void setModeRBV(const timespec& timestamp, const std::int32_t& value);
-
+	/**
+    * @brief Sets the Divider value readback value.
+    *
+    * @param timestamp timestamp for the value
+    * @param value ClkDividerRBV
+    */
+    void setClkDividerRBV(const timespec& timestamp, const std::int32_t& value);
 	/**
     * @brief Sets the the number of samples to be acquired BEFORE the trigger condition is met readback value.
     *
@@ -610,5 +628,5 @@ public:
 };
 
 }
-#endif // NDSTIMESUPP_H
+#endif // NDSTRIGGERANDCLK_H
 

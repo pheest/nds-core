@@ -134,6 +134,12 @@ std::int32_t TriggerAndClk<T>::getMode()
 }
 
 template <typename T>
+std::int32_t TriggerAndClk<T>::getClkDivider()
+{
+    return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getClkDivider();
+}
+
+template <typename T>
 std::int32_t TriggerAndClk<T>::getPreTrigSamples()
 {
     return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getPreTrigSamples();
@@ -217,6 +223,12 @@ template <typename T>
 void TriggerAndClk<T>::setModeRBV(const timespec& timestamp, const std::int32_t& value)
 {
     return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->setModeRBV(timestamp, value);
+}
+
+template <typename T>
+void TriggerAndClk<T>::setClkDividerRBV(const timespec& timestamp, const std::int32_t& value)
+{
+    return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->setClkDividerRBV(timestamp, value);
 }
 
 template <typename T>

@@ -282,6 +282,7 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	std::int32_t edge;
 	std::int32_t change;
 	std::int32_t mode;
+	std::int32_t ClkDivider;
 	std::int32_t preTrigSamples;
 	std::int32_t postTrigSamples;
 
@@ -292,6 +293,7 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	const std::int32_t* edgeRBV;
 	const std::int32_t* changeRBV;
 	const std::int32_t* modeRBV;
+	const std::int32_t* ClkDividerRBV;
 	const std::int32_t* preTrigSamplesRBV;
 	const std::int32_t* postTrigSamplesRBV;
 
@@ -343,6 +345,10 @@ static void commonConfigTriggerTest(const bool testInitializers)
             EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial Mode = "<< initialInt32Value <<std::endl;
 
+            pInterface->readCSValue("/rootNode-TrigAndClk.ClkDivider", &readTimestamp, &initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+            std::cout<<"\tInitial ClkDivider = "<< initialInt32Value <<std::endl;
+
             pInterface->readCSValue("/rootNode-TrigAndClk.PreTrigSamples", &readTimestamp, &initialInt32Value);
             EXPECT_EQ((std::int32_t) 1, initialInt32Value);
             std::cout<<"\tInitial PreTrigSamples = "<< initialInt32Value <<std::endl;
@@ -390,6 +396,10 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.Mode_RBV",pushedTimestamp, modeRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,*modeRBV);
 
+	// Get ClkDivider
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.ClkDivider_RBV",pushedTimestamp, ClkDividerRBV); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*ClkDividerRBV);
+
 	// Get PreTrigSamples
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.PreTrigSamples_RBV",pushedTimestamp, preTrigSamplesRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,*preTrigSamplesRBV);
@@ -430,6 +440,11 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-TrigAndClk.Mode",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->readCSValue("/rootNode-TrigAndClk.Mode",&readTimestamp,&mode); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,mode);
+
+	// Set/Get ClkDivider
+	pInterface->writeCSValue("/rootNode-TrigAndClk.ClkDivider",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
+	pInterface->readCSValue("/rootNode-TrigAndClk.ClkDivider",&readTimestamp,&ClkDivider); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,ClkDivider);
 
 	// Set/Get preTrigSamples
 	pInterface->writeCSValue("/rootNode-TrigAndClk.PreTrigSamples",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
@@ -479,6 +494,10 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.Mode_RBV",pushedTimestamp, modeRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0,*modeRBV);
 
+	// Get ClkDivider
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.ClkDivider_RBV",pushedTimestamp, ClkDividerRBV); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*ClkDividerRBV);
+
 	// Get postTrigSamples
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.PostTrigSamples_RBV",pushedTimestamp, postTrigSamplesRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*postTrigSamplesRBV);
@@ -525,6 +544,10 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	// Get Mode
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.Mode_RBV",pushedTimestamp, modeRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)1,*modeRBV);
+
+	// Get ClkDivider
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.ClkDivider_RBV",pushedTimestamp, ClkDividerRBV); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)1,*ClkDividerRBV);
 
 	// Get preTrigSamples
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.PreTrigSamples_RBV",pushedTimestamp, preTrigSamplesRBV); // PVVariables are thread safe
@@ -576,6 +599,10 @@ static void commonConfigTriggerTest(const bool testInitializers)
 	// Get Mode
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.Mode_RBV",pushedTimestamp, modeRBV); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)2,*modeRBV);
+
+	// Get ClkDivider
+	pInterface->getPushedInt32("/rootNode-TrigAndClk.ClkDivider_RBV",pushedTimestamp, ClkDividerRBV); // PVVariables are thread safe
+	EXPECT_EQ((std::int32_t)0,*ClkDividerRBV);
 
 	// Get preTrigSamples
 	pInterface->getPushedInt32("/rootNode-TrigAndClk.PreTrigSamples_RBV",pushedTimestamp, preTrigSamplesRBV); // PVVariables are thread safe

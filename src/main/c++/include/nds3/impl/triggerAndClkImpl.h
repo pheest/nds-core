@@ -85,6 +85,7 @@ public:
     std::int32_t getEdge();
     std::int32_t getChange();
     std::int32_t getMode();
+    std::int32_t getClkDivider();
     std::int32_t getPreTrigSamples();
     std::int32_t getPostTrigSamples();
     std::int32_t getSyncMode();
@@ -101,6 +102,7 @@ public:
     void setEdgeRBV(const timespec& timestamp, const std::int32_t& value);
     void setChangeRBV(const timespec& timestamp, const std::int32_t& value);
     void setModeRBV(const timespec& timestamp, const std::int32_t& value);
+    void setClkDividerRBV(const timespec& timestamp, const std::int32_t& value);
     void setPreTrigSamplesRBV(const timespec& timestamp, const std::int32_t& value);
     void setPostTrigSamplesRBV(const timespec& timestamp, const std::int32_t& value);
     void setTrigLoadStatus(const timespec& timestamp, const std::string& value);
@@ -168,6 +170,9 @@ protected:
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_Mode_PV;
     std::shared_ptr<PVVariableInImpl<std::int32_t> >  m_Mode_RBVPV;
+
+    std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_ClkDivider_PV;
+    std::shared_ptr<PVVariableInImpl<std::int32_t> >  m_ClkDivider_RBVPV;
 
     std::shared_ptr<PVVariableOutImpl<std::int32_t> > m_preTrigSamples_PV;
 	std::shared_ptr<PVVariableInImpl<std::int32_t> >  m_preTrigSamples_RBVPV;

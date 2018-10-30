@@ -152,10 +152,21 @@ inline void TriggerAndClkImpl<T>::constructorBody(const TriggerAndClkArgs_t& han
     m_Mode_PV->write(tst, handlerTrig.m_Mode_Init);
     addChild(m_Mode_PV);
 
+    m_ClkDivider_PV.reset(new PVVariableOutImpl<std::int32_t>("ClkDivider"));
+    m_ClkDivider_PV->setDescription("The divider value for the trigger clock.");
+    m_ClkDivider_PV->setScanType(scanType_t::interrupt, 0);
+    m_ClkDivider_PV->write(tst, handlerTrig.m_ClkDivider_Init);
+    addChild(m_ClkDivider_PV);
+
     m_Mode_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Mode_RBV"));
     m_Mode_RBVPV->setDescription("The action (operation) executed when the trigger is received. ReadBack Value");
     m_Mode_RBVPV->setScanType(scanType_t::interrupt, 0);
     addChild(m_Mode_RBVPV);
+
+    m_ClkDivider_RBVPV.reset(new PVVariableInImpl<std::int32_t>("ClkDivider_RBV"));
+    m_ClkDivider_RBVPV->setDescription("The divider value for the trigger clock. ReadBack Value");
+    m_ClkDivider_RBVPV->setScanType(scanType_t::interrupt, 0);
+    addChild(m_ClkDivider_RBVPV);
 
     m_preTrigSamples_PV.reset(new PVVariableOutImpl<std::int32_t>("PreTrigSamples"));
     m_preTrigSamples_PV->setDescription("Number of samples to be acquired BEFORE the trigger condition is met(only if REF-RETRIGERABLE is configured)");
@@ -400,6 +411,15 @@ std::int32_t TriggerAndClkImpl<T>::getMode(){
 }
 
 template<typename T>
+std::int32_t TriggerAndClkImpl<T>::getClkDivider(){
+
+	std::int32_t ClkDivider;
+	timespec timestamp;
+	m_ClkDivider_PV->read(&timestamp, &ClkDivider);
+	return ClkDivider;
+}
+
+template<typename T>
 std::int32_t TriggerAndClkImpl<T>::getPreTrigSamples(){
 
 	std::int32_t preTrigSamples;
@@ -510,6 +530,13 @@ void TriggerAndClkImpl<T>::setModeRBV(const timespec& timestamp, const std::int3
 
 	m_Mode_RBVPV->setValue(timestamp, value);
 	m_Mode_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void TriggerAndClkImpl<T>::setClkDividerRBV(const timespec& timestamp, const std::int32_t& value){
+
+	m_ClkDivider_RBVPV->setValue(timestamp, value);
+	m_ClkDivider_RBVPV->push(timestamp, value);
 }
 
 template<typename T>

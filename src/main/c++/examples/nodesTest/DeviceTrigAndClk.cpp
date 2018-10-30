@@ -86,6 +86,7 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
         handlerTrig.m_Edge_Init = 0;
         handlerTrig.m_Change_Init = 0;
         handlerTrig.m_Mode_Init = 0;
+        handlerTrig.m_ClkDivider_Init = 0;
         handlerTrig.m_PreTrigSamples_Init = 1;
         handlerTrig.m_PostTrigSamples_Init = 1;
         handlerTrig.m_SyncMode_Init = 0;
@@ -264,6 +265,7 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 		int32_t edge = 0;
 		int32_t change = 0;
 		int32_t mode = 0;
+		int32_t ClkDivider = 0;
 		int32_t postTrigSamples = 0;
 		int32_t preTrigSamples = 0;
 
@@ -274,6 +276,7 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 		edge = m_TriggerAndClk.getEdge();
 		change = m_TriggerAndClk.getChange();
 		mode = m_TriggerAndClk.getMode();
+		ClkDivider = m_TriggerAndClk.getClkDivider();
 		postTrigSamples = m_TriggerAndClk.getPostTrigSamples();
 		preTrigSamples = m_TriggerAndClk.getPreTrigSamples();
 
@@ -289,6 +292,7 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 			m_TriggerAndClk.setEdgeRBV(timestamp, edge);                           	//RBV PV setting
 			m_TriggerAndClk.setChangeRBV(timestamp, change);                       	//RBV PV setting
 			m_TriggerAndClk.setModeRBV(timestamp, mode);   							//RBV PV setting
+			m_TriggerAndClk.setClkDividerRBV(timestamp, ClkDivider);   					//RBV PV setting
 			m_TriggerAndClk.setPostTrigSamplesRBV(timestamp, postTrigSamples);		//RBV PV setting
 
 			m_TriggerAndClk.setTrigLoadStatus(timestamp,"OK");
@@ -306,7 +310,8 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 			m_TriggerAndClk.setLevelRBV(timestamp, level);                         	//RBV PV setting
 			m_TriggerAndClk.setEdgeRBV(timestamp, edge);                           	//RBV PV setting
 			m_TriggerAndClk.setChangeRBV(timestamp, change);                       	//RBV PV setting
-			m_TriggerAndClk.setModeRBV(timestamp, mode);   							//RBV PV setting
+			m_TriggerAndClk.setModeRBV(timestamp, mode);
+			m_TriggerAndClk.setClkDividerRBV(timestamp, ClkDivider);  //RBV PV setting
 			m_TriggerAndClk.setPreTrigSamplesRBV(timestamp, preTrigSamples);    	//RBV PV setting
 			m_TriggerAndClk.setPostTrigSamplesRBV(timestamp, postTrigSamples);		//RBV PV setting
 
@@ -326,6 +331,7 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 			m_TriggerAndClk.setPreTrigSamplesRBV(timestamp, 0);  	//RBV PV setting
 
 			m_TriggerAndClk.setModeRBV(timestamp, mode);
+			m_TriggerAndClk.setClkDividerRBV(timestamp, 0);
 			m_TriggerAndClk.setTrigLoadStatus(timestamp,"WRONG");
 			m_TriggerAndClk.setTrigLoadCode(timestamp, (std::int32_t)0);
 			break;
@@ -339,6 +345,7 @@ void DeviceTrigAndClk::PV_LoadTrigConf_Writer(const timespec& timestamp, const s
 		m_TriggerAndClk.setEdgeRBV(timestamp, 0);               //RBV PV setting
 		m_TriggerAndClk.setChangeRBV(timestamp, 0);             //RBV PV setting
 		m_TriggerAndClk.setModeRBV(timestamp, 0);   			//RBV PV setting
+		m_TriggerAndClk.setClkDividerRBV(timestamp, 0);
 		m_TriggerAndClk.setPreTrigSamplesRBV(timestamp, 0);  	//RBV PV setting
 
 		m_TriggerAndClk.setTrigLoadStatus(timestamp,"OK");
