@@ -246,7 +246,7 @@ static void commonSWTriggerTest(const bool testInitializers)
             //Verifies values provided by initialization variables
             //--------------------------------------------------------------
             pInterface->readCSValue("/rootNode-TrigAndClk.HWBlock", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial HWBlock = "<< initialInt32Value <<std::endl;
         }
 
@@ -313,34 +313,34 @@ static void commonConfigTriggerTest(const bool testInitializers)
             //Verifies values provided by initializers methods
             //--------------------------------------------------------------
             pInterface->readCSValue("/rootNode-TrigAndClk.LoadTrigConf", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial SetSW = "<< initialInt32Value <<std::endl;
 
             //--------------------------------------------------------------
             //Verifies values provided by initialization variables
             //--------------------------------------------------------------
             pInterface->readCSValue("/rootNode-TrigAndClk.DAQStartTimeDelay", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial DAQStartTimeDelay = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.TrigPeriod", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial TrigPeriod = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.Level", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial Level = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.Edge", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial Edge = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.Change", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial Change = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.Mode", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial Mode = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.PreTrigSamples", &readTimestamp, &initialInt32Value);
@@ -641,19 +641,19 @@ static void commonPLLSyncTest(const bool testInitializers)
             //Verifies values provided by initialization variables
             //--------------------------------------------------------------
             pInterface->readCSValue("/rootNode-TrigAndClk.SyncMode", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial SyncMode = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefFreq", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial PLLRefFreq = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefDiv", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
-            std::cout<<"\tInitial PLLRefDiv_RBV = "<< initialInt32Value <<std::endl;
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+            std::cout<<"\tInitial PLLRefDiv = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefMult", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
             std::cout<<"\tInitial PLLRefMult = "<< initialInt32Value <<std::endl;
 
             pInterface->readCSValue("/rootNode-TrigAndClk.PLLRefDivALL", &readTimestamp, &initialInt32Value);
@@ -821,7 +821,7 @@ static void commonResetConfigTriggerTest(const bool testInitializers)
             //Verifies values provided by initializers methods
             //--------------------------------------------------------------
             pInterface->readCSValue("/rootNode-TrigAndClk.ResetTrigConf", &readTimestamp, &initialInt32Value);
-            EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+            EXPECT_EQ((std::int32_t) 1, initialInt32Value);
             std::cout<<"\tInitial ResetTrigConf = "<< initialInt32Value <<std::endl;
 
         }
