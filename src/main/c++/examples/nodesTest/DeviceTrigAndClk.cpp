@@ -79,19 +79,19 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
         handlerTrig.PV_PLLSyncSet_Initializer = std::bind(&DeviceTrigAndClk::PV_PLLSyncSET_Initializer,this, std::placeholders::_1, std::placeholders::_2);
         handlerTrig.PV_EnableDisablePLL_Initializer = std::bind(&DeviceTrigAndClk::PV_EnableDisablePLL_Initializer,this, std::placeholders::_1, std::placeholders::_2);
         //Set init values: Note that these value have no actual sense and they are fixed only for testing purposes.
-        handlerTrig.m_HWBlock_Init = 1;
-        handlerTrig.m_DAQStartTimeDelay_Init = 1;
-        handlerTrig.m_TriggPeriod_Init = 1;
-        handlerTrig.m_Level_Init = 1;
-        handlerTrig.m_Edge_Init = 1;
-        handlerTrig.m_Change_Init = 1;
-        handlerTrig.m_Mode_Init = 1;
+        handlerTrig.m_HWBlock_Init = 0;
+        handlerTrig.m_DAQStartTimeDelay_Init = 0;
+        handlerTrig.m_TriggPeriod_Init = 0;
+        handlerTrig.m_Level_Init = 0;
+        handlerTrig.m_Edge_Init = 0;
+        handlerTrig.m_Change_Init = 0;
+        handlerTrig.m_Mode_Init = 0;
         handlerTrig.m_PreTrigSamples_Init = 1;
         handlerTrig.m_PostTrigSamples_Init = 1;
-        handlerTrig.m_SyncMode_Init = 1;
-        handlerTrig.m_PLLRefFreq_Init = 1;
-        handlerTrig.m_PLLRefDiv_Init = 1;
-        handlerTrig.m_PLLRefMult_Init = 1;
+        handlerTrig.m_SyncMode_Init = 0;
+        handlerTrig.m_PLLRefFreq_Init = 0;
+        handlerTrig.m_PLLRefDiv_Init = 0;
+        handlerTrig.m_PLLRefMult_Init = 0;
         handlerTrig.m_PLLRefDivAll_Init = 1;
 
       m_TriggerAndClk = rootNode.addChild(nds::TriggerAndClk<std::vector<timespec>>("TrigAndClk",handlerTrig));
@@ -525,7 +525,7 @@ DeviceTrigAndClk::PV_LoadTrigConf_Initializer (timespec* timestamp,
                                                std::int32_t* value)
 {
   *timestamp = m_TriggerAndClk.getTimestamp();
-  *value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
+  *value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void
@@ -533,7 +533,7 @@ DeviceTrigAndClk::PV_ResetTrigConf_Initializer (timespec* timestamp,
                                                 std::int32_t* value)
 {
   *timestamp = m_TriggerAndClk.getTimestamp();
-  *value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
+  *value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void
