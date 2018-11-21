@@ -66,6 +66,16 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 }
 
 template <typename T>
+DataAcquisition<T>::DataAcquisition(const std::string& name,
+									size_t maxElements,
+									const DataAcquisitionArgs_t& handlerDAQ):
+    Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
+                                                                             maxElements,
+																			 handlerDAQ)))
+{
+}
+
+template <typename T>
 DataAcquisition<T>::DataAcquisition(const DataAcquisition<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }
@@ -116,7 +126,7 @@ double DataAcquisition<T>::getResolution()
 }
 
 template <typename T>
-int32_t DataAcquisition<T>::getImpedance()
+double DataAcquisition<T>::getImpedance()
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getImpedance();
 }
@@ -218,7 +228,7 @@ void DataAcquisition<T>::setResolution(const timespec& timestamp, const double& 
 }
 
 template <typename T>
-void DataAcquisition<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisition<T>::setImpedance(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setImpedance(timestamp, value);
 }

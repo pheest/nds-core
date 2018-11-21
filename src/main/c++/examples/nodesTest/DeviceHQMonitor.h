@@ -98,6 +98,19 @@ private:
 	void PV_HQMonitor_SignalQualityFlagLevel_Writer(const timespec& timestamp, const double& value);
 
 	/**
+	 * Health monitor initializers
+	 */
+	void PV_HQMonitor_SEUEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_DAQEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestType_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestVerboseEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestIDEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestTxtEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SelfTestCodeResultEnable_Initializer(timespec* timestamp, int32_t* value);
+	void PV_HQMonitor_SignalQualityFlagLevel_Initializer(timespec* timestamp, double* value);
+
+	/**
 	 * @brief Function that emulates the changes of status of the HQMonitor node.
 	 *        It is launched by start_HQMonitor() in a separate thread.
 	 */

@@ -20,9 +20,102 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+/**
+ * @brief Type defined to gather the arguments required by @ref Timestamping constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ */
+struct TimestampingArgs_t {
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to write (enable/disable) timestamps generation.
+	 * This is a compulsory field of the structure.
+	 */
+    const writerInt32_t PV_Enable_Writer;
+
+    /**
+     * @brief Function to load the initial value of the timestamps generation.
+     * It reads the status of the flag to generate timestamps and it
+     * is loaded as initial value in its corresponding PV. @n
+     * This is an optional field of the structure.
+     */
+    readerInt32_t PV_Enable_Initializer;
+
+    /**
+     * @brief Function to write the Edge to retrieve timestamps.
+     * This is a compulsory field of the structure.
+     */
+    const writerInt32_t PV_Edge_Writer;
+
+    /**
+     * @brief Function to load the initial value of the Edge.
+     * It reads the Edge that is configured to generate timestamps and it
+     * is loaded as initial value in its corresponding PV. @n
+     * This is an optional field of the structure.
+     */
+    readerInt32_t PV_Edge_Initializer;
+
+    /**
+     * @brief Function to clear the overflow status.
+     * This is a compulsory field of the structure.
+     */
+    const writerInt32_t PV_ClearOverflow_Writer;
+
+    /**
+     * @brief Function to load the initial value of the ClearOverflow flag.
+     * It reads the ClearOverflow status  and it
+     * is loaded as initial value in its corresponding PV. @n
+     * This is an optional field of the structure.
+     */
+    readerInt32_t PV_ClearOverflow_Initializer;
+
+    /**
+     * @brief Constructor to create an instance of the given structure.
+     * It must be used to ensure that compulsory fields are always provided in compilation time.
+     * @param switchOnFunction Switch-on function to be set in @ref TimestampingArgs_t.handlerSTM switchOnFunction.
+     * @param switchOffFunction Switch-off function to be set in @ref TimestampingArgs_t.handlerSTM switchOffFunction.
+     * @param startFunction function to be set in @ref TimestampingArgs_t.handlerSTM startFunction.
+     * @param stopFunction Stop function to be set in @ref TimestampingArgs_t.handlerSTM stopFunction.
+     * @param recoverFunction Recover function to be set in @ref TimestampingArgs_t.handlerSTM recoverFunction.
+     * @param allowStateChangeFunction Checking state transitions function to be set in @ref TimestampingArgs_t.handlerSTM allowStateChangeFunction.
+     * @param _PV_Enable_Writer Function to enable/disable the generation of timestamps. To be set in @ref TimestampingArgs_t.PV_Enable_Writer.
+     * @param _PV_Edge_Writer Function to write the type of Edge to generate timestamps. To be set in @ref TimestampingArgs_t.PV_Edge_Writer.
+     * @param _PV_ClearOverflow_Writer Function to clear the overflow error. To be set in @ref TimestampingArgs_t.PV_ClearOverflow_Writer.
+     */
+    TimestampingArgs_t(stateChange_t switchOnFunction,
+    				   stateChange_t switchOffFunction,
+					   stateChange_t startFunction,
+					   stateChange_t stopFunction,
+					   stateChange_t recoverFunction,
+					   allowChange_t allowStateChangeFunction,
+					   writerInt32_t _PV_Enable_Writer,
+					   writerInt32_t _PV_Edge_Writer,
+					   writerInt32_t _PV_ClearOverflow_Writer) :
+			   handlerSTM (true, ///Asynchronous state transitions.
+					   switchOnFunction,
+					   switchOffFunction,
+					   startFunction,
+					   stopFunction,
+					   recoverFunction,
+					   allowStateChangeFunction),
+			   PV_Enable_Writer(_PV_Enable_Writer),
+			   PV_Edge_Writer(_PV_Edge_Writer),
+			   PV_ClearOverflow_Writer(_PV_ClearOverflow_Writer) {}
+
+};
+
+
 template <typename T>
 class NDS3_API Timestamping: public Node  {
   public:
@@ -78,6 +171,14 @@ class NDS3_API Timestamping: public Node  {
                  writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
                  writerInt32_t PV_ClearOverflow_Writer);
+
+    /**
+     * @brief Simplified constructor of the Timestamping node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param handlerTMS Structure with the arguments required by the Timestamping node.
+     * See @ref TimestampingArgs_t for further details.
+     */
+    Timestamping(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ------------------ Functions common to all nodes ---------------------//
     /**

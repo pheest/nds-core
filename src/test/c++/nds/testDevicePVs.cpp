@@ -4,8 +4,29 @@
 #include "../include/ndsTestFactory.h"
 #include "../include/testUtils.h"
 
+
+/**
+ * @brief Internal function to test all the data types supported by the NDS PVs.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * PVTypes and PVTypesInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonPVsTest(const bool testInitializers = false);
+
 TEST(testDevicePVs, PVTypes)
 {
+	commonPVsTest();
+}
+
+TEST(testDevicePVs, PVTypesInit)
+{
+	commonPVsTest(true);
+}
+
+static void commonPVsTest(const bool testInitializers) {
 	timespec timestamp = {0, 0};
 	const timespec* pTimestamp;
 	const std::int32_t* pInteger;
@@ -46,10 +67,121 @@ TEST(testDevicePVs, PVTypes)
     nds::Factory factory("test");
 
     // Create test device of type DevicePVs and name it devicePVs
-    factory.createDevice("DevicePVs", "devicePVs", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+    factory.createDevice("DevicePVs", "devicePVs", parameters);
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("devicePVs");
+
+    if (testInitializers) { //Test initial value of output PVs.
+
+    	std::int32_t intValue;
+    	double doubleValue;
+    	std::vector<bool> boolArrayValues;
+    	std::vector<std::uint8_t> uInt8ArrayValues;
+    	std::vector<std::uint16_t> uInt16ArrayValues;
+    	std::vector<std::uint32_t> uInt32ArrayValues;
+    	std::vector<std::int8_t> int8ArrayValues;
+    	std::vector<std::int16_t> int16ArrayValues;
+    	std::vector<std::int32_t> int32ArrayValues;
+    	std::vector<double> doubleArrayValues;
+    	std::string stringValue ;
+    	timespec timespecValue;
+    	std::vector<timespec> timespecArrayValues;
+    	nds::timestamp_t timestampValue;
+
+    	//--------------------------------------------------------------------------------------
+    	//VALUES OF THE PVS THAT HAVE BEEN SET AT THE INITIALIZATION
+    	//--------------------------------------------------------------------------------------
+    	std::int32_t intDataInit = -2147483648;
+    	double doubleDataInit = 5e8;
+    	std::vector<bool> boolArrayDataInit(2, true); //Vector with 2 data to true
+    	std::vector<std::uint8_t> uInt8ArrayDataInit(5, 255); //Vector with 5 data to 255.
+    	std::vector<std::uint16_t> uInt16ArrayDataInit(4, 65535);//Vector with 4 data to 65535.
+    	std::vector<std::uint32_t> uInt32ArrayDataInit(3, 4294967295); //Vector with 3 data to 4294967295.
+    	std::vector<std::int8_t> int8ArrayDataInit(5, -128); //Vector with 5 data to -128.
+    	std::vector<std::int16_t> int16ArrayDataInit(1, -32768); //Vector with 1 data to -32768.
+    	std::vector<std::int32_t> int32ArrayDataInit(1, -2147483648); //Vector with 1 data to -2147483648.
+    	std::vector<double> doubleArrayDataInit(4, 9e12); //Vector with 4 data to 9e12.
+    	std::string stringDataInit = "string";
+    	timespec timespecDataInit = {123, 456};
+    	std::vector<timespec> timespecArrayDataInit(5, {123, 456}); //Vector with 5 data to {123, 456}.
+    	nds::timestamp_t timestampDataInit{{123, 456}, 0, false};
+
+		//--------------------------------------------------------------------------------------
+		//TEST THE VALUES OF THE PVS THAT HAVE BEEN INITIALIZED IN THE CONTROL SYSTEM
+		//--------------------------------------------------------------------------------------
+
+    	pInterface->readCSValue("/devicePVs-Integer", &timestamp, &intValue);
+		EXPECT_EQ((std::int32_t) intDataInit, intValue);
+
+    	pInterface->readCSValue("/devicePVs-Double", &timestamp, &doubleValue);
+		EXPECT_EQ((double) doubleDataInit, doubleValue);
+
+    	pInterface->readCSValue("/devicePVs-BoolArray", &timestamp, &boolArrayValues);
+		EXPECT_EQ((bool) true, (boolArrayDataInit == boolArrayValues) );
+
+    	pInterface->readCSValue("/devicePVs-UInt8Array", &timestamp, &uInt8ArrayValues);
+		EXPECT_EQ((bool) true, (uInt8ArrayDataInit == uInt8ArrayValues) );
+
+    	pInterface->readCSValue("/devicePVs-UInt16Array", &timestamp, &uInt16ArrayDataInit);
+		EXPECT_EQ((bool) true, (uInt16ArrayDataInit == uInt16ArrayDataInit) );
+
+    	pInterface->readCSValue("/devicePVs-UInt32Array", &timestamp, &uInt32ArrayDataInit);
+		EXPECT_EQ((bool) true, (uInt32ArrayDataInit == uInt32ArrayDataInit) );
+
+    	pInterface->readCSValue("/devicePVs-Int8Array", &timestamp, &int8ArrayValues);
+		EXPECT_EQ((bool) true, (int8ArrayDataInit == int8ArrayValues) );
+
+    	pInterface->readCSValue("/devicePVs-Int16Array", &timestamp, &int16ArrayValues);
+		EXPECT_EQ((bool) true, (int16ArrayDataInit == int16ArrayValues) );
+
+    	pInterface->readCSValue("/devicePVs-Int32Array", &timestamp, &int32ArrayValues);
+		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayDataInit) );
+
+    	pInterface->readCSValue("/devicePVs-DoubleArray", &timestamp, &doubleArrayValues);
+		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayDataInit) );
+
+    	pInterface->readCSValue("/devicePVs-String", &timestamp, &stringValue);
+		EXPECT_EQ(stringDataInit, stringValue);
+
+    	pInterface->readCSValue("/devicePVs-Timespec", &timestamp, &timespecValue);
+		EXPECT_EQ(timespecDataInit.tv_sec, timespecValue.tv_sec);
+		EXPECT_EQ(timespecDataInit.tv_nsec, timespecValue.tv_nsec);
+
+    	pInterface->readCSValue("/devicePVs-TimespecArray", &timestamp, &timespecArrayValues);
+		EXPECT_EQ(timespecArrayDataInit.size(), timespecArrayValues.size());
+		for (std::uint32_t i = 0; i < timespecArrayDataInit.size(); i++) {
+			EXPECT_EQ(timespecArrayDataInit[i].tv_sec, timespecArrayValues[i].tv_sec);
+			EXPECT_EQ(timespecArrayDataInit[i].tv_nsec, timespecArrayValues[i].tv_nsec);
+		}
+
+    	pInterface->readCSValue("/devicePVs-Timestamp", &timestamp, &timestampValue);
+		EXPECT_EQ(timestampDataInit.timestamp.tv_sec, timestampValue.timestamp.tv_sec);
+		EXPECT_EQ(timestampDataInit.timestamp.tv_nsec, timestampValue.timestamp.tv_nsec);
+		EXPECT_EQ(timestampDataInit.id, timestampValue.id);
+		EXPECT_EQ(timestampDataInit.rising, timestampValue.rising);
+
+		std::cout << "\t-------------------Testing Initial Values-------------------" << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(intDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(doubleDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(boolArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(uInt8ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(uInt16ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(uInt32ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(int8ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(int16ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(int32ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(doubleArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(stringDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(timespecDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(timespecArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(timestampDataInit) << std::endl;
+		std::cout << "\t------------------------------------------------------------" << std::endl;
+    }
 
     for (int i = 0; i < 2; i++) {
 

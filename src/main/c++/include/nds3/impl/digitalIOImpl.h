@@ -16,6 +16,7 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/digitalIO.h"
 
 namespace nds
 {
@@ -40,6 +41,15 @@ public:
 					writerDouble_t PV_voltLevelHigh_Writer,
 					writerDouble_t PV_voltLevelLow_Writer,
 					writerVectorBool_t PV_ChannelDir_Writer);
+    /**
+     * @brief Constructs the DigitalIO node by means of its structure of functions.
+     * @param name Name of the node.
+     * @param maxElements Maximum size of data to be generated.
+     * @param handlerDIO Structure with delegate functiosn that perform the required actions.
+     */
+    DigitalIOImpl( const std::string& name,
+               size_t maxElements,
+			   const DigitalIOArgs_t<T>& handlerDIO);
 
 
     /**
@@ -128,6 +138,14 @@ protected:
     std::shared_ptr<PVVariableInImpl<std::vector<bool>>> m_ChannelDir_RBVPV;
 
     std::shared_ptr<PVVariableInImpl<std::int32_t> > m_NumberOfPushedDataBlocks;
+
+private:
+   	/**
+   	* @brief Common source code to define the body of any constructor.
+   	* @param maxElements Maximum size of data to be generated.
+   	* @param handlerDIO Structure containing both compulsory and optional functions.
+   	*/
+   	void constructorBody(size_t maxElements, const DigitalIOArgs_t<T>& handlerDIO);
 
 
 };

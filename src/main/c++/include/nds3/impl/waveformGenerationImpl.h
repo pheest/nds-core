@@ -12,6 +12,7 @@
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
 #include "nds3/impl/pvDelegateInImpl.h"
+#include "nds3/waveformGeneration.h"
 
 namespace nds
 {
@@ -48,6 +49,16 @@ public:
 						writerInt32_t PV_Ground_Writer);
 
     /**
+     * @brief Constructs the WaveformGeneration node by means of its structure of functions.
+     * @param name Name of the node.
+     * @param maxElements Maximum size of data to be generated.
+     * @param handlerWFG Structure with delegate functions that perform the required actions.
+     */
+    WaveformGenerationImpl(const std::string& name,
+            size_t maxElements,
+			const WaveformGenerationArgs_t<T>& handlerWFG);
+
+    /**
      * @brief Specifies the function to call to get the start timestamp.
      *
      * The function is called only once at each start of the AWG and its result
@@ -70,7 +81,7 @@ public:
     timespec getStartTimestamp() const;
 
     void push(const timespec& timestamp, const T& data);
-
+    T getDataAWG();
     size_t getMaxElements();
     double getAmplitude();
     int32_t getSignalType();
@@ -191,6 +202,14 @@ protected:
 
     std::shared_ptr<StateMachineImpl> m_StateMachine;
 
+
+private:
+   	/**
+   	* @brief Common source code to define the body of any constructor.
+   	* @param maxElements Maximum size of data to be generated.
+   	* @param handlerWFG Structure containing both compulsory and optional functions.
+   	*/
+   	void constructorBody(size_t maxElements, const WaveformGenerationArgs_t<T>& handlerWFG);
 };
 
 }

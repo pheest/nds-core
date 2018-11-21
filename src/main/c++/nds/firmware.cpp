@@ -44,6 +44,15 @@ Firmware::Firmware(const std::string& name,
 {
 }
 
+Firmware::Firmware(const std::string& name,
+				   size_t maxElements,
+				   const FirmwareArgs_t& handlerFIRM):
+			Node(std::shared_ptr<FirmwareImpl>(new FirmwareImpl(name,
+									    maxElements,
+										handlerFIRM)))
+{
+}
+
 Firmware::Firmware(const Firmware& right): 
      Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {

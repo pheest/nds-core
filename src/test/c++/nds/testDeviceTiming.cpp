@@ -4,7 +4,26 @@
 #include "../include/ndsTestFactory.h"
 
 
+/**
+ * @brief Internal function to test all PVs included in the HQMonitor node.
+ * @param structuredConstructor Flag to set to @c true when the constructor that
+ * receives a structure shall be tested.
+ * As the constructor used for the @ref Timing node is the only difference between
+ * fullTest and fullTestStructure test, this function shares the full test
+ * and the constructor used depends on the @a structuredConstructor flag.
+ */
+static void commonPVsTest(const bool structuredConstructor = false);
+
 TEST(testDeviceTiming, fullTest){
+	commonPVsTest();
+}
+
+TEST(testDeviceTiming, fullTestStructure){
+	commonPVsTest(true);
+}
+
+static void commonPVsTest(const bool structuredConstructor) {
+
 
   const timespec* pTimingStateMachineSwitchTime;
   const std::int32_t* pTimingStateMachineState;
@@ -15,7 +34,11 @@ TEST(testDeviceTiming, fullTest){
   nds::Factory factory("test");
 
   // Create test device of type DeviceTiming and name it deviceTiming
-  factory.createDevice("DeviceTiming", "deviceTiming", nds::namedParameters_t());
+  nds::namedParameters_t parameters;
+  if (structuredConstructor) {
+	  parameters["INIT"]="YES";
+  }
+  factory.createDevice("DeviceTiming", "deviceTiming",parameters);
 
   //Get instance of the Test Control System
   nds::tests::TestControlSystemInterfaceImpl* pInterface =
@@ -152,5 +175,10 @@ TEST(testDeviceTiming, fullTest){
 
   // Destroy test device
   factory.destroyDevice("deviceTiming");
+
+
+  if (structuredConstructor) {
+	  std::cout<<"\t(Constructor that receives a structure tested)" <<std::endl;
+  }
 
 }

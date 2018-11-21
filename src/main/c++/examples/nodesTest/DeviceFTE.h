@@ -83,6 +83,13 @@ private:
 	void PV_FTE_ChgPeriod_Writer(const timespec& timestamp, const std::int32_t& value);
 	void PV_FTE_PendingValue_Writer(const timespec& timestamp, const std::int32_t& value);
 
+	/**
+	 * FTE initializers
+	 */
+	void PV_FTE_Set_Initializer(timespec* timestamp, int32_t* value);
+	void PV_FTE_Suppress_Initializer(timespec* timestamp, int32_t* value);
+	void PV_FTE_ChgPeriod_Initializer(timespec* timestamp, int32_t* value);
+	void PV_FTE_PendingValue_Initializer(timespec* timestamp, int32_t* value);
 };
 
 #endif // DeviceFTE_H_

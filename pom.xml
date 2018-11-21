@@ -23,7 +23,7 @@ of the distribution package.
   <groupId>org.iter.codac.units</groupId>
   <artifactId>nds-core</artifactId>
   <packaging>codac</packaging>
-  <version>3.2.0.0</version>
+  <version>3.2.2.0</version>
   <name>CODAC Core System NDS-Core (v3) module</name>
   <description>NDS (Nominal Device Support) is a library that allows to write
     device support, hiding control system details and focusing on device functionalities.</description>
@@ -122,6 +122,8 @@ of the distribution package.
               <include type="library" name="nds3-DeviceVectorI8"  />
               <include type="library" name="nds3-DeviceVectorUI8"  />
               <include type="library" name="nds3-DeviceVectorDBL"  /> 
+              <include type="library" name="nds3-DeviceTrigAndClk"  />
+              <include type="library" name="nds3-DeviceReporterAndParser"  />
 	   
               <requires codac="true">nds-core-devel</requires> 
             </package>

@@ -55,6 +55,12 @@ Routing<T>::Routing(const std::string& name,
 }
 
 template <typename T>
+Routing<T>::Routing(const std::string& name, const RoutingArgs_t& handlerRTN):
+	Node(std::shared_ptr<RoutingImpl<T> >(new RoutingImpl<T>(name, handlerRTN)))
+{
+}
+
+template <typename T>
 Routing<T>::Routing(const Routing<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }

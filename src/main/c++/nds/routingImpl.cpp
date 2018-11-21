@@ -38,6 +38,33 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
 	m_OnStartDelegate(startFunction),
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
+	RoutingArgs_t handlerRTN = RoutingArgs_t(switchOnFunction,
+											 switchOffFunction,
+											 startFunction,
+											 stopFunction,
+											 recoverFunction,
+											 allowStateChangeFunction,
+											 PV_ClkSet_Writer,
+											 PV_ClkDstRead_Writer,
+											 PV_TermSet_Writer,
+											 PV_TermDstRead_Writer);
+	constructorBody(handlerRTN);
+}
+
+template<typename T>
+RoutingImpl<T>::RoutingImpl(const std::string& name, const RoutingArgs_t& handlerRTN
+):
+	NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(handlerRTN.handlerSTM.startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(handlerRTN);
+}
+
+
+template<typename T>
+inline void RoutingImpl<T>::constructorBody(const RoutingArgs_t& handlerRTN)
+{
 
     ////////////////////////////////////////////////////////////////////////////
     // Set Route Clocks PVs
@@ -46,14 +73,22 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
     m_ClkSrc_PV.reset(new PVVariableOutImpl<std::int32_t>("ClkSrc"));
     m_ClkSrc_PV->setDescription("Clock source");
     m_ClkSrc_PV->setScanType(scanType_t::interrupt, 0);
+    m_ClkSrc_PV->write(getTimestamp(), handlerRTN.m_ClkSrc_Init);
 	addChild(m_ClkSrc_PV);
 
 	m_ClkDst_PV.reset(new PVVariableOutImpl<std::int32_t>("ClkDst"));
 	m_ClkDst_PV->setDescription("Clock Destination");
 	m_ClkDst_PV->setScanType(scanType_t::interrupt, 0);
+	m_ClkDst_PV->write(getTimestamp(), handlerRTN.m_ClkDst_Init);
 	addChild(m_ClkDst_PV);
 
-	m_ClkSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkSet",PV_ClkSet_Writer));
+	if (handlerRTN.PV_ClkSet_Initializer) {
+		m_ClkSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkSet",
+				handlerRTN.PV_ClkSet_Writer,
+				handlerRTN.PV_ClkSet_Initializer));
+	} else {
+		m_ClkSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkSet",handlerRTN.PV_ClkSet_Writer));
+	}
 	m_ClkSet_PV->setDescription("Clock Routing Set");
 	m_ClkSet_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_ClkSet_PV);
@@ -72,7 +107,13 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
     // Set Read Clock Route Status PVs
     ////////////////////////////////////////////////////////////////////////////
 
-    m_ClkDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkDstRead",PV_ClkDstRead_Writer));
+	if (handlerRTN.PV_ClkDstRead_Initializer) {
+		m_ClkDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkDstRead",
+				handlerRTN.PV_ClkDstRead_Writer,
+				handlerRTN.PV_ClkDstRead_Initializer));
+	} else {
+		m_ClkDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("ClkDstRead",handlerRTN.PV_ClkDstRead_Writer));
+	}
     m_ClkDstRead_PV->setDescription("Clock destination connection configuration read");
     m_ClkDstRead_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_ClkDstRead_PV);
@@ -89,24 +130,34 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
     m_TermSrc_PV.reset(new PVVariableOutImpl<std::int32_t>("TermSrc"));
     m_TermSrc_PV->setDescription("Terminal source");
     m_TermSrc_PV->setScanType(scanType_t::interrupt, 0);
+    m_TermSrc_PV->write(getTimestamp(), handlerRTN.m_TermSrc_Init);
 	addChild(m_TermSrc_PV);
 
     m_TermDst_PV.reset(new PVVariableOutImpl<std::int32_t>("TermDst"));
     m_TermDst_PV->setDescription("Terminal destination");
     m_TermDst_PV->setScanType(scanType_t::interrupt, 0);
+    m_TermDst_PV->write(getTimestamp(), handlerRTN.m_TermDst_Init);
 	addChild(m_TermDst_PV);
 
     m_TermSyncSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TermSyncSet"));
     m_TermSyncSet_PV->setDescription("Terminal sync mode set");
     m_TermSyncSet_PV->setScanType(scanType_t::interrupt, 0);
+    m_TermSyncSet_PV->write(getTimestamp(), handlerRTN.m_TermSyncSet_Init);
 	addChild(m_TermSyncSet_PV);
 
     m_TermInvertSet_PV.reset(new PVVariableOutImpl<std::int32_t>("TermInvertSet"));
     m_TermInvertSet_PV->setDescription("Terminal inversion mode set");
     m_TermInvertSet_PV->setScanType(scanType_t::interrupt, 0);
+    m_TermInvertSet_PV->write(getTimestamp(), handlerRTN.m_TermInvertSet_Init);
 	addChild(m_TermInvertSet_PV);
 
-    m_TermSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermSet",PV_TermSet_Writer));
+	if (handlerRTN.PV_TermSet_Initializer) {
+		m_TermSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermSet",
+				handlerRTN.PV_TermSet_Writer,
+				handlerRTN.PV_TermSet_Initializer));
+	} else {
+		m_TermSet_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermSet",handlerRTN.PV_TermSet_Writer));
+	}
     m_TermSet_PV->setDescription("Terminal Routing Set");
     m_TermSet_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_TermSet_PV);
@@ -125,7 +176,13 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
     // Set Read Routing Configuration PVs
     ////////////////////////////////////////////////////////////////////////////
 
-    m_TermDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermDstRead",PV_TermDstRead_Writer));
+	if (handlerRTN.PV_TermDstRead_Initializer) {
+		m_TermDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermDstRead",
+				handlerRTN.PV_TermDstRead_Writer,
+				handlerRTN.PV_TermDstRead_Initializer));
+	} else {
+		m_TermDstRead_PV.reset(new PVDelegateOutImpl<std::int32_t>("TermDstRead",handlerRTN.PV_TermDstRead_Writer));
+	}
     m_TermDstRead_PV->setDescription("Terminal destination connection configuration read");
     m_TermDstRead_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_TermDstRead_PV);
@@ -148,12 +205,12 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
 
 	// Add state machine
 	m_StateMachine.reset(new StateMachineImpl(true,
-			switchOnFunction,
-			switchOffFunction,
+			handlerRTN.handlerSTM.switchOnFunction,
+			handlerRTN.handlerSTM.switchOffFunction,
 			std::bind(&RoutingImpl::onStart, this),
-			stopFunction,
-			recoverFunction,
-			allowStateChangeFunction));
+			handlerRTN.handlerSTM.stopFunction,
+			handlerRTN.handlerSTM.recoverFunction,
+			handlerRTN.handlerSTM.allowStateChangeFunction));
 	addChild(m_StateMachine);
 }
 
