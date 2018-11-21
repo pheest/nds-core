@@ -81,7 +81,7 @@ public:
     timespec getStartTimestamp() const;
 
     void push(const timespec& timestamp, const T& data);
-
+    T getDataAWG();
     size_t getMaxElements();
     double getAmplitude();
     int32_t getSignalType();

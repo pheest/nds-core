@@ -477,6 +477,13 @@ public:
     void push(const timespec& timestamp, const T& data);
 
     /**
+     * @brief Retrieve the waveform data from the control system
+     *
+     * @return waveform data from the control system
+     */
+    T getDataAWG();
+
+    /**
      * @brief Retrieve the maximum number of elements that can be stored in the
      *        pushed array. This number is set in the WaveformGeneration constructor.
      *

@@ -442,6 +442,15 @@ size_t WaveformGenerationImpl<T>::getMaxElements()
 }
 
 template<typename T>
+T WaveformGenerationImpl<T>::getDataAWG()
+{
+	T data;
+	timespec timestamp;
+	m_DataAWG_PV->read(&timestamp, &data);
+    return data;
+}
+
+template<typename T>
 int32_t WaveformGenerationImpl<T>::getSignalType()
 {
 	std::int32_t signalType;

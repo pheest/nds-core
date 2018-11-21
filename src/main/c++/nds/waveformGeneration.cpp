@@ -116,6 +116,12 @@ void WaveformGeneration<T>::push(const timespec& timestamp, const T& data)
 }
 
 template <typename T>
+T WaveformGeneration<T>::getDataAWG()
+{
+    return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getDataAWG();
+}
+
+template <typename T>
 size_t WaveformGeneration<T>::getMaxElements()
 {
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getMaxElements();
