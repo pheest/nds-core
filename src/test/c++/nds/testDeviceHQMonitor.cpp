@@ -122,7 +122,6 @@ TEST(testDeviceHQMonitor, PVsInitialization){
 
 static void commonPVsTest(bool testInitializers){
 
-	  const timespec* pHQMonitorTime;
 	  timespec timestamp = {0, 0};
 
 	  //Create factory
@@ -255,7 +254,6 @@ static void commonPVsTest(bool testInitializers){
 	  EXPECT_EQ((std::int32_t)0, *testEnable);
 	  pInterface->writeCSValue("/deviceHQMonitor-HQMonitor.TestEnable",
 				   timestamp, (std::int32_t)1);
-	  pHQMonitorTime = &timestamp;
 	  pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.TestEnable_RBV",
 				     pTimestamp, testEnable);
 	  EXPECT_EQ((std::int32_t)1, *testEnable);
