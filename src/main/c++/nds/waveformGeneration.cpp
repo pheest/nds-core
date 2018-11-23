@@ -76,6 +76,16 @@ WaveformGeneration<T>::WaveformGeneration(const std::string& name,
 }
 
 template <typename T>
+WaveformGeneration<T>::WaveformGeneration(const std::string& name,
+							      size_t maxElements,
+							      const WaveformGenerationArgs_t<T>& handlerWFG):
+    Node(std::shared_ptr<WaveformGenerationImpl<T> >(new WaveformGenerationImpl<T>(name,
+															               maxElements,
+																		   handlerWFG)))
+{
+}
+
+template <typename T>
 WaveformGeneration<T>::WaveformGeneration(const WaveformGeneration<T>& right): Node(std::static_pointer_cast<NodeImpl>(right.m_pImplementation))
 {
 }
@@ -103,6 +113,12 @@ template <typename T>
 void WaveformGeneration<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->push(timestamp, data);
+}
+
+template <typename T>
+T WaveformGeneration<T>::getDataAWG()
+{
+    return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getDataAWG();
 }
 
 template <typename T>

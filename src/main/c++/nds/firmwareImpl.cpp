@@ -33,27 +33,50 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 	m_OnStartDelegate(startFunction),
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
+	nds::FirmwareArgs_t handlerFIRM = FirmwareArgs_t(
+									switchOnFunction,
+									switchOffFunction,
+									startFunction,
+									stopFunction,
+									recoverFunction,
+									allowStateChangeFunction,
+									PV_FirmwarePath_Writer);
+	constructorBody(maxElements, handlerFIRM);
+}
+
+FirmwareImpl::FirmwareImpl(const std::string& name,
+			   size_t maxElements,
+			   const FirmwareArgs_t& handlerFIRM):
+	NodeImpl(name, nodeType_t::inputChannel),
+	m_OnStartDelegate(handlerFIRM.handlerSTM.startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(maxElements, handlerFIRM);
+}
+
+inline void FirmwareImpl::constructorBody(const size_t maxElements, const FirmwareArgs_t& handlerFIRM) {
+
 	// Add the children PVs
 	m_FirmwareVersion_PV.reset(new PVVariableInImpl<std::string>("Version"));
 	m_FirmwareVersion_PV->setDescription("Firmware version");
 	m_FirmwareVersion_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_FirmwareVersion_PV);
 
-        enumerationStrings_t firmwareStatusEnumerationStrings;
-        firmwareStatusEnumerationStrings.push_back("NO_ERROR");
-        firmwareStatusEnumerationStrings.push_back("INITIALIZING");
-        firmwareStatusEnumerationStrings.push_back("RESETTING");
-        firmwareStatusEnumerationStrings.push_back("HARDWARE/FIRMWARE_ERROR");
-        firmwareStatusEnumerationStrings.push_back("NO_BOARD_ACCESS");
-        firmwareStatusEnumerationStrings.push_back("STATIC_CONF_ERROR");
-        firmwareStatusEnumerationStrings.push_back("DYNAMIC_CONF_ERROR");
-        firmwareStatusEnumerationStrings.push_back("RESERVED");
+	enumerationStrings_t firmwareStatusEnumerationStrings;
+	firmwareStatusEnumerationStrings.push_back("NO_ERROR");
+	firmwareStatusEnumerationStrings.push_back("INITIALIZING");
+	firmwareStatusEnumerationStrings.push_back("RESETTING");
+	firmwareStatusEnumerationStrings.push_back("HARDWARE/FIRMWARE_ERROR");
+	firmwareStatusEnumerationStrings.push_back("NO_BOARD_ACCESS");
+	firmwareStatusEnumerationStrings.push_back("STATIC_CONF_ERROR");
+	firmwareStatusEnumerationStrings.push_back("DYNAMIC_CONF_ERROR");
+	firmwareStatusEnumerationStrings.push_back("RESERVED");
 
 
 	m_FirmwareStatus_PV.reset(new PVVariableInImpl<std::int32_t>("Status"));
 	m_FirmwareStatus_PV->setDescription("Firmware status");
 	m_FirmwareStatus_PV->setScanType(scanType_t::interrupt, 0);
-        m_FirmwareStatus_PV->setEnumeration(firmwareStatusEnumerationStrings);
+	m_FirmwareStatus_PV->setEnumeration(firmwareStatusEnumerationStrings);
 	addChild(m_FirmwareStatus_PV);
 
 	m_HWRevision_PV.reset(new PVVariableInImpl<std::string>("HWRevision"));
@@ -96,7 +119,13 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 	m_SlotNumber_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SlotNumber_PV);
 
-	m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",PV_FirmwarePath_Writer));
+	if (handlerFIRM.PV_FirmwarePath_Initializer) {
+		m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath",
+																	handlerFIRM.PV_FirmwarePath_Writer,
+																	handlerFIRM.PV_FirmwarePath_Initializer));
+	} else {
+		m_FirmwarePath_PV.reset(new PVDelegateOutImpl<std::string>("FilePath", handlerFIRM.PV_FirmwarePath_Writer));
+	}
 	m_FirmwarePath_PV->setDescription("Path to the firmware file to load");
 	m_FirmwarePath_PV->setMaxElements(maxElements);
 	m_FirmwarePath_PV->setScanType(scanType_t::passive, 0);
@@ -110,12 +139,12 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
-                                   switchOnFunction,
-                                   switchOffFunction,
+                                   handlerFIRM.handlerSTM.switchOnFunction,
+								   handlerFIRM.handlerSTM.switchOffFunction,
                                    std::bind(&FirmwareImpl::onStart, this),
-                                   stopFunction,
-                                   recoverFunction,
-                                   allowStateChangeFunction));
+								   handlerFIRM.handlerSTM.stopFunction,
+								   handlerFIRM.handlerSTM.recoverFunction,
+								   handlerFIRM.handlerSTM.allowStateChangeFunction));
     addChild(m_StateMachine);
 }
 

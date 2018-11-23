@@ -1,6 +1,7 @@
 #include <functional>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
 
 #include "simulated_signal.h"
 

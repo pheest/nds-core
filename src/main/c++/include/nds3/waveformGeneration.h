@@ -18,9 +18,345 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+/**
+ * @brief Type defined to gather the arguments required by @ref WaveformGeneration constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ * @tparam T  the PV data type.
+ * 		The following data types are supported:
+ * 		- std::int32_t
+ * 		- std::double
+ * 		- std::vector<std::uint8_t>
+ * 		- std::vector<std::int8_t>
+ * 		- std::vector<std::int16_t>
+ * 		- std::vector<std::int32_t>
+ * 		- std::vector<double>
+ */
+template<typename T>
+struct WaveformGenerationArgs_t {
+
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to write the frequency for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Frequency_Writer;
+
+	/**
+	 * @brief Function to load the initial value of frequency.
+	 * It reads the frequency configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Frequency_Initializer;
+
+	/**
+	 * @brief Function to write the reference frequency for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_RefFrequency_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the reference frequency.
+	 * It reads the reference frequency configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_RefFrequency_Initializer;
+
+	/**
+	 * @brief Function to write the amplitude for waveform generation.
+	 * This is a compulsory field of the structure
+	 */
+	const writerDouble_t PV_Amp_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the amplitude.
+	 * It reads the amplitude configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Amp_Initializer;
+
+	/**
+	 * @brief Function to write the phase for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Phase_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the phase.
+	 * It reads the phase configured in the device and it is loaded as
+	 * initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Phase_Initializer;
+
+	/**
+	 * @brief Function to write the update rate for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_UpdateRate_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the update rate.
+	 * It reads the update rate configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_UpdateRate_Initializer;
+
+	/**
+	 * @brief Function to write the duty cycle for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_DutyCycle_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the duty cycle.
+	 * It reads the duty cycle configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_DutyCycle_Initializer;
+
+	/**
+	 * @brief Function to write the gain for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Gain_Writer;
+
+	/**
+	 * @brief Function to load the initial value of the gain.
+	 * It reads the gain configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Gain_Initializer;
+
+	/**
+	 * @brief Function to write the offset for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Offset_Writer;
+
+	/**
+	 * @brief Function to load the initial value of offset.
+	 * It reads the offset configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Offset_Initializer;
+
+
+	/**
+	 * @brief Function to write the bandwidth for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Bandwidth_Writer;
+
+	/**
+	 * @brief Function to load the initial value of bandwidth.
+	 * It reads the bandwidth configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Bandwidth_Initializer;
+
+	/**
+	 * @brief Function to write the resolution for data acquisition.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerDouble_t PV_Resolution_Writer;
+
+	/**
+	 * @brief Function to load the initial value of resolution.
+	 * It reads the resolution configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerDouble_t PV_Resolution_Initializer;
+
+	/**
+	 * @brief Function to write the impedance for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_Impedance_Writer;
+
+	/**
+	 * @brief Function to load the initial value of impedance.
+	 * It reads the impedance configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_Impedance_Initializer;
+
+	/**
+	 * @brief Function to write the coupling for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_Coupling_Writer;
+
+	/**
+	 * @brief Function to load the initial value of coupling.
+	 * It reads the coupling configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_Coupling_Initializer;
+
+	/**
+	 * @brief Function to write the signal reference for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_SignalRef_Writer;
+
+	/**
+	 * @brief Function to load the initial signal reference.
+	 * It reads the signal reference configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_SignalRef_Initializer;
+
+	/**
+	 * @brief Function to write the type of signal for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_SignalType_Writer;
+
+	/**
+	 * @brief Function to load the initial type of signal .
+	 * It reads the type of signal configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_SignalType_Initializer;
+
+	/**
+	 * @brief Function to write the ground for waveform generation.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerInt32_t PV_Ground_Writer;
+
+	/**
+	 * @brief Function to load the initial ground.
+	 * It reads the ground configured in the device and it is loaded
+	 * as initial value in its corresponding PV. @n
+	 * This is an optional field of the structure.
+	 */
+	readerInt32_t PV_Ground_Initializer;
+
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * List of default values that are used to initialize the PVVariableOutput member
+	 * variables. They can be edited by the user.
+	 * -----------------------------------------------------------------------------------------
+	 */
+	/**
+	 * @brief Initial value of AWG Samples for waveform generation.
+	 */
+	T m_DataAWG_Init;
+
+	/**
+	 * @brief Initial value of the decimation factor for waveform generation.
+	 */
+	std::int32_t m_Decimation_Init;
+	/*
+	 * -----------------------------------------------------------------------------------------
+	 * End of default values
+	 * -----------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref WaveformGenerationArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref WaveformGenerationArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref WaveformGenerationArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref WaveformGenerationArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref WaveformGenerationArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref WaveformGenerationArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param _PV_Frequency_Writer Function to write the frequency for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Frequency_Writer.
+	 * @param _PV_RefFrequency_Writer Function to write the reference frequency for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_RefFrequency_Writer.
+	 * @param _PV_Amp_Writer Function to write the amplitude for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Amp_Writer.
+	 * @param _PV_Phase_Writer Function to write the phase for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Phase_Writer.
+	 * @param _PV_UpdateRate_Writer Function to write the update rate for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_UpdateRate_Writer.
+	 * @param _PV_DutyCycle_Writer Function to write the duty cycle for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_DutyCycle_Writer.
+	 * @param _PV_Gain_Writer Function to write the gain for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Gain_Writer.
+	 * @param _PV_Offset_Writer Function to write the offset for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Offset_Writer.
+	 * @param _PV_Bandwidth_Writer Function to write the bandwidth for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Bandwidth_Writer.
+	 * @param _PV_Resolution_Writer Function to write the resolution for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Resolution_Writer.
+	 * @param _PV_Impedance_Writer Function to write the impedance for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Impedance_Writer.
+	 * @param _PV_Coupling_Writer Function to write the coupling for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Coupling_Writer.
+	 * @param _PV_SignalRef_Writer Function to write the signal reference for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalRef_Writer.
+	 * @param _PV_SignalType_Writer Function to write the signal type for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalType_Writer.
+	 * @param _PV_Ground_Writer Function to write the ground for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Ground_Writer.
+	 */
+	WaveformGenerationArgs_t(stateChange_t switchOnFunction,
+							 stateChange_t switchOffFunction,
+							 stateChange_t startFunction,
+							 stateChange_t stopFunction,
+							 stateChange_t recoverFunction,
+							 allowChange_t allowStateChangeFunction,
+							 writerDouble_t _PV_Frequency_Writer,
+							 writerDouble_t _PV_RefFrequency_Writer,
+							 writerDouble_t _PV_Amp_Writer,
+							 writerDouble_t _PV_Phase_Writer,
+							 writerDouble_t _PV_UpdateRate_Writer,
+							 writerDouble_t _PV_DutyCycle_Writer,
+							 writerDouble_t _PV_Gain_Writer,
+							 writerDouble_t _PV_Offset_Writer,
+							 writerDouble_t _PV_Bandwidth_Writer,
+							 writerDouble_t _PV_Resolution_Writer,
+							 writerInt32_t _PV_Impedance_Writer,
+							 writerInt32_t _PV_Coupling_Writer,
+							 writerInt32_t _PV_SignalRef_Writer,
+							 writerInt32_t _PV_SignalType_Writer,
+							 writerInt32_t _PV_Ground_Writer) :
+		   handlerSTM (true, ///Asynchronous state transitions.
+				   switchOnFunction,
+				   switchOffFunction,
+				   startFunction,
+				   stopFunction,
+				   recoverFunction,
+				   allowStateChangeFunction),
+		   PV_Frequency_Writer(_PV_Frequency_Writer),
+		   PV_RefFrequency_Writer(_PV_RefFrequency_Writer),
+		   PV_Amp_Writer(_PV_Amp_Writer),
+		   PV_Phase_Writer(_PV_Phase_Writer),
+		   PV_UpdateRate_Writer(_PV_UpdateRate_Writer),
+		   PV_DutyCycle_Writer(_PV_DutyCycle_Writer),
+		   PV_Gain_Writer(_PV_Gain_Writer),
+		   PV_Offset_Writer(_PV_Offset_Writer),
+		   PV_Bandwidth_Writer(_PV_Bandwidth_Writer),
+		   PV_Resolution_Writer(_PV_Resolution_Writer),
+		   PV_Impedance_Writer(_PV_Impedance_Writer),
+		   PV_Coupling_Writer(_PV_Coupling_Writer),
+		   PV_SignalRef_Writer(_PV_SignalRef_Writer),
+		   PV_SignalType_Writer(_PV_SignalType_Writer),
+		   PV_Ground_Writer(_PV_Ground_Writer),
+		   m_DataAWG_Init(T()), //Default value of the underlying data type
+	   	   m_Decimation_Init(1) {}
+};
+template class WaveformGenerationArgs_t<std::int32_t>;
+template class WaveformGenerationArgs_t<double>;
+template class WaveformGenerationArgs_t<std::vector<std::int8_t> >;
+template class WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
+template class WaveformGenerationArgs_t<std::vector<std::int16_t> >;
+template class WaveformGenerationArgs_t<std::vector<std::int32_t> >;
+template class WaveformGenerationArgs_t<std::vector<double> >;
 
 /**
  * This is a node that supplies waveform generation PVs and few control
@@ -96,6 +432,17 @@ public:
 					writerInt32_t PV_Ground_Writer);          ///< Delegate function setter/getter to interact to the Low Level Driver API
 
     /**
+     * @brief Simplified constructor of the WaveformGeneration node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum size of the generated data array. Set to @c 1 for scalar values.
+     * @param handlerWFG Structure with the arguments required by the WaveformGeneration node.
+     * See @ref WaveformGenerationArgs_t for further details.
+     */
+    WaveformGeneration( const std::string& name,
+    					size_t maxElements,
+						const WaveformGenerationArgs_t<T>& handlerWFG);
+
+    /**
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
@@ -128,6 +475,13 @@ public:
      * @param data      the data to push to the control system
      */
     void push(const timespec& timestamp, const T& data);
+
+    /**
+     * @brief Retrieve the waveform data from the control system
+     *
+     * @return waveform data from the control system
+     */
+    T getDataAWG();
 
     /**
      * @brief Retrieve the maximum number of elements that can be stored in the

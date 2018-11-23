@@ -32,6 +32,35 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
+	DigitalIOArgs_t<T> handlerDIO = DigitalIOArgs_t<T>(switchOnFunction,
+												 switchOffFunction,
+												 startFunction,
+												 stopFunction,
+												 recoverFunction,
+												 allowStateChangeFunction,
+												 PV_dataOutMask_Writer,
+												 PV_voltLevelHigh_Writer,
+												 PV_voltLevelLow_Writer,
+												 PV_ChannelDir_Writer);
+	constructorBody(maxElements, handlerDIO);
+}
+
+
+template<typename T>
+DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
+								 size_t maxElements,
+								 const DigitalIOArgs_t<T>& handlerDIO) :
+	NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(handlerDIO.handlerSTM.startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(maxElements, handlerDIO);
+}
+
+template<typename T>
+inline void DigitalIOImpl<T>::constructorBody(size_t maxElements, const DigitalIOArgs_t<T>& handlerDIO)
+{
+
 	// Add the children PVs
     m_DataIn_PV.reset(new PVVariableInImpl<T>("DataIn"));
     m_DataIn_PV->setMaxElements(maxElements);
@@ -44,6 +73,7 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_DataOut_PV->setMaxElements(maxElements);
     m_DataOut_PV->setDescription("digital output");
     m_DataOut_PV->setScanType(scanType_t::passive, 0);
+    m_DataOut_PV->write(getTimestamp(), handlerDIO.m_DataOut_Init);
     addChild(m_DataOut_PV);
 
     const int bus_width = int(std::is_same<T, std::vector<bool> >::value) * 1+
@@ -51,7 +81,13 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 			int(std::is_same<T, std::vector<std::int16_t> >::value) * 16+
 			int(std::is_same<T, std::vector<std::int32_t> >::value) * 32;
 
-    m_DataOutMask_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("DataOutMask",PV_dataOutMask_Writer));
+    if (handlerDIO.PV_dataOutMask_Initializer) {
+    	m_DataOutMask_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("DataOutMask",
+    			handlerDIO.PV_dataOutMask_Writer,
+				handlerDIO.PV_dataOutMask_Initializer));
+    } else {
+    	m_DataOutMask_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("DataOutMask",handlerDIO.PV_dataOutMask_Writer));
+    }
     m_DataOutMask_PV->setMaxElements(bus_width);
     m_DataOutMask_PV->setDescription("Digital output mask");
     m_DataOutMask_PV->setScanType(scanType_t::passive, 0); //TODO Check Scan Type
@@ -66,10 +102,16 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
-    m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    m_Decimation_PV->write(getTimestamp(), handlerDIO.m_Decimation_Init);
     addChild(m_Decimation_PV);
 
-    m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<double>("VoltLevelHigh",PV_voltLevelHigh_Writer));
+    if (handlerDIO.PV_voltLevelHigh_Initializer) {
+    	m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<double>("VoltLevelHigh",
+    			handlerDIO.PV_voltLevelHigh_Writer,
+				handlerDIO.PV_voltLevelHigh_Initializer));
+    } else {
+    	m_VoltLevelHigh_PV.reset(new PVDelegateOutImpl<double>("VoltLevelHigh",handlerDIO.PV_voltLevelHigh_Writer));
+    }
     m_VoltLevelHigh_PV->setDescription("Volt Level High ");
     m_VoltLevelHigh_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelHigh_PV);
@@ -79,7 +121,13 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 	m_VoltLevelHigh_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_VoltLevelHigh_RBVPV);
 
-    m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<double>("VoltLevelLow",PV_voltLevelLow_Writer));
+	if (handlerDIO.PV_voltLevelLow_Initializer) {
+		m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<double>("VoltLevelLow",
+				handlerDIO.PV_voltLevelLow_Writer,
+				handlerDIO.PV_voltLevelLow_Initializer));
+	} else {
+		m_VoltLevelLow_PV.reset(new PVDelegateOutImpl<double>("VoltLevelLow",handlerDIO.PV_voltLevelLow_Writer));
+	}
     m_VoltLevelLow_PV->setDescription("Volt Level Low");
     m_VoltLevelLow_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_VoltLevelLow_PV);
@@ -94,7 +142,13 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
     channelDirEnumeratorStrings.push_back("In");
     channelDirEnumeratorStrings.push_back("Out");
 
-    m_ChannelDir_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("ChannelDir",PV_ChannelDir_Writer));
+    if (handlerDIO.PV_ChannelDir_Initializer) {
+    	m_ChannelDir_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("ChannelDir",
+    			handlerDIO.PV_ChannelDir_Writer,
+				handlerDIO.PV_ChannelDir_Initializer));
+    } else {
+    	m_ChannelDir_PV.reset(new PVDelegateOutImpl<std::vector<bool>>("ChannelDir",handlerDIO.PV_ChannelDir_Writer));
+    }
     m_ChannelDir_PV->setMaxElements(bus_width);
     m_ChannelDir_PV->setDescription("Channel Direction: In/Out");
     m_ChannelDir_PV->setScanType(scanType_t::passive, 0);
@@ -116,12 +170,12 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
-                                   switchOnFunction,
-                                   switchOffFunction,
+                                   handlerDIO.handlerSTM.switchOnFunction,
+								   handlerDIO.handlerSTM.switchOffFunction,
                                    std::bind(&DigitalIOImpl::onStart, this),
-                                   stopFunction,
-                                   recoverFunction,
-                                   allowStateChangeFunction));
+								   handlerDIO.handlerSTM.stopFunction,
+								   handlerDIO.handlerSTM.recoverFunction,
+								   handlerDIO.handlerSTM.allowStateChangeFunction));
     addChild(m_StateMachine);
 }
 

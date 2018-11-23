@@ -6,7 +6,7 @@ HEADERS =$(wildcard ndsDrv/*.h)
 
 STATICOBJ =$(patsubst simDev/%.cpp, simDev/%.o, $(wildcard simDev/*.cpp))
 
-STD =-std=c++0x
+STD =-std=c++11
 INCLUDES =-I../../include -I/opt/codac/include -IsimDev
 DEFS =-DEPICS -DNDS3_DLL
 DBG =-g

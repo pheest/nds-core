@@ -47,6 +47,44 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
+	WaveformGenerationArgs_t<T> handlerWFG = WaveformGenerationArgs_t<T>(switchOnFunction,
+															switchOffFunction,
+															startFunction,
+															stopFunction,
+															recoverFunction,
+															allowStateChangeFunction,
+															PV_Frequency_Writer,
+															PV_RefFrequency_Writer,
+															PV_Amp_Writer,
+															PV_Phase_Writer,
+															PV_UpdateRate_Writer,
+															PV_DutyCycle_Writer,
+															PV_Gain_Writer,
+															PV_Offset_Writer,
+															PV_Bandwidth_Writer,
+															PV_Resolution_Writer,
+															PV_Impedance_Writer,
+															PV_Coupling_Writer,
+															PV_SignalRef_Writer,
+															PV_SignalType_Writer,
+															PV_Ground_Writer);
+	constructorBody(maxElements, handlerWFG);
+}
+
+template<typename T>
+WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
+                                          size_t maxElements,
+										  const WaveformGenerationArgs_t<T>& handlerWFG):
+	NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(handlerWFG.handlerSTM.startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(maxElements, handlerWFG);
+}
+
+template<typename T>
+inline void WaveformGenerationImpl<T>::constructorBody(size_t maxElements, const WaveformGenerationArgs_t<T>& handlerWFG)
+{
 
 	// Add the children PVs
     m_Data_PV.reset(new PVVariableInImpl<T>("Data"));
@@ -59,12 +97,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_DataAWG_PV->setMaxElements(maxElements);
 	m_DataAWG_PV->setDescription("AWG Samples for signal generation");
 	m_DataAWG_PV->setScanType(scanType_t::passive, 0);
+	m_DataAWG_PV->write(getTimestamp(), handlerWFG.m_DataAWG_Init);
     addChild(m_DataAWG_PV);
 
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
-    m_Decimation_PV->write(getTimestamp(), (std::int32_t)1);
+    m_Decimation_PV->write(getTimestamp(), handlerWFG.m_Decimation_Init);
     addChild(m_Decimation_PV);
 
     m_Frequency_RBVPV.reset(new PVVariableInImpl<double>("Frequency_RBV"));
@@ -73,7 +112,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
     m_Frequency_RBVPV->getDataDirection();
 	addChild(m_Frequency_RBVPV);
 
-    m_Frequency_PV.reset(new PVDelegateOutImpl<double>("Frequency", PV_Frequency_Writer));
+	if (handlerWFG.PV_Frequency_Initializer) {
+		m_Frequency_PV.reset(new PVDelegateOutImpl<double>("Frequency",
+				handlerWFG.PV_Frequency_Writer,
+				handlerWFG.PV_Frequency_Initializer));
+	} else {
+		m_Frequency_PV.reset(new PVDelegateOutImpl<double>("Frequency", handlerWFG.PV_Frequency_Writer));
+	}
     m_Frequency_PV->setDescription("Generation frequency");
     m_Frequency_PV->setScanType(scanType_t::passive, 0);
     m_Frequency_PV->setUnits("Hz");
@@ -86,7 +131,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
     m_Frequency_PV->getDataDirection();
     addChild(m_Frequency_PV);
 
-    m_RefFrequency_PV.reset(new PVDelegateOutImpl<double>("RefFrequency", PV_RefFrequency_Writer));
+    if (handlerWFG.PV_RefFrequency_Initializer) {
+    	m_RefFrequency_PV.reset(new PVDelegateOutImpl<double>("RefFrequency",
+    			handlerWFG.PV_RefFrequency_Writer,
+				handlerWFG.PV_RefFrequency_Initializer));
+    } else {
+    	m_RefFrequency_PV.reset(new PVDelegateOutImpl<double>("RefFrequency", handlerWFG.PV_RefFrequency_Writer));
+    }
     m_RefFrequency_PV->setDescription("Reference frequency");
     m_RefFrequency_PV->setScanType(scanType_t::passive, 0);
     addChild(m_RefFrequency_PV);
@@ -96,7 +147,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
     m_RefFrequency_RBVPV->setScanType(scanType_t::interrupt, 0);
     addChild(m_RefFrequency_RBVPV);
 
-    m_Amplitude_PV.reset(new PVDelegateOutImpl<double>("Amplitude", PV_Amp_Writer));
+    if (handlerWFG.PV_Amp_Initializer) {
+    	m_Amplitude_PV.reset(new PVDelegateOutImpl<double>("Amplitude",
+    			handlerWFG.PV_Amp_Writer,
+				handlerWFG.PV_Amp_Initializer));
+    } else {
+    	m_Amplitude_PV.reset(new PVDelegateOutImpl<double>("Amplitude", handlerWFG.PV_Amp_Writer));
+    }
     m_Amplitude_PV->setDescription("Amplitude");
     m_Amplitude_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Amplitude_PV);
@@ -107,7 +164,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_Amplitude_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Amplitude_RBVPV);
 
-    m_Phase_PV.reset(new PVDelegateOutImpl<double>("Phase", PV_Phase_Writer));
+	if (handlerWFG.PV_Phase_Initializer) {
+		m_Phase_PV.reset(new PVDelegateOutImpl<double>("Phase",
+				handlerWFG.PV_Phase_Writer,
+				handlerWFG.PV_Phase_Initializer));
+	} else {
+		m_Phase_PV.reset(new PVDelegateOutImpl<double>("Phase", handlerWFG.PV_Phase_Writer));
+	}
     m_Phase_PV->setDescription("Phase");
     m_Phase_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Phase_PV);
@@ -117,7 +180,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_Phase_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Phase_RBVPV);
 
-	m_UpdateRate_PV.reset(new PVDelegateOutImpl<double>("UpdateRate", PV_UpdateRate_Writer));
+	if (handlerWFG.PV_UpdateRate_Initializer) {
+		m_UpdateRate_PV.reset(new PVDelegateOutImpl<double>("UpdateRate",
+				handlerWFG.PV_UpdateRate_Writer,
+				handlerWFG.PV_UpdateRate_Initializer));
+	} else {
+		m_UpdateRate_PV.reset(new PVDelegateOutImpl<double>("UpdateRate", handlerWFG.PV_UpdateRate_Writer));
+	}
     m_UpdateRate_PV->setDescription("Update Rate");
     m_UpdateRate_PV->setScanType(scanType_t::passive, 0);
     addChild(m_UpdateRate_PV);
@@ -127,7 +196,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_UpdateRate_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_UpdateRate_RBVPV);
 
-    m_DutyCycle_PV.reset(new PVDelegateOutImpl<double>("DutyCycle", PV_DutyCycle_Writer));
+	if (handlerWFG.PV_DutyCycle_Initializer) {
+		m_DutyCycle_PV.reset(new PVDelegateOutImpl<double>("DutyCycle",
+				handlerWFG.PV_DutyCycle_Writer,
+				handlerWFG.PV_DutyCycle_Initializer));
+	} else {
+		m_DutyCycle_PV.reset(new PVDelegateOutImpl<double>("DutyCycle", handlerWFG.PV_DutyCycle_Writer));
+	}
     m_DutyCycle_PV->setDescription("Signal Duty Cycle");
     m_DutyCycle_PV->setScanType(scanType_t::passive, 0);
     addChild(m_DutyCycle_PV);
@@ -137,7 +212,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_DutyCycle_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DutyCycle_RBVPV);
 
-	m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
+	if (handlerWFG.PV_Gain_Initializer) {
+		m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",
+				handlerWFG.PV_Gain_Writer,
+				handlerWFG.PV_Gain_Initializer));
+	} else {
+		m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",handlerWFG.PV_Gain_Writer));
+	}
 	m_Gain_PV->setDescription("Gain of the Channel");
 	m_Gain_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Gain_PV);
@@ -147,7 +228,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
 
-	m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",PV_Offset_Writer));
+	if (handlerWFG.PV_Offset_Initializer) {
+		m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",
+				handlerWFG.PV_Offset_Writer,
+				handlerWFG.PV_Offset_Initializer));
+	} else {
+		m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",handlerWFG.PV_Offset_Writer));
+	}
 	m_Offset_PV->setDescription("Offset");
 	m_Offset_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Offset_PV);
@@ -157,7 +244,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_Offset_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Offset_RBVPV);
 
-	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
+	if (handlerWFG.PV_Bandwidth_Initializer) {
+		m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",
+				handlerWFG.PV_Bandwidth_Writer,
+				handlerWFG.PV_Bandwidth_Initializer));
+	} else {
+		m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",handlerWFG.PV_Bandwidth_Writer));
+	}
 	m_Bandwidth_PV->setDescription("BandWidth");
 	m_Bandwidth_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Bandwidth_PV);
@@ -167,7 +260,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	m_Bandwidth_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Bandwidth_RBVPV);
 
-	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
+	if (handlerWFG.PV_Resolution_Initializer) {
+		m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",
+				handlerWFG.PV_Resolution_Writer,
+				handlerWFG.PV_Resolution_Initializer));
+	} else {
+		m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",handlerWFG.PV_Resolution_Writer));
+	}
 	m_Resolution_PV->setDescription("Resolution: Number of Bits per Sample");
 	m_Resolution_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Resolution_PV);
@@ -182,7 +281,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	ImpedanceEnumeratorStrings.push_back("50ohm");
 	ImpedanceEnumeratorStrings.push_back("Inf");
 
-	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
+	if (handlerWFG.PV_Impedance_Initializer) {
+		m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",
+				handlerWFG.PV_Impedance_Writer,
+				handlerWFG.PV_Impedance_Initializer));
+	} else {
+		m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",handlerWFG.PV_Impedance_Writer));
+	}
 	m_Impedance_PV->setDescription("Impedance: 50 ohm or Inf ");
 	m_Impedance_PV->setEnumeration(ImpedanceEnumeratorStrings);
 	m_Impedance_PV->setScanType(scanType_t::passive, 0);
@@ -199,7 +304,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	CouplingEnumeratorStrings.push_back("AC");
 	CouplingEnumeratorStrings.push_back("DC");
 
-	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",PV_Coupling_Writer));
+	if (handlerWFG.PV_Coupling_Initializer) {
+		m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",
+				handlerWFG.PV_Coupling_Writer,
+				handlerWFG.PV_Coupling_Initializer));
+	} else {
+		m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",handlerWFG.PV_Coupling_Writer));
+	}
 	m_Coupling_PV->setDescription("Coupling: AC or DC");
 	m_Coupling_PV->setEnumeration(CouplingEnumeratorStrings);
 	m_Coupling_PV->setScanType(scanType_t::passive, 0);
@@ -217,7 +328,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	SignalRefTypeEnumeratorStrings.push_back("SingleEnded");
 	SignalRefTypeEnumeratorStrings.push_back("Differential");
 
-	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalRef_Writer));
+	if (handlerWFG.PV_SignalRef_Initializer) {
+		m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",
+				handlerWFG.PV_SignalRef_Writer,
+				handlerWFG.PV_SignalRef_Initializer));
+	} else {
+		m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",handlerWFG.PV_SignalRef_Writer));
+	}
 	m_SignalRefType_PV->setDescription("Type of input: Differential or Single Ended");
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
 	m_SignalRefType_PV->setScanType(scanType_t::passive, 0);
@@ -240,7 +357,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	SignalTypeEnumeratorStrings.push_back("Pulse");
 	SignalTypeEnumeratorStrings.push_back("Sawtooth");
 
-	m_SignalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalType",PV_SignalType_Writer));
+	if (handlerWFG.PV_SignalType_Initializer) {
+		m_SignalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalType",
+				handlerWFG.PV_SignalType_Writer,
+				handlerWFG.PV_SignalType_Initializer));
+	} else {
+		m_SignalType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalType",handlerWFG.PV_SignalType_Writer));
+	}
 	m_SignalType_PV->setDescription("Signal type generated");
 	m_SignalType_PV->setEnumeration(SignalTypeEnumeratorStrings);
 	m_SignalType_PV->setScanType(scanType_t::passive, 0);
@@ -257,7 +380,13 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 	groundEnumeratorStrings.push_back("On");
 	groundEnumeratorStrings.push_back("Off");
 
-	m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
+	if (handlerWFG.PV_Ground_Initializer) {
+		m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",
+				handlerWFG.PV_Ground_Writer,
+				handlerWFG.PV_Ground_Initializer));
+	} else {
+		m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",handlerWFG.PV_Ground_Writer));
+	}
 	m_Ground_PV->setDescription("Ground State");
 	m_Ground_PV->setEnumeration(groundEnumeratorStrings);
 	m_Ground_PV->setScanType(scanType_t::passive, 0);
@@ -278,12 +407,12 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
-                                   switchOnFunction,
-                                   switchOffFunction,
+                                   handlerWFG.handlerSTM.switchOnFunction,
+								   handlerWFG.handlerSTM.switchOffFunction,
                                    std::bind(&WaveformGenerationImpl::onStart, this),
-                                   stopFunction,
-                                   recoverFunction,
-                                   allowStateChangeFunction));
+								   handlerWFG.handlerSTM.stopFunction,
+								   handlerWFG.handlerSTM.recoverFunction,
+								   handlerWFG.handlerSTM.allowStateChangeFunction));
     addChild(m_StateMachine);
 }
 
@@ -310,6 +439,15 @@ template<typename T>
 size_t WaveformGenerationImpl<T>::getMaxElements()
 {
     return m_Data_PV->getMaxElements();
+}
+
+template<typename T>
+T WaveformGenerationImpl<T>::getDataAWG()
+{
+	T data;
+	timespec timestamp;
+	m_DataAWG_PV->read(&timestamp, &data);
+    return data;
 }
 
 template<typename T>

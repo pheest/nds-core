@@ -80,6 +80,13 @@ private:
 	void PV_Firmware_Path_Writer(const timespec& timestamp, const std::string& value);
 
 	/**
+	 * @brief Initializer method to read the firmware path from the hardware at start-up time.
+	 * @param time Timestamp to indicate when the function is called.
+	 * @param path Path of the firmware that is loaded in the hardware.
+	 */
+	void PV_Firmware_Path_Initializer(timespec* time, std::string* path);
+
+	/**
 	 * @brief Function that emulates the changes of status of the Firmware node.
 	 *        It is launched by start_Firmware() in a separate thread.
 	 */

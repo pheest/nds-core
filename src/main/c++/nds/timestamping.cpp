@@ -61,6 +61,13 @@ Timestamping<T>::Timestamping(const std::string& name,
 {
 }
 
+template <typename T>
+Timestamping<T>::Timestamping(const std::string& name,
+		const TimestampingArgs_t& handlerTMS) :
+	 Node(std::shared_ptr<TimestampingImpl<T>>(new TimestampingImpl<T>(name, handlerTMS)))
+{
+}
+
 // -------------------- Functions common to all nodes ----------------------- //
 template <typename T>
 void Timestamping<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate)

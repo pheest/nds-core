@@ -48,6 +48,7 @@ public:
      */
     virtual std::shared_ptr<PortImpl> getPort();
 
+    void registerReporter(reporter_t reporter);
 
     void registerPV(std::shared_ptr<PVBaseImpl> pv);
 

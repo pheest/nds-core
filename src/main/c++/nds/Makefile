@@ -45,10 +45,10 @@ DBG_COV=
 else
 DBG_COV=-g --coverage
 endif
-STD=-std=c++0x
+STD=-std=c++11
 DEFS=-DNDS3_DLL -DNDS3_DLL_EXPORTS
 CFLAGS=-c -Wall -fPIC $(DBG_COV)
-CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread -fvisibility=hidden -fvisibility-inlines-hidden $(DEFS) $(DBG_COV)
+CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-hidden $(DEFS) $(DBG_COV)
 LDFLAGS= -shared $(DBG_COV)
 
 
@@ -67,6 +67,7 @@ $(SHAREDLIBRARY): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $(SHAREDLIBRARY)
 
 $(STATICLIBRARY): $(OBJECTS)
+	mkdir -p $(LIBRARY_DIR)
 	$(AR) rcs $@ $^
 
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(OBJECT_DIR)

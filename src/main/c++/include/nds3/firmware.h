@@ -21,9 +21,69 @@
 
 #include "nds3/definitions.h"
 #include "nds3/node.h"
+#include "nds3/stateMachine.h"
 
 namespace nds
 {
+
+/**
+ * @brief Type defined to gather the arguments required by @ref Firmware constructors.
+ * It can be used in auxiliary methods or additional nodes to simplify the number
+ * of arguments required.
+ */
+struct FirmwareArgs_t {
+
+	/**
+	 * @brief State Machine handler structure.
+	 * It contains all methods required by the state machine.
+	 * This is a compulsory field of the structure. @n
+	 * See @ref StateMachineArgs_t for further details.
+	 */
+	const StateMachineArgs_t handlerSTM;
+
+	/**
+	 * @brief Function to set the path of the new firmware file.
+	 * It sets the path to the firmware file to be loaded.
+	 * This is a compulsory field of the structure.
+	 */
+	const writerString_t PV_FirmwarePath_Writer;
+
+	/**
+	 * @brief Function to load the initial path of the firmware file.
+	 * It reads the path of the firmware file from the hardware and it
+	 * is loaded as initial value in its corresponding PV.
+	 * This is an optional field of the structure.
+	 */
+	readerString_t PV_FirmwarePath_Initializer;
+
+	/**
+	 * @brief Constructor to create an instance of the given structure.
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
+	 * @param stopFunction Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_FirmwarePath_Writer Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 */
+	FirmwareArgs_t(stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					writerString_t PV_FirmwarePath_Writer):
+			handlerSTM(	true, ///Asynchronous state transitions.
+						switchOnFunction,
+						switchOffFunction,
+						startFunction,
+						stopFunction,
+						recoverFunction,
+						allowStateChangeFunction),
+			PV_FirmwarePath_Writer(PV_FirmwarePath_Writer) {}
+};
+
 
 /**
  * This is a node that supplies a firmware support  with a few control
@@ -72,6 +132,16 @@ public:
 	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
 	writerString_t PV_FirmwarePath_Writer);  ///< Delegate function that performs the actions to set the firmware path
 
+    /**
+     * @brief Simplified constructor of the firmware node.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum number of elements to allocate vectors (if any).
+     * @param handlerFIRM Structure with the arguments required by the firmware node.
+     * See @ref FirmwareArgs_t for further details.
+     */
+    Firmware(const std::string& name,
+    			size_t maxElements,
+    			const FirmwareArgs_t& handlerFIRM);
 
     /**
      * @ingroup

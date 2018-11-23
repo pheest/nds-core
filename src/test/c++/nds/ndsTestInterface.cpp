@@ -253,6 +253,15 @@ void TestControlSystemInterfaceImpl::getPushedTimestamp(const std::string& pvNam
     return getPushedData(pvName, m_pushedTimestamp, pTime, pValue);
 }
 
+void TestControlSystemInterfaceImpl::registerReporter(reporter_t reporter_in)
+{
+  reporter=reporter_in;
+}
+void TestControlSystemInterfaceImpl::report(FILE* file , int details)
+{
+  reporter(file,details);
+}
+
 }
 
 }

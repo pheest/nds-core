@@ -294,6 +294,81 @@ private:
 	 */
 	void setTimestamp(const timespec&, const nds::timestamp_t&);
 
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LIST OF INITIALIZERS METHODS FOR ALL SUPPORTED TYPES
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @brief Method to be used at initialization time for the integer PV
+	 */
+	void initInt(timespec* timestamp, std::int32_t* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the double PV
+	 */
+	void initDouble(timespec* timestamp, double* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the booleans array PV
+	 */
+	void initBoolArray(timespec* timestamp, std::vector<bool>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the unsigned integers (8) array PV
+	 */
+	void initUInt8Array(timespec* timestamp, std::vector<std::uint8_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the unsigned integers (16) array PV
+	 */
+	void initUInt16Array(timespec* timestamp, std::vector<std::uint16_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the unsigned integers (32) array PV
+	 */
+	void initUInt32Array(timespec* timestamp, std::vector<std::uint32_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the integers (8) array PV
+	 */
+	void initInt8Array(timespec* timestamp, std::vector<std::int8_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the integers (16) array PV
+	 */
+	void initInt16Array(timespec* timestamp, std::vector<std::int16_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the integers (32) array PV
+	 */
+	void initInt32Array(timespec* timestamp, std::vector<std::int32_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the doubles array PV
+	 */
+	void initDoubleArray(timespec* timestamp, std::vector<double>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the string PV
+	 */
+	void initString(timespec* timestamp, std::string* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the timespec PV
+	 */
+	void initTimespec(timespec* timestamp, timespec* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the timespecs array PV
+	 */
+	void initTimespecArray(timespec* timestamp, std::vector<timespec>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the timestamp PV
+	 */
+	void initTimestamp(timespec* timestamp, nds::timestamp_t* value);
+
 };
 
 #endif // DEVICE_PVS_H_

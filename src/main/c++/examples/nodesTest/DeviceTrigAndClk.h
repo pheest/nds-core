@@ -1,5 +1,5 @@
-#ifndef DEVICEROUTING_H_
-#define DEVICEROUTING_H_
+#ifndef DeviceTrigAndClk_H_
+#define DeviceTrigAndClk_H_
 
 #include <memory>
 
@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class DeviceRouting
+class DeviceTrigAndClk
 {
 public:
 	/**
@@ -28,8 +28,8 @@ public:
 	 * @param device     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceRouting(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
-	~DeviceRouting();
+	DeviceTrigAndClk(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	~DeviceTrigAndClk();
 
 #ifndef EPICS
 	/**
@@ -44,10 +44,13 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceRouting* getInstance(const std::string& deviceName);
+	static DeviceTrigAndClk* getInstance(const std::string& deviceName);
 
 
 private:
+
+
+	nds::Routing<std::string> routingNode;
 
 	/**
 	 * @brief name of the device
@@ -59,7 +62,17 @@ private:
 	/**
 	 * @brief Routing node
 	 */
-	nds::Routing<std::string> m_Routing;
+	nds::TriggerAndClk<std::vector<timespec>> m_TriggerAndClk;
+
+	/**
+	 * Methods to control TrigAndClk state machine
+	 */
+	void switchOn_TrigAndClk();  ///< Called to switch on the Routing node.
+	void switchOff_TrigAndClk(); ///< Called to switch off the Routing node.
+	void start_TrigAndClk();     ///< Called to start the Routing node.
+	void stop_TrigAndClk();      ///< Called to stop the Routing node.
+	void recover_TrigAndClk();   ///< Called to recover the Routing node from a failure.
+  	bool allow_TrigAndClk_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
 
 	/**
 	 * Methods to control Routing state machine
@@ -75,6 +88,24 @@ private:
 	timespec getCurrentTime();
 
   	/**
+  	 * TriggerAndClk setters
+  	 */
+	void PV_SetSW_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_LoadTrigConf_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_ResetTrigConf_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_PLLSyncSET_Writer(const timespec& timestamp, const std::int32_t& value);
+	void PV_EnableDisablePLL_Writer(const timespec& timestamp, const std::int32_t& value);
+
+        /**
+         * TriggerAndClk initializers
+         */
+        void PV_SetSW_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_LoadTrigConf_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_ResetTrigConf_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_PLLSyncSET_Initializer(timespec* timestamp, std::int32_t* value);
+        void PV_EnableDisablePLL_Initializer(timespec* timestamp, std::int32_t* value);
+
+	/**
   	 * Routing setters
   	 */
   	void PV_Routing_ClkSet_Writer(const timespec& timestamp, const std::int32_t& value);
@@ -82,14 +113,6 @@ private:
   	void PV_Routing_TermSet_Writer(const timespec& timestamp, const std::int32_t& value);
   	void PV_Routing_TermDstRead_Writer(const timespec& timestamp, const std::int32_t& value);
 
-  	/**
-  	 * Routing initializers
-  	 */
-  	void PV_Routing_ClkSet_Initializer(timespec* timestamp, int32_t* value);
-  	void PV_Routing_ClkDstRead_Initializer(timespec* timestamp, int32_t* value);
-  	void PV_Routing_TermSet_Initializer(timespec* timestamp, int32_t* value);
-  	void PV_Routing_TermDstRead_Initializer(timespec* timestamp, int32_t* value);
-
 };
 
-#endif // DeviceRouting_H_
+#endif // DeviceTrigAndClk_H_

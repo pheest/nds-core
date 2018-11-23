@@ -21,7 +21,7 @@ of the distribution package.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.iter.codac.units</groupId>
-  <artifactId>nds3-sample</artifactId>
+  <artifactId>nds-sample</artifactId>
   <packaging>codac</packaging>
   <version>3.2.0.0</version>
   <name>NDSv3 Example Application</name>
@@ -37,7 +37,7 @@ of the distribution package.
   <parent>
     <groupId>org.iter.codac.units</groupId>
     <artifactId>maven-iter-settings</artifactId>
-    <version>5.4.0</version>
+    <version>6.0.0</version>
   </parent>
 
   <!-- unit owner and developers -->
@@ -95,7 +95,7 @@ of the distribution package.
             <package>
               <include type="library" name="nds3-dev-ndsex1" />
               <include type="library" name="nds3-exampleDrv" />
-              <requires codac="true">nds3-core</requires>
+              <requires codac="true">nds-core</requires>
             </package>
           </packaging>
         </configuration>

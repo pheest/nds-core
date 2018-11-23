@@ -46,6 +46,40 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
+	DataAcquisitionArgs_t handlerDAQ = DataAcquisitionArgs_t(switchOnFunction,
+															 switchOffFunction,
+															 startFunction,
+															 stopFunction,
+															 recoverFunction,
+															 allowStateChangeFunction,
+															 PV_Gain_Writer,
+															 PV_Offset_Writer,
+															 PV_Bandwidth_Writer,
+															 PV_Resolution_Writer,
+															 PV_Impedance_Writer,
+															 PV_Coupling_Writer,
+															 PV_SignalRefType_Writer,
+															 PV_Ground_Writer,
+															 PV_DMAEnable_Writer,
+															 PV_SamplingRate_Writer
+															);
+	constructorBody(maxElements, handlerDAQ);
+}
+
+template<typename T>
+DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
+											size_t maxElements,
+											const DataAcquisitionArgs_t& handlerDAQ):
+	NodeImpl(name, nodeType_t::dataSourceChannel),
+	m_OnStartDelegate(handlerDAQ.handlerSTM.startFunction),
+	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
+{
+	constructorBody(maxElements, handlerDAQ);
+}
+
+template<typename T>
+inline void DataAcquisitionImpl<T>::constructorBody(size_t maxElements, const DataAcquisitionArgs_t& handlerDAQ){
+
     // Add the children PVs
     m_Data_PV.reset(new PVVariableInImpl<T>("Data"));
     m_Data_PV->setMaxElements(maxElements);
@@ -56,7 +90,7 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_Decimation_PV.reset(new PVVariableOutImpl<std::int32_t>("Decimation"));
     m_Decimation_PV->setDescription("Decimation");
     m_Decimation_PV->setScanType(scanType_t::passive, 0);
-    m_Decimation_PV->write(getTimestamp(),(std::int32_t)1);
+    m_Decimation_PV->write(getTimestamp(), handlerDAQ.m_Decimation_Init);
     addChild(m_Decimation_PV);
 
     //add enumeration for Decimation type
@@ -68,9 +102,16 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     m_DecimationType_PV->setDescription("block or sample");
     m_DecimationType_PV->setScanType(scanType_t::passive, 0);
     m_DecimationType_PV->setEnumeration(DecTypeEnumeratorStrings);
+    m_DecimationType_PV->write(getTimestamp(), handlerDAQ.m_DecimationType_Init);
 	addChild(m_DecimationType_PV);
 
-    m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",PV_Gain_Writer));
+	if (handlerDAQ.PV_Gain_Initializer) {
+		m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",
+												      handlerDAQ.PV_Gain_Writer,
+													  handlerDAQ.PV_Gain_Initializer));
+	} else {
+		m_Gain_PV.reset(new PVDelegateOutImpl<double>("Gain",handlerDAQ.PV_Gain_Writer));
+	}
     m_Gain_PV->setDescription("Gain of the Channel");
     m_Gain_PV->setScanType(scanType_t::passive, 0);
     addChild(m_Gain_PV);
@@ -80,7 +121,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Gain_RBVPV-> setScanType(scanType_t::interrupt,0);
 	addChild(m_Gain_RBVPV);
 
-	m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",PV_Offset_Writer));
+	if (handlerDAQ.PV_Offset_Initializer) {
+		m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",
+														handlerDAQ.PV_Offset_Writer,
+														handlerDAQ.PV_Offset_Initializer));
+	} else {
+		m_Offset_PV.reset(new PVDelegateOutImpl<double>("Offset",handlerDAQ.PV_Offset_Writer));
+	}
 	m_Offset_PV->setDescription("Offset");
     m_Offset_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Offset_PV);
@@ -90,7 +137,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Offset_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Offset_RBVPV);
 
-	m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",PV_Bandwidth_Writer));
+	if (handlerDAQ.PV_Bandwidth_Initializer) {
+		m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",
+														   handlerDAQ.PV_Bandwidth_Writer,
+														   handlerDAQ.PV_Bandwidth_Initializer));
+	} else {
+		m_Bandwidth_PV.reset(new PVDelegateOutImpl<double>("BandWidth",handlerDAQ.PV_Bandwidth_Writer));
+	}
 	m_Bandwidth_PV->setDescription("BandWidth");
     m_Bandwidth_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Bandwidth_PV);
@@ -101,7 +154,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	addChild(m_Bandwidth_RBVPV);
 
 
-	m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",PV_Resolution_Writer));
+	if (handlerDAQ.PV_Resolution_Initializer) {
+		m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",
+															handlerDAQ.PV_Resolution_Writer,
+															handlerDAQ.PV_Resolution_Initializer));
+	} else {
+		m_Resolution_PV.reset(new PVDelegateOutImpl<double>("Resolution",handlerDAQ.PV_Resolution_Writer));
+	}
 	m_Resolution_PV->setDescription("Number of Bits per Sample");
     m_Resolution_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Resolution_PV);
@@ -111,12 +170,18 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_Resolution_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Resolution_RBVPV);
 
-	m_Impedance_PV.reset(new PVDelegateOutImpl<std::int32_t>("Impedance",PV_Impedance_Writer));
+	if (handlerDAQ.PV_Impedance_Initializer) {
+		m_Impedance_PV.reset(new PVDelegateOutImpl<double>("Impedance",
+																 handlerDAQ.PV_Impedance_Writer,
+																 handlerDAQ.PV_Impedance_Initializer));
+	} else {
+		m_Impedance_PV.reset(new PVDelegateOutImpl<double>("Impedance",handlerDAQ.PV_Impedance_Writer));
+	}
 	m_Impedance_PV->setDescription("Impedance");
     m_Impedance_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_Impedance_PV);
 
-	m_Impedance_RBVPV.reset(new PVVariableInImpl<std::int32_t>("Impedance_RBV"));
+	m_Impedance_RBVPV.reset(new PVVariableInImpl<double>("Impedance_RBV"));
 	m_Impedance_RBVPV->setDescription("Impedance ReadBack");
 	m_Impedance_RBVPV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_Impedance_RBVPV);
@@ -126,7 +191,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     CouplingEnumeratorStrings.push_back("AC");
     CouplingEnumeratorStrings.push_back("DC");
 
-	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",PV_Coupling_Writer));
+    if (handlerDAQ.PV_Coupling_Initializer) {
+    	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",
+    															handlerDAQ.PV_Coupling_Writer,
+																handlerDAQ.PV_Coupling_Initializer));
+    } else {
+    	m_Coupling_PV.reset(new PVDelegateOutImpl<std::int32_t>("Coupling",handlerDAQ.PV_Coupling_Writer));
+    }
 	m_Coupling_PV->setDescription("AC or DC");
     m_Coupling_PV->setScanType(scanType_t::passive, 0);
 	m_Coupling_PV->setEnumeration(CouplingEnumeratorStrings);
@@ -143,7 +214,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     SignalRefTypeEnumeratorStrings.push_back("SingleEnded");
     SignalRefTypeEnumeratorStrings.push_back("Differential");
 
-	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",PV_SignalRefType_Writer));
+    if (handlerDAQ.PV_SignalRefType_Initializer) {
+    	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",
+    																 handlerDAQ.PV_SignalRefType_Writer,
+																	 handlerDAQ.PV_SignalRefType_Initializer));
+    } else {
+    	m_SignalRefType_PV.reset(new PVDelegateOutImpl<std::int32_t>("SignalRefType",handlerDAQ.PV_SignalRefType_Writer));
+    }
 	m_SignalRefType_PV->setDescription("Differential or Single Ended");
     m_SignalRefType_PV->setScanType(scanType_t::passive, 0);
 	m_SignalRefType_PV->setEnumeration(SignalRefTypeEnumeratorStrings);
@@ -161,7 +238,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
     groundEnumeratorStrings.push_back("On");
     groundEnumeratorStrings.push_back("Off");
 
-    m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",PV_Ground_Writer));
+    if (handlerDAQ.PV_Ground_Initializer) {
+    	m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",
+    														  handlerDAQ.PV_Ground_Writer,
+															  handlerDAQ.PV_Ground_Initializer));
+    } else {
+    	m_Ground_PV.reset(new PVDelegateOutImpl<std::int32_t>("Ground",handlerDAQ.PV_Ground_Writer));
+    }
     m_Ground_PV->setDescription("Ground State");
     m_Ground_PV->setScanType(scanType_t::passive, 0);
     m_Ground_PV->setEnumeration(groundEnumeratorStrings);
@@ -183,7 +266,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_DMABufferSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMABufferSize_PV);
 
-	m_DMAEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("DMAEnable",PV_DMAEnable_Writer));
+	if (handlerDAQ.PV_DMAEnable_Initializer) {
+		m_DMAEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("DMAEnable",
+																 handlerDAQ.PV_DMAEnable_Writer,
+																 handlerDAQ.PV_DMAEnable_Initializer));
+	} else {
+		m_DMAEnable_PV.reset(new PVDelegateOutImpl<std::int32_t>("DMAEnable",handlerDAQ.PV_DMAEnable_Writer));
+	}
 	m_DMAEnable_PV->setDescription("Enable DMA");
 	m_DMAEnable_PV->setScanType(scanType_t::passive, 0);
 	addChild(m_DMAEnable_PV);
@@ -208,7 +297,13 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 	m_DMASampleSize_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_DMASampleSize_PV);
 
-	m_SamplingRate_PV.reset(new PVDelegateOutImpl<double>("SamplingRate",PV_SamplingRate_Writer));
+	if (handlerDAQ.PV_SamplingRate_Initializer) {
+		m_SamplingRate_PV.reset(new PVDelegateOutImpl<double>("SamplingRate",
+															  handlerDAQ.PV_SamplingRate_Writer,
+															  handlerDAQ.PV_SamplingRate_Initializer));
+	} else {
+		m_SamplingRate_PV.reset(new PVDelegateOutImpl<double>("SamplingRate",handlerDAQ.PV_SamplingRate_Writer));
+	}
 	m_SamplingRate_PV->setDescription("Sampling Rate");
 	m_SamplingRate_PV->setScanType(scanType_t::interrupt, 0);
 	addChild(m_SamplingRate_PV);
@@ -220,12 +315,12 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 
     // Add state machine
     m_StateMachine.reset(new StateMachineImpl(true,
-                                   switchOnFunction,
-                                   switchOffFunction,
+                                   handlerDAQ.handlerSTM.switchOnFunction,
+								   handlerDAQ.handlerSTM.switchOffFunction,
                                    std::bind(&DataAcquisitionImpl::onStart, this),
-                                   stopFunction,
-                                   recoverFunction,
-                                   allowStateChangeFunction));
+								   handlerDAQ.handlerSTM.stopFunction,
+								   handlerDAQ.handlerSTM.recoverFunction,
+								   handlerDAQ.handlerSTM.allowStateChangeFunction));
     addChild(m_StateMachine);
 }
 
@@ -266,12 +361,12 @@ double DataAcquisitionImpl<T>::getResolution()
 }
 
 template<typename T>
-int32_t DataAcquisitionImpl<T>::getImpedance()
+double DataAcquisitionImpl<T>::getImpedance()
 {
-	std::int32_t Impedance;
+	double Impedance;
     timespec timestamp;
     m_Impedance_RBVPV->read(&timestamp, &Impedance);
-    return (std::int32_t)Impedance;
+    return Impedance;
 }
 
 template<typename T>
@@ -408,7 +503,7 @@ void DataAcquisitionImpl<T>::setResolution(const timespec& timestamp, const doub
 }
 
 template<typename T>
-void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const std::int32_t& value)
+void DataAcquisitionImpl<T>::setImpedance(const timespec& timestamp, const double& value)
 {
 	m_Impedance_RBVPV->setValue(timestamp, value);
 	m_Impedance_RBVPV->push(timestamp, value);

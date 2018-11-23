@@ -3,8 +3,28 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+
+/**
+ * @brief Internal function to test all constructors included in the StateMachine node.
+ * @param structuredConstructor Flag to set to @c true when the constructor that
+ * receives a structure shall be tested.
+ * As the constructor used for the @ref StateMachine node is the only difference between
+ * stateMachine and stateMachineStructure test, this function shares the full test
+ * and the constructor used depends on the @a structuredConstructor flag.
+ */
+static void commonPVsTest(const bool structuredConstructor = false);
+
 TEST(testDeviceStateMachine, stateMachine)
 {
+	commonPVsTest();
+}
+
+TEST(testDeviceStateMachine, stateMachineStructure)
+{
+	commonPVsTest(true);
+}
+
+static void commonPVsTest(const bool structuredConstructor) {
 	const timespec* pStateMachineStateMachineSwitchTime;
 	const std::int32_t* pStateMachineStateMachineState;
 	timespec timestamp = {0, 0};
@@ -12,8 +32,12 @@ TEST(testDeviceStateMachine, stateMachine)
     //Create factory
     nds::Factory factory("test");
 
+    nds::namedParameters_t parameters;
+    if (structuredConstructor) {
+  	  parameters["INIT"]="YES";
+    }
     // Create test device of type deviceStateMachine and name it deviceStateMachine
-    factory.createDevice("DeviceStateMachine", "deviceStateMachine", nds::namedParameters_t());
+    factory.createDevice("DeviceStateMachine", "deviceStateMachine", parameters);
 
     //Get instance of the Test Control System
     nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("deviceStateMachine");
@@ -70,6 +94,10 @@ TEST(testDeviceStateMachine, stateMachine)
 
     // Destroy test device
     factory.destroyDevice("deviceStateMachine");
+
+    if (structuredConstructor) {
+  	  std::cout<<"\t(Constructor that receives a structure tested)" <<std::endl;
+    }
 
 }
 

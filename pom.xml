@@ -21,9 +21,9 @@ of the distribution package.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.iter.codac.units</groupId>
-  <artifactId>nds3-core</artifactId>
+  <artifactId>nds-core</artifactId>
   <packaging>codac</packaging>
-  <version>3.2.0.0</version>
+  <version>3.2.2.0</version>
   <name>CODAC Core System NDS-Core (v3) module</name>
   <description>NDS (Nominal Device Support) is a library that allows to write
     device support, hiding control system details and focusing on device functionalities.</description>
@@ -38,7 +38,7 @@ of the distribution package.
   <parent>
     <groupId>org.iter.codac.units</groupId>
     <artifactId>maven-iter-settings</artifactId>
-    <version>5.4.0</version>
+    <version>6.0.0</version>
   </parent>
 
   <!-- unit owner and developers -->
@@ -93,7 +93,6 @@ of the distribution package.
         <extensions>true</extensions>
         <configuration>
           <packaging>
-
             <package>
               <include type="library" name="nds3" />
             </package>
@@ -105,9 +104,9 @@ of the distribution package.
 
             <package name="impl-devel">
               <include type="file" source="main/c++/include/nds3/impl" target="include/nds3/" />
-              <requires codac="true">nds3-core-devel</requires>
+              <requires codac="true">nds-core-devel</requires>
             </package>
-            <package name ="testdevices-nds-epics">
+            <package name="testdevices-nds-epics">
               <include type="library" name="nds3-DeviceDBL" />
               <include type="library" name="nds3-DeviceDigitalIO" />
               <include type="library" name="nds3-DeviceFirmware" />
@@ -120,14 +119,18 @@ of the distribution package.
               <include type="library" name="nds3-DeviceTimestamping" />
               <include type="library" name="nds3-DevicePVs" />
               <include type="library" name="nds3-DeviceVectorI32" />
-              <include type="library" name="nds3-DeviceVectorI8" />
-              <include type="library" name="nds3-DeviceVectorUI8" />
-              <include type="library" name="nds3-DeviceVectorDBL" />
-
-              <requires codac="true">nds3-core-devel</requires>
+              <include type="library" name="nds3-DeviceVectorI8"  />
+              <include type="library" name="nds3-DeviceVectorUI8"  />
+              <include type="library" name="nds3-DeviceVectorDBL"  /> 
+              <include type="library" name="nds3-DeviceTrigAndClk"  />
+              <include type="library" name="nds3-DeviceReporterAndParser"  />
+	   
+              <requires codac="true">nds-core-devel</requires> 
             </package>
 
-            <package name="doc">
+
+
+              <package name="doc">
               <include type="doxygen" name="NDS3" project="${project.name}" version="${project.version}" optimize="c">
                 <filepattern>*.dox</filepattern>
                 <filepattern>*.h</filepattern>
@@ -166,14 +169,14 @@ of the distribution package.
                 </properties>
               </include>
             </package>
-            <package unitPrefix="false" name="nds3-core-examples">
+            <package unitPrefix="false" name="nds-core-examples">
               <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
               <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
               <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
-              <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include"/>
-              <include type="source" source="src/test/c++/ndsex1" target="examples/nds3/src/test/c++/ndsex1"/>
-              <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile"/>
-              <requires codac="true">nds3-core-devel</requires>
+              <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include" />
+              <include type="source" source="src/test/c++/ndsex1" target="examples/nds3/src/test/c++/ndsex1" />
+              <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile" />
+              <requires codac="true">nds-core-devel</requires>
             </package>
           </packaging>
         </configuration>

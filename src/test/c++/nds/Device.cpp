@@ -400,7 +400,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    std::string rootNodeFullExternalName = rootNode.getFullExternalName();
 	    std::string rootNodeFullName = rootNode.getFullName();
 	    std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
-	    timespec rootNodetime = rootNode.getTimestamp();
+	    //timespec rootNodetime = rootNode.getTimestamp();
 	    //    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
 	    //
 	    //    std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;

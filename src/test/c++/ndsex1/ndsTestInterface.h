@@ -62,11 +62,17 @@ public:
     void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue);
     void getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue);
 
+    virtual void registerReporter(reporter_t reporter);
+    virtual void report(FILE* file , int details);
+
 private:
+
     const std::string m_name;
 
     typedef std::map<std::string, PVBaseImpl*> registeredPVs_t;
     registeredPVs_t m_registeredPVs;
+
+    reporter_t reporter;
 
     template <typename T>
     class PushedValues

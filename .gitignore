@@ -8,6 +8,7 @@
 *.zip
 *.autosave
 *.save
+doxygen.tag
 /target/
 QtC-*
 .settings/

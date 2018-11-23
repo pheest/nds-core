@@ -49,6 +49,7 @@
 #include "nds3/FFT.h"
 #include "nds3/Decimation.h"
 #include "nds3/FTE.h"
+#include "nds3/triggerAndClk.h"
 #include "nds3/triggering.h"
 #include "nds3/routing.h"
 

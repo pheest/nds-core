@@ -3,6 +3,28 @@
 #include "../include/ndsTestInterface.h"
 #include "../include/ndsTestFactory.h"
 
+/**
+ * @brief Internal function to test the ClockSet-PVs included in the Routing node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testClockSet and testClockSetInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonClkSetPVsTest(const bool testInitializers = false);
+
+/**
+ * @brief Internal function to test the Terminal Set-PVs included in the Routing node.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testTermSet and testTermSetInit test, this function shares the full test
+ * and the evaluation or not of the initialization features depends on the
+ * @a testInitializers flag.
+ */
+static void commonTermSetPVsTest(const bool testInitializers = false);
+
 TEST(testRouting, testStateMachineRouting)
 {
     const timespec* pStateMachineSwitchTime;
@@ -60,20 +82,84 @@ TEST(testRouting, testStateMachineRouting)
 }
 
 
-
 TEST(testRouting, testClockSet)
 {
+	commonClkSetPVsTest();
+}
 
-//	const timespec* pStateMachineSwitchTime;
-//	const std::int32_t* pStateMachineState;
+TEST(testRouting, testClockSetInit)
+{
+	commonClkSetPVsTest(true);
+}
+
+static void commonClkSetPVsTest(const bool testInitializers)
+{
 
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceRouting", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceRouting", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ClkSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkDstRead", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ClkDstRead = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermDstRead", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 3, initialInt32Value);
+		std::cout<<"\tInitial TermDstRead = "<< initialInt32Value <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkSrc", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		std::cout<<"\tInitial ClkSrc = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkDst", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -2, initialInt32Value);
+		std::cout<<"\tInitial ClkDst = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSrc", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -3, initialInt32Value);
+		std::cout<<"\tInitial TermSrc = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermDst", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -4, initialInt32Value);
+		std::cout<<"\tInitial TermDst = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSyncSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermSyncSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermInvertSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermInvertSet = "<< initialInt32Value <<std::endl;
+	}
+
 
 	// Set the start time
 	/////////////////////
@@ -159,16 +245,81 @@ TEST(testRouting, testClockSet)
 
 TEST(testRouting, testTermSet)
 {
+	commonTermSetPVsTest();
+}
 
-//	const timespec* pStateMachineSwitchTime;
-//	const std::int32_t* pStateMachineState;
+TEST(testRouting, testTermSetInit)
+{
+	commonTermSetPVsTest(true);
+}
+
+static void commonTermSetPVsTest(const bool testInitializers)
+{
+
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
 
-	factory.createDevice("DeviceRouting", "rootNode", nds::namedParameters_t());
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+	factory.createDevice("DeviceRouting", "rootNode", parameters);
 
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+
+	if (testInitializers) {
+
+		std::int32_t initialInt32Value;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ClkSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkDstRead", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial ClkDstRead = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermDstRead", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 3, initialInt32Value);
+		std::cout<<"\tInitial TermDstRead = "<< initialInt32Value <<std::endl;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkSrc", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -1, initialInt32Value);
+		std::cout<<"\tInitial ClkSrc = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.ClkDst", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -2, initialInt32Value);
+		std::cout<<"\tInitial ClkDst = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSrc", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -3, initialInt32Value);
+		std::cout<<"\tInitial TermSrc = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermDst", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) -4, initialInt32Value);
+		std::cout<<"\tInitial TermDst = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermSyncSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermSyncSet = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-RoutingNode.TermInvertSet", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial TermInvertSet = "<< initialInt32Value <<std::endl;
+	}
 
 	// Set the start time
 	/////////////////////
