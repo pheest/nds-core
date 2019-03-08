@@ -48,6 +48,11 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, std::int32_t* /* pValue */) 
     throw;
 }
 
+void PVBaseInImpl::read(timespec* /* pTimestamp */, float* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseInImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
 {
     throw;
@@ -96,6 +101,11 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int16_t>* /
 }
 
 void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* pValue */) const
+{
+    throw;
+}
+
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<float>* /* pValue */) const
 {
     throw;
 }
@@ -270,6 +280,7 @@ std::string PVBaseInImpl::buildFullExternalName(const FactoryBaseImpl& controlSy
 
 
 template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&);
+template void PVBaseInImpl::push<float>(const timespec&, const float&);
 template void PVBaseInImpl::push<double>(const timespec&, const double&);
 template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&);
 template void PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&);
@@ -278,6 +289,7 @@ template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, c
 template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&);
 template void PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&);
 template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&);
+template void PVBaseInImpl::push<std::vector<float> >(const timespec&, const std::vector<float>&);
 template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&);
 template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&);
 template void PVBaseInImpl::push<timespec >(const timespec&, const timespec&);

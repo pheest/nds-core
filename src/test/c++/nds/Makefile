@@ -29,7 +29,7 @@ EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
 VPATH =$(EXAMPLESDIR)
 
 
-INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR)
+INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR) -I../include
 LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 

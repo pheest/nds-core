@@ -38,6 +38,11 @@ void PVBaseImpl::read(timespec* /* pTimestamp */, std::int32_t* /* pValue */) co
     throw;
 }
 
+void PVBaseImpl::read(timespec* /* pTimestamp */, float* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
 {
     throw;
@@ -82,6 +87,11 @@ void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /* 
     throw;
 }
 
+void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<float>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseImpl::read(timespec* /* pTimestamp */, std::vector<double>* /* pValue */) const
 {
     throw;
@@ -109,6 +119,11 @@ void PVBaseImpl::read(timespec* /* pTimestamp */, timestamp_t* /* pValue */) con
  *
  **************************************************/
 void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::int32_t& /* value */)
+{
+    throw;
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const float& /* value */)
 {
     throw;
 }
@@ -153,6 +168,11 @@ void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::
 }
 
 void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int32_t>& /* value */)
+{
+    throw;
+}
+
+void PVBaseImpl::write(const timespec& /* pTimestamp */, const std::vector<float>& /* value */)
 {
     throw;
 }

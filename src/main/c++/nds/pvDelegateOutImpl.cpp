@@ -90,6 +90,7 @@ void PVDelegateOutImpl<T>::dontInitialize(timespec*, T*)
 // Instantiate all the needed data types
 ////////////////////////////////////////
 template class PVDelegateOutImpl<std::int32_t>;
+template class PVDelegateOutImpl<float>;
 template class PVDelegateOutImpl<double>;
 template class PVDelegateOutImpl<std::vector<bool> >;
 template class PVDelegateOutImpl<std::vector<std::uint8_t> >;
@@ -98,6 +99,7 @@ template class PVDelegateOutImpl<std::vector<std::uint32_t> >;
 template class PVDelegateOutImpl<std::vector<std::int8_t> >;
 template class PVDelegateOutImpl<std::vector<std::int16_t> >;
 template class PVDelegateOutImpl<std::vector<std::int32_t> >;
+template class PVDelegateOutImpl<std::vector<float> >;
 template class PVDelegateOutImpl<std::vector<double> >;
 template class PVDelegateOutImpl<std::string>;
 template class PVDelegateOutImpl<timespec>;

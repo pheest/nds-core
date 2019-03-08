@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include <ndsex1/ndsex1.h>
-#include "../include/ndsTestInterface.h"
+#include "ndsTestInterface.h"
 
 
 TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
