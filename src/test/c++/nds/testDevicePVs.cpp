@@ -127,11 +127,11 @@ static void commonPVsTest(const bool testInitializers) {
     	pInterface->readCSValue("/devicePVs-UInt8Array", &timestamp, &uInt8ArrayValues);
 		EXPECT_EQ((bool) true, (uInt8ArrayDataInit == uInt8ArrayValues) );
 
-    	pInterface->readCSValue("/devicePVs-UInt16Array", &timestamp, &uInt16ArrayDataInit);
-		EXPECT_EQ((bool) true, (uInt16ArrayDataInit == uInt16ArrayDataInit) );
+    	pInterface->readCSValue("/devicePVs-UInt16Array", &timestamp, &uInt16ArrayValues);
+		EXPECT_EQ((bool) true, (uInt16ArrayDataInit == uInt16ArrayValues) );
 
-    	pInterface->readCSValue("/devicePVs-UInt32Array", &timestamp, &uInt32ArrayDataInit);
-		EXPECT_EQ((bool) true, (uInt32ArrayDataInit == uInt32ArrayDataInit) );
+    	pInterface->readCSValue("/devicePVs-UInt32Array", &timestamp, &uInt32ArrayValues);
+		EXPECT_EQ((bool) true, (uInt32ArrayDataInit == uInt32ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-Int8Array", &timestamp, &int8ArrayValues);
 		EXPECT_EQ((bool) true, (int8ArrayDataInit == int8ArrayValues) );
@@ -140,10 +140,10 @@ static void commonPVsTest(const bool testInitializers) {
 		EXPECT_EQ((bool) true, (int16ArrayDataInit == int16ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-Int32Array", &timestamp, &int32ArrayValues);
-		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayDataInit) );
+		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-DoubleArray", &timestamp, &doubleArrayValues);
-		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayDataInit) );
+		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-String", &timestamp, &stringValue);
 		EXPECT_EQ(stringDataInit, stringValue);
