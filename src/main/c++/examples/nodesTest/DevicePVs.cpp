@@ -29,7 +29,8 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_string_PV(nds::PVDelegateOut<std::string>("String", std::bind(&DevicePVs::setString, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timespec_PV(nds::PVDelegateOut<timespec>("Timespec", std::bind(&DevicePVs::setTimespec, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timespecArray_PV(nds::PVDelegateOut<std::vector<timespec>>("TimespecArray", std::bind(&DevicePVs::setTimespecArray, this, std::placeholders::_1, std::placeholders::_2))),
-						m_timestamp_PV(nds::PVDelegateOut<nds::timestamp_t>("Timestamp", std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2)))
+						m_timestamp_PV(nds::PVDelegateOut<nds::timestamp_t>("Timestamp", std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2))),
+						m_dataSharingHandler_PV(nds::PVDelegateOut<std::int32_t>("ShareData", std::bind(&DevicePVs::increaseDataSouce, this, std::placeholders::_1, std::placeholders::_2)))
 	{
 
 	//Verify that there is no devices of this type with the same name
@@ -104,6 +105,11 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 		m_timestamp_PV = nds::PVDelegateOut<nds::timestamp_t>("Timestamp",
 				std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DevicePVs::initTimestamp, this, std::placeholders::_1, std::placeholders::_2));
+
+		m_dataSharingHandler_PV = nds::PVDelegateOut<std::int32_t>("ShareData",
+                                std::bind(&DevicePVs::increaseDataSouce, this, std::placeholders::_1, std::placeholders::_2),
+                                std::bind(&DevicePVs::initHandler, this, std::placeholders::_1, std::placeholders::_2));
+
 	}
 
 	//Add the children PVs
@@ -259,6 +265,42 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_timestamp_RBVPV.setMaxElements(4);
 
 
+	//Pvs for testing data subscription and replication
+
+        rootNode.addChild(m_dataSharingHandler_PV);
+        m_dataSharingHandler_PV.setDescription("Increase selected source PV");
+        m_dataSharingHandler_PV.setScanType(nds::scanType_t::passive);
+
+	m_sourceInt_PV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("SourceInt"));
+	m_sourceInt_PV.setDescription("Input PV to send integer data");
+	m_sourceInt_PV.setScanType(nds::scanType_t::interrupt);
+	m_sourceInt_PV.processAtInit(true);
+
+        m_sourceDouble_PV = rootNode.addChild(nds::PVVariableIn<double>("SourceDouble"));
+        m_sourceDouble_PV.setDescription("Input PV to send double data");
+        m_sourceDouble_PV.setScanType(nds::scanType_t::interrupt);
+        m_sourceDouble_PV.processAtInit(true);
+
+        m_targetReplicationInt_PV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("ReplicatedInt"));
+        m_targetReplicationInt_PV.setDescription("Input PV to receive integer data");
+        m_targetReplicationInt_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetReplicationInt_PV.processAtInit(true);
+
+        m_targetReplicationDouble_PV = rootNode.addChild(nds::PVVariableIn<double>("ReplicatedDouble"));
+        m_targetReplicationDouble_PV.setDescription("Input PV to receive double data");
+        m_targetReplicationDouble_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetReplicationDouble_PV.processAtInit(true);
+
+        m_targetSubscriptionInt_PV = rootNode.addChild(nds::PVVariableOut<std::int32_t>("SubscribedInt"));
+        m_targetSubscriptionInt_PV.setDescription("Output PV to receive integer data");
+        m_targetSubscriptionInt_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetSubscriptionInt_PV.processAtInit(true);
+
+        m_targetSubscriptionDouble_PV = rootNode.addChild(nds::PVVariableOut<double>("SubscribedDouble"));
+        m_targetSubscriptionDouble_PV.setDescription("Output PV to receive double data");
+        m_targetSubscriptionDouble_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetSubscriptionDouble_PV.processAtInit(true);
+
 	// We have declared all the nodes and PVs in our Device: now we register them
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +310,6 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	rootNode.setLogLevel(nds::logLevel_t::debug);
 	rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The DevicePVs is created" << std::endl;
 	ndsDebugStream(rootNode) << "This is the ndsDebugStream: The DevicePVs named " << rootNode.getFullName() << " is created" << std::endl;
-
 
 	initializePVs();
 
@@ -353,6 +394,56 @@ void DevicePVs::initializePVs(void){
 	timestamp = {NDS_EPOCH, ns++};
 	setTimestamp(timestamp, timestampData);
 
+        timestamp = {NDS_EPOCH, ns++};
+        std::int32_t sourceInt = -1;
+        m_sourceInt_PV.setValue(timestamp, sourceInt);
+        m_sourceInt_PV.push(timestamp, sourceInt);
+
+        double sourceDouble = -1.1;
+        timestamp = {NDS_EPOCH, ns++};
+        m_sourceDouble_PV.setValue(timestamp, sourceDouble);
+        m_sourceDouble_PV.push(timestamp, sourceDouble);
+
+        timestamp = {NDS_EPOCH, ns++};
+        std::int32_t replicatedInt = -2;
+        m_targetReplicationInt_PV.setValue(timestamp, replicatedInt);
+        m_targetReplicationInt_PV.push(timestamp, replicatedInt);
+
+        double replicatedDouble = -2.2;
+        timestamp = {NDS_EPOCH, ns++};
+        m_targetReplicationDouble_PV.setValue(timestamp, replicatedDouble);
+        m_targetReplicationDouble_PV.push(timestamp, replicatedDouble);
+
+        timestamp = {NDS_EPOCH, ns++};
+        std::int32_t subscribedInt = -3;
+        m_targetSubscriptionInt_PV.write(timestamp, subscribedInt);
+
+        double subscribedDouble = -3.3;
+        timestamp = {NDS_EPOCH, ns++};
+        m_targetSubscriptionDouble_PV.write(timestamp, subscribedDouble);
+
+}
+
+void DevicePVs::increaseDataSouce(const timespec& timestamp, const std::int32_t& data) {
+  timespec time;
+  switch (data) {
+    case 0:
+      std::int32_t sourceInt;
+      m_sourceInt_PV .read(&time, &sourceInt);
+      sourceInt++;
+      m_sourceInt_PV.setValue(timestamp, sourceInt);
+      m_sourceInt_PV.push(timestamp, sourceInt);
+      break;
+    case 1:
+      double sourceDouble;
+      m_sourceDouble_PV.read(&time, &sourceDouble);
+      sourceDouble++;
+      m_sourceDouble_PV.setValue(timestamp, sourceDouble);
+      m_sourceDouble_PV.push(timestamp, sourceDouble);
+      break;
+    default:
+      break;
+  }
 }
 
 void DevicePVs::setInt(const timespec& timestamp, const std::int32_t& data){
@@ -502,6 +593,11 @@ void DevicePVs::initTimespecArray(timespec* timestamp,
 void DevicePVs::initTimestamp(timespec* timestamp, nds::timestamp_t* value) {
 	*timestamp = {NDS_EPOCH, 120};
 	*value = {{123, 456}, 0, false};
+}
+
+void DevicePVs::initHandler(timespec* timestamp, std::int32_t* value) {
+        *timestamp = {NDS_EPOCH, 130};
+        *value = 0;
 }
 
 #ifdef EPICS
