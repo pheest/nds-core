@@ -123,7 +123,7 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, timestamp_t* /* pValue */) c
 }
 
 template<typename T>
-void PVBaseInImpl::push(const timespec& timestamp, const T& value)
+void PVBaseInImpl::push(const timespec& timestamp, const T& value, const statusPV_t& status)
 {
     // Find the port then push the value
     ////////////////////////////////////
@@ -131,7 +131,7 @@ void PVBaseInImpl::push(const timespec& timestamp, const T& value)
     if(--m_decimationCount == 0) // push can only happen from one thread. No sync needed
     {
         m_decimationCount = m_decimationFactor;
-        pPort->push(std::static_pointer_cast<PVBaseImpl>(shared_from_this()), timestamp, value);
+        pPort->push(std::static_pointer_cast<PVBaseImpl>(shared_from_this()), timestamp, value, status);
     }
 
     // Push the value to the outputs (subscription) and inputs (replication)
@@ -149,7 +149,7 @@ void PVBaseInImpl::push(const timespec& timestamp, const T& value)
         scanInputs != endInputs;
         ++scanInputs)
     {
-        (*scanInputs)->push(timestamp, value);
+        (*scanInputs)->push(timestamp, value, status);
     }
 }
 
@@ -269,20 +269,20 @@ std::string PVBaseInImpl::buildFullExternalName(const FactoryBaseImpl& controlSy
 }
 
 
-template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&);
-template void PVBaseInImpl::push<double>(const timespec&, const double&);
-template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&);
-template void PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&);
-template void PVBaseInImpl::push<std::vector<std::uint16_t> >(const timespec&, const std::vector<std::uint16_t>&);
-template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, const std::vector<std::uint32_t>&);
-template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&);
-template void PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&);
-template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&);
-template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&);
-template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&);
-template void PVBaseInImpl::push<timespec >(const timespec&, const timespec&);
-template void PVBaseInImpl::push<std::vector<timespec> >(const timespec&, const std::vector<timespec>&);
-template void PVBaseInImpl::push<timestamp_t>(const timespec&, const timestamp_t&);
+template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&, const statusPV_t&);
+template void PVBaseInImpl::push<double>(const timespec&, const double&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::uint16_t> >(const timespec&, const std::vector<std::uint16_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, const std::vector<std::uint32_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&, const statusPV_t&);
+template void PVBaseInImpl::push<timespec >(const timespec&, const timespec&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<timespec> >(const timespec&, const std::vector<timespec>&, const statusPV_t&);
+template void PVBaseInImpl::push<timestamp_t>(const timespec&, const timestamp_t&, const statusPV_t&);
 
 
 }

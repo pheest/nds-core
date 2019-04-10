@@ -55,7 +55,7 @@ public:
     void deregisterPV(std::shared_ptr<PVBaseImpl> pv);
 
     template<typename T>
-    void push(std::shared_ptr<PVBaseImpl> pv, const timespec& timestamp, const T& value);
+    void push(std::shared_ptr<PVBaseImpl> pv, const timespec& timestamp, const T& value, const statusPV_t& status = statusPV_t::success);
 
     virtual std::string buildFullNameFromPort(const FactoryBaseImpl& controlSystem) const;
     virtual std::string buildFullExternalNameFromPort(const FactoryBaseImpl& controlSystem) const;
