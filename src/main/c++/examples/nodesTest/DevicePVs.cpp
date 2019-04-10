@@ -268,7 +268,7 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	//Pvs for testing data subscription and replication
 
         rootNode.addChild(m_dataSharingHandler_PV);
-        m_dataSharingHandler_PV.setDescription("Increase selected source PV");
+        m_dataSharingHandler_PV.setDescription("Increase selected source PVs");
         m_dataSharingHandler_PV.setScanType(nds::scanType_t::passive);
 
 	m_sourceInt_PV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("SourceInt"));
@@ -293,12 +293,12 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 
         m_targetSubscriptionInt_PV = rootNode.addChild(nds::PVVariableOut<std::int32_t>("SubscribedInt"));
         m_targetSubscriptionInt_PV.setDescription("Output PV to receive integer data");
-        m_targetSubscriptionInt_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetSubscriptionInt_PV.setScanType(nds::scanType_t::passive);
         m_targetSubscriptionInt_PV.processAtInit(true);
 
         m_targetSubscriptionDouble_PV = rootNode.addChild(nds::PVVariableOut<double>("SubscribedDouble"));
         m_targetSubscriptionDouble_PV.setDescription("Output PV to receive double data");
-        m_targetSubscriptionDouble_PV.setScanType(nds::scanType_t::interrupt);
+        m_targetSubscriptionDouble_PV.setScanType(nds::scanType_t::passive);
         m_targetSubscriptionDouble_PV.processAtInit(true);
 
 	// We have declared all the nodes and PVs in our Device: now we register them
