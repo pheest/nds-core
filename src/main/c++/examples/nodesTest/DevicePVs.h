@@ -77,6 +77,15 @@ private:
 	 */
 	nds::PVVariableIn<std::int32_t> m_int_RBVPV;
 
+	/*
+	 * @brief PV for testing an Output PV to set a double
+	 */
+	nds::PVDelegateOut<float> m_float_PV;
+	/*
+	 * @brief PV for testing an Input PV to get a double
+	 */
+	nds::PVVariableIn<float> m_float_RBVPV;
+
 	//dataType_t: dataFloat64 -> double
 	/*
 	 * @brief PV for testing an Output PV to set a double
@@ -159,6 +168,15 @@ private:
 	 */
 	nds::PVVariableIn<std::vector<std::int32_t>> m_int32Array_RBVPV;
 
+	/*
+	 * @brief PV for testing an Output PV to set an array of doubles
+	 */
+	nds::PVDelegateOut<std::vector<float>> m_float32Array_PV;
+	/*
+	 * @brief PV for testing an Input PV to get an array of doubles
+	 */
+	nds::PVVariableIn<std::vector<float>> m_float32Array_RBVPV;
+
 	//dataType_t: dataFloat64Array -> std::vector<double>
 	/*
 	 * @brief PV for testing an Output PV to set an array of doubles
@@ -232,6 +250,11 @@ private:
 	/**
 	 * @brief Method to be used when an write action is required on the double PV
 	 */
+	void setFloat(const timespec&, const float&);
+
+	/**
+	 * @brief Method to be used when an write action is required on the double PV
+	 */
 	void setDouble(const timespec&, const double&);
 
 	/**
@@ -272,6 +295,11 @@ private:
 	/**
 	 * @brief Method to be used when an write action is required on the doubles array PV
 	 */
+	void setFloatArray(const timespec&, const std::vector<float>&);
+
+	/**
+	 * @brief Method to be used when an write action is required on the doubles array PV
+	 */
 	void setDoubleArray(const timespec&, const std::vector<double>&);
 
 	/**
@@ -303,6 +331,11 @@ private:
 	 * @brief Method to be used at initialization time for the integer PV
 	 */
 	void initInt(timespec* timestamp, std::int32_t* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the float PV
+	 */
+	void initFloat(timespec* timestamp, float* value);
 
 	/**
 	 * @brief Method to be used at initialization time for the double PV
@@ -343,6 +376,11 @@ private:
 	 * @brief Method to be used at initialization time for the integers (32) array PV
 	 */
 	void initInt32Array(timespec* timestamp, std::vector<std::int32_t>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the doubles array PV
+	 */
+	void initFloatArray(timespec* timestamp, std::vector<float>* values);
 
 	/**
 	 * @brief Method to be used at initialization time for the doubles array PV

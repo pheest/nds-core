@@ -9,6 +9,12 @@ std::string TestUtils::getString(const std::int32_t & data){
 	return oss.str();
 }
 
+std::string TestUtils::getString(const float & data){
+	std::ostringstream oss;
+	oss << "Float: " << data;
+	return oss.str();
+}
+
 std::string TestUtils::getString(const double & data){
 	std::ostringstream oss;
 	oss << "Double: " << data;
@@ -111,6 +117,21 @@ std::string TestUtils::getString(std::vector<std::int32_t> data){
 	std::ostringstream oss;
 	std::int32_t last = data.size() - 1;
 	oss << "Int32 Array: {";
+	for (int i = 0; i <= last; i++) {
+		oss << data.at(i);
+		if (i != last) {
+			oss << ", ";
+		} else {
+			oss << "}";
+		}
+	}
+	return oss.str();
+}
+
+std::string TestUtils::getString(std::vector<float> data){
+	std::ostringstream oss;
+	std::int32_t last = data.size() - 1;
+	oss << "Float Array: {";
 	for (int i = 0; i <= last; i++) {
 		oss << data.at(i);
 		if (i != last) {

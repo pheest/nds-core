@@ -17,6 +17,7 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_Name(DeviceName),
 						maxArrayElements(5),
 						m_int_PV(nds::PVDelegateOut<std::int32_t>("Integer", std::bind(&DevicePVs::setInt, this, std::placeholders::_1, std::placeholders::_2))),
+						m_float_PV(nds::PVDelegateOut<float>("Float", std::bind(&DevicePVs::setFloat, this, std::placeholders::_1, std::placeholders::_2))),
 						m_double_PV(nds::PVDelegateOut<double>("Double", std::bind(&DevicePVs::setDouble, this, std::placeholders::_1, std::placeholders::_2))),
 						m_boolArray_PV(nds::PVDelegateOut<std::vector<bool>>("BoolArray", std::bind(&DevicePVs::setBoolArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_uInt8Array_PV(nds::PVDelegateOut<std::vector<std::uint8_t>>("UInt8Array", std::bind(&DevicePVs::setUInt8Array, this, std::placeholders::_1, std::placeholders::_2))),
@@ -25,6 +26,7 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_int8Array_PV(nds::PVDelegateOut<std::vector<std::int8_t>>("Int8Array", std::bind(&DevicePVs::setInt8Array, this, std::placeholders::_1, std::placeholders::_2))),
 						m_int16Array_PV(nds::PVDelegateOut<std::vector<std::int16_t>>("Int16Array", std::bind(&DevicePVs::setInt16Array, this, std::placeholders::_1, std::placeholders::_2))),
 						m_int32Array_PV(nds::PVDelegateOut<std::vector<std::int32_t>>("Int32Array", std::bind(&DevicePVs::setInt32Array, this, std::placeholders::_1, std::placeholders::_2))),
+						m_float32Array_PV(nds::PVDelegateOut<std::vector<float>>("FloatArray", std::bind(&DevicePVs::setFloatArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_float64Array_PV(nds::PVDelegateOut<std::vector<double>>("DoubleArray", std::bind(&DevicePVs::setDoubleArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_string_PV(nds::PVDelegateOut<std::string>("String", std::bind(&DevicePVs::setString, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timespec_PV(nds::PVDelegateOut<timespec>("Timespec", std::bind(&DevicePVs::setTimespec, this, std::placeholders::_1, std::placeholders::_2))),
@@ -65,6 +67,9 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 		m_int_PV = nds::PVDelegateOut<std::int32_t>("Integer",
 				std::bind(&DevicePVs::setInt, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DevicePVs::initInt, this, std::placeholders::_1, std::placeholders::_2));
+		m_float_PV = nds::PVDelegateOut<float>("Float",
+				std::bind(&DevicePVs::setFloat, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DevicePVs::initFloat, this, std::placeholders::_1, std::placeholders::_2));
 		m_double_PV = nds::PVDelegateOut<double>("Double",
 				std::bind(&DevicePVs::setDouble, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DevicePVs::initDouble, this, std::placeholders::_1, std::placeholders::_2));
@@ -89,6 +94,9 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 		m_int32Array_PV = nds::PVDelegateOut<std::vector<std::int32_t>>("Int32Array",
 				std::bind(&DevicePVs::setInt32Array, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DevicePVs::initInt32Array, this, std::placeholders::_1, std::placeholders::_2));
+		m_float32Array_PV = nds::PVDelegateOut<std::vector<float>>("FloatArray",
+				std::bind(&DevicePVs::setFloatArray, this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DevicePVs::initFloatArray, this, std::placeholders::_1, std::placeholders::_2));
 		m_float64Array_PV = nds::PVDelegateOut<std::vector<double>>("DoubleArray",
 				std::bind(&DevicePVs::setDoubleArray, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&DevicePVs::initDoubleArray, this, std::placeholders::_1, std::placeholders::_2));
@@ -115,6 +123,15 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int_RBVPV.setDescription("Integer that has been set (RBV)");
 	m_int_RBVPV.setScanType(nds::scanType_t::interrupt);
 	m_int_RBVPV.processAtInit(true);
+
+	rootNode.addChild(m_float_PV);
+	m_float_PV.setDescription("Float to be set");
+	m_float_PV.setScanType(nds::scanType_t::passive);
+
+	m_float_RBVPV = rootNode.addChild(nds::PVVariableIn<float>("Float_RBV"));
+	m_float_RBVPV.setDescription("Float that has been set (RBV)");
+	m_float_RBVPV.setScanType(nds::scanType_t::interrupt);
+	m_float_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_double_PV);
 	m_double_PV.setDescription("Double to be set");
@@ -202,6 +219,17 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	m_int32Array_RBVPV.setScanType(nds::scanType_t::interrupt);
 	m_int32Array_RBVPV.setMaxElements(maxArrayElements);
 	m_int32Array_RBVPV.processAtInit(true);
+
+	rootNode.addChild(m_float32Array_PV);
+	m_float32Array_PV.setDescription("FloatArray to be set");
+	m_float32Array_PV.setScanType(nds::scanType_t::passive);
+	m_float32Array_PV.setMaxElements(maxArrayElements);
+
+	m_float32Array_RBVPV = rootNode.addChild(nds::PVVariableIn<std::vector<float>>("FloatArray_RBV"));
+	m_float32Array_RBVPV.setDescription("FloatArray that has been set (RBV)");
+	m_float32Array_RBVPV.setScanType(nds::scanType_t::interrupt);
+	m_float32Array_RBVPV.setMaxElements(maxArrayElements);
+	m_float32Array_RBVPV.processAtInit(true);
 
 	rootNode.addChild(m_float64Array_PV);
 	m_float64Array_PV.setDescription("DoubleArray to be set");
@@ -303,6 +331,9 @@ void DevicePVs::initializePVs(void){
 	setInt(timestamp, 1);
 
 	timestamp = {NDS_EPOCH, ns++};
+	setFloat(timestamp, 1.5);
+
+	timestamp = {NDS_EPOCH, ns++};
 	setDouble(timestamp, 1.1);
 
 	std::vector<bool> boolArray = {true, true, false, true};
@@ -333,6 +364,10 @@ void DevicePVs::initializePVs(void){
 	timestamp = {NDS_EPOCH, ns++};
 	setInt32Array(timestamp, int32Array);
 
+	std::vector<float> floatArray = {-0.5,0.5,2.5};
+	timestamp = {NDS_EPOCH, ns++};
+	setFloatArray(timestamp, floatArray);
+
 	std::vector<double> doubleArray = {-0.1,0.2,1.5};
 	timestamp = {NDS_EPOCH, ns++};
 	setDoubleArray(timestamp, doubleArray);
@@ -358,6 +393,11 @@ void DevicePVs::initializePVs(void){
 void DevicePVs::setInt(const timespec& timestamp, const std::int32_t& data){
 	m_int_RBVPV.setValue(timestamp, data);
 	m_int_RBVPV.push(timestamp, data);
+}
+
+void DevicePVs::setFloat(const timespec& timestamp, const float& data){
+	m_float_RBVPV.setValue(timestamp, data);
+	m_float_RBVPV.push(timestamp, data);
 }
 
 void DevicePVs::setDouble(const timespec& timestamp, const double& data){
@@ -400,6 +440,11 @@ void DevicePVs::setInt32Array(const timespec& timestamp, const std::vector<std::
 	m_int32Array_RBVPV.push(timestamp, data);
 }
 
+void DevicePVs::setFloatArray(const timespec& timestamp, const std::vector<float>& data){
+	m_float32Array_RBVPV.setValue(timestamp, data);
+	m_float32Array_RBVPV.push(timestamp, data);
+}
+
 void DevicePVs::setDoubleArray(const timespec& timestamp, const std::vector<double>& data){
 	m_float64Array_RBVPV.setValue(timestamp, data);
 	m_float64Array_RBVPV.push(timestamp, data);
@@ -429,6 +474,11 @@ void DevicePVs::setTimestamp(const timespec& timestamp, const nds::timestamp_t& 
 void DevicePVs::initInt(timespec* timestamp, std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 10};
 	*value = -2147483648;
+}
+
+void DevicePVs::initFloat(timespec* timestamp, float* value) {
+	*timestamp = {NDS_EPOCH, 20};
+	*value = 4e8;
 }
 
 void DevicePVs::initDouble(timespec* timestamp, double* value) {
@@ -475,6 +525,12 @@ void DevicePVs::initInt32Array(timespec* timestamp,
 		std::vector<std::int32_t>* values) {
 	*timestamp = {NDS_EPOCH, 90};
 	*values = std::vector<std::int32_t>(1, -2147483648); //Vector with 1 data to -2147483648.
+}
+
+void DevicePVs::initFloatArray(timespec* timestamp,
+		std::vector<float>* values) {
+	*timestamp = {NDS_EPOCH, 100};
+	*values = std::vector<float>(4, 8e12); //Vector with 4 data to 8e12.
 }
 
 void DevicePVs::initDoubleArray(timespec* timestamp,
