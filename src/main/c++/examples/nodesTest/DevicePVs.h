@@ -227,6 +227,27 @@ private:
 	 */
 	nds::PVVariableIn<nds::timestamp_t> m_timestamp_RBVPV;
 
+	/* @brief Output PV to increase Source PVs for data sharing purpose */
+        nds::PVDelegateOut<std::int32_t> m_dataSharingHandler_PV;
+
+	/* @brief Reference PV for sending data to other PVs with integer data. */
+	nds::PVVariableIn<std::int32_t> m_sourceInt_PV;
+
+        /* @brief Reference PV for sending data to other PVs with double data. */
+        nds::PVVariableIn<double> m_sourceDouble_PV;
+
+        /* @brief Reference PV for replication from PVs with integer data. */
+        nds::PVVariableIn<std::int32_t> m_targetReplicationInt_PV;
+
+        /* @brief Reference PV for replication from PVs with double data. */
+        nds::PVVariableIn<double> m_targetReplicationDouble_PV;
+
+        /* @brief Reference PV for subscription from PVs with integer data. */
+        nds::PVVariableOut<std::int32_t> m_targetSubscriptionInt_PV;
+
+        /* @brief Reference PV for subscription from PVs with double data. */
+        nds::PVVariableOut<double> m_targetSubscriptionDouble_PV;
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// MEMBER METHODS THAT SUPPORT SPECIFIC OPERATIONS
@@ -236,6 +257,14 @@ private:
 	 * Set the PVs with a default value
 	 */
 	void initializePVs(void);
+
+	/**
+	 * Delegate Function to test data sharing between PVs.
+	 * It increases the stored value in the source in one.
+	 * The received integer argument enables to select which
+	 * source PV is considered.
+	 */
+	void increaseDataSouce(const timespec&, const std::int32_t&);
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -406,6 +435,11 @@ private:
 	 * @brief Method to be used at initialization time for the timestamp PV
 	 */
 	void initTimestamp(timespec* timestamp, nds::timestamp_t* value);
+
+        /**
+         * @brief Method to be used at initialization time for the handler of data sharing
+         */
+        void initHandler(timespec* timestamp, std::int32_t* value);
 
 };
 

@@ -63,9 +63,10 @@ public:
      * @tparam T the data type
      * @param timestamp    the timestamp related to the data
      * @param value        the data to push
+     * @param status       the status to be shown in the control system (if it is supported)
      */
     template<typename T>
-    void push(const timespec& timestamp, const T& value);
+    void push(const timespec& timestamp, const T& value, const statusPV_t& status = statusPV_t::success);
 
     /**
      * @brief Subscribe an output PV to this PV.

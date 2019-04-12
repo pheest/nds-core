@@ -16,14 +16,26 @@
  */
 static void commonPVsTest(const bool testInitializers = false);
 
+/**
+ * @brief Internal function to test data sharing between some PVs.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ */
+static void dataSharingTest(const bool testInitializers = true);
+
 TEST(testDevicePVs, PVTypes)
 {
-	commonPVsTest();
+  commonPVsTest();
 }
 
 TEST(testDevicePVs, PVTypesInit)
 {
-	commonPVsTest(true);
+  commonPVsTest(true);
+}
+
+TEST(testDevicePVs, DataSharing)
+{
+  dataSharingTest(true);
 }
 
 static void commonPVsTest(const bool testInitializers) {
@@ -138,11 +150,11 @@ static void commonPVsTest(const bool testInitializers) {
     	pInterface->readCSValue("/devicePVs-UInt8Array", &timestamp, &uInt8ArrayValues);
 		EXPECT_EQ((bool) true, (uInt8ArrayDataInit == uInt8ArrayValues) );
 
-    	pInterface->readCSValue("/devicePVs-UInt16Array", &timestamp, &uInt16ArrayDataInit);
-		EXPECT_EQ((bool) true, (uInt16ArrayDataInit == uInt16ArrayDataInit) );
+    	pInterface->readCSValue("/devicePVs-UInt16Array", &timestamp, &uInt16ArrayValues);
+		EXPECT_EQ((bool) true, (uInt16ArrayDataInit == uInt16ArrayValues) );
 
-    	pInterface->readCSValue("/devicePVs-UInt32Array", &timestamp, &uInt32ArrayDataInit);
-		EXPECT_EQ((bool) true, (uInt32ArrayDataInit == uInt32ArrayDataInit) );
+    	pInterface->readCSValue("/devicePVs-UInt32Array", &timestamp, &uInt32ArrayValues);
+		EXPECT_EQ((bool) true, (uInt32ArrayDataInit == uInt32ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-Int8Array", &timestamp, &int8ArrayValues);
 		EXPECT_EQ((bool) true, (int8ArrayDataInit == int8ArrayValues) );
@@ -151,13 +163,13 @@ static void commonPVsTest(const bool testInitializers) {
 		EXPECT_EQ((bool) true, (int16ArrayDataInit == int16ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-Int32Array", &timestamp, &int32ArrayValues);
-		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayDataInit) );
+		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-FloatArray", &timestamp, &floatArrayValues);
 		EXPECT_EQ((bool) true, (floatArrayDataInit == floatArrayDataInit) );
 
     	pInterface->readCSValue("/devicePVs-DoubleArray", &timestamp, &doubleArrayValues);
-		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayDataInit) );
+		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-String", &timestamp, &stringValue);
 		EXPECT_EQ(stringDataInit, stringValue);
@@ -333,6 +345,137 @@ static void commonPVsTest(const bool testInitializers) {
 		std::cout << "\t--------------------------------------" << std::endl;
 
     }
+
+    // Destroy test device
+    factory.destroyDevice("devicePVs");
+
+}
+
+
+static void dataSharingTest(const bool testInitializers) {
+    timespec timestamp = {0, 0};
+    std::int32_t intValue;
+    double doubleValue;
+    const timespec* pTimestamp;
+    const std::int32_t* pInteger;
+    const double* pDouble;
+
+    //Create factory
+    nds::Factory factory("test");
+
+    // Create test device of type DevicePVs and name it devicePVs
+        nds::namedParameters_t parameters;
+        if (testInitializers) {
+                parameters["INIT"]="YES";
+        }
+    factory.createDevice("DevicePVs", "devicePVs", parameters);
+
+    //Get instance of the Test Control System
+    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("devicePVs");
+
+    if (testInitializers) { //Test initial value of output PVs.
+
+
+        //--------------------------------------------------------------------------------------
+        //VALUES OF THE PVS THAT HAVE BEEN SET AT THE INITIALIZATION
+        //--------------------------------------------------------------------------------------
+        std::int32_t handlerInit = 0;
+
+        //--------------------------------------------------------------------------------------
+        //TEST THE VALUES OF THE PVS THAT HAVE BEEN INITIALIZED IN THE CONTROL SYSTEM
+        //--------------------------------------------------------------------------------------
+
+        pInterface->readCSValue("/devicePVs-ShareData", &timestamp, &intValue);
+                EXPECT_EQ((std::int32_t) handlerInit, intValue);
+
+    }
+
+
+    //--------------------------------------------------------------------------------------
+    //TEST THE VALUES OF THE PVS THAT HAVE BEEN PUSHED TO THE CONTROL SYSTEM
+    //--------------------------------------------------------------------------------------
+
+    std::int32_t sourceIntData = -1;
+    std::int32_t replicatedIntData = -2;
+    std::int32_t subscribedIntData = -3;
+    double sourceDoubleData = -1.1;
+    double replicatedDoubleData = -2.2;
+    double subscribedDoubleData = -3.3;
+
+    pInterface->getPushedInt32("/devicePVs-SourceInt", pTimestamp, pInteger);
+    EXPECT_EQ((std::int32_t) sourceIntData, *pInteger);
+
+    pInterface->getPushedDouble("/devicePVs-SourceDouble", pTimestamp, pDouble);
+    EXPECT_EQ((double) sourceDoubleData, *pDouble);
+
+    pInterface->getPushedInt32("/devicePVs-ReplicatedInt", pTimestamp, pInteger);
+    EXPECT_EQ((std::int32_t) replicatedIntData, *pInteger);
+
+    pInterface->getPushedDouble("/devicePVs-ReplicatedDouble", pTimestamp, pDouble);
+    EXPECT_EQ((double) replicatedDoubleData, *pDouble);
+
+    pInterface->readCSValue("/devicePVs-SubscribedInt", &timestamp, &intValue);
+    EXPECT_EQ((std::int32_t) subscribedIntData, intValue);
+
+    pInterface->readCSValue("/devicePVs-SubscribedDouble", &timestamp, &doubleValue);
+    EXPECT_EQ((double) subscribedDoubleData, doubleValue);
+
+    // Test subscription methods
+
+    //Replicate PVs of the same type
+    factory.replicate("devicePVs-SourceInt", "devicePVs-ReplicatedInt");
+    factory.replicate("devicePVs-SourceDouble", "devicePVs-ReplicatedDouble");
+
+    //Subscribe PVs of the same type
+    factory.subscribe("devicePVs-SourceInt", "devicePVs-SubscribedInt");
+    factory.subscribe("devicePVs-SourceDouble", "devicePVs-SubscribedDouble");
+
+    //Replicate PVs of different type. It shall receive an error message
+    try {
+        factory.replicate("devicePVs-SourceInt", "devicePVs-ReplicatedDouble");
+    } catch (const std::exception& e) {
+        std::cout << "\tWARNING: " << e.what() << std::endl;
+    }
+    try {
+    factory.subscribe("devicePVs-SourceDouble", "devicePVs-SubscribedInt");
+    } catch (const std::exception& e) {
+        std::cout << "\tWARNING: " << e.what() << std::endl;
+    }
+
+
+    //Increase Source PVs and verifies the new value in its target ones
+
+    intValue = 0; // Test Integer PVs
+    pInterface->writeCSValue("/devicePVs-ShareData", timestamp, intValue);
+    sourceIntData++;
+
+    //Source PV
+    pInterface->getPushedInt32("/devicePVs-SourceInt", pTimestamp, pInteger);
+    EXPECT_EQ((std::int32_t) sourceIntData, *pInteger);
+    //Target PVs
+    pInterface->getPushedInt32("/devicePVs-ReplicatedInt", pTimestamp, pInteger);
+    EXPECT_EQ((std::int32_t) sourceIntData, *pInteger);
+    pInterface->readCSValue("/devicePVs-SubscribedInt", &timestamp, &intValue);
+    EXPECT_EQ((std::int32_t) sourceIntData, intValue);
+
+    intValue = 1; // Test Double PVs
+    pInterface->writeCSValue("/devicePVs-ShareData", timestamp, intValue);
+    sourceDoubleData++;
+
+    //Source PV
+    pInterface->getPushedDouble("/devicePVs-SourceDouble", pTimestamp, pDouble);
+    EXPECT_EQ((double) sourceDoubleData, *pDouble);
+    //Target PVs
+    pInterface->getPushedDouble("/devicePVs-ReplicatedDouble", pTimestamp, pDouble);
+    EXPECT_EQ((double) sourceDoubleData, *pDouble);
+    pInterface->readCSValue("/devicePVs-SubscribedDouble", &timestamp, &doubleValue);
+    EXPECT_EQ((double) sourceDoubleData, doubleValue);
+
+    std::cout << "\t-------------------Testing Data Sharing-------------------" << std::endl;
+    std::cout << "\t Final SourceInt=ReplicationInt=SubscribedInt " << TestUtils::getString(sourceIntData) << std::endl;
+    std::cout << "\t Final SourceDouble=ReplicationIDouble=SubscribedDouble " << TestUtils::getString(sourceDoubleData) << std::endl;
+    std::cout << "\t----------------------------------------------------------" << std::endl;
+
 
     // Destroy test device
     factory.destroyDevice("devicePVs");

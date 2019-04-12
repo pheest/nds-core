@@ -1,4 +1,4 @@
-#include "ndsTestInterface.h"
+#include "../include/ndsTestInterface.h"
 
 namespace nds
 {
@@ -59,82 +59,82 @@ void TestControlSystemInterfaceImpl::registrationTerminated()
 
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedInt32, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const float& value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const float& value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedFloat, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const double& value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const double& value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedDouble, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<bool> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<bool> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorBool, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint8_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint8_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorUint8, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint16_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint16_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorUint16, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint32_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint32_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorUint32, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int8_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int8_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorInt8, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int16_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int16_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorInt16, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorInt32, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<float> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<float> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorFloat, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorDouble, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedString, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedTimespec, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedVectorTimespec, timestamp, value);
 }
 
-void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value)
+void TestControlSystemInterfaceImpl::push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value, const statusPV_t&)
 {
     storePushedData(pv.getFullExternalName(), m_pushedTimestamp, timestamp, value);
 }

@@ -72,6 +72,18 @@ enum class dataType_t
 };
 
 /**
+ * @brief Data type to report the status for updating values in Input PVs.
+ */
+enum class statusPV_t {
+  success = 0,     //!< Value updated successfully.
+  timeout = 1,     //!< Timeout.
+  overflow = 2,    //!< Overflow.
+  disconnected = 3,//!< Disconnected.
+  disabled = 4,     //!< Disabled.
+  error = 5       //!< Any other error not gathered in previous status.
+};
+
+/**
  * @brief Specify how to get the PV value.
  */
 enum class scanType_t

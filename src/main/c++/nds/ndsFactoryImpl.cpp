@@ -274,6 +274,12 @@ void NdsFactoryImpl::subscribe(const std::string &pushFrom, PVBaseOutImpl *pRece
         throw MissingInputPV(errorMessage.str());
     }
 
+    if (findInput->second->getDataType() != pReceiver->getDataType() ) {
+        std::ostringstream errorMessage;
+        errorMessage << "The data type of " << pReceiver->getFullName() << " and " << pushFrom << " does not match.";
+        throw std::logic_error(errorMessage.str());
+    }
+
     findInput->second->subscribeReceiver(pReceiver);
 }
 
@@ -359,7 +365,14 @@ void NdsFactoryImpl::replicate(const std::string &replicateSource, PVBaseInImpl 
         throw MissingInputPV(errorMessage.str());
     }
 
+    if ( findInput->second->getDataType() != pDestination->getDataType() ) {
+        std::ostringstream errorMessage;
+        errorMessage << "The data type of " << pDestination->getFullName() << " and " << replicateSource << " does not match.";
+        throw std::logic_error(errorMessage.str());
+    }
+
     findInput->second->replicateTo(pDestination);
+
 }
 
 void NdsFactoryImpl::stopReplicationTo(PVBaseInImpl *pDestination)
