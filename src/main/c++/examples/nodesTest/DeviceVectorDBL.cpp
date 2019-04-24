@@ -647,13 +647,13 @@ bool DeviceVectorDBL::allow_WaveformGeneration_Change(const nds::state_t, const 
 /*
 * WaveformGeneration setters
 */
-void DeviceVectorDBL::PV_WaveformGeneration_Frequency_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorDBL::PV_WaveformGeneration_Frequency_Writer(const timespec& /*timestamp*/, const double& value){
 	double HW_value;
 	//Value has the frequency to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real frequency programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
-	m_WaveformGeneration.setFrequency(timestamp,HW_value);
+	m_WaveformGeneration.setFrequency(m_WaveformGeneration.getTimestamp(),HW_value);
 }
 void DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
