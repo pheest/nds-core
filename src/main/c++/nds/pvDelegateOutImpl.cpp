@@ -42,6 +42,19 @@ PVDelegateOutImpl<T>::PVDelegateOutImpl(const std::string& name, write_t writeFu
     processAtInit(false);
 }
 
+/*
+ * Constructor (without initialization function)
+ *
+ ***********************************************/
+template <typename T>
+PVDelegateOutImpl<T>::PVDelegateOutImpl(const std::string& name, write_t /*writeFunction*/, write_name_t writeFunctionName, const outputPvType_t pvType): PVBaseOutImpl(name, pvType),
+	m_writer_name(writeFunctionName),
+	m_writer(NULL),
+    m_initializer(std::bind(&PVDelegateOutImpl::dontInitialize, this, std::placeholders::_1, std::placeholders::_2))
+{
+    processAtInit(false);
+}
+
 
 /*
  * Called to read the initial value
@@ -61,7 +74,13 @@ void PVDelegateOutImpl<T>::read(timespec* pTimestamp, T* pValue) const
 template <typename T>
 void PVDelegateOutImpl<T>::write(const timespec& timestamp, const T& value)
 {
-    m_writer(timestamp, value);
+
+    if(m_writer!=NULL){
+    	m_writer(timestamp, value);
+    }else{
+    	m_writer_name(timestamp, value, this->getFullExternalName());
+    }
+
 }
 
 

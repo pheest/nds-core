@@ -230,6 +230,9 @@ private:
 	/* @brief Output PV to increase Source PVs for data sharing purpose */
         nds::PVDelegateOut<std::int32_t> m_dataSharingHandler_PV;
 
+        /* @brief Output PV to increase Source PVs for data sharing purpose */
+        nds::PVDelegateOut<std::int32_t> m_delegateOutWithName_PV;
+
 	/* @brief Reference PV for sending data to other PVs with integer data. */
 	nds::PVVariableIn<std::int32_t> m_sourceInt_PV;
 
@@ -265,6 +268,8 @@ private:
 	 * source PV is considered.
 	 */
 	void increaseDataSouce(const timespec&, const std::int32_t&);
+
+	void delegateOutWithName(const timespec& timestamp, const std::int32_t& data, const std::string& name);
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////

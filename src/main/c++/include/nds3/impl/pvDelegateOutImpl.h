@@ -49,6 +49,8 @@ public:
      */
     typedef std::function<void (const timespec&, const T&)> write_t;
 
+    typedef std::function<void (const timespec&, const T&, const std::string&)> write_name_t;
+
     /**
      * @brief Constructor. Specifies the methods used for read/write
      *
@@ -67,6 +69,8 @@ public:
      * @param writeFunction write method
      */
     PVDelegateOutImpl(const std::string& name, write_t writeFunction, const outputPvType_t pvType = outputPvType_t::generic);
+
+    PVDelegateOutImpl(const std::string& name, write_t writeFunction, write_name_t writeFunctionName, const outputPvType_t pvType = outputPvType_t::generic);
 
     /**
      * @brief Called when the control system wants to read the value.
@@ -97,6 +101,7 @@ public:
 
 
 private:
+    write_name_t m_writer_name;
     write_t m_writer;          ///< Method used to write the value
     initValue_t m_initializer; ///< Method used to read the initial value
 

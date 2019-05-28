@@ -1,2 +1,2 @@
 #!/bin/bash
-./c++/nds/nds3core-unit-tests
+#./c++/nds/nds3core-unit-tests

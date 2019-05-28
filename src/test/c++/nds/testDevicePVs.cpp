@@ -251,6 +251,7 @@ static void commonPVsTest(const bool testInitializers) {
     		pInterface->writeCSValue("/devicePVs-Timespec", timestamp, timespecData);
     		pInterface->writeCSValue("/devicePVs-TimespecArray", timestamp, timespecArrayData);
     		pInterface->writeCSValue("/devicePVs-Timestamp", timestamp, timestampData);
+    		pInterface->writeCSValue("/devicePVs-delegateOutWithName", timestamp, 1);
     	}
 
 		//--------------------------------------------------------------------------------------
