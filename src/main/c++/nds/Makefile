@@ -28,8 +28,8 @@ INCLUDE_DIRS=. ../include $(CODAC_ROOT)/include
 
 TARGET=../../..
 LIBRARY_DIR=$(TARGET)/lib
-OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
 SOURCE_DIR=.
+OBJECT_DIR=$(SOURCE_DIR)/.obj
 
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
@@ -50,6 +50,12 @@ DEFS=-DNDS3_DLL -DNDS3_DLL_EXPORTS
 CFLAGS=-c -Wall -fPIC $(DBG_COV)
 CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-hidden $(DEFS) $(DBG_COV)
 LDFLAGS= -shared $(DBG_COV)
+
+
+ifeq ($(COVERAGE),true)
+	CFLAGS+= -DDEBUG -O0 -g --coverage
+	LDFLAGS+= --coverage
+endif
 
 
 .PHONY: all clean run
