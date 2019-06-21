@@ -31,6 +31,18 @@ namespace nds
 {
 
 /**
+ * @brief Available levels of automatic change in the State Machines that are following the state of the father Node
+ */
+enum class autoEnable_t
+{
+
+    off,          ///< The node won't follow its father STM
+    on,          ///< The node will follow its father until ON state
+    running   ///< The node will follow its father until RUNNING state
+
+};
+
+/**
  * @brief Available states, ordered by priority (lowest to higher).
  */
 enum class state_t

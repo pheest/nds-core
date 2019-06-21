@@ -66,6 +66,8 @@ public:
      *                                  a confirmation that the state switch is allowed.
      *                                 The function is called only after other internal checks clear
      *                                  the state switch
+     *@param autoState  Optional parameter with  the  value for automatic state transitions following its parent
+     *									By default set to off
      */
     StateMachineImpl(bool bAsync,
                      stateChange_t switchOnFunction,
@@ -73,7 +75,8 @@ public:
                      stateChange_t startFunction,
                      stateChange_t stopFunction,
                      stateChange_t recoverFunction,
-                     allowChange_t allowStateChangeFunction);
+                     allowChange_t allowStateChangeFunction,
+					 autoEnable_t autoState=autoEnable_t::off);
 
    /**
 	 * @brief Simplified constructor of the state machine implementation class.
@@ -167,8 +170,29 @@ public:
      */
     virtual void deinitialize();
 
+    /**
+     * @brief  Method to get which is the state until the transitions will be done automatically following its parent
+     *
+     * @return the state enum
+     */
+    autoEnable_t getAutoEnable();
+
+    /**
+     * @brief  Method to set which is the state until the transitions will be done automatically following its parent
+     *
+     *@param autoState state until the transitions will be done automatically following its parent
+     */
+    void setAutoEnable(autoEnable_t autoState);
+
 
 protected:
+
+    /**
+     * @brief Execute the state transition of all first level children
+     *
+     * @return true if all children successfully changed their states
+     */
+    bool setChildStates(state_t futureState);
 
     /**
      * @brief Execute the state transition. May be called from a separate thread.
@@ -235,6 +259,8 @@ protected:
     stateChange_t m_stop;              ///< Delegate function for the stop transition
     stateChange_t m_recover;           ///< Delegate function for the recover transition
     allowChange_t m_allowChange;       ///< Delegate function for the Allow-Change function
+
+    autoEnable_t m_autoEnable; ///< Attribute for the following change of state of the father Node
 
     std::shared_ptr<PVDelegateInImpl<std::int32_t> > m_pGetStatePV; ///< Delegate PV to which the local state change is pushed
 

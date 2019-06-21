@@ -38,11 +38,13 @@ StateMachineImpl::StateMachineImpl(bool bAsync,
                                    stateChange_t startFunction,
                                    stateChange_t stopFunction,
                                    stateChange_t recoverFunction,
-                                   allowChange_t allowStateChangeFunction): NodeImpl("StateMachine", nodeType_t::stateMachine),
+                                   allowChange_t allowStateChangeFunction,
+								   autoEnable_t autoState): NodeImpl("StateMachine", nodeType_t::stateMachine),
             m_bAsync(bAsync),
             m_localState(state_t::off),
             m_switchOn(switchOnFunction), m_switchOff(switchOffFunction), m_start(startFunction), m_stop(stopFunction), m_recover(recoverFunction),
-            m_allowChange(allowStateChangeFunction)
+            m_allowChange(allowStateChangeFunction),
+			m_autoEnable(autoState)
 {
 	StateMachineImpl::constructorBody();
 }
@@ -249,6 +251,15 @@ void StateMachineImpl::setState(const state_t newState)
         m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
     }
 
+    // Execute the state transition of all first level child
+    ///////////////////////////////////////////////////////////////////////
+    if(setChildStates(newState)){
+    	std::ostringstream buildErrorMessage;
+    	buildErrorMessage << "The transition from children has been denied";
+    	throw StateMachineTransitionDenied(buildErrorMessage.str());
+    }
+
+
     // Execute the state transition. Launch a secondary thread if necessary
     ///////////////////////////////////////////////////////////////////////
     if(m_bAsync)
@@ -266,7 +277,17 @@ void StateMachineImpl::setState(const state_t newState)
     }
 }
 
+bool StateMachineImpl::setChildStates(state_t futureState){
 
+	bool error=false;
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+    error = pParentNode->setChildrenState(this->getTimestamp(), futureState);
+
+	return error;
+
+}
 /*
  * Execute the state transition in a separate thread
  * Exceptions are caught in the thread and just logged
@@ -482,6 +503,15 @@ std::string StateMachineImpl::getStateName(const state_t state)
         throw std::logic_error("The enumeration MAX_STATE_NUM is used only to know how many states are defined");
     }
     throw std::logic_error("Uknown state");
+}
+
+
+autoEnable_t StateMachineImpl::getAutoEnable() {
+	return m_autoEnable;
+}
+
+void StateMachineImpl::setAutoEnable(autoEnable_t autoState) {
+	m_autoEnable = autoState;
 }
 
 }

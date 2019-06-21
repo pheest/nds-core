@@ -10,6 +10,7 @@
 #include <memory>
 #include <mutex>
 #include <sstream>
+#include <iostream>
 
 #include "nds3/definitions.h"
 #include "nds3/impl/nodeImpl.h"
@@ -147,6 +148,34 @@ void NodeImpl::getChildrenState(timespec* pTimestamp, state_t* pState) const
     }
 }
 
+bool nds::NodeImpl::setChildrenState(timespec pTimestamp, state_t futureState) {
+
+	std::cout<<"Entering "<<__func__<<std::endl;
+	bool error=false;
+	std::map<std::string,state_t> prevChildStatus;
+	for(tChildren::const_iterator scanChildren(m_children.begin()), endScan(m_children.end()); scanChildren != endScan; ++scanChildren)
+	{
+        if(scanChildren->second.get() != m_pStateMachine.get())
+        {
+            std::shared_ptr<NodeImpl> child = std::dynamic_pointer_cast<NodeImpl>(scanChildren->second);
+            if(child.get() != 0)
+            {
+            	std::cout<<"Child name:  "<<child->getFullNameFromPort()<<std::endl;
+            	prevChildStatus.insert(std::pair<std::string,state_t>(child->getFullNameFromPort(),child->getLocalState()));
+            	child->setLocalState(futureState);
+            }
+        }
+
+	}
+	return error;
+
+}
+
+void nds::NodeImpl::setLocalState(state_t pState) {
+	m_pStateMachine->setState(pState);
+}
+
+
 void NodeImpl::setLogLevel(const logLevel_t logLevel)
 {
     BaseImpl::setLogLevel(logLevel);
@@ -220,3 +249,5 @@ std::string NodeImpl::buildFullExternalName(const FactoryBaseImpl& controlSystem
 
 
 }
+
+

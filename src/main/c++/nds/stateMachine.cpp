@@ -32,14 +32,16 @@ StateMachine::StateMachine(bool bAsync,
                            stateChange_t startFunction,
                            stateChange_t stopFunction,
                            stateChange_t recoverFunction,
-                           allowChange_t allowStateChangeFunction):
+                           allowChange_t allowStateChangeFunction,
+						   autoEnable_t autoState):
     Node(std::shared_ptr<NodeImpl>(new StateMachineImpl(bAsync,
                                                         switchOnFunction,
                                                         switchOffFunction,
                                                         startFunction,
                                                         stopFunction,
                                                         recoverFunction,
-                                                        allowStateChangeFunction)))
+                                                        allowStateChangeFunction,
+														autoState)))
 {
 }
 
@@ -97,5 +99,14 @@ bool StateMachine::canChange(const state_t newState)
 
 }
 
+
+
+autoEnable_t nds::StateMachine::getAutoEnable() {
+    return std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->getAutoEnable();
+}
+
+void nds::StateMachine::setAutoEnable(autoEnable_t autoState) {
+    std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->setAutoEnable(autoState);
+}
 
 }
