@@ -22,23 +22,28 @@
 
 LIBNAME=nds3
 
+#libraries
 LIBRARIES=
 LIBRARY_DIRS=
-INCLUDE_DIRS=. ../include $(CODAC_ROOT)/include
+LDLIBS=-L$(CODAC_ROOT)/lib $(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) $(foreach libs,$(LIBRARIES),-l$(libs))
+
+#includes
+INCLUDE_DIRS=. ../include 
+INCLUDES=$(foreach inc,$(INCLUDE_DIRS),-I$(inc))
+
+#Sources
+SOURCE_DIR=.
+SOURCES:=$(SOURCE_DIR)/$(wildcard *.cpp)
 
 TARGET=../../..
 LIBRARY_DIR=$(TARGET)/lib
 OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
-SOURCE_DIR=.
-
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
-INCLUDES=$(foreach inc,$(INCLUDE_DIRS),-I$(inc))
-LDLIBS=-L$(CODAC_ROOT)/lib $(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) $(foreach libs,$(LIBRARIES),-l$(libs))
-SOURCES=$(SOURCE_DIR)/$(wildcard *.cpp)
-OBJECTS=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
-C=gcc
+#Objects
+OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
+
 CC=g++
 ifeq ($(RELEASE), YES)
 DBG_COV=
@@ -52,15 +57,10 @@ CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-
 LDFLAGS= -shared $(DBG_COV)
 
 
-.PHONY: all clean run
-
 all: $(SOURCES) $(SHAREDLIBRARY) $(STATICLIBRARY)
 
 clean:
 	rm -rf "$(SHAREDLIBRARY)" "$(STATICLIBRARY)" "$(OBJECT_DIR)" "$(HTARGETS)"
-
-run: $(SOURCES) $(SHAREDLIBRARY)
-	$(SHAREDLIBRARY)
 
 $(SHAREDLIBRARY): $(OBJECTS)
 	mkdir -p $(LIBRARY_DIR)
@@ -70,11 +70,6 @@ $(STATICLIBRARY): $(OBJECTS)
 	mkdir -p $(LIBRARY_DIR)
 	$(AR) rcs $@ $^
 
-$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(OBJECT_DIR)
-	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
-
-$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c $(OBJECT_DIR)
-	$(C) $(CFLAGS) $(INCLUDES) $< -o $@
-
-$(OBJECT_DIR):
+$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp 
 	mkdir -p $(OBJECT_DIR)
+	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@

@@ -254,6 +254,13 @@ void StateMachineImpl::setState(const state_t newState)
     // Execute the state transition of all first level child
     ///////////////////////////////////////////////////////////////////////
     if(setChildStates(newState)){
+
+    	// The transition won'tl be executed. Set the initial state
+    	//////////////////////////////////////////////////////////////
+    	m_localState = localState;
+    	m_stateTimestamp = getTimestamp();
+    	m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
+
     	std::ostringstream buildErrorMessage;
     	buildErrorMessage << "The transition from children has been denied";
     	throw StateMachineTransitionDenied(buildErrorMessage.str());
