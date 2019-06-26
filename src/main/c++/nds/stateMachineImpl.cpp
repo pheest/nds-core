@@ -253,7 +253,7 @@ void StateMachineImpl::setState(const state_t newState)
 
     // Execute the state transition of all first level child
     ///////////////////////////////////////////////////////////////////////
-    if(setChildStates(newState)){
+    if(setChildrenStates(newState)){
 
     	// The transition won'tl be executed. Set the initial state
     	//////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ void StateMachineImpl::setState(const state_t newState)
     	m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
 
     	std::ostringstream buildErrorMessage;
-    	buildErrorMessage << "The transition from children has been denied";
+    	buildErrorMessage << "The transition from one child has been denied";
     	throw StateMachineTransitionDenied(buildErrorMessage.str());
     }
 
@@ -284,7 +284,7 @@ void StateMachineImpl::setState(const state_t newState)
     }
 }
 
-bool StateMachineImpl::setChildStates(state_t futureState){
+bool StateMachineImpl::setChildrenStates(state_t futureState){
 
 	bool error=false;
     std::lock_guard<std::recursive_mutex> lock(m_stateMutex);

@@ -188,11 +188,11 @@ public:
 protected:
 
     /**
-     * @brief Execute the state transition of all first level children
+     * @brief Execute the state transition for all first level children
      *
      * @return true if all children successfully changed their states
      */
-    bool setChildStates(state_t futureState);
+    bool setChildrenStates(state_t futureState);
 
     /**
      * @brief Execute the state transition. May be called from a separate thread.
