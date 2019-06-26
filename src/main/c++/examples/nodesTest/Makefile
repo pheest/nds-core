@@ -14,20 +14,24 @@ LINK = -shared -Wl,-as-needed
  
 # List of targets 
 TARGET = $(patsubst %.cpp,$(TARGETDIR)/libnds3-%.so,$(wildcard *.cpp))
- 
+#TARGET := $(patsubst %.cpp, %.so,$(wildcard *.cpp))
+SOURCES:=$(wildcard *.cpp) 
 # Additional linker libraries
 LIBS =-lnds3
 
 #LIBRARIES=nds3 
 #LIBNAME=nds3-DeviceDBL
  
-all: $(patsubst %.cpp, %.so,$(wildcard *.cpp))
+#all: $(patsubst %.cpp, %.so,$(wildcard *.cpp))
+all: $(TARGET)
 
-%.so: %.cpp 
-	mkdir -p $(TARGETDIR)
-	$(CXX) $< $(CXXFLAGS) $(LINK) $(LDFLAGS) -o $(TARGETDIR)/libnds3-$@ $(LIBS)
+#%.so:  %.cpp
+$(TARGETDIR)/libnds3-%.so: %.cpp
+#	mkdir -p $(TARGETDIR)
+#	$(CXX)  $(CXXFLAGS) $(LINK) $(LDFLAGS) $< -o $(TARGETDIR)/libnds3-$@ $(LIBS)
+	$(CXX)  $(CXXFLAGS) $(LINK) $(LDFLAGS) $< -o $@ $(LIBS)
 
-.PHONY: clean
+#.PHONY: clean
 clean:
 	$(RM) $(TARGET) 
 
