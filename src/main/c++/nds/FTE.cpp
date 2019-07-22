@@ -21,6 +21,35 @@ FTE<T>::FTE(): Node()
 {
 }
 
+template <typename T>
+FTE<T>::FTE(
+        const std::string& name,
+        stateChange_t switchOnFunction,
+        stateChange_t switchOffFunction,
+        stateChange_t startFunction,
+        stateChange_t stopFunction,
+        stateChange_t recoverFunction,
+        allowChange_t allowStateChangeFunction,
+		autoEnable_t autoEnable,
+		writerInt32_t PV_Set_Writer,
+		writerInt32_t PV_Suppress_Writer,
+		writerInt32_t PV_ChgPeriod_Writer,
+		writerInt32_t PV_PendingValue_Writer):
+						Node(std::shared_ptr<FTEImpl<T> >(new FTEImpl<T>(	name,
+																switchOnFunction,
+																switchOffFunction,
+																startFunction,
+																stopFunction,
+																recoverFunction,
+																allowStateChangeFunction,
+																autoEnable,
+																PV_Set_Writer,
+																PV_Suppress_Writer,
+																PV_ChgPeriod_Writer,
+																PV_PendingValue_Writer)))
+{
+}
+
 /**
  * @brief Constructs the FTE node.
  *
@@ -85,6 +114,12 @@ template <typename T>
 timespec FTE<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+nds::state_t FTE<T>::getState()
+{
+    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getState();
 }
 
 ///////////////////////////////////////////////////////////////

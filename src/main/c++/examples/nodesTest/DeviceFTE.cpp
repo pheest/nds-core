@@ -81,6 +81,7 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 	 			std::bind(&DeviceFTE::stop_FTE, this),
 	 			std::bind(&DeviceFTE::recover_FTE, this),
 	 			std::bind(&DeviceFTE::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				nds::autoEnable_t::running,
 	 			std::bind(&DeviceFTE::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&DeviceFTE::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
@@ -98,6 +99,18 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
     timespec timestamp={0,0};
     m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
     m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
+
+
+    m_StateMachine = rootNode.addChild(nds::StateMachine(true,
+    					std::bind(&DeviceFTE::switchOn_RootNode, this),
+    					std::bind(&DeviceFTE::switchOff_RootNode, this),
+    					std::bind(&DeviceFTE::start_RootNode, this),
+    					std::bind(&DeviceFTE::stop_RootNode, this),
+    					std::bind(&DeviceFTE::recover_RootNode, this),
+    					std::bind(&DeviceFTE::allow_RootNode_Change, this,
+    						  std::placeholders::_1,
+    						  std::placeholders::_2,
+    						  std::placeholders::_3)));
 
 	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
 	//  with the control system that called this constructor.
@@ -136,6 +149,84 @@ timespec DeviceFTE::getCurrentTime()
 
 
 
+std::string ndsStateToString(nds::state_t state){
+
+	switch((int)state){
+	case 0:
+		return std::string("unknown");
+	break;
+	case 1:
+		return std::string("off");
+	break;
+	case 2:
+		return std::string("switchingOff");
+	break;
+	case 3:
+		return std::string("initializing");
+	break;
+	case 4:
+		return std::string("on");
+	break;
+	case 5:
+		return std::string("stopping");
+	break;
+	case 6:
+		return std::string("starting");
+	break;
+	case 7:
+		return std::string("running");
+	break;
+	default:
+		return std::string("MAX_STATE_NUM");
+	break;
+	}
+}
+
+/*
+ * RootNode STM
+ *
+ *
+ */
+
+/**
+* Methods to control rootNode state machine
+*/
+// Called when the rootNode node has to be switched on.
+void DeviceFTE::switchOn_RootNode(){
+	std::cout<<"RootNode actual state: "<<ndsStateToString(m_StateMachine.getLocalState())<<std::endl;
+}
+
+// Called when the rootNode node has to be switched off.
+void DeviceFTE::switchOff_RootNode(){
+	std::cout<<"RootNode actual state: "<<ndsStateToString(m_StateMachine.getLocalState())<<std::endl;
+}
+
+// Called when the rootNode node has to start working. We start the FTE thread.
+void DeviceFTE::start_RootNode(){
+	std::cout<<"RootNode actual state: "<<ndsStateToString(m_StateMachine.getLocalState())<<std::endl;
+}
+
+// Stop the FTE node thread
+void DeviceFTE::stop_RootNode(){
+	std::cout<<"RootNode actual state: "<<ndsStateToString(m_StateMachine.getLocalState())<<std::endl;
+}
+
+// A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
+//  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
+
+void DeviceFTE::recover_RootNode(){
+	std::cout<<"RootNode actual state: "<<ndsStateToString(m_StateMachine.getLocalState())<<std::endl;
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+// We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
+
+
+bool DeviceFTE::allow_RootNode_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+
+	return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //  FTE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,20 +238,24 @@ timespec DeviceFTE::getCurrentTime()
 void DeviceFTE::switchOn_FTE(){
 	// Call API HW to retrieve Maximum -> (ex: Maximum FTE that can be scheduled 20)
 	m_FTE.setMaximum(getCurrentTime(),20);
+	std::cout<<"FTE actual state: "<<ndsStateToString(m_FTE.getState())<<std::endl;
 }
 
 // Called when the FTE node has to be switched off.
 void DeviceFTE::switchOff_FTE(){
+	std::cout<<"FTE actual state: "<<ndsStateToString(m_FTE.getState())<<std::endl;
 
 }
 
 // Called when the FTE node has to start working. We start the FTE thread.
 void DeviceFTE::start_FTE(){
+	std::cout<<"FTE actual state: "<<ndsStateToString(m_FTE.getState())<<std::endl;
 
 }
 
 // Stop the FTE node thread
 void DeviceFTE::stop_FTE(){
+	std::cout<<"FTE actual state: "<<ndsStateToString(m_FTE.getState())<<std::endl;
 
 }
 
@@ -168,7 +263,7 @@ void DeviceFTE::stop_FTE(){
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
 
 void DeviceFTE::recover_FTE(){
-
+	std::cout<<"FTE actual state: "<<ndsStateToString(m_FTE.getState())<<std::endl;
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
