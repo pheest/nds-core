@@ -35,6 +35,11 @@ PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction):
     PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction)))
 {}
 
+template <typename T>
+PVDelegateOut<T>::PVDelegateOut(const std::string& name, write_t writeFunction, write_name_t writeFunctionName):
+    PVBaseOut(std::shared_ptr<PVBaseOutImpl>(new PVDelegateOutImpl<T>(name, writeFunction,writeFunctionName)))
+{}
+
 
 // Instantiate all the needed data types
 ////////////////////////////////////////

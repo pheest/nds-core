@@ -32,7 +32,8 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_timespec_PV(nds::PVDelegateOut<timespec>("Timespec", std::bind(&DevicePVs::setTimespec, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timespecArray_PV(nds::PVDelegateOut<std::vector<timespec>>("TimespecArray", std::bind(&DevicePVs::setTimespecArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timestamp_PV(nds::PVDelegateOut<nds::timestamp_t>("Timestamp", std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2))),
-						m_dataSharingHandler_PV(nds::PVDelegateOut<std::int32_t>("ShareData", std::bind(&DevicePVs::increaseDataSouce, this, std::placeholders::_1, std::placeholders::_2)))
+						m_dataSharingHandler_PV(nds::PVDelegateOut<std::int32_t>("ShareData", std::bind(&DevicePVs::increaseDataSouce, this, std::placeholders::_1, std::placeholders::_2))),
+						m_delegateOutWithName_PV(nds::PVDelegateOut<std::int32_t>("delegateOutWithName",NULL, std::bind(&DevicePVs::delegateOutWithName, this, std::placeholders::_1, std::placeholders::_2,std::placeholders::_3)))
 	{
 
 	//Verify that there is no devices of this type with the same name
@@ -299,6 +300,8 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
         m_dataSharingHandler_PV.setDescription("Increase selected source PVs");
         m_dataSharingHandler_PV.setScanType(nds::scanType_t::passive);
 
+        rootNode.addChild(m_delegateOutWithName_PV);
+
 	m_sourceInt_PV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("SourceInt"));
 	m_sourceInt_PV.setDescription("Input PV to send integer data");
 	m_sourceInt_PV.setScanType(nds::scanType_t::interrupt);
@@ -456,6 +459,14 @@ void DevicePVs::initializePVs(void){
         double subscribedDouble = -3.3;
         timestamp = {NDS_EPOCH, ns++};
         m_targetSubscriptionDouble_PV.write(timestamp, subscribedDouble);
+
+}
+
+void DevicePVs::delegateOutWithName(const timespec& timestamp, const std::int32_t& data, const std::string& name) {
+
+	std::cout<<"============================"<<std::endl;
+	std::cout<<"Called PV Delegate with name: "<<name<<std::endl;
+	std::cout<<"============================"<<std::endl;
 
 }
 

@@ -78,6 +78,9 @@ public:
      */
     typedef std::function<void (const timespec&, const T&)> write_t;
 
+    typedef std::function<void (const timespec&, const T&, const std::string&)> write_name_t;
+
+
     /**
      * @brief Construct the PVDelegateOut object and specifies the external functions
      *        that must be called to write the data and to retrieve the initial value.
@@ -99,6 +102,8 @@ public:
      * @param writeFunction function to be used to write the value
      */
     PVDelegateOut(const std::string& name, write_t writeFunction);
+
+    PVDelegateOut(const std::string& name, write_t writeFunction, write_name_t writeFunctionName);
 
 #ifndef SWIG
 private:
