@@ -149,7 +149,7 @@ void NodeImpl::getChildrenState(timespec* pTimestamp, state_t* pState) const
     }
 }
 
-bool nds::NodeImpl::setChildrenState(timespec pTimestamp, state_t futureState) {
+bool nds::NodeImpl::setChildrenState(timespec /*pTimestamp*/, state_t futureState) {
 
 	bool error=false;
 	std::map<std::string,state_t> prevChildStatus;

@@ -462,7 +462,7 @@ void DevicePVs::initializePVs(void){
 
 }
 
-void DevicePVs::delegateOutWithName(const timespec& timestamp, const std::int32_t& data, const std::string& name) {
+void DevicePVs::delegateOutWithName(const timespec& /*timestamp*/, const std::int32_t& /*data*/, const std::string& name) {
 
 	std::cout<<"============================"<<std::endl;
 	std::cout<<"Called PV Delegate with name: "<<name<<std::endl;
