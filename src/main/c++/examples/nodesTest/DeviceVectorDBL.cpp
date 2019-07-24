@@ -220,7 +220,7 @@ timespec DeviceVectorDBL::getCurrentTime()
 {
     timespec time;
     time.tv_sec = m_setCurrentTime.getValue();
-    time.tv_nsec = time.tv_sec + 10;
+    time.tv_nsec = 0;
     return time;
 }
 

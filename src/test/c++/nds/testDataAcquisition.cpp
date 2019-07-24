@@ -622,7 +622,7 @@ static void commonPVsVDBLTest(const bool testInitializers)
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	EXPECT_EQ(0, pTime->tv_nsec);
 	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
@@ -2150,7 +2150,7 @@ static void commonDecimationTest(const bool testInitializers) {
 		std::cout << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
 	}
 	EXPECT_EQ(startTimestamp, pTime->tv_sec);
-	EXPECT_EQ(startTimestamp + 10, pTime->tv_nsec);
+	EXPECT_EQ(0, pTime->tv_nsec);
 	++startTimestamp;
 
 	factory.destroyDevice("rootNode");
