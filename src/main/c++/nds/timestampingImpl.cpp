@@ -192,6 +192,12 @@ namespace nds {
       m_OnStartDelegate();
   }
 
+  template<typename T>
+  nds::state_t TimestampingImpl<T>::getState()
+  {
+  	return m_StateMachine->getLocalState();
+  }
+
   // ---------------------------- Getters ---------------------------------- //
   template<typename T>
   std::int32_t TimestampingImpl<T>::getEnable()

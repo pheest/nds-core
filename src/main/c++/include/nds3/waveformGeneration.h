@@ -474,6 +474,13 @@ public:
     timespec getStartTimestamp() const;
 
     /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
+
+    /**
      * @ingroup datareadwrite
      * @brief Push waveform generated data to the control system.
      *

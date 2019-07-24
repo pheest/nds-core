@@ -184,6 +184,7 @@ class NDS3_API Timestamping: public Node  {
     Timestamping(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ------------------ Functions common to all nodes ---------------------//
+
     /**
      * @ingroup
      * @brief Set the function that retrieves the exact start time when starts.
@@ -192,6 +193,13 @@ class NDS3_API Timestamping: public Node  {
      *
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
      * @ingroup

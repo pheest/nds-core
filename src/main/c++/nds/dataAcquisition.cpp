@@ -206,6 +206,12 @@ double DataAcquisition<T>::getSamplingRate()
 }
 
 template <typename T>
+nds::state_t DataAcquisition<T>::getState()
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->getState();
+}
+
+template <typename T>
 void DataAcquisition<T>::setGain(const timespec& timestamp, const double& value)
 {
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setGain(timestamp, value);

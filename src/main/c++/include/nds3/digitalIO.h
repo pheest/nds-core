@@ -252,6 +252,13 @@ public:
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
+
+    /**
      * @brief Push the data to the control system.
      *
      * Usually your device implementation will call this function from the

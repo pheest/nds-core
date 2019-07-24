@@ -81,6 +81,13 @@ public:
      */
     timespec getStartTimestamp() const;
 
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
+
     void push(const timespec& timestamp, const T& data);
     T getDataAWG();
     size_t getMaxElements();

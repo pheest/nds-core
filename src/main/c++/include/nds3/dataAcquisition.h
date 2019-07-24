@@ -355,6 +355,13 @@ public:
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
+
+    /**
      * @ingroup datareadwrite
      * @brief Push acquired data to the control system.
      *
@@ -480,6 +487,7 @@ public:
     * @return the m_DMASamplingRate_PV value
     */
     double getSamplingRate();
+
     /**
      * @brief Sets the value of the m_Gain_RBV and pushes it to the control system.
      *

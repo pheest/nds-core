@@ -237,6 +237,11 @@ void RoutingImpl<T>::onStart()
 	m_OnStartDelegate();
 }
 
+template<typename T>
+nds::state_t RoutingImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
 
 
 ///////////////////////////////////////////////////////////////

@@ -145,6 +145,11 @@ namespace nds {
     m_OnStartDelegate();
   }
 
+  nds::state_t TimingImpl::getState()
+  {
+  	return m_StateMachine->getLocalState();
+  }
+
   // ------------------------ Delegate Functions ---------------------------- //
   void TimingImpl::PV_HTime_Reader(timespec* /*timestamp*/, std::string *value) {
     tm *gmttm = gmtime(&m_CurrentTime.tv_sec);

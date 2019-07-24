@@ -83,6 +83,12 @@ void DigitalIO<T>::setStartTimestampDelegate(getTimestampPlugin_t timestampDeleg
 }
 
 template <typename T>
+nds::state_t DigitalIO<T>::getState()
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->getState();
+}
+
+template <typename T>
 void DigitalIO<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->push(timestamp, data);

@@ -215,6 +215,12 @@ void DigitalIOImpl<T>::onStart()
 }
 
 template<typename T>
+nds::state_t DigitalIOImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
+
+template<typename T>
 std::vector<bool> DigitalIOImpl<T>::getDataOutMask()
 {
 	std::vector<bool> dataOutMask;

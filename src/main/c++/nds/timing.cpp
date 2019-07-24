@@ -74,6 +74,11 @@ timespec Timing::getStartTimestamp() const
     return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getStartTimestamp();
 }
 
+nds::state_t Timing::getState()
+{
+    return std::static_pointer_cast<TimingImpl>(m_pImplementation)->getState();
+}
+
 // -------------------------------- Getters --------------------------------- //
 timespec Timing::getTime() {
   return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getTime();

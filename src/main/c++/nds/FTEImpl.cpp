@@ -290,7 +290,6 @@ template<typename T>
 nds::state_t FTEImpl<T>::getState()
 {
 	return m_StateMachine->getLocalState();
-
 }
 
 ///////////////////////////////////////////////////////////////

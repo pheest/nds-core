@@ -708,6 +708,12 @@ void WaveformGenerationImpl<T>::onStart()
     m_OnStartDelegate();
 }
 
+template<typename T>
+nds::state_t WaveformGenerationImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
+
 
 template class WaveformGenerationImpl<std::int32_t>;
 template class WaveformGenerationImpl<float>;

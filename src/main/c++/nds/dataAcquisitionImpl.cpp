@@ -613,6 +613,12 @@ void DataAcquisitionImpl<T>::onStart()
     m_OnStartDelegate();
 }
 
+template<typename T>
+nds::state_t DataAcquisitionImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
+
 
 template class DataAcquisitionImpl<std::int32_t>;
 template class DataAcquisitionImpl<float>;

@@ -90,6 +90,13 @@ timespec Timestamping<T>::getStartTimestamp() const
     return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getStartTimestamp();
 }
 
+template <typename T>
+nds::state_t Timestamping<T>::getState()
+{
+    return std::static_pointer_cast<TimestampingImpl<T> >(m_pImplementation)->getState();
+}
+
+
 // -------------------------------- Getters --------------------------------- //
 template <typename T>
 std::int32_t Timestamping<T>::getEnable(){

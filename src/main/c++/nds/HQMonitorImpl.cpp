@@ -307,6 +307,10 @@ inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t& handlerHQM) {
     m_onStartDelegate();
   }
   
+  nds::state_t HQMonitorImpl::getState()
+  {
+  	return m_StateMachine->getLocalState();
+  }
 
 /**
  * ---------------------------------------------------

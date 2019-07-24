@@ -348,6 +348,12 @@ void TriggerAndClkImpl<T>::onStart()
 }
 
 template<typename T>
+nds::state_t TriggerAndClkImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
+
+template<typename T>
 std::int32_t TriggerAndClkImpl<T>::getHWBlock(){
 
 	std::int32_t HWBlock;

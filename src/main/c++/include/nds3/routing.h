@@ -254,6 +254,12 @@ public:
      */
     Routing(const std::string& name, const RoutingArgs_t& handlerRTN);
 
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     // TODO Is it necessary this delegate function?
     /**

@@ -105,6 +105,10 @@ timespec HQMonitor::getStartTimestamp() const
     return std::static_pointer_cast<HQMonitorImpl >(m_pImplementation)->getStartTimestamp();
 }
 
+nds::state_t HQMonitor::getState()
+{
+    return std::static_pointer_cast<HQMonitorImpl >(m_pImplementation)->getState();
+}
 
 /**
  * ---------------------------------------------------

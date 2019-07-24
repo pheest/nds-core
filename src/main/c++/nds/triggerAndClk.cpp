@@ -94,6 +94,12 @@ timespec TriggerAndClk<T>::getStartTimestamp() const
 }
 
 template <typename T>
+nds::state_t TriggerAndClk<T>::getState()
+{
+    return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getState();
+}
+
+template <typename T>
 std::int32_t TriggerAndClk<T>::getHWBlock()
 {
     return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getHWBlock();

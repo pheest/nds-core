@@ -75,6 +75,14 @@ namespace nds
        *        delegated onStart function.
        */
       void onStart();
+
+      /**
+       * @brief Called to obtain the actual state of the State Machine of the Node
+       *
+       * @return The actual state of the State Machine of the Node
+       */
+      nds::state_t getState();
+
       /**
        * @brief Retrieve the Firmware Version
        *

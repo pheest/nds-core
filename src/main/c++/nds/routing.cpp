@@ -86,6 +86,12 @@ timespec Routing<T>::getStartTimestamp() const
     return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
 
+template <typename T>
+nds::state_t Routing<T>::getState()
+{
+    return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->getState();
+}
+
 ///////////////////////////////////////////////////////////////
 // Route Clocks getters
 ///////////////////////////////////////////////////////////////

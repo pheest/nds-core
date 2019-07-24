@@ -112,6 +112,12 @@ timespec WaveformGeneration<T>::getStartTimestamp() const
 }
 
 template <typename T>
+nds::state_t WaveformGeneration<T>::getState()
+{
+    return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->getState();
+}
+
+template <typename T>
 void WaveformGeneration<T>::push(const timespec& timestamp, const T& data)
 {
     std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->push(timestamp, data);

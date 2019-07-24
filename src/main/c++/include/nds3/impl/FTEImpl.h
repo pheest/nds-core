@@ -110,9 +110,12 @@ public:
      */
     void onStart();
 
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
     nds::state_t getState();
-
-
 protected:
     /**
      * @brief In the state machine we set the start function to onStart(), so we
