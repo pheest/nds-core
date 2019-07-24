@@ -219,14 +219,16 @@ struct FTEArgs_t {
 			writerInt32_t _PV_Set_Writer,
 			writerInt32_t _PV_Suppress_Writer,
 			writerInt32_t _PV_ChgPeriod_Writer,
-			writerInt32_t _PV_PendingValue_Writer) :
+			writerInt32_t _PV_PendingValue_Writer,
+			autoEnable_t autoEnable=autoEnable_t::off) :
 		handlerSTM(	true, ///Asynchronous state transitions.
 								switchOnFunction,
 								switchOffFunction,
 								startFunction,
 								stopFunction,
 								recoverFunction,
-								allowStateChangeFunction),
+								allowStateChangeFunction,
+								autoEnable),
 		PV_Set_Writer(_PV_Set_Writer),
 		PV_Suppress_Writer(_PV_Suppress_Writer),
 		PV_ChgPeriod_Writer(_PV_ChgPeriod_Writer),
@@ -284,23 +286,6 @@ public:
 
 	FTE& operator=(const FTE<T>& right);
 
-	/**
-	     * @brief Constructs the FTE node.
-	     *
-	     */
-		FTE(const std::string& name,
-	            stateChange_t switchOnFunction,          	///< Delegate function that performs the actions to switch the node on
-	            stateChange_t switchOffFunction,         	///< Delegate function that performs the actions to switch the node off
-	            stateChange_t startFunction,             	///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-	            stateChange_t stopFunction,              	///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-	            stateChange_t recoverFunction,           	///< Delegate function to execute to recover from an error state
-	            allowChange_t allowStateChangeFunction,  	///< Delegate function that can deny a state change. Usually just returns true
-				autoEnable_t autoEnable,
-				writerInt32_t PV_Set_Writer,               	///< Delegate function setter/getter to interact to the Low Level Driver API
-				writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
-				writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
-				writerInt32_t PV_PendingValue_Writer);   	///< Delegate function setter/getter to interact to the Low Level Driver API
-
     /**
      * @brief Constructs the FTE node.
      *
@@ -315,7 +300,8 @@ public:
 			writerInt32_t PV_Set_Writer,               	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_PendingValue_Writer);   	///< Delegate function setter/getter to interact to the Low Level Driver API
+			writerInt32_t PV_PendingValue_Writer,	///< Delegate function setter/getter to interact to the Low Level Driver API
+			autoEnable_t autoEnable=autoEnable_t::off);
 
 	/**
 	 * @brief Simplified constructor of the FTE node.

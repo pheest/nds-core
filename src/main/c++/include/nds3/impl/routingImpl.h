@@ -40,7 +40,8 @@ public:
 				writerInt32_t PV_ClkSet_Writer,
 				writerInt32_t PV_ClkDstRead_Writer,
 				writerInt32_t PV_TermSet_Writer,
-				writerInt32_t PV_TermDstRead_Writer
+				writerInt32_t PV_TermDstRead_Writer,
+				autoEnable_t autoEnable
 			);
 
     /**

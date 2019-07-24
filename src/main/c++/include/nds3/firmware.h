@@ -73,14 +73,16 @@ struct FirmwareArgs_t {
 					stateChange_t stopFunction,
 					stateChange_t recoverFunction,
 					allowChange_t allowStateChangeFunction,
-					writerString_t PV_FirmwarePath_Writer):
+					writerString_t PV_FirmwarePath_Writer,
+					autoEnable_t autoEnable=autoEnable_t::off):
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
 						switchOffFunction,
 						startFunction,
 						stopFunction,
 						recoverFunction,
-						allowStateChangeFunction),
+						allowStateChangeFunction,
+						autoEnable),
 			PV_FirmwarePath_Writer(PV_FirmwarePath_Writer) {}
 };
 
@@ -130,7 +132,8 @@ public:
 	stateChange_t stopFunction,      ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
 	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
 	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
-	writerString_t PV_FirmwarePath_Writer);  ///< Delegate function that performs the actions to set the firmware path
+	writerString_t PV_FirmwarePath_Writer,	 ///< Delegate function that performs the actions to set the firmware path
+	autoEnable_t autoEnable=autoEnable_t::off);
 
     /**
      * @brief Simplified constructor of the firmware node.

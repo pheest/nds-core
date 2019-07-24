@@ -101,14 +101,16 @@ struct TimestampingArgs_t {
 					   allowChange_t allowStateChangeFunction,
 					   writerInt32_t _PV_Enable_Writer,
 					   writerInt32_t _PV_Edge_Writer,
-					   writerInt32_t _PV_ClearOverflow_Writer) :
+					   writerInt32_t _PV_ClearOverflow_Writer,
+					   autoEnable_t autoEnable=autoEnable_t::off) :
 			   handlerSTM (true, ///Asynchronous state transitions.
 					   switchOnFunction,
 					   switchOffFunction,
 					   startFunction,
 					   stopFunction,
 					   recoverFunction,
-					   allowStateChangeFunction),
+					   allowStateChangeFunction,
+					   autoEnable),
 			   PV_Enable_Writer(_PV_Enable_Writer),
 			   PV_Edge_Writer(_PV_Edge_Writer),
 			   PV_ClearOverflow_Writer(_PV_ClearOverflow_Writer) {}
@@ -170,7 +172,8 @@ class NDS3_API Timestamping: public Node  {
                  allowChange_t allowStateChangeFunction,
                  writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
-                 writerInt32_t PV_ClearOverflow_Writer);
+                 writerInt32_t PV_ClearOverflow_Writer,
+				 autoEnable_t autoEnable=autoEnable_t::off);
 
     /**
      * @brief Simplified constructor of the Timestamping node.

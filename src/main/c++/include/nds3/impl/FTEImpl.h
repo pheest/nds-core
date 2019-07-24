@@ -29,20 +29,6 @@ class FTEImpl: public NodeImpl
 {
 public:
 
-
-	FTEImpl(const std::string& name,
-			stateChange_t switchOnFunction,
-			stateChange_t switchOffFunction,
-			stateChange_t startFunction,
-			stateChange_t stopFunction,
-			stateChange_t recoverFunction,
-			allowChange_t allowStateChangeFunction,
-			autoEnable_t autoEnable,
-			writerInt32_t PV_Set_Writer,
-			writerInt32_t PV_Suppress_Writer,
-			writerInt32_t PV_ChgPeriod_Writer,
-			writerInt32_t PV_PendingValue_Writer);
-
 	FTEImpl(const std::string& name,
 			stateChange_t switchOnFunction,
 			stateChange_t switchOffFunction,
@@ -53,7 +39,8 @@ public:
 			writerInt32_t PV_Set_Writer,
 			writerInt32_t PV_Suppress_Writer,
 			writerInt32_t PV_ChgPeriod_Writer,
-			writerInt32_t PV_PendingValue_Writer);
+			writerInt32_t PV_PendingValue_Writer,
+			autoEnable_t autoEnable);
 
 	/**
 	 * @brief Constructs the FTE node by means of its structure of functions.
@@ -196,7 +183,6 @@ protected:
 	std::shared_ptr<PVVariableInImpl<std::int32_t> > m_Maximum_PV;
 
 	std::shared_ptr<StateMachineImpl> m_StateMachine;
-	autoEnable_t m_autoEnable;
 
 private:
 

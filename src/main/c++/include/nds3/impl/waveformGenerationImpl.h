@@ -46,7 +46,8 @@ public:
 						writerInt32_t PV_Coupling_Writer,
 						writerInt32_t PV_SignalRef_Writer,
 						writerInt32_t PV_SignalType_Writer,
-						writerInt32_t PV_Ground_Writer);
+						writerInt32_t PV_Ground_Writer,
+						autoEnable_t autoEnable);
 
     /**
      * @brief Constructs the WaveformGeneration node by means of its structure of functions.

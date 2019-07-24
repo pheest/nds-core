@@ -36,7 +36,8 @@ TriggerAndClkImpl<T>::TriggerAndClkImpl(
 			writerInt32_t PV_ResetTrigConf_Writer,
 			writerInt32_t PV_PLLSyncSET_Writer,
 			writerInt32_t PV_EnableDisablePLL_Writer,
-			const nds::Routing<std::string>& _routingNode):
+			const nds::Routing<std::string>& _routingNode,
+			autoEnable_t autoEnable):
 			NodeImpl(name, nodeType_t::dataSourceChannel),
 			m_OnStartDelegate(startFunction),
 			m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)),
@@ -53,7 +54,8 @@ TriggerAndClkImpl<T>::TriggerAndClkImpl(
                                                         PV_ResetTrigConf_Writer,
                                                         PV_PLLSyncSET_Writer,
                                                         PV_EnableDisablePLL_Writer,
-                                                        _routingNode);
+                                                        _routingNode,
+														autoEnable);
   constructorBody(handlerTrig);
 }
 

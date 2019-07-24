@@ -88,6 +88,11 @@ struct StateMachineArgs_t {
 	const allowChange_t allowStateChangeFunction;
 
 	/**
+	 * @brief Variable to indicate which level will follow the child to its parent STM
+	 */
+	autoEnable_t autoEnable;
+
+	/**
 	 * @brief Constructor to create an instance of the given structure.
 	 * It must be used to ensure that compulsory fields are always provided in compilation time.
 	 * @param _bAsync Boolean to be set in @ref StateMachineArgs_t.bAsync.
@@ -101,14 +106,16 @@ struct StateMachineArgs_t {
 	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,
 			stateChange_t _stopFunction, stateChange_t _recoverFunction,
-			allowChange_t _allowStateChangeFunction):
+			allowChange_t _allowStateChangeFunction,
+			autoEnable_t autoEnable=autoEnable_t::off):
 				bAsync(_bAsync),
 				switchOnFunction(_switchOnFunction),
 				switchOffFunction(_switchOffFunction),
 				startFunction(_startFunction),
 				stopFunction(_stopFunction),
 				recoverFunction(_recoverFunction),
-				allowStateChangeFunction(_allowStateChangeFunction) {}
+				allowStateChangeFunction(_allowStateChangeFunction),
+				autoEnable(autoEnable){}
 };
 
 /**

@@ -40,7 +40,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 											writerInt32_t PV_SignalRefType_Writer,
 											writerInt32_t PV_Ground_Writer,
 										    writerInt32_t PV_DMAEnable_Writer,
-											writerDouble_t PV_SamplingRate_Writer
+											writerDouble_t PV_SamplingRate_Writer,
+											autoEnable_t autoEnable
 ):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
@@ -61,7 +62,8 @@ DataAcquisitionImpl<T>::DataAcquisitionImpl(const std::string& name,
 															 PV_SignalRefType_Writer,
 															 PV_Ground_Writer,
 															 PV_DMAEnable_Writer,
-															 PV_SamplingRate_Writer
+															 PV_SamplingRate_Writer,
+															 autoEnable
 															);
 	constructorBody(maxElements, handlerDAQ);
 }
@@ -320,7 +322,8 @@ inline void DataAcquisitionImpl<T>::constructorBody(size_t maxElements, const Da
                                    std::bind(&DataAcquisitionImpl::onStart, this),
 								   handlerDAQ.handlerSTM.stopFunction,
 								   handlerDAQ.handlerSTM.recoverFunction,
-								   handlerDAQ.handlerSTM.allowStateChangeFunction));
+								   handlerDAQ.handlerSTM.allowStateChangeFunction,
+								   handlerDAQ.handlerSTM.autoEnable));
     addChild(m_StateMachine);
 }
 

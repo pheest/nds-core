@@ -35,7 +35,8 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 						 writerVectorBool_t PV_dataOutMask_Writer,
 						 writerDouble_t PV_voltLevelHigh_Writer,
 						 writerDouble_t PV_voltLevelLow_Writer,
-						 writerVectorBool_t PV_ChannelDir_Writer):
+						 writerVectorBool_t PV_ChannelDir_Writer,
+						 autoEnable_t autoEnable):
 
     Node(std::shared_ptr<DigitalIOImpl<T> >(new DigitalIOImpl<T>( name,
 																  maxElements,
@@ -48,7 +49,8 @@ DigitalIO<T>::DigitalIO( const std::string& name,
 																  PV_dataOutMask_Writer,
 																  PV_voltLevelHigh_Writer,
 																  PV_voltLevelLow_Writer,
-																  PV_ChannelDir_Writer)))
+																  PV_ChannelDir_Writer,
+																  autoEnable)))
 {
 }
 

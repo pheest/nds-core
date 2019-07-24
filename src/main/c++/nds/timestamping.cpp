@@ -45,7 +45,8 @@ Timestamping<T>::Timestamping(const std::string& name,
     allowChange_t allowStateChangeFunction,
     writerInt32_t PV_Enable_Writer,
     writerInt32_t PV_Edge_Writer,
-    writerInt32_t PV_ClearOverflow_Writer):
+    writerInt32_t PV_ClearOverflow_Writer,
+	autoEnable_t autoEnable):
 
     Node(std::shared_ptr<TimestampingImpl<T>>(new TimestampingImpl<T>(name,
     maxElements,
@@ -57,7 +58,8 @@ Timestamping<T>::Timestamping(const std::string& name,
     allowStateChangeFunction,
     PV_Enable_Writer,
     PV_Edge_Writer,
-    PV_ClearOverflow_Writer)))
+    PV_ClearOverflow_Writer,
+	autoEnable)))
 {
 }
 

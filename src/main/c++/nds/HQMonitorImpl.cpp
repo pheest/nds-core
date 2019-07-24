@@ -41,7 +41,8 @@ HQMonitorImpl::HQMonitorImpl(  const std::string& name,
 					 writerInt32_t PV_SelfTestCodeResultEnable_Writer,
 					 readerString_t PV_SelfTestTextResult_Reader,
 					 readerInt32_t PV_SignalQualityFlag_Reader,
-					 writerDouble_t PV_SignalQualityFlagLevel_Writer):
+					 writerDouble_t PV_SignalQualityFlagLevel_Writer,
+					 autoEnable_t autoEnable):
   NodeImpl(name, nodeType_t::dataSourceChannel),
   m_onStartDelegate(startFunction),
   m_startTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -66,7 +67,8 @@ HQMonitorImpl::HQMonitorImpl(  const std::string& name,
 														PV_SelfTestCodeResultEnable_Writer,
 														PV_SelfTestTextResult_Reader,
 														PV_SignalQualityFlag_Reader,
-														PV_SignalQualityFlagLevel_Writer);
+														PV_SignalQualityFlagLevel_Writer,
+														autoEnable);
 	constructorBody(handlerHQM);
 }
 
@@ -277,7 +279,8 @@ inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t& handlerHQM) {
 						      std::bind(&HQMonitorImpl::onStart, this),
 							  handlerHQM.handlerSTM.stopFunction,
 							  handlerHQM.handlerSTM.recoverFunction,
-							  handlerHQM.handlerSTM.allowStateChangeFunction));
+							  handlerHQM.handlerSTM.allowStateChangeFunction,
+							  handlerHQM.handlerSTM.autoEnable));
 	    addChild(m_StateMachine);
 
 }

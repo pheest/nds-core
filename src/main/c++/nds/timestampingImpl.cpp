@@ -26,7 +26,8 @@ namespace nds {
       allowChange_t allowStateChangeFunction,
       writerInt32_t PV_Enable_Writer,
       writerInt32_t PV_Edge_Writer,
-      writerInt32_t PV_ClearOverflow_Writer):
+      writerInt32_t PV_ClearOverflow_Writer,
+	  autoEnable_t autoEnable):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -39,7 +40,8 @@ namespace nds {
 														 allowStateChangeFunction,
 														 PV_Enable_Writer,
 														 PV_Edge_Writer,
-														 PV_ClearOverflow_Writer);
+														 PV_ClearOverflow_Writer,
+														 autoEnable);
 	  constructorBody(handlerTMS);
   }
   template <typename T>
@@ -158,7 +160,8 @@ namespace nds {
 												  std::bind(&TimestampingImpl::onStart, this),
 												  handlerTMS.handlerSTM.stopFunction,
 												  handlerTMS.handlerSTM.recoverFunction,
-												  handlerTMS.handlerSTM.allowStateChangeFunction));
+												  handlerTMS.handlerSTM.allowStateChangeFunction,
+												  handlerTMS.handlerSTM.autoEnable));
 	    addChild(m_StateMachine);
   }
 

@@ -326,14 +326,16 @@ struct WaveformGenerationArgs_t {
 							 writerInt32_t _PV_Coupling_Writer,
 							 writerInt32_t _PV_SignalRef_Writer,
 							 writerInt32_t _PV_SignalType_Writer,
-							 writerInt32_t _PV_Ground_Writer) :
+							 writerInt32_t _PV_Ground_Writer,
+							 autoEnable_t autoEnable=autoEnable_t::off) :
 		   handlerSTM (true, ///Asynchronous state transitions.
 				   switchOnFunction,
 				   switchOffFunction,
 				   startFunction,
 				   stopFunction,
 				   recoverFunction,
-				   allowStateChangeFunction),
+				   allowStateChangeFunction,
+				   autoEnable),
 		   PV_Frequency_Writer(_PV_Frequency_Writer),
 		   PV_RefFrequency_Writer(_PV_RefFrequency_Writer),
 		   PV_Amp_Writer(_PV_Amp_Writer),
@@ -435,7 +437,8 @@ public:
 					writerInt32_t PV_Coupling_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalRef_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_SignalType_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer);          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerInt32_t PV_Ground_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+					autoEnable_t autoEnable=autoEnable_t::off);
 
     /**
      * @brief Simplified constructor of the WaveformGeneration node.

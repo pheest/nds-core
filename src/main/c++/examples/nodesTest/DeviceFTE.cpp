@@ -81,11 +81,11 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 	 			std::bind(&DeviceFTE::stop_FTE, this),
 	 			std::bind(&DeviceFTE::recover_FTE, this),
 	 			std::bind(&DeviceFTE::allow_FTE_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				nds::autoEnable_t::running,
 	 			std::bind(&DeviceFTE::PV_FTE_Set_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&DeviceFTE::PV_FTE_Suppress_Writer,this, std::placeholders::_1, std::placeholders::_2),
 	 			std::bind(&DeviceFTE::PV_FTE_ChgPeriod_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2)
+				std::bind(&DeviceFTE::PV_FTE_PendingValue_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				nds::autoEnable_t::running
 	    ));
 	}
 

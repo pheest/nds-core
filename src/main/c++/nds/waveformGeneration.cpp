@@ -48,7 +48,8 @@ WaveformGeneration<T>::WaveformGeneration(const std::string& name,
 							      writerInt32_t PV_Coupling_Writer,
 							      writerInt32_t PV_SignalRef_Writer,
 							      writerInt32_t PV_SignalType_Writer,
-							      writerInt32_t PV_Ground_Writer):
+							      writerInt32_t PV_Ground_Writer,
+								  autoEnable_t autoEnable):
     Node(std::shared_ptr<WaveformGenerationImpl<T> >(new WaveformGenerationImpl<T>(name,
 															               maxElements,
 															               switchOnFunction,
@@ -71,7 +72,8 @@ WaveformGeneration<T>::WaveformGeneration(const std::string& name,
 															               PV_Coupling_Writer,
 															               PV_SignalRef_Writer,
 															               PV_SignalType_Writer,
-															               PV_Ground_Writer)))
+															               PV_Ground_Writer,
+																		   autoEnable)))
 {
 }
 

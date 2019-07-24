@@ -27,7 +27,8 @@ Timing::Timing(const std::string& name,
     stateChange_t stopFunction,
     stateChange_t recoverFunction,
     allowChange_t allowStateChangeFunction,
-    readerTime_t PV_Time_Reader):
+    readerTime_t PV_Time_Reader,
+autoEnable_t autoEnable):
     Node(std::shared_ptr<TimingImpl>(new TimingImpl(name,
     switchOnFunction,
     switchOffFunction,
@@ -35,7 +36,8 @@ Timing::Timing(const std::string& name,
     stopFunction,
     recoverFunction,
     allowStateChangeFunction,
-    PV_Time_Reader)))
+    PV_Time_Reader,
+	autoEnable)))
 {
 }
 

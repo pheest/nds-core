@@ -29,15 +29,14 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 		stateChange_t stopFunction,
 		stateChange_t recoverFunction,
 		allowChange_t allowStateChangeFunction,
-		autoEnable_t autoEnable,
 		writerInt32_t PV_Set_Writer,
 		writerInt32_t PV_Suppress_Writer,
 		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer):
+		writerInt32_t PV_PendingValue_Writer,
+		autoEnable_t autoEnable):
 		NodeImpl(name, nodeType_t::dataSourceChannel),
 		m_OnStartDelegate(startFunction),
-		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)),
-		m_autoEnable(autoEnable)
+		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	FTEArgs_t handlerFTE = FTEArgs_t(switchOnFunction,
 									 switchOffFunction,
@@ -48,37 +47,8 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 									 PV_Set_Writer,
 									 PV_Suppress_Writer,
 									 PV_ChgPeriod_Writer,
-									 PV_PendingValue_Writer);
-	constructorBody(handlerFTE);
-}
-
-template<typename T>
-FTEImpl<T>::FTEImpl(const std::string& name,
-		stateChange_t switchOnFunction,
-		stateChange_t switchOffFunction,
-		stateChange_t startFunction,
-		stateChange_t stopFunction,
-		stateChange_t recoverFunction,
-		allowChange_t allowStateChangeFunction,
-		writerInt32_t PV_Set_Writer,
-		writerInt32_t PV_Suppress_Writer,
-		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer):
-		NodeImpl(name, nodeType_t::dataSourceChannel),
-		m_OnStartDelegate(startFunction),
-		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)),
-		m_autoEnable(autoEnable_t::off)
-{
-	FTEArgs_t handlerFTE = FTEArgs_t(switchOnFunction,
-									 switchOffFunction,
-									 startFunction,
-									 stopFunction,
-									 recoverFunction,
-									 allowStateChangeFunction,
-									 PV_Set_Writer,
-									 PV_Suppress_Writer,
-									 PV_ChgPeriod_Writer,
-									 PV_PendingValue_Writer);
+									 PV_PendingValue_Writer,
+									 autoEnable);
 	constructorBody(handlerFTE);
 }
 
@@ -86,8 +56,7 @@ template<typename T>
 FTEImpl<T>::FTEImpl(const std::string& name, const FTEArgs_t& handlerFTE):
 		NodeImpl(name, nodeType_t::dataSourceChannel),
 		m_OnStartDelegate(handlerFTE.handlerSTM.startFunction),
-		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)),
-		m_autoEnable(autoEnable_t::off)
+		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
 {
 	constructorBody(handlerFTE);
 }
@@ -294,7 +263,7 @@ inline void FTEImpl<T>::constructorBody(const FTEArgs_t& handlerFTE) {
 			handlerFTE.handlerSTM.stopFunction,
 			handlerFTE.handlerSTM.recoverFunction,
 			handlerFTE.handlerSTM.allowStateChangeFunction,
-			m_autoEnable));
+			handlerFTE.handlerSTM.autoEnable));
 	addChild(m_StateMachine);
 }
 

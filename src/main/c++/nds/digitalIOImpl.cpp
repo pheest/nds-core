@@ -27,7 +27,8 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 								 writerVectorBool_t PV_dataOutMask_Writer,
 								 writerDouble_t PV_voltLevelHigh_Writer,
 								 writerDouble_t PV_voltLevelLow_Writer,
-								 writerVectorBool_t PV_ChannelDir_Writer):
+								 writerVectorBool_t PV_ChannelDir_Writer,
+								 autoEnable_t autoEnable):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -41,7 +42,8 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 												 PV_dataOutMask_Writer,
 												 PV_voltLevelHigh_Writer,
 												 PV_voltLevelLow_Writer,
-												 PV_ChannelDir_Writer);
+												 PV_ChannelDir_Writer,
+												 autoEnable);
 	constructorBody(maxElements, handlerDIO);
 }
 

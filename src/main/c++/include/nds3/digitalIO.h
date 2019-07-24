@@ -147,14 +147,16 @@ struct DigitalIOArgs_t{
 					writerVectorBool_t _PV_dataOutMask_Writer,
 					writerDouble_t _PV_voltLevelHigh_Writer,
 					writerDouble_t _PV_voltLevelLow_Writer,
-					writerVectorBool_t _PV_ChannelDir_Writer) :
+					writerVectorBool_t _PV_ChannelDir_Writer,
+					autoEnable_t autoEnable=autoEnable_t::off) :
 		   handlerSTM (true, ///Asynchronous state transitions.
 				   switchOnFunction,
 				   switchOffFunction,
 				   startFunction,
 				   stopFunction,
 				   recoverFunction,
-				   allowStateChangeFunction),
+				   allowStateChangeFunction,
+				   autoEnable),
 		   PV_dataOutMask_Writer(_PV_dataOutMask_Writer),
 		   PV_voltLevelHigh_Writer(_PV_voltLevelHigh_Writer),
 		   PV_voltLevelLow_Writer(_PV_voltLevelLow_Writer),
@@ -226,7 +228,8 @@ public:
 			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerVectorBool_t PV_ChannelDir_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
+			   writerVectorBool_t PV_ChannelDir_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
+    		   autoEnable_t autoEnable=autoEnable_t::off);
 
     /**
      * @brief Simplified constructor of the DigitalIO node.

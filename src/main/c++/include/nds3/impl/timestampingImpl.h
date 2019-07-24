@@ -57,7 +57,8 @@ namespace nds {
                  allowChange_t allowStateChangeFunction,
                  writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
-                 writerInt32_t PV_ClearOverflow_Writer);
+                 writerInt32_t PV_ClearOverflow_Writer,
+				 autoEnable_t autoEnable);
 
      /**
       * @brief Constructs the Timestamping node by means of its structure of functions.

@@ -48,7 +48,8 @@ public:
     		writerInt32_t PV_SignalRefType_Writer,
     		writerInt32_t PV_Ground_Writer,
 			writerInt32_t PV_DMAEnable_Writer,
-			writerDouble_t PV_SamplingRate_Writer
+			writerDouble_t PV_SamplingRate_Writer,
+			autoEnable_t autoEnable
 			);
 
     /**

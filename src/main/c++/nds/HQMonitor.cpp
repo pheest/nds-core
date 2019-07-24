@@ -46,7 +46,8 @@ HQMonitor::HQMonitor(  const std::string& name,
 									writerInt32_t PV_SelfTestCodeResultEnable_Writer,
 									readerString_t PV_SelfTestTextResult_Reader,
 									readerInt32_t PV_SignalQualityFlag_Reader,
-									writerDouble_t PV_SignalQualityFlagLevel_Writer):
+									writerDouble_t PV_SignalQualityFlagLevel_Writer,
+									autoEnable_t autoEnable):
     Node(std::shared_ptr<HQMonitorImpl >(new HQMonitorImpl(	name,
 									switchOnFunction,
 									switchOffFunction,
@@ -68,7 +69,8 @@ HQMonitor::HQMonitor(  const std::string& name,
 									PV_SelfTestCodeResultEnable_Writer,
 									PV_SelfTestTextResult_Reader,
 									PV_SignalQualityFlag_Reader,
-									PV_SignalQualityFlagLevel_Writer)))
+									PV_SignalQualityFlagLevel_Writer,
+									autoEnable)))
 {
 }
 

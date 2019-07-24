@@ -42,7 +42,8 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 		                                  writerInt32_t PV_Coupling_Writer,
 		                                  writerInt32_t PV_SignalRef_Writer,
 		                                  writerInt32_t PV_SignalType_Writer,
-		                                  writerInt32_t PV_Ground_Writer):
+		                                  writerInt32_t PV_Ground_Writer,
+										  autoEnable_t autoEnable):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -67,7 +68,8 @@ WaveformGenerationImpl<T>::WaveformGenerationImpl(const std::string& name,
 															PV_Coupling_Writer,
 															PV_SignalRef_Writer,
 															PV_SignalType_Writer,
-															PV_Ground_Writer);
+															PV_Ground_Writer,
+															autoEnable);
 	constructorBody(maxElements, handlerWFG);
 }
 
@@ -412,7 +414,8 @@ inline void WaveformGenerationImpl<T>::constructorBody(size_t maxElements, const
                                    std::bind(&WaveformGenerationImpl::onStart, this),
 								   handlerWFG.handlerSTM.stopFunction,
 								   handlerWFG.handlerSTM.recoverFunction,
-								   handlerWFG.handlerSTM.allowStateChangeFunction));
+								   handlerWFG.handlerSTM.allowStateChangeFunction,
+								   handlerWFG.handlerSTM.autoEnable));
     addChild(m_StateMachine);
 }
 

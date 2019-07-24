@@ -21,14 +21,15 @@ namespace nds
 {
 
 FirmwareImpl::FirmwareImpl(const std::string& name,
-			   size_t maxElements,
-		stateChange_t switchOnFunction,
-          	stateChange_t switchOffFunction,
-		stateChange_t startFunction,
-		stateChange_t stopFunction,
-	        stateChange_t recoverFunction,
-		allowChange_t allowStateChangeFunction,
-		writerString_t PV_FirmwarePath_Writer):
+					size_t maxElements,
+					stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					writerString_t PV_FirmwarePath_Writer,
+					autoEnable_t autoEnable):
 	NodeImpl(name, nodeType_t::inputChannel),
 	m_OnStartDelegate(startFunction),
 	m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -40,7 +41,8 @@ FirmwareImpl::FirmwareImpl(const std::string& name,
 									stopFunction,
 									recoverFunction,
 									allowStateChangeFunction,
-									PV_FirmwarePath_Writer);
+									PV_FirmwarePath_Writer,
+									autoEnable);
 	constructorBody(maxElements, handlerFIRM);
 }
 
@@ -144,7 +146,8 @@ inline void FirmwareImpl::constructorBody(const size_t maxElements, const Firmwa
                                    std::bind(&FirmwareImpl::onStart, this),
 								   handlerFIRM.handlerSTM.stopFunction,
 								   handlerFIRM.handlerSTM.recoverFunction,
-								   handlerFIRM.handlerSTM.allowStateChangeFunction));
+								   handlerFIRM.handlerSTM.allowStateChangeFunction,
+								   handlerFIRM.handlerSTM.autoEnable));
     addChild(m_StateMachine);
 }
 

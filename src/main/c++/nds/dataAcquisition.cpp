@@ -43,7 +43,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 									writerInt32_t PV_SignalRef_Writer,
 									writerInt32_t PV_Ground_Writer,
 									writerInt32_t PV_DMAEnable_Writer,
-									writerDouble_t PV_SamplingRate_Writer):
+									writerDouble_t PV_SamplingRate_Writer,
+									autoEnable_t autoEnable):
     Node(std::shared_ptr<DataAcquisitionImpl<T> >(new DataAcquisitionImpl<T>(name,
                                                                              maxElements,
                                                                              switchOnFunction,
@@ -61,7 +62,8 @@ DataAcquisition<T>::DataAcquisition(const std::string& name,
 																	 		 PV_SignalRef_Writer,
 																	 		 PV_Ground_Writer,
 																			 PV_DMAEnable_Writer,
-																			 PV_SamplingRate_Writer)))
+																			 PV_SamplingRate_Writer,
+																			 autoEnable)))
 {
 }
 

@@ -39,7 +39,8 @@ Routing<T>::Routing(const std::string& name,
 					writerInt32_t PV_ClkSet_Writer,
 					writerInt32_t PV_ClkDstRead_Writer,
 					writerInt32_t PV_TermSet_Writer,
-					writerInt32_t PV_TermDstRead_Writer):
+					writerInt32_t PV_TermDstRead_Writer,
+					autoEnable_t autoEnable):
 	Node(std::shared_ptr<RoutingImpl<T> >(new RoutingImpl<T>(name,
 															switchOnFunction,
 															switchOffFunction,
@@ -50,7 +51,8 @@ Routing<T>::Routing(const std::string& name,
 															PV_ClkSet_Writer,
 															PV_ClkDstRead_Writer,
 															PV_TermSet_Writer,
-															PV_TermDstRead_Writer)))
+															PV_TermDstRead_Writer,
+															autoEnable)))
 {
 }
 
