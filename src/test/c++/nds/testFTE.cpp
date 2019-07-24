@@ -49,62 +49,6 @@ static void commonChgPeriodPVsTest(const bool testInitializers = false);
  */
 static void commonPendingPVsTest(const bool testInitializers = false);
 
-TEST(testFTE, testHierarchicalStateMachineFTE)
-{
-    const timespec* pStateMachineSwitchTime;
-    const std::int32_t* pStateMachineState;
-    timespec timestamp = {0, 0};
-
-    //Create factory
-    nds::Factory factory("test");
-
-    // Create test device of type DeviceFTE and named rootNode
-    factory.createDevice("DeviceFTE", "rootNode", nds::namedParameters_t());
-
-    //Get instance of the Test Control System
-    nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
-
-    // Check initial state (OFF)
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
-
-    //Change state:  OFF -> (initializing) -> ON
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
-
-    //Change state:  ON -> (starting) -> RUNNING
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
-
-    //Change state:  RUNNING -> (stopping) -> ON
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
-
-    //Change state:  ON -> (switchingOff) -> OFF
-    pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
-    pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
-    EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
-
-      // Destroy test device
-    factory.destroyDevice("rootNode");
-
-}
-
 TEST(testFTE, testStateMachineFTE)
 {
     const timespec* pStateMachineSwitchTime;
