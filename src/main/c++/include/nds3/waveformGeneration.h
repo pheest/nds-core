@@ -30,11 +30,13 @@ namespace nds
  * @tparam T  the PV data type.
  * 		The following data types are supported:
  * 		- std::int32_t
- * 		- std::double
+ * 		- float
+ * 		- double
  * 		- std::vector<std::uint8_t>
  * 		- std::vector<std::int8_t>
  * 		- std::vector<std::int16_t>
  * 		- std::vector<std::int32_t>
+ * 		- std::vector<float>
  * 		- std::vector<double>
  */
 template<typename T>
@@ -351,11 +353,13 @@ struct WaveformGenerationArgs_t {
 	   	   m_Decimation_Init(1) {}
 };
 template class WaveformGenerationArgs_t<std::int32_t>;
+template class WaveformGenerationArgs_t<float>;
 template class WaveformGenerationArgs_t<double>;
 template class WaveformGenerationArgs_t<std::vector<std::int8_t> >;
 template class WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
 template class WaveformGenerationArgs_t<std::vector<std::int16_t> >;
 template class WaveformGenerationArgs_t<std::vector<std::int32_t> >;
+template class WaveformGenerationArgs_t<std::vector<float> >;
 template class WaveformGenerationArgs_t<std::vector<double> >;
 
 /**
@@ -374,11 +378,13 @@ template class WaveformGenerationArgs_t<std::vector<double> >;
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
- *            - std::double
+ *            - float
+ *            - double
  *            - std::vector<std::uint8_t>
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<float>
  *            - std::vector<double>
  *
  */

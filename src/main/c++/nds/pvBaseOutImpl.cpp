@@ -45,6 +45,11 @@ void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::int32_t* /* pValue */)
     throw;
 }
 
+void PVBaseOutImpl::read(timespec* /* pTimestamp */, float* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseOutImpl::read(timespec* /* pTimestamp */, double* /* pValue */) const
 {
     throw;
@@ -96,6 +101,11 @@ void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* 
     throw;
 }
 
+void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<float>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseOutImpl::read(timespec* /* pTimestamp */, std::vector<double>* /* pValue */) const
 {
     throw;
@@ -125,6 +135,12 @@ void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::int32_t& 
 {
     throw;
 }
+
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const float& /* value */)
+{
+    throw;
+}
+
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const double& /* value */)
 {
@@ -173,6 +189,11 @@ void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<st
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<std::int32_t>& /* value */)
 {
     throw  std::logic_error("Incorrect data type");;;
+}
+
+void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<float>& /* value */)
+{
+    throw;
 }
 
 void PVBaseOutImpl::write(const timespec& /* pTimestamp */, const std::vector<double>& /* value */)

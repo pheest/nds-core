@@ -41,6 +41,7 @@ public:
     virtual void deinitialize();
 
     virtual void read(timespec* pTimestamp, std::int32_t* pValue) const;
+    virtual void read(timespec* pTimestamp, float* pValue) const;
     virtual void read(timespec* pTimestamp, double* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<bool>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::uint8_t>* pValue) const;
@@ -49,6 +50,7 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int16_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<float>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
     virtual void read(timespec* pTimestamp, timespec* pValue) const;
@@ -61,9 +63,10 @@ public:
      * @tparam T the data type
      * @param timestamp    the timestamp related to the data
      * @param value        the data to push
+     * @param status       the status to be shown in the control system (if it is supported)
      */
     template<typename T>
-    void push(const timespec& timestamp, const T& value);
+    void push(const timespec& timestamp, const T& value, const statusPV_t& status = statusPV_t::success);
 
     /**
      * @brief Subscribe an output PV to this PV.

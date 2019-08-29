@@ -10,8 +10,10 @@
 #include <memory>
 #include <mutex>
 #include <sstream>
+#include <iostream>
 
 #include "nds3/definitions.h"
+#include "nds3/exceptions.h"
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 #include "nds3/impl/factoryBaseImpl.h"
@@ -147,6 +149,67 @@ void NodeImpl::getChildrenState(timespec* pTimestamp, state_t* pState) const
     }
 }
 
+bool nds::NodeImpl::setChildrenState(timespec /*pTimestamp*/, state_t futureState) {
+
+	bool error=false;
+	std::map<std::string,state_t> prevChildStatus;
+	for(tChildren::const_iterator scanChildren(m_children.begin()), endScan(m_children.end()); scanChildren != endScan; ++scanChildren)
+	{
+        if(scanChildren->second.get() != m_pStateMachine.get())
+        {
+            std::shared_ptr<NodeImpl> child = std::dynamic_pointer_cast<NodeImpl>(scanChildren->second);
+            if(child.get() != 0)
+            {
+            	if(child->getAutoEnable()>=(autoEnable_t)futureState){
+            		prevChildStatus.insert(std::pair<std::string,state_t>(child->getFullNameFromPort(),child->getLocalState()));
+            		//Only execute child transition if autoEnable state is greater or equal to futureState
+            		try{
+            			child->setLocalState(futureState);
+            		}catch(nds::StateMachineError& e){
+            			error=true;
+            			break; //Break the for
+            		}
+            		//Not considered the asynchronous thread executing the transition
+//            		if(child->getLocalState()!=futureState){
+//            			error=true;
+//                    	break; //Break the for
+//            		}
+            	}
+            }
+        }
+	}//end for
+
+	//If error==true, we revert all children to the previous state
+	if(error){
+		std::map<std::string,state_t>::iterator scanPrevChildren;
+		for(tChildren::const_iterator scanChildren(m_children.begin()), endScan(m_children.end()); scanChildren != endScan; ++scanChildren)
+		{
+			if(scanChildren->second.get() != m_pStateMachine.get())
+			{
+				std::shared_ptr<NodeImpl> child = std::dynamic_pointer_cast<NodeImpl>(scanChildren->second);
+				if(child.get() != 0)
+				{
+					scanPrevChildren = prevChildStatus.find(child->getFullNameFromPort());
+					if(scanPrevChildren!= prevChildStatus.end()){
+						child->setLocalState(scanPrevChildren->second);
+					}
+				}
+			}
+		}
+	}
+	return error;
+
+}
+
+void nds::NodeImpl::setLocalState(state_t pState) {
+	m_pStateMachine->setState(pState);
+}
+
+autoEnable_t nds::NodeImpl::getAutoEnable() {
+	return m_pStateMachine->getAutoEnable();
+}
+
+
 void NodeImpl::setLogLevel(const logLevel_t logLevel)
 {
     BaseImpl::setLogLevel(logLevel);
@@ -220,3 +283,5 @@ std::string NodeImpl::buildFullExternalName(const FactoryBaseImpl& controlSystem
 
 
 }
+
+

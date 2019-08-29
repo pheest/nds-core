@@ -22,7 +22,8 @@ namespace nds
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
- *            - std::double
+ *            - float
+ *            - double
  *            - std::vector<bool>
  *            - std::vector<std::uint8_t>
  *            - std::vector<std::uint16_t>
@@ -30,6 +31,7 @@ namespace nds
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<float>
  *            - std::vector<double>
  *            - std::string
  */
@@ -46,6 +48,8 @@ public:
      * @brief Definition of the method used to write.
      */
     typedef std::function<void (const timespec&, const T&)> write_t;
+
+    typedef std::function<void (const timespec&, const T&, const std::string&)> write_name_t;
 
     /**
      * @brief Constructor. Specifies the methods used for read/write
@@ -65,6 +69,8 @@ public:
      * @param writeFunction write method
      */
     PVDelegateOutImpl(const std::string& name, write_t writeFunction, const outputPvType_t pvType = outputPvType_t::generic);
+
+    PVDelegateOutImpl(const std::string& name, write_t writeFunction, write_name_t writeFunctionName, const outputPvType_t pvType = outputPvType_t::generic);
 
     /**
      * @brief Called when the control system wants to read the value.
@@ -95,6 +101,7 @@ public:
 
 
 private:
+    write_name_t m_writer_name;
     write_t m_writer;          ///< Method used to write the value
     initValue_t m_initializer; ///< Method used to read the initial value
 

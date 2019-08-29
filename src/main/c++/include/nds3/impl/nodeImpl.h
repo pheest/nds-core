@@ -51,6 +51,11 @@ public:
     virtual void getGlobalState(timespec* pTimestamp, state_t* pState) const;
     void getChildrenState(timespec* pTimestamp, state_t* pState) const;
 
+    bool setChildrenState(timespec pTimestamp, state_t pState);
+    void setLocalState(state_t pState);
+
+    autoEnable_t getAutoEnable();
+
     virtual void setLogLevel(const logLevel_t logLevel);
 
     virtual std::string buildFullExternalName(const FactoryBaseImpl& controlSystem) const;

@@ -29,20 +29,22 @@ public:
 
     virtual void registrationTerminated();
 
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const double& value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<bool> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint8_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint16_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint32_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int8_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int16_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value);
-    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const float& value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const double& value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<bool> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint8_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint16_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::uint32_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int8_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int16_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<float> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timespec & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<timespec> & value, const statusPV_t& status = statusPV_t::success);
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const timestamp_t & value, const statusPV_t& status = statusPV_t::success);
 
 
     template<typename T>
@@ -52,6 +54,7 @@ public:
     void writeCSValue(const std::string& pvName, const timespec& timestamp, const T& value);
 
     void getPushedInt32(const std::string& pvName, const timespec*& pTime, const int32_t*& pValue);
+    void getPushedFloat(const std::string& pvName, const timespec*& pTime, const float*& pValue);
     void getPushedDouble(const std::string& pvName, const timespec*& pTime, const double*& pValue);
     void getPushedVectorBool(const std::string& pvName, const timespec*& pTime, const std::vector<bool>*& pValue);
     void getPushedVectorUint8(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint8_t>*& pValue);
@@ -60,6 +63,7 @@ public:
     void getPushedVectorInt8(const std::string& pvName, const timespec*& pTime, const std::vector<std::int8_t>*& pValue);
     void getPushedVectorInt16(const std::string& pvName, const timespec*& pTime, const std::vector<std::int16_t>*& pValue);
     void getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue);
+    void getPushedVectorFloat(const std::string& pvName, const timespec*& pTime, const std::vector<float>*& pValue);
     void getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue);
     void getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue);
     void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue);
@@ -115,6 +119,7 @@ private:
     };
 
     std::map<std::string, PushedValues<std::int32_t> >m_pushedInt32;
+    std::map<std::string, PushedValues<float> >m_pushedFloat;
     std::map<std::string, PushedValues<double> >m_pushedDouble;
     std::map<std::string, PushedValues<std::vector<bool> > >m_pushedVectorBool;
     std::map<std::string, PushedValues<std::vector<std::uint8_t> > >m_pushedVectorUint8;
@@ -123,6 +128,7 @@ private:
     std::map<std::string, PushedValues<std::vector<std::int8_t> > >m_pushedVectorInt8;
     std::map<std::string, PushedValues<std::vector<std::int16_t> > >m_pushedVectorInt16;
     std::map<std::string, PushedValues<std::vector<std::int32_t> > >m_pushedVectorInt32;
+    std::map<std::string, PushedValues<std::vector<float> > >m_pushedVectorFloat;
     std::map<std::string, PushedValues<std::vector<double> > >m_pushedVectorDouble;
     std::map<std::string, PushedValues<std::string> >m_pushedString;
     std::map<std::string, PushedValues<timespec> >m_pushedTimespec;

@@ -192,7 +192,8 @@ public:
                  stateChange_t startFunction,
                  stateChange_t stopFunction,
                  stateChange_t recoverFunction,
-                 allowChange_t allowStateChangeFunction);
+                 allowChange_t allowStateChangeFunction,
+				 autoEnable_t autoState=autoEnable_t::off);
 
     /**
      * @brief Simplified constructor of the state machine.
@@ -260,6 +261,20 @@ public:
      * @return true if the transition is legal and has not been denied, false otherwise.
      */
     bool canChange(const state_t newState);
+
+    /**
+     * @brief  Method to get which is the state until the transitions will be done automatically following its parent
+     *
+     * @return the state enum
+     */
+    autoEnable_t getAutoEnable();
+
+    /**
+     * @brief  Method to set which is the state until the transitions will be done automatically following its parent
+     *
+     *@param autoState state until the transitions will be done automatically following its parent
+     */
+    void setAutoEnable(autoEnable_t autoState);
 
 };
 

@@ -29,6 +29,7 @@ PVDelegateIn<T>::PVDelegateIn(const std::string& name, read_t readFunction):
 // Instantiate all the needed data types
 ////////////////////////////////////////
 template class PVDelegateIn<std::int32_t>;
+template class PVDelegateIn<float>;
 template class PVDelegateIn<double>;
 template class PVDelegateIn<std::vector<bool> >;
 template class PVDelegateIn<std::vector<std::uint8_t> >;
@@ -37,6 +38,7 @@ template class PVDelegateIn<std::vector<std::uint32_t> >;
 template class PVDelegateIn<std::vector<std::int8_t> >;
 template class PVDelegateIn<std::vector<std::int16_t> >;
 template class PVDelegateIn<std::vector<std::int32_t> >;
+template class PVDelegateIn<std::vector<float> >;
 template class PVDelegateIn<std::vector<double> >;
 template class PVDelegateIn<std::string>;
 template class PVDelegateIn<timespec>;

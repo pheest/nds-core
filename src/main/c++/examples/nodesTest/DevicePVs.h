@@ -77,6 +77,15 @@ private:
 	 */
 	nds::PVVariableIn<std::int32_t> m_int_RBVPV;
 
+	/*
+	 * @brief PV for testing an Output PV to set a double
+	 */
+	nds::PVDelegateOut<float> m_float_PV;
+	/*
+	 * @brief PV for testing an Input PV to get a double
+	 */
+	nds::PVVariableIn<float> m_float_RBVPV;
+
 	//dataType_t: dataFloat64 -> double
 	/*
 	 * @brief PV for testing an Output PV to set a double
@@ -159,6 +168,15 @@ private:
 	 */
 	nds::PVVariableIn<std::vector<std::int32_t>> m_int32Array_RBVPV;
 
+	/*
+	 * @brief PV for testing an Output PV to set an array of doubles
+	 */
+	nds::PVDelegateOut<std::vector<float>> m_float32Array_PV;
+	/*
+	 * @brief PV for testing an Input PV to get an array of doubles
+	 */
+	nds::PVVariableIn<std::vector<float>> m_float32Array_RBVPV;
+
 	//dataType_t: dataFloat64Array -> std::vector<double>
 	/*
 	 * @brief PV for testing an Output PV to set an array of doubles
@@ -209,6 +227,30 @@ private:
 	 */
 	nds::PVVariableIn<nds::timestamp_t> m_timestamp_RBVPV;
 
+	/* @brief Output PV to increase Source PVs for data sharing purpose */
+        nds::PVDelegateOut<std::int32_t> m_dataSharingHandler_PV;
+
+        /* @brief Output PV to increase Source PVs for data sharing purpose */
+        nds::PVDelegateOut<std::int32_t> m_delegateOutWithName_PV;
+
+	/* @brief Reference PV for sending data to other PVs with integer data. */
+	nds::PVVariableIn<std::int32_t> m_sourceInt_PV;
+
+        /* @brief Reference PV for sending data to other PVs with double data. */
+        nds::PVVariableIn<double> m_sourceDouble_PV;
+
+        /* @brief Reference PV for replication from PVs with integer data. */
+        nds::PVVariableIn<std::int32_t> m_targetReplicationInt_PV;
+
+        /* @brief Reference PV for replication from PVs with double data. */
+        nds::PVVariableIn<double> m_targetReplicationDouble_PV;
+
+        /* @brief Reference PV for subscription from PVs with integer data. */
+        nds::PVVariableOut<std::int32_t> m_targetSubscriptionInt_PV;
+
+        /* @brief Reference PV for subscription from PVs with double data. */
+        nds::PVVariableOut<double> m_targetSubscriptionDouble_PV;
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// MEMBER METHODS THAT SUPPORT SPECIFIC OPERATIONS
@@ -219,6 +261,16 @@ private:
 	 */
 	void initializePVs(void);
 
+	/**
+	 * Delegate Function to test data sharing between PVs.
+	 * It increases the stored value in the source in one.
+	 * The received integer argument enables to select which
+	 * source PV is considered.
+	 */
+	void increaseDataSouce(const timespec&, const std::int32_t&);
+
+	void delegateOutWithName(const timespec& timestamp, const std::int32_t& data, const std::string& name);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIST OF WRITERS METHODS FOR ALL SUPPORTED TYPES
@@ -228,6 +280,11 @@ private:
 	 * @brief Method to be used when an write action is required on the integer PV
 	 */
 	void setInt(const timespec&, const std::int32_t&);
+
+	/**
+	 * @brief Method to be used when an write action is required on the double PV
+	 */
+	void setFloat(const timespec&, const float&);
 
 	/**
 	 * @brief Method to be used when an write action is required on the double PV
@@ -272,6 +329,11 @@ private:
 	/**
 	 * @brief Method to be used when an write action is required on the doubles array PV
 	 */
+	void setFloatArray(const timespec&, const std::vector<float>&);
+
+	/**
+	 * @brief Method to be used when an write action is required on the doubles array PV
+	 */
 	void setDoubleArray(const timespec&, const std::vector<double>&);
 
 	/**
@@ -303,6 +365,11 @@ private:
 	 * @brief Method to be used at initialization time for the integer PV
 	 */
 	void initInt(timespec* timestamp, std::int32_t* value);
+
+	/**
+	 * @brief Method to be used at initialization time for the float PV
+	 */
+	void initFloat(timespec* timestamp, float* value);
 
 	/**
 	 * @brief Method to be used at initialization time for the double PV
@@ -347,6 +414,11 @@ private:
 	/**
 	 * @brief Method to be used at initialization time for the doubles array PV
 	 */
+	void initFloatArray(timespec* timestamp, std::vector<float>* values);
+
+	/**
+	 * @brief Method to be used at initialization time for the doubles array PV
+	 */
 	void initDoubleArray(timespec* timestamp, std::vector<double>* values);
 
 	/**
@@ -368,6 +440,11 @@ private:
 	 * @brief Method to be used at initialization time for the timestamp PV
 	 */
 	void initTimestamp(timespec* timestamp, nds::timestamp_t* value);
+
+        /**
+         * @brief Method to be used at initialization time for the handler of data sharing
+         */
+        void initHandler(timespec* timestamp, std::int32_t* value);
 
 };
 

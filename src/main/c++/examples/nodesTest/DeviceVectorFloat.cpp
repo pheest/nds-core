@@ -1,4 +1,4 @@
-#include "DeviceVectorDBL.h"
+#include "DeviceVectorFloat.h"
 
 #include <nds3/nds.h>
 #include <mutex>
@@ -7,10 +7,10 @@
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
-static std::map<std::string, DeviceVectorDBL*> m_devicesMap;
+static std::map<std::string, DeviceVectorFloat*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
-DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
+DeviceVectorFloat::DeviceVectorFloat(nds::Factory &factory, const std::string &deviceName, const nds::namedParameters_t & parameters):
 	m_name(deviceName),	timestamp_device{0,0},readtimeStamp{0,0}
 {
 	//TODO:Study this.
@@ -46,61 +46,61 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 	if (findParam != parameters.end() && findParam->second=="YES") {
 		 //Set compulsory methods
 		nds::DataAcquisitionArgs_t handlerDAQ = nds::DataAcquisitionArgs_t (
-				std::bind(&DeviceVectorDBL::switchOn_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::switchOff_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::start_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::stop_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::recover_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::allow_DataAcquisition_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
+				std::bind(&DeviceVectorFloat::switchOn_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::switchOff_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::start_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::stop_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::recover_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::allow_DataAcquisition_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
 			);
 		//Set optional methods
-		handlerDAQ.PV_Gain_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Gain_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Offset_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Offset_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Bandwidth_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Resolution_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Resolution_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Impedance_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Impedance_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Coupling_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Coupling_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_SignalRefType_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_Ground_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_Ground_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_DMAEnable_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerDAQ.PV_SamplingRate_Initializer = std::bind(&DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Gain_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Gain_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Offset_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Offset_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Bandwidth_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Bandwidth_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Resolution_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Resolution_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Impedance_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Impedance_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Coupling_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Coupling_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_SignalRefType_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_SignalRefType_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_Ground_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_Ground_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_DMAEnable_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_DMAEnable_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDAQ.PV_SamplingRate_Initializer = std::bind(&DeviceVectorFloat::PV_DataAcquisition_SamplingRate_Initializer, this, std::placeholders::_1, std::placeholders::_2);
 		//Set init values
 		handlerDAQ.m_Decimation_Init = 1;
 		handlerDAQ.m_DecimationType_Init = 2;
-		m_DataAcquisition = rootNode.addChild(nds::DataAcquisition<std::vector<double> >(
+		m_DataAcquisition = rootNode.addChild(nds::DataAcquisition<std::vector<float> >(
 						"DataAcquisitionNode",
 						128,
 						handlerDAQ));
 	} else {
-		m_DataAcquisition = rootNode.addChild(nds::DataAcquisition<std::vector<double> >(
+		m_DataAcquisition = rootNode.addChild(nds::DataAcquisition<std::vector<float> >(
 				"DataAcquisitionNode",
 				128,
-				std::bind(&DeviceVectorDBL::switchOn_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::switchOff_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::start_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::stop_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::recover_DataAcquisition, this),
-				std::bind(&DeviceVectorDBL::allow_DataAcquisition_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
+				std::bind(&DeviceVectorFloat::switchOn_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::switchOff_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::start_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::stop_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::recover_DataAcquisition, this),
+				std::bind(&DeviceVectorFloat::allow_DataAcquisition_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_SignalRefType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_DMAEnable_Writer,this,std::placeholders:: _1,std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_DataAcquisition_SamplingRate_Writer,this,std::placeholders::_1,std::placeholders::_2)
 		));
 	}
 
@@ -111,74 +111,74 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 	 */
 	if (findParam != parameters.end() && findParam->second=="YES") {
 		 //Set compulsory methods
-		nds::WaveformGenerationArgs_t<std::vector<double>> handlerWFG = nds::WaveformGenerationArgs_t<std::vector<double>>(
-				std::bind(&DeviceVectorDBL::switchOn_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::switchOff_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::start_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::stop_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::recover_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::allow_WaveformGeneration_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Frequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Amp_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Phase_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2));
+		nds::WaveformGenerationArgs_t<std::vector<float>> handlerWFG = nds::WaveformGenerationArgs_t<std::vector<float>>(
+				std::bind(&DeviceVectorFloat::switchOn_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::switchOff_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::start_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::stop_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::recover_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::allow_WaveformGeneration_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Frequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_RefFrequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Amp_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Phase_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_UpdateRate_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_DutyCycle_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2));
 		//Set optional methods
-		handlerWFG.PV_Frequency_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Frequency_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_RefFrequency_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Amp_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Amp_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Phase_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Phase_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_UpdateRate_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_DutyCycle_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Gain_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Gain_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Offset_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Offset_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Bandwidth_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Resolution_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Resolution_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Impedance_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Impedance_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Coupling_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Coupling_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_SignalRef_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_SignalType_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalType_Initializer, this, std::placeholders::_1, std::placeholders::_2);
-		handlerWFG.PV_Ground_Initializer = std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Ground_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Frequency_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Frequency_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_RefFrequency_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_RefFrequency_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Amp_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Amp_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Phase_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Phase_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_UpdateRate_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_UpdateRate_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_DutyCycle_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_DutyCycle_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Gain_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Gain_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Offset_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Offset_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Bandwidth_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Bandwidth_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Resolution_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Resolution_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Impedance_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Impedance_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Coupling_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Coupling_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_SignalRef_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalRef_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_SignalType_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalType_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerWFG.PV_Ground_Initializer = std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Ground_Initializer, this, std::placeholders::_1, std::placeholders::_2);
 		//Set init values
 		handlerWFG.m_Decimation_Init = 1;
-		handlerWFG.m_DataAWG_Init = std::vector<double> (128, 4.25); //128 doubles with value 4.25
+		handlerWFG.m_DataAWG_Init = std::vector<float> (128, 4.25); //128 doubles with value 4.25
 		//Add the WFG node
-		m_WaveformGeneration = rootNode.addChild(nds::WaveformGeneration<std::vector<double>>("WFGNode",128,handlerWFG));
+		m_WaveformGeneration = rootNode.addChild(nds::WaveformGeneration<std::vector<float>>("WFGNode",128,handlerWFG));
 	} else {
-		m_WaveformGeneration = rootNode.addChild(nds::WaveformGeneration<std::vector<double>>(
+		m_WaveformGeneration = rootNode.addChild(nds::WaveformGeneration<std::vector<float>>(
 				"WFGNode",
 				128,
-				std::bind(&DeviceVectorDBL::switchOn_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::switchOff_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::start_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::stop_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::recover_WaveformGeneration, this),
-				std::bind(&DeviceVectorDBL::allow_WaveformGeneration_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Frequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Amp_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Phase_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_SignalType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
-				std::bind(&DeviceVectorDBL::PV_WaveformGeneration_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2)
+				std::bind(&DeviceVectorFloat::switchOn_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::switchOff_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::start_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::stop_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::recover_WaveformGeneration, this),
+				std::bind(&DeviceVectorFloat::allow_WaveformGeneration_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Frequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_RefFrequency_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Amp_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Phase_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_UpdateRate_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_DutyCycle_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Gain_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Offset_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Bandwidth_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Resolution_Writer,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Impedance_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Coupling_Writer,this,   std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalRef_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_SignalType_Writer,this,  std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceVectorFloat::PV_WaveformGeneration_Ground_Writer,this, std::placeholders::_1, std::placeholders::_2)
 		));
 	}
 
@@ -190,24 +190,24 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 	//  with the control system that called this constructor.
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
-	rootNode.setTimestampDelegate(std::bind(&DeviceVectorDBL::getCurrentTime,this));
+	rootNode.setTimestampDelegate(std::bind(&DeviceVectorFloat::getCurrentTime,this));
 
 }
 
 
 
-DeviceVectorDBL::~DeviceVectorDBL()
+DeviceVectorFloat::~DeviceVectorFloat()
 {
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
     m_devicesMap.erase(m_name);
 
 }
 
-DeviceVectorDBL* DeviceVectorDBL::getInstance(const std::string& deviceName)
+DeviceVectorFloat* DeviceVectorFloat::getInstance(const std::string& deviceName)
 {
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
 
-    std::map<std::string, DeviceVectorDBL*>::const_iterator findDevice = m_devicesMap.find(deviceName);
+    std::map<std::string, DeviceVectorFloat*>::const_iterator findDevice = m_devicesMap.find(deviceName);
     if(findDevice == m_devicesMap.end())
     {
         return 0;
@@ -216,11 +216,11 @@ DeviceVectorDBL* DeviceVectorDBL::getInstance(const std::string& deviceName)
 }
 
 
-timespec DeviceVectorDBL::getCurrentTime()
+timespec DeviceVectorFloat::getCurrentTime()
 {
     timespec time;
     time.tv_sec = m_setCurrentTime.getValue();
-    time.tv_nsec = 0;
+    time.tv_nsec = time.tv_sec + 10;
     return time;
 }
 
@@ -233,7 +233,7 @@ timespec DeviceVectorDBL::getCurrentTime()
 */
 
 // Called when the DataAcquisition node has to be switched on.
-void DeviceVectorDBL::switchOn_DataAcquisition(){
+void DeviceVectorFloat::switchOn_DataAcquisition(){
 
 	// Call HW API Methods to retrieve initial values of all parameters needed and set initial values.
 	// As an example:
@@ -253,12 +253,12 @@ void DeviceVectorDBL::switchOn_DataAcquisition(){
 }
 
 // Called when the DataAcquisition node has to be switched off.
-void DeviceVectorDBL::switchOff_DataAcquisition(){
+void DeviceVectorFloat::switchOff_DataAcquisition(){
 
 }
 
 // Called when the DataAcquisition node has to start acquiring. We start the data acquisition thread.
-void DeviceVectorDBL::start_DataAcquisition(){
+void DeviceVectorFloat::start_DataAcquisition(){
 
 	m_bStop_DataAcquisition = false; //< We will set to true to stop the acquisition thread
 	/**
@@ -269,30 +269,30 @@ void DeviceVectorDBL::start_DataAcquisition(){
 	 */
 	m_DataAcquisition_Thread =
 	  m_DataAcquisition.runInThread("DAQ",
-					       std::bind(&DeviceVectorDBL::DataAcquisition_thread_body, this));
+					       std::bind(&DeviceVectorFloat::DataAcquisition_thread_body, this));
 }
 
 // Stop the DataAcquisition node thread
-void DeviceVectorDBL::stop_DataAcquisition(){
+void DeviceVectorFloat::stop_DataAcquisition(){
 	m_bStop_DataAcquisition = true;
 	m_DataAcquisition_Thread.join();
 }
 
 // A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
-void DeviceVectorDBL::recover_DataAcquisition(){
+void DeviceVectorFloat::recover_DataAcquisition(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 // We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
-bool DeviceVectorDBL::allow_DataAcquisition_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool DeviceVectorFloat::allow_DataAcquisition_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /*
 * DataAcquisition setters
 */
-void DeviceVectorDBL::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Gain to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
@@ -300,7 +300,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Gain_Writer(const timespec& timestamp, 
 	HW_value=value;
 	m_DataAcquisition.setGain(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_DataAcquisition_Offset_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Offset to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Offset programmed. This value has to be set to the readback attribute.
@@ -308,7 +308,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Offset_Writer(const timespec& timestamp
 	HW_value=value;
 	m_DataAcquisition.setOffset(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_DataAcquisition_Bandwidth_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Bandwidth to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Bandwidth programmed. This value has to be set to the readback attribute.
@@ -316,7 +316,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Writer(const timespec& timest
 	HW_value=value;
 	m_DataAcquisition.setBandwidth(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_DataAcquisition_Resolution_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Resolution to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Resolution programmed. This value has to be set to the readback attribute.
@@ -324,7 +324,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Resolution_Writer(const timespec& times
 	HW_value=value;
 	m_DataAcquisition.setResolution(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_DataAcquisition_Impedance_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Impedance to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Impedance programmed. This value has to be set to the readback attribute.
@@ -332,7 +332,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Impedance_Writer(const timespec& timest
 	HW_value=value;
 	m_DataAcquisition.setImpedance(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_DataAcquisition_Coupling_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the Coupling to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Coupling programmed. This value has to be set to the readback attribute.
@@ -340,7 +340,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Coupling_Writer(const timespec& timesta
 	HW_value=value;
 	m_DataAcquisition.setCoupling(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_DataAcquisition_SignalRefType_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the SignalRefType to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real SignalReftype programmed. This value has to be set to the readback attribute.
@@ -348,7 +348,7 @@ void DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Writer(const timespec& ti
 	HW_value=value;
 	m_DataAcquisition.setSignalRefType(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_DataAcquisition_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the Ground to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Ground programmed. This value has to be set to the readback attribute.
@@ -357,7 +357,7 @@ void DeviceVectorDBL::PV_DataAcquisition_Ground_Writer(const timespec& timestamp
 	m_DataAcquisition.setGround(timestamp,HW_value);
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp, const std::int32_t& value) {
+void DeviceVectorFloat::PV_DataAcquisition_DMAEnable_Writer(const timespec& timestamp, const std::int32_t& value) {
 	std::int32_t HW_value;
 	//Value has the DMAEnable value to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real DMAEnable value programmed. This value has to be set to the readback attribute.
@@ -366,7 +366,7 @@ void DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Writer(const timespec& timest
 	m_DataAcquisition.setDMAEnable(timestamp,HW_value);
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
 		const double& value) {
 	double HW_value;
 	//Value has the SamplingRate to be programmed on the hardware.
@@ -378,152 +378,152 @@ void DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Writer(const timespec& tim
 
 
 
-void DeviceVectorDBL::PV_DataAcquisition_Gain_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Gain_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 10};
 	*value = 2.5; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Offset_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Offset_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 20};
 	*value = 3.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Bandwidth_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Bandwidth_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 30};
 	*value = 10.0; //Note that this value has no sense and it is fixed only for testing purposes.
 
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Resolution_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Resolution_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 40};
 	*value = 15.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Impedance_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Impedance_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 50};
 	*value = 2.2; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Coupling_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Coupling_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 60};
 	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_SignalRefType_Initializer(
+void DeviceVectorFloat::PV_DataAcquisition_SignalRefType_Initializer(
 		timespec* timestamp, int32_t* value) {
 	*timestamp = {NDS_EPOCH, 70};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_Ground_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_Ground_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 80};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_DMAEnable_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_DMAEnable_Initializer(timespec* timestamp,
 		int32_t* value) {
 	*timestamp = {NDS_EPOCH, 90};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_DataAcquisition_SamplingRate_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_DataAcquisition_SamplingRate_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 100};
 	*value = 10.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Frequency_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Frequency_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 110};
 	*value = 2.5e6; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Initializer(
+void DeviceVectorFloat::PV_WaveformGeneration_RefFrequency_Initializer(
 		timespec* timestamp, double* value) {
 	*timestamp = {NDS_EPOCH, 120};
 	*value = 1.0e3; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Amp_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Amp_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 130};
 	*value = 3.3; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Phase_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Phase_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 140};
 	*value = 60.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Initializer(
+void DeviceVectorFloat::PV_WaveformGeneration_UpdateRate_Initializer(
 		timespec* timestamp, double* value) {
 	*timestamp = {NDS_EPOCH, 150};
 	*value = 4.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_DutyCycle_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 160};
 	*value = 75.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Gain_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Gain_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 170};
 	*value = 5.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Offset_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Offset_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 180};
 	*value = 1.1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Bandwidth_Initializer(timespec* timestamp,
 		double* value) {
 	*timestamp = {NDS_EPOCH, 190};
 	*value = 20.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Resolution_Initializer(
+void DeviceVectorFloat::PV_WaveformGeneration_Resolution_Initializer(
 		timespec* timestamp, double* value) {
 	*timestamp = {NDS_EPOCH, 200};
 	*value = 2.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Impedance_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Impedance_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 210};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Coupling_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Coupling_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 220};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_SignalRef_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 230};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_SignalType_Initializer(
+void DeviceVectorFloat::PV_WaveformGeneration_SignalType_Initializer(
 		timespec* timestamp, std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 240};
 	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-void DeviceVectorDBL::PV_WaveformGeneration_Ground_Initializer(timespec* timestamp,
+void DeviceVectorFloat::PV_WaveformGeneration_Ground_Initializer(timespec* timestamp,
 		std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 250};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
@@ -531,9 +531,9 @@ void DeviceVectorDBL::PV_WaveformGeneration_Ground_Initializer(timespec* timesta
 /*
 * Body of function to acquire data
 */
-void DeviceVectorDBL::DataAcquisition_thread_body(){
+void DeviceVectorFloat::DataAcquisition_thread_body(){
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-		std::vector<double> outputData(m_DataAcquisition.getMaxElements(),0);
+		std::vector<float> outputData(m_DataAcquisition.getMaxElements(),0);
 
 		//Counter for number of pushed data blocks
 		std::int32_t NumberOfPushedDataBlocks(0);
@@ -610,15 +610,15 @@ void DeviceVectorDBL::DataAcquisition_thread_body(){
 * WaveformGeneration State Machine
 */
 
-void DeviceVectorDBL::switchOn_WaveformGeneration(){
+void DeviceVectorFloat::switchOn_WaveformGeneration(){
 
 }
 
-void DeviceVectorDBL::switchOff_WaveformGeneration(){
+void DeviceVectorFloat::switchOff_WaveformGeneration(){
 
 }
 
-void DeviceVectorDBL::start_WaveformGeneration(){
+void DeviceVectorFloat::start_WaveformGeneration(){
 	m_bStop_WaveformGeneration = false; //< We will set to true to stop the acquisition thread
 	/**
 	 *   Start the acquisition thread.
@@ -628,34 +628,34 @@ void DeviceVectorDBL::start_WaveformGeneration(){
 	 */
 	m_WaveformGeneration_Thread =
 	  m_WaveformGeneration.runInThread("WFG",
-						  std::bind(&DeviceVectorDBL::WaveformGeneration_thread_body, this));
+						  std::bind(&DeviceVectorFloat::WaveformGeneration_thread_body, this));
 }
 
-void DeviceVectorDBL::stop_WaveformGeneration(){
+void DeviceVectorFloat::stop_WaveformGeneration(){
 	m_bStop_WaveformGeneration = true;
 	m_WaveformGeneration_Thread.join();
 }
 
-void DeviceVectorDBL::recover_WaveformGeneration(){
+void DeviceVectorFloat::recover_WaveformGeneration(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
-bool DeviceVectorDBL::allow_WaveformGeneration_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool DeviceVectorFloat::allow_WaveformGeneration_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /*
 * WaveformGeneration setters
 */
-void DeviceVectorDBL::PV_WaveformGeneration_Frequency_Writer(const timespec& /*timestamp*/, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Frequency_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the frequency to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real frequency programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value=value;
-	m_WaveformGeneration.setFrequency(m_WaveformGeneration.getTimestamp(),HW_value);
+	m_WaveformGeneration.setFrequency(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_RefFrequency_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the RefFrequency to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real RefFrequency programmed. This value has to be set to the readback attribute.
@@ -663,7 +663,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_RefFrequency_Writer(const timespec& 
 	HW_value=value;
 	m_WaveformGeneration.setRefFrequency(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Amp_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Amp_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//value has the amplitude to be programmed on the hardware
 	//call to function programming the hardware. This function should return the real amplitude programmed. This value has to be set to the readback attribute.
@@ -671,7 +671,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Amp_Writer(const timespec& timestamp
 	HW_value=value;
 	m_WaveformGeneration.setAmplitude(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Phase_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Phase_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Phase to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Phase programmed. This value has to be set to the readback attribute.
@@ -679,7 +679,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Phase_Writer(const timespec& timesta
 	HW_value=value;
 	m_WaveformGeneration.setPhase(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_UpdateRate_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the UpdateRate to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real UpdateRate programmed. This value has to be set to the readback attribute.
@@ -687,7 +687,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_UpdateRate_Writer(const timespec& ti
 	HW_value=value;
 	m_WaveformGeneration.setUpdateRate(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_DutyCycle_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the DutyCycle to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real DutyCycle programmed. This value has to be set to the readback attribute.
@@ -695,7 +695,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_DutyCycle_Writer(const timespec& tim
 	HW_value=value;
 	m_WaveformGeneration.setDutyCycle(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Gain_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Gain_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Gain to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Gain programmed. This value has to be set to the readback attribute.
@@ -703,7 +703,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Gain_Writer(const timespec& timestam
 	HW_value=value;
 	m_WaveformGeneration.setGain(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Offset_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Offset_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Offset to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Offset programmed. This value has to be set to the readback attribute.
@@ -711,7 +711,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Offset_Writer(const timespec& timest
 	HW_value=value;
 	m_WaveformGeneration.setOffset(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Bandwidth_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Bandwidth to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Bandwidth programmed. This value has to be set to the readback attribute.
@@ -719,7 +719,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Bandwidth_Writer(const timespec& tim
 	HW_value=value;
 	m_WaveformGeneration.setBandwidth(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Resolution_Writer(const timespec& timestamp, const double& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Resolution_Writer(const timespec& timestamp, const double& value){
 	double HW_value;
 	//Value has the Resolution to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Resolution programmed. This value has to be set to the readback attribute.
@@ -727,7 +727,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Resolution_Writer(const timespec& ti
 	HW_value=value;
 	m_WaveformGeneration.setResolution(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Impedance_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Impedance_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the Impedance to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Impedance programmed. This value has to be set to the readback attribute.
@@ -735,7 +735,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Impedance_Writer(const timespec& tim
 	HW_value=value;
 	m_WaveformGeneration.setImpedance(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Coupling_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Coupling_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the Coupling to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real Coupling programmed. This value has to be set to the readback attribute.
@@ -743,7 +743,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_Coupling_Writer(const timespec& time
 	HW_value=value;
 	m_WaveformGeneration.setCoupling(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_WaveformGeneration_SignalRef_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//Value has the SignalRef to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real SignalRef programmed. This value has to be set to the readback attribute.
@@ -751,7 +751,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_SignalRef_Writer(const timespec& tim
 	HW_value=value;
 	m_WaveformGeneration.setSignalRef(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_SignalType_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_WaveformGeneration_SignalType_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//value has the SignalType to be programmed on the hardware
 	//call to function programming the hardware. This function should return the real SignalType programmed. This value has to be set to the readback attribute.
@@ -759,7 +759,7 @@ void DeviceVectorDBL::PV_WaveformGeneration_SignalType_Writer(const timespec& ti
 	HW_value=value;
 	m_WaveformGeneration.setSignalType(timestamp,HW_value);
 }
-void DeviceVectorDBL::PV_WaveformGeneration_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
+void DeviceVectorFloat::PV_WaveformGeneration_Ground_Writer(const timespec& timestamp, const std::int32_t& value){
 	std::int32_t HW_value;
 	//value has the Ground to be programmed on the hardware
 	//call to function programming the hardware. This function should return the real Ground programmed. This value has to be set to the readback attribute.
@@ -771,10 +771,10 @@ void DeviceVectorDBL::PV_WaveformGeneration_Ground_Writer(const timespec& timest
 /*
 * Body of function to generate data. In this example we are going to generate a sine wave.
 */
-void DeviceVectorDBL::WaveformGeneration_thread_body(){
+void DeviceVectorFloat::WaveformGeneration_thread_body(){
 
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-	std::vector<double> outputData(m_WaveformGeneration.getMaxElements(),0);
+	std::vector<float> outputData(m_WaveformGeneration.getMaxElements(),0);
 
 	//Counter for number of pushed data blocks
 	std::int32_t NumberOfPushedDataBlocks(0);
@@ -823,7 +823,7 @@ void DeviceVectorDBL::WaveformGeneration_thread_body(){
 		// Get signalType
 		size_t signalType = m_WaveformGeneration.getSignalType();
 		// Get amplitude
-		double amplitude = m_WaveformGeneration.getAmplitude();
+		float amplitude = (float)m_WaveformGeneration.getAmplitude();
 		// Get frequency
 		double frequency = m_WaveformGeneration.getFrequency();
 		// Get updateRate
@@ -854,7 +854,7 @@ void DeviceVectorDBL::WaveformGeneration_thread_body(){
 				break;
 			case 3:
 				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = (double)amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
+					outputData[scanVector] = (float)amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
 				}
 				break;
 			case 4:
@@ -899,22 +899,22 @@ void DeviceVectorDBL::WaveformGeneration_thread_body(){
 }
 
 #ifdef EPICS
- NDS_DEFINE_DRIVER(DeviceVectorDBL, DeviceVectorDBL)
+ NDS_DEFINE_DRIVER(DeviceVectorFloat, DeviceVectorFloat)
 #else
 /**
  * Allocation function
  *********************/
-void* DeviceVectorDBL::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
+void* DeviceVectorFloat::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
 {
-    return new DeviceVectorDBL(factory, deviceName, parameters);
+    return new DeviceVectorFloat(factory, deviceName, parameters);
 }
 
 /**
  * Deallocation function
  ***********************/
-void DeviceVectorDBL::deallocateDevice(void* deviceName)
+void DeviceVectorFloat::deallocateDevice(void* deviceName)
 {
-    delete (DeviceVectorDBL*)deviceName;
+    delete (DeviceVectorFloat*)deviceName;
 }
 #endif
 

@@ -30,6 +30,8 @@
 namespace nds
 {
 
+
+
 /**
  * @brief Available states, ordered by priority (lowest to higher).
  */
@@ -48,12 +50,26 @@ enum class state_t
 };
 
 /**
+ * @brief Available levels of automatic change in the State Machines that are following the state of the father Node
+ */
+enum class autoEnable_t
+{
+
+    off=state_t::off,          ///< The node won't follow its father STM
+    on=state_t::on,          ///< The node will follow its father until ON state
+    running=state_t::running   ///< The node will follow its father until RUNNING state
+
+};
+
+
+/**
  * @brief PV data types
  */
 enum class dataType_t
 {
     /* The value zero is reserved to static asserts to verify that the correct cpp types are being used */
     dataInt32 = 1,    ///< Signed integer, 32 bits
+	dataFloat32,      ///< Float, 32 bits
     dataFloat64,      ///< Float, 64 bits
 	dataBoolArray,	  ///< Array of Bool
     dataUint8Array,   ///< Array of unsigned 8 bit integers
@@ -62,11 +78,24 @@ enum class dataType_t
 	dataInt8Array,    ///< Array of signed 8 bit integers
 	dataInt16Array,   ///< Array of signed 16 bit integers
 	dataInt32Array,   ///< Array of signed 32 bit integers
+	dataFloat32Array, ///< Array of 32 bit floats
     dataFloat64Array, ///< Array of 64 bit floats
     dataString,       ///< String
 	dataTimespec,	  ///< Timespec
 	dataTimespecArray, ///< Array of timespec
 	dataTimestamp	//< Timestamp structure
+};
+
+/**
+ * @brief Data type to report the status for updating values in Input PVs.
+ */
+enum class statusPV_t {
+  success = 0,     //!< Value updated successfully.
+  timeout = 1,     //!< Timeout.
+  overflow = 2,    //!< Overflow.
+  disconnected = 3,//!< Disconnected.
+  disabled = 4,     //!< Disabled.
+  error = 5       //!< Any other error not gathered in previous status.
 };
 
 /**
