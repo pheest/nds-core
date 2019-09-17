@@ -107,7 +107,7 @@ struct StateMachineArgs_t {
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,
 			stateChange_t _stopFunction, stateChange_t _recoverFunction,
 			allowChange_t _allowStateChangeFunction,
-			autoEnable_t autoEnable=autoEnable_t::off):
+			autoEnable_t autoEnable=autoEnable_t::none):
 				bAsync(_bAsync),
 				switchOnFunction(_switchOnFunction),
 				switchOffFunction(_switchOffFunction),
@@ -200,7 +200,7 @@ public:
                  stateChange_t stopFunction,
                  stateChange_t recoverFunction,
                  allowChange_t allowStateChangeFunction,
-				 autoEnable_t autoState=autoEnable_t::off);
+				 autoEnable_t autoState=autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the state machine.

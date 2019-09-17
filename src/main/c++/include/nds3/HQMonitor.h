@@ -255,7 +255,7 @@ struct HQMonitorArgs_t {
 					readerString_t _PV_SelfTestTextResult_Reader,
 					readerInt32_t _PV_SignalQualityFlag_Reader,
 					writerDouble_t _PV_SignalQualityFlagLevel_Writer,
-					autoEnable_t autoEnable=autoEnable_t::off) :
+					autoEnable_t autoEnable=autoEnable_t::none) :
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
 						switchOffFunction,
@@ -327,7 +327,7 @@ public:
 					readerString_t PV_SelfTestTextResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SignalQualityFlagLevel_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					autoEnable_t autoEnable=autoEnable_t::off);
+					autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**
 	 * @brief Simplified constructor of the HQMonitor node.

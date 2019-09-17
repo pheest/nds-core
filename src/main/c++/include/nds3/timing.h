@@ -64,7 +64,7 @@ struct TimingArgs_t {
 				 stateChange_t recoverFunction,
 				 allowChange_t allowStateChangeFunction,
 				 readerTime_t _PV_Time_Reader,
-				 autoEnable_t autoEnable=autoEnable_t::off):
+				 autoEnable_t autoEnable=autoEnable_t::none):
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
 						switchOffFunction,
@@ -127,7 +127,7 @@ class NDS3_API Timing: public Node  {
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
         readerTime_t PV_Time_Reader,
-		autoEnable_t autoEnable=autoEnable_t::off);
+		autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the Timing node.

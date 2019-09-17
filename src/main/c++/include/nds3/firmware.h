@@ -74,7 +74,7 @@ struct FirmwareArgs_t {
 					stateChange_t recoverFunction,
 					allowChange_t allowStateChangeFunction,
 					writerString_t PV_FirmwarePath_Writer,
-					autoEnable_t autoEnable=autoEnable_t::off):
+					autoEnable_t autoEnable=autoEnable_t::none):
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
 						switchOffFunction,
@@ -133,7 +133,7 @@ public:
 	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
 	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
 	writerString_t PV_FirmwarePath_Writer,	 ///< Delegate function that performs the actions to set the firmware path
-	autoEnable_t autoEnable=autoEnable_t::off);
+	autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the firmware node.
