@@ -13,6 +13,9 @@
 #include "nds3/impl/timestampingImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 
+#include<iostream>
+
+
 namespace nds {
 
   template<typename T>
@@ -235,6 +238,15 @@ namespace nds {
     return overflow;
   }
 
+  template<typename T>
+  std::int32_t TimestampingImpl<T>::getDecimation()
+  {
+    std::int32_t decimation;
+    timespec timestamp;
+    m_Decimation_PV->read(&timestamp, &decimation);
+    return decimation;
+  }
+
   // --------------------------- Setters ----------------------------------- //
   template<typename T>
   void TimestampingImpl<T>::setEnable(const timespec& timestamp, const std::int32_t& value)
@@ -244,7 +256,7 @@ namespace nds {
       ndsWarningStream(*this) << "Warning: " <<
                       "Enable must take values 0 or 1. " <<
                       "Value " << enable << " entered. " <<
-                      "Setting enable value to 0." << std::endl;
+                      "Setting enable value to 1." << std::endl;
       enable = 1;
     }
     m_Enable_RBVPV->setValue(timestamp, enable);
@@ -260,7 +272,7 @@ namespace nds {
                       "Edge must take one of the following values: " <<
                       "0(RAISING), 1(FALLING), 2(ANY)." <<
                       "Value " << edge << " entered. " <<
-                      "Setting edge value to 0." << std::endl;
+                      "Setting edge value to 2." << std::endl;
       edge = 2; //ANY
     }
     m_Edge_RBVPV->setValue(timestamp, edge);
@@ -287,6 +299,19 @@ namespace nds {
     }
     m_Overflow_PV->setValue(timestamp, overflow);
     m_Overflow_PV->push(timestamp, overflow);
+  }
+
+  template<typename T>
+  void TimestampingImpl<T>::setDecimation(const timespec& /*timestamp*/, const std::int32_t& value)
+  {
+    std::int32_t decimation = value;
+    if (decimation < 1) {
+      ndsWarningStream(*this) << "Warning: Decimation must take values greater 1. "
+    		  << "Value "<< decimation << " entered."<<
+              "Setting decimation value to 1." << std::endl;
+      decimation = 1;
+    }
+    m_Timestamps_PV->setDecimation(decimation);
   }
 
 template class TimestampingImpl<timestamp_t>;

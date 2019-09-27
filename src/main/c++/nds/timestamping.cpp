@@ -118,6 +118,11 @@ std::int32_t Timestamping<T>::getOverflow(){
   return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getOverflow();
 }
 
+template <typename T>
+std::int32_t Timestamping<T>::getDecimation(){
+  return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getDecimation();
+}
+
 // -------------------------------- Setters --------------------------------- //
 template <typename T>
 void Timestamping<T>::setEnable(const timespec& timestamp, const std::int32_t& value) {
@@ -137,6 +142,11 @@ void Timestamping<T>::setMaxTimestamps(const timespec& timestamp, const std::int
 template <typename T>
 void Timestamping<T>::setOverflow(const timespec& timestamp, const std::int32_t& value) {
   std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setOverflow(timestamp, value);
+}
+
+template <typename T>
+void Timestamping<T>::setDecimation(const timespec& timestamp, const std::int32_t& value) {
+  std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setDecimation(timestamp, value);
 }
 
 template class Timestamping<timestamp_t>;

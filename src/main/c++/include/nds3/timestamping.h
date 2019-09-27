@@ -244,11 +244,18 @@ class NDS3_API Timestamping: public Node  {
     std::int32_t getMaxTimestamps();
 
     /**
-     * @brief Retreives overflow error status
+     * @brief Retrieves overflow error status
      *
      * @return overflow error status
      */
     std::int32_t getOverflow();
+
+    /**
+     * @brief Retrieves the decimation value set by the Control System
+     *
+     * @return decimation value
+     */
+    std::int32_t getDecimation();
 
     // --------------------------- Setters ----------------------------------- //
     /**
@@ -282,6 +289,14 @@ class NDS3_API Timestamping: public Node  {
     * @param value overflow error status
     */
     void setOverflow(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Sets the decimation factor to the timestamps PV
+     *
+     * @param timestamp timestamp
+     * @param value decimation factor
+     */
+    void setDecimation(const timespec& timestamp, const std::int32_t& value);
 
   };
 }

@@ -144,6 +144,13 @@ namespace nds {
      */
     std::int32_t getOverflow();
 
+    /**
+     * @brief Retreives the decimation value set by the Control System
+     *
+     * @return decimation value
+     */
+    std::int32_t getDecimation();
+
 
     // --------------------------- Setters ----------------------------------- //
     /**
@@ -177,6 +184,14 @@ namespace nds {
     * @param value overflow error status
     */
     void setOverflow(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Sets the decimation factor to the timestamps PV
+     *
+     * @param timestamp timestamp
+     * @param value decimation factor
+     */
+    void setDecimation(const timespec& timestamp, const std::int32_t& value);
 
    protected:
      /**
