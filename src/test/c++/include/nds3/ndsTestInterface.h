@@ -1,9 +1,10 @@
 #ifndef NDSTESTINTERFACE_H
 #define NDSTESTINTERFACE_H
 
+#include <vector>
+
 #include <nds3/impl/interfaceBaseImpl.h>
 #include <nds3/definitions.h>
-#include <vector>
 
 namespace nds
 {

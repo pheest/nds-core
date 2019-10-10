@@ -2,7 +2,6 @@
 #define DeviceTrigAndClk_H_
 
 #include <memory>
-
 #include <functional>
 #include <math.h>
 #include <unistd.h>

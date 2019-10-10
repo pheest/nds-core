@@ -1,13 +1,13 @@
-
-#include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
+#include <iostream>
+
+#include <nds3/nds.h>
+
 #include "DevicePVs.h"
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
-
-#include <iostream>
 
 static std::map<std::string, DevicePVs*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;

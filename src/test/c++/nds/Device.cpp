@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <functional>
 
-#include "../include/Device.h"
+#include "Device.h"
 
 static std::map<std::string, Device*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;

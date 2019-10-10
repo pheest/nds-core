@@ -1,7 +1,7 @@
-#include "../include/testUtils.h"
-
 #include <string>
 #include <sstream>
+
+#include "nds3/testUtils.h"
 
 std::string TestUtils::getString(const std::int32_t & data){
 	std::ostringstream oss;

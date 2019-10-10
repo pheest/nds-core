@@ -1,9 +1,11 @@
+#include <math.h>
+
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 #include "nds3/exceptions.h"
-#include <math.h>
-#include "../include/ndsTestInterface.h"
-#include "../include/ndsTestFactory.h"
+
+#include "nds3/ndsTestInterface.h"
+#include "nds3/ndsTestFactory.h"
 
 
 /**

@@ -2,7 +2,8 @@
 //
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/Device.h"
+
+#include "Device.h"
 #include "DeviceFloat.h"
 #include "DeviceDBL.h"
 #include "DeviceDigitalIO.h"
@@ -22,7 +23,7 @@
 #include "DevicePVs.h"
 #include "DeviceTrigAndClk.h"
 
-#include "../include/ndsTestFactory.h"
+#include "nds3/ndsTestFactory.h"
 
 
 int main(int argc, char **argv)
