@@ -20,12 +20,13 @@ DataSchedulingImpl<T>::DataSchedulingImpl(const std::string& name,  ///< The nod
                allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true.
                writerInt32_t triggerAction ///< Delegate function that defines what the node does to generate its outputs.
                ):
-  NodeImpl(name, nodeType_t::dataSourceChannel),
-  nInputs(numberInputs),
-  nOutputs(numberOutputs),
-  m_OnStartDelegate(startFunction),
-  m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
-
+                NodeImpl(name, nodeType_t::dataSourceChannel),
+                nInputs(numberInputs),
+                nOutputs(numberOutputs),
+                m_OnStartDelegate(startFunction),
+                m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)),
+                m_DataIn_PV(numberInputs),
+                m_DataOut_PV(numberOutputs)
 {
 
 
@@ -44,24 +45,21 @@ DataSchedulingImpl<T>::DataSchedulingImpl(const std::string& name,  ///< The nod
   m_Trigger_PV->setDescription("Trigger the node");
   this->addChild(m_Trigger_PV);
 
-
   for (int i = 0; i < this->nInputs; i++) {
       std::string iTxt = std::to_string(i);
-      std::string name = "DataIn" + std::to_string(i);
-      std::shared_ptr< PVVariableOutImpl<T>> ptr(new PVVariableOutImpl<T>("DataIn" + iTxt));
+      std::shared_ptr< PVVariableOutImpl<T>> ptr(new PVVariableOutImpl<T>("DataIn_" + iTxt));
       ptr->setDescription("Data Input " + iTxt);
       ptr->setScanType(scanType_t::interrupt, 0);
-      m_DataIn_PV.insert(ptr);
+      m_DataIn_PV[i] = ptr;
       this->addChild(ptr);
   }
 
   for (int i = 0; i < this->nOutputs; i++) {
       std::string iTxt = std::to_string(i);
-      std::string name = "DataOut" + std::to_string(i);
-      std::shared_ptr< PVVariableInImpl<T>> ptr(new PVVariableInImpl<T>("DataOut" + iTxt));
+      std::shared_ptr< PVVariableInImpl<T>> ptr(new PVVariableInImpl<T>("DataOut_" + iTxt));
       ptr->setDescription("Data Output " + iTxt);
       ptr->setScanType(scanType_t::interrupt, 0);
-      m_DataOut_PV.insert(ptr);
+      m_DataOut_PV[i] = ptr;
       this->addChild(ptr);
   }
 }

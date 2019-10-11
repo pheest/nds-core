@@ -25,6 +25,7 @@ class NDS3_API DataMultiplexing: public DataScheduling<T>
 
 public:
 
+  DataMultiplexing();
   DataMultiplexing(const std::string& name,  ///< The node's name.
                size_t numberInputs ///< Node's number of PV inputs for the node. They are defined as NDS Output PVs.
                );

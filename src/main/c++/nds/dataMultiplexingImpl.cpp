@@ -2,6 +2,7 @@
 #include "nds3/impl/dataMultiplexingImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 #include "nds3/impl/pvDelegateOutImpl.h"
+#include <iostream>
 
 namespace nds
 {
@@ -31,13 +32,14 @@ DataMultiplexingImpl<T>::DataMultiplexingImpl(const std::string& name,  ///< The
                                                                    std::placeholders::_1,
                                                                    std::placeholders::_2
                                                                    )));
-  m_SamplesPerChannel_PV->setDescription("Samples per channel");
-  this->addChild(m_SamplesPerChannel_PV);
 
   m_SamplesPerChannel_RBVPV.reset(new PVVariableInImpl<std::int32_t>("SamplesPerChannel_RBV"));
   m_SamplesPerChannel_RBVPV->setDescription("Current Samples per channel");
   m_SamplesPerChannel_RBVPV->setScanType(scanType_t::interrupt, 0);
   this->addChild(m_SamplesPerChannel_RBVPV);
+
+  m_SamplesPerChannel_PV->setDescription("Samples per channel");
+  this->addChild(m_SamplesPerChannel_PV);
 
 }
 
@@ -67,7 +69,16 @@ void DataMultiplexingImpl<T>::recover(void) {
 }
 
 template<typename T>
-bool DataMultiplexingImpl<T>::allowStateChange(const state_t /*currentState*/, const state_t /*currentGlobalState*/, const state_t /*newState*/) {
+bool DataMultiplexingImpl<T>::allowStateChange(const state_t currentState, const state_t /*currentGlobalState*/, const state_t newState) {
+  if (currentState == state_t::on && newState == state_t::running) {
+      timespec timestamp;
+      std::int32_t samplesPerChannel;
+      m_SamplesPerChannel_RBVPV->read(&timestamp, &samplesPerChannel);
+      if (samplesPerChannel <= 0) {
+          std::cout << "DataMultiplexing: State cannot be changed. SamplesPerChannel must be greater than 0." << std::endl;
+          return false;
+      }
+  }
   return true;
 }
 
@@ -79,18 +90,21 @@ void DataMultiplexingImpl<T>::multiplex(const timespec &/*time*/, const std::int
       m_SamplesPerChannel_RBVPV->read(&timestamp, &samplesPerChannel);
       std::uint64_t offset = 0;
       T dataOut(samplesPerChannel*this->nInputs);
-      typename std::set< std::shared_ptr< PVVariableOutImpl<T>>>::iterator itIn = this->m_DataIn_PV.begin();
-      typename std::set< std::shared_ptr< PVVariableInImpl<T>>>::iterator itOut = this->m_DataOut_PV.begin();
       for (int i = 0; i < this->nInputs; i++) {
-         std::advance(itIn, i);
          T value;
          timespec time;
-         std::static_pointer_cast<PVVariableOutImpl<T>>(*itIn)->read(&time, &value);
-         std::move(value.begin(), value.begin() + samplesPerChannel - 1, dataOut.begin() + offset);
+         this->m_DataIn_PV[i]->read(&time, &value);
+         if (value.size() < samplesPerChannel) {
+             throw std::runtime_error(m_SamplesPerChannel_RBVPV->getFullExternalName() + " greater than " +
+                                      this->m_DataIn_PV[i]->getFullExternalName() +
+                                      " (" + std::to_string(samplesPerChannel) + " > " +
+                                      std::to_string(value.size()) + ")");
+         }
+         std::move(value.begin(), value.begin() + samplesPerChannel, dataOut.begin() + offset);
          offset += samplesPerChannel;
       }
-      std::static_pointer_cast<PVVariableInImpl<T>>(*itOut)->setValue(this->getTimestamp(), dataOut);
-      std::static_pointer_cast<PVVariableInImpl<T>>(*itOut)->push(this->getTimestamp(), dataOut);
+      this->m_DataOut_PV[0]->setValue(this->getTimestamp(), dataOut);
+      this->m_DataOut_PV[0]->push(this->getTimestamp(), dataOut);
   }
 }
 

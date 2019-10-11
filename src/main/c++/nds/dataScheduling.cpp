@@ -72,4 +72,14 @@ timespec DataScheduling<T>::getStartTimestamp() const
     return std::static_pointer_cast<DataSchedulingImpl<T> >(m_pImplementation)->getStartTimestamp();
 }
 
+template class DataScheduling<std::int32_t>;
+template class DataScheduling<float>;
+template class DataScheduling<double>;
+template class DataScheduling<std::vector<std::int8_t> >;
+template class DataScheduling<std::vector<std::uint8_t> >;
+template class DataScheduling<std::vector<std::int16_t> >;
+template class DataScheduling<std::vector<std::int32_t> >;
+template class DataScheduling<std::vector<float> >;
+template class DataScheduling<std::vector<double> >;
+
 }

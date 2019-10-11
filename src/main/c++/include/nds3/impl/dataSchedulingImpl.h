@@ -25,7 +25,7 @@ template<typename T>
 class DataSchedulingImpl: public NodeImpl
 {
 
-protected:
+public:
 
   DataSchedulingImpl(const std::string& name,  ///< The node's name.
                size_t numberInputs, ///< Node's number of PV inputs for the node. They are defined as NDS Output PVs.
@@ -39,8 +39,6 @@ protected:
                writerInt32_t triggerAction ///< Delegate function that defines what the node does to generate its outputs.
                );
 
-
-public:
 
   /**
    * @ingroup Scheduling
@@ -99,8 +97,8 @@ protected:
   std::shared_ptr< PVDelegateOutImpl<std::int32_t> > m_Trigger_PV;
 
 
-  std::set< std::shared_ptr< PVVariableOutImpl<T>>> m_DataIn_PV;
-  std::set< std::shared_ptr< PVVariableInImpl<T>>> m_DataOut_PV;
+  std::vector< std::shared_ptr< PVVariableOutImpl<T>>> m_DataIn_PV;
+  std::vector< std::shared_ptr< PVVariableInImpl<T>>> m_DataOut_PV;
 
 
 };

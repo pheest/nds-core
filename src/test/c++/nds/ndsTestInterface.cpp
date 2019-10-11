@@ -1,4 +1,5 @@
 #include "../include/ndsTestInterface.h"
+#include <iostream>
 
 namespace nds
 {
@@ -145,7 +146,11 @@ void TestControlSystemInterfaceImpl::readCSValue(const std::string& pvName, time
     registeredPVs_t::iterator findPV = m_registeredPVs.find(pvName);
     if(findPV == m_registeredPVs.end())
     {
-        throw std::runtime_error("PV not found");
+        std::cout << "Candidate PVs are:" << std::endl;
+        for (auto pv : m_registeredPVs) {
+            std::cout << "\t" << pv.second->getFullExternalName() << std::endl;
+        }
+        throw std::runtime_error("PV " + pvName + " not found");
     }
     findPV->second->read(pTimestamp, pValue);
 }
@@ -174,7 +179,7 @@ void TestControlSystemInterfaceImpl::writeCSValue(const std::string& pvName, con
     registeredPVs_t::iterator findPV = m_registeredPVs.find(pvName);
     if(findPV == m_registeredPVs.end())
     {
-        throw std::runtime_error("PV not found");
+        throw std::runtime_error("PV " + pvName + " not found");
     }
     findPV->second->write(timestamp, value);
 }

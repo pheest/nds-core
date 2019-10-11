@@ -20,7 +20,7 @@ namespace nds
 {
 
 template <typename T>
-class NDS3_API DataScheduling: public Node
+class NDS3_API DataScheduling: virtual public Node
 {
 
 protected:
