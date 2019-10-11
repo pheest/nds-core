@@ -29,27 +29,58 @@ EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
 VPATH =$(EXAMPLESDIR)
 
 
-INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR) -I../include
-LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
+INCLUDES := -I../../../main/c++/include -I$(EXAMPLESDIR) -I../include
+LIBPATH := -L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 
 #############################################################################
 
 
-CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++11
-LDFLAGS +=$(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest
+LIBNAME=nds3-testcontrolsystem
+
+#Sources
+SOURCE_DIR = .
+SOURCES += $(SOURCE_DIR)/ndsTestFactory.cpp
+SOURCES += $(SOURCE_DIR)/ndsTestInterface.cpp
+SOURCES += $(SOURCE_DIR)/ndsTestUtils.cpp
+
+TARGET=../../..
+LIBRARY_DIR=$(TARGET)/lib
+OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
+SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
+STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
+
+#Objects
+OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
+
+DBG_COV=-g --coverage
+
+CXXFLAGS += -MMD -MP -Wall -Wextra -pedantic -fPIC -pthread -fvisibility-inlines-hidden -std=c++11 $(INCLUDES) $(DBG_COV)
+LDFLAGS += $(DBG_COV) $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest
 
 TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
-TEST =nds3core-unit-tests
+TEST = nds3core-unit-tests
 
-all: $(TEST)
+all: $(TEST) $(SHAREDLIBRARY) $(STATICLIBRARY)
 
 $(TEST): $(TESTS_OBJS) 
-	$(CXX) $^ --coverage -o $@ $(LDFLAGS)
+	$(CXX) $(LDFLAGS) $(DBG_COV) $^ -o $@
 
+$(SHAREDLIBRARY): $(OBJECTS)
+	@mkdir -p $(LIBRARY_DIR)
+	$(CXX) -shared $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $(SHAREDLIBRARY)
+
+$(STATICLIBRARY): $(OBJECTS)
+	@mkdir -p $(LIBRARY_DIR)
+	$(AR) rcs $@ $^
+
+$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	@mkdir -p $(OBJECT_DIR)
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 clean:
-	@$(RM) $(TESTS) *.o *.d
+	$(RM) $(TESTS) *.o *.d
+	$(RM) "$(STATICLIBRARY)" "$(OBJECTS)"
 
