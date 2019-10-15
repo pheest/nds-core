@@ -2,7 +2,22 @@
 #ifndef TESTUTILS_H_
 #define TESTUTILS_H_
 
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <ctime>
+
 #include <nds3/nds.h>
+
+#define RST  "\x1B[0m"
+#define FRED  "\x1B[31m"
+#define FGRN  "\x1B[32m"
+#define FYEL  "\x1B[33m"
+#define FBLU  "\x1B[34m"
+#define FMAG  "\x1B[35m"
+#define FCYN  "\x1B[36m"
+#define FWHT  "\x1B[37m"
+
 
 class TestUtils
 {
@@ -87,6 +102,20 @@ public:
 	 * @brief Get a string by identifying the type of data (nds::timestamp_t) and its value
 	 */
 	static std::string getString(nds::timestamp_t data);
+
+	static void displayTitle(std::string msg){
+		std::cout<<"+-----------------------------------------------------------------------------"<<std::endl;
+		std::cout<<msg<<std::endl;
+		std::cout<<"+-----------------------------------------------------------------------------"<<std::endl<<std::endl;
+	}
+
+	static void waitEnterKey(std::string msg){
+		std::cout<<"+-----------------------------------------------------------------------------"<<std::endl;
+		std::cout<<msg<<std::endl;
+		std::cout<<"+-----------------------------------------------------------------------------"<<std::endl;
+
+		while(std::cin.get()!='\n');
+	}
 };
 
 
