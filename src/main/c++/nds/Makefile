@@ -63,13 +63,13 @@ clean:
 	rm -rf "$(SHAREDLIBRARY)" "$(STATICLIBRARY)" "$(OBJECT_DIR)" "$(HTARGETS)"
 
 $(SHAREDLIBRARY): $(OBJECTS)
-	mkdir -p $(LIBRARY_DIR)
+	@mkdir -p $(LIBRARY_DIR)
 	$(CC) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $(SHAREDLIBRARY)
 
 $(STATICLIBRARY): $(OBJECTS)
-	mkdir -p $(LIBRARY_DIR)
+	@mkdir -p $(LIBRARY_DIR)
 	$(AR) rcs $@ $^
 
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp 
-	mkdir -p $(OBJECT_DIR)
+	@mkdir -p $(OBJECT_DIR)
 	$(CC) $(CXXFLAGS) $(INCLUDES) $< -o $@
