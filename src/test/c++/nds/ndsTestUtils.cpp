@@ -10,9 +10,9 @@ std::string TestUtils::getString(const std::int32_t & data){
 }
 
 std::string TestUtils::getString(const std::uint64_t & data){
-        std::ostringstream oss;
-        oss << "Unsigned Integer 64: " << data;
-        return oss.str();
+	std::ostringstream oss;
+	oss << "Unsigned Integer 64: " << data;
+	return oss.str();
 }
 
 std::string TestUtils::getString(const float & data){
@@ -198,13 +198,13 @@ std::string TestUtils::getString(nds::timestamp_t data){
 
 std::string TestUtils::getAbsolutePath (const std::string& relativePath)
 {
-  char* pAbsPath = realpath(relativePath.c_str(), NULL);
-  std::string absolutePath(relativePath);
-  if (pAbsPath != NULL) {
-      absolutePath = std::string(pAbsPath);
-      free(pAbsPath);
-  }
-  return absolutePath;
+	char* pAbsPath = realpath(relativePath.c_str(), NULL);
+	std::string absolutePath(relativePath);
+	if (pAbsPath != NULL) {
+ 		absolutePath = std::string(pAbsPath);
+		free(pAbsPath);
+	}
+	return absolutePath;
 }
 
 

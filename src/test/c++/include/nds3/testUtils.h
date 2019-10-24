@@ -17,27 +17,22 @@
 #define FMAG  "\x1B[35m"
 #define FCYN  "\x1B[36m"
 #define FWHT  "\x1B[37m"
-#define GRAYSTART "\033[37m"
-#define GRAYEND "\33[0m"
-#define DARKGRAYSTART "\033[90m"
-#define DARKGRAYEND "\33[0m"
-#define YELLOWSTART "\033[33m"
-#define YELLOWEND "\33[0m"
+#define FGRY "\x1B[90m"
 
 #define PrintHeader(text) { \
-    std::cout << DARKGRAYSTART  << text << DARKGRAYEND << std::endl <<std::flush; \
+    std::cout << FGRY << text << RST << std::endl <<std::flush; \
 }
 
 #define PrintWarning(text) { \
-    std::cout << YELLOWSTART  << text << YELLOWEND << std::endl <<std::flush; \
+    std::cout << FYEL << text << RST << std::endl <<std::flush; \
 }
 
 #define Print(text) { \
-    std::cout << GRAYSTART  << text << GRAYEND << std::endl <<std::flush; \
+    std::cout << FWHT  << text << RST << std::endl <<std::flush; \
 }
 
 #define PrintAndParse(start, text) { \
-    std::cout << GRAYSTART <<start << TestUtils::getString(text) << GRAYEND << std::endl <<std::flush; \
+    std::cout << FWHT <<start << TestUtils::getString(text) << RST << std::endl <<std::flush; \
 }
 
 class TestUtils
@@ -49,10 +44,10 @@ public:
 	 */
 	static std::string getString(const std::int32_t & data);
 
-        /**
-         * @brief Get a string by identifying the type of data (std::uint64_t) and its value
-         */
-        static std::string getString(const std::uint64_t & data);
+	/**
+	 * @brief Get a string by identifying the type of data (std::uint64_t) and its value
+	 */
+	static std::string getString(const std::uint64_t & data);
 
 	/**
 	 * @brief Get a string by identifying the type of data (float) and its value
@@ -129,14 +124,14 @@ public:
 	 */
 	static std::string getString(nds::timestamp_t data);
 
-        /**
-         * @brief Get the absolute path of the file given by its relative path.
-         * The current directory for the relative paths is the one where the main method
-         * is being executed.
-         * @param relativePath Relative path to the target file.
-         * @return Absolute path to the target path (if found), or relative path (if not found).
-         */
-        static std::string getAbsolutePath(const std::string& relativePath);
+	/**
+	 * @brief Get the absolute path of the file given by its relative path.
+	 * The current directory for the relative paths is the one where the main method
+	 * is being executed.
+	 * @param relativePath Relative path to the target file.
+	 * @return Absolute path to the target path (if found), or relative path (if not found).
+	*/
+	static std::string getAbsolutePath(const std::string& relativePath);
 
 	static void displayTitle(std::string msg){
 		std::cout<<"+-----------------------------------------------------------------------------"<<std::endl;
