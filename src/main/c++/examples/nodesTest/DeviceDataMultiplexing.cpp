@@ -49,10 +49,12 @@ DeviceDataMultiplexing::DeviceDataMultiplexing(nds::Factory &factory, const std:
         timespec timestamp = {0, 0};
         m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
 
+        // Add the multiplexing PV.
         std::string nodeName = "DataMultiplexing_" + std::to_string(nChannels) + "_" + dataTypeTxt;
         m_DataMultiplexing = rootNode.addChild(nds::DataMultiplexing<std::vector<float>>(nodeName, nChannels));
         m_DataMultiplexing.setTimestampDelegate(std::bind(&DeviceDataMultiplexing::getCurrentTime,this));
 
+        // This section adds the source PVs that will not be required in a real applciation.
         m_PV_Source_0 = rootNode.addChild(nds::PVVariableIn<std::vector<float>>("FloatArray_Source_0"));
         m_PV_Source_0.setDescription("FloatArray in channel 0");
         m_PV_Source_0.setScanType(nds::scanType_t::interrupt);
@@ -77,12 +79,13 @@ DeviceDataMultiplexing::DeviceDataMultiplexing(nds::Factory &factory, const std:
         m_PV_Source_3.setMaxElements(maxElements);
         m_PV_Source_3.processAtInit(true);
 
+        // Add the PV for modifying the source PVs that will not be required in a real application.
         rootNode.addChild(m_PV_IncreaseSources);
         m_PV_IncreaseSources.setDescription("Set 1 to increase sources");
         m_PV_IncreaseSources.setScanType(nds::scanType_t::passive);
 
         // We have declared all the nodes and PVs in our Device: now we register them
-        //  with the control system that called this constructor.
+        // with the control system that called this constructor.
         ////////////////////////////////////////////////////////////////////////////////
         rootNode.initialize(this, factory);
         rootNode.setTimestampDelegate(std::bind(&DeviceDataMultiplexing::getCurrentTime,this));
