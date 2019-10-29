@@ -9,7 +9,7 @@
 static std::map<std::string, Device*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &parameters):
+Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(DeviceName),
 
 	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),

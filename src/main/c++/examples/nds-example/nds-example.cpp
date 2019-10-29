@@ -4,7 +4,7 @@
 //
 // Project       : CODAC Core System
 //
-// Description   : ndsex1 program
+// Description   : nds-example program
 //
 // Author        : codac-dev
 //
@@ -20,6 +20,8 @@
 //
 //-======================================================================
 
+#include "nds-example.h"
+
 #include <iostream>
 #include <mutex>
 #include <unistd.h>
@@ -30,7 +32,6 @@
 
 #include <nds3/nds.h>
 
-#include "ndsex1.h"
 
 using namespace std;
 using namespace std::placeholders;

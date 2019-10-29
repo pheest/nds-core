@@ -23,7 +23,7 @@
 
 NDSLIBDIR:=$(realpath ../../../../target/lib)
 # Path from which the device source file will be obtained.
-EXAMPLESDIR:=$(realpath ../../../main/c++/examples/ndsex1)
+EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nds-example)
 EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
 # Necessary for make to find the source files in a different directory.
 VPATH =$(EXAMPLESDIR)
@@ -37,7 +37,7 @@ LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 
 CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++11
-LDFLAGS +=$(LIBPATH) -lnds3-dev-ndsex1 -lnds3-testcontrolsystem -lnds3 -lpthread -ldl -lrt -lgtest
+LDFLAGS +=$(LIBPATH) -lnds3-dev-nds-example -lnds3-testcontrolsystem -lnds3 -lpthread -ldl -lrt -lgtest
 
 TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
