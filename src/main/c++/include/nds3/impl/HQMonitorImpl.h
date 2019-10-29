@@ -47,7 +47,8 @@ public:
 						writerInt32_t PV_SelfTestCodeResultEnable_Writer,
 						readerString_t PV_SelfTestTextResult_Reader,
 						readerInt32_t PV_SignalQualityFlag_Reader,
-						writerDouble_t PV_SignalQualityFlagLevel_Writer);
+						writerDouble_t PV_SignalQualityFlagLevel_Writer,
+						autoEnable_t autoEnable);
 
 	HQMonitorImpl(const std::string& name,  ///< The node's name
 					const HQMonitorArgs_t& handlerHQM); ///< Structure with delegate functions that perform the required actions.
@@ -93,6 +94,12 @@ public:
      */
     void onStart();
 
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
      * ---------------------------------------------------

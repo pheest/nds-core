@@ -27,7 +27,8 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 								 writerVectorBool_t PV_dataOutMask_Writer,
 								 writerDouble_t PV_voltLevelHigh_Writer,
 								 writerDouble_t PV_voltLevelLow_Writer,
-								 writerVectorBool_t PV_ChannelDir_Writer):
+								 writerVectorBool_t PV_ChannelDir_Writer,
+								 autoEnable_t autoEnable):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -41,7 +42,8 @@ DigitalIOImpl<T>::DigitalIOImpl( const std::string& name,
 												 PV_dataOutMask_Writer,
 												 PV_voltLevelHigh_Writer,
 												 PV_voltLevelLow_Writer,
-												 PV_ChannelDir_Writer);
+												 PV_ChannelDir_Writer,
+												 autoEnable);
 	constructorBody(maxElements, handlerDIO);
 }
 
@@ -210,6 +212,12 @@ void DigitalIOImpl<T>::onStart()
     m_StartTime = m_StartTimestampFunction();
     m_DataIn_PV->setDecimation((std::uint32_t)m_Decimation_PV->getValue());
     m_OnStartDelegate();
+}
+
+template<typename T>
+nds::state_t DigitalIOImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
 }
 
 template<typename T>

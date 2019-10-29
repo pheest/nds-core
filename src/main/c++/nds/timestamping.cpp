@@ -45,7 +45,8 @@ Timestamping<T>::Timestamping(const std::string& name,
     allowChange_t allowStateChangeFunction,
     writerInt32_t PV_Enable_Writer,
     writerInt32_t PV_Edge_Writer,
-    writerInt32_t PV_ClearOverflow_Writer):
+    writerInt32_t PV_ClearOverflow_Writer,
+	autoEnable_t autoEnable):
 
     Node(std::shared_ptr<TimestampingImpl<T>>(new TimestampingImpl<T>(name,
     maxElements,
@@ -57,7 +58,8 @@ Timestamping<T>::Timestamping(const std::string& name,
     allowStateChangeFunction,
     PV_Enable_Writer,
     PV_Edge_Writer,
-    PV_ClearOverflow_Writer)))
+    PV_ClearOverflow_Writer,
+	autoEnable)))
 {
 }
 
@@ -88,6 +90,13 @@ timespec Timestamping<T>::getStartTimestamp() const
     return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getStartTimestamp();
 }
 
+template <typename T>
+nds::state_t Timestamping<T>::getState()
+{
+    return std::static_pointer_cast<TimestampingImpl<T> >(m_pImplementation)->getState();
+}
+
+
 // -------------------------------- Getters --------------------------------- //
 template <typename T>
 std::int32_t Timestamping<T>::getEnable(){
@@ -109,6 +118,11 @@ std::int32_t Timestamping<T>::getOverflow(){
   return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getOverflow();
 }
 
+template <typename T>
+std::int32_t Timestamping<T>::getDecimation(){
+  return std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->getDecimation();
+}
+
 // -------------------------------- Setters --------------------------------- //
 template <typename T>
 void Timestamping<T>::setEnable(const timespec& timestamp, const std::int32_t& value) {
@@ -128,6 +142,11 @@ void Timestamping<T>::setMaxTimestamps(const timespec& timestamp, const std::int
 template <typename T>
 void Timestamping<T>::setOverflow(const timespec& timestamp, const std::int32_t& value) {
   std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setOverflow(timestamp, value);
+}
+
+template <typename T>
+void Timestamping<T>::setDecimation(const timespec& timestamp, const std::int32_t& value) {
+  std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setDecimation(timestamp, value);
 }
 
 template class Timestamping<timestamp_t>;

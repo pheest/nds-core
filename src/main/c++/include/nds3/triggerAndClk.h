@@ -257,14 +257,16 @@ struct TriggerAndClkArgs_t{
                       writerInt32_t _PV_ResetTrigConf_Writer,
                       writerInt32_t _PV_PLLSyncSet_Writer,
                       writerInt32_t _PV_EnableDisablePLL_Writer,
-                      const nds::Routing<std::string>& _routingNode) :
+                      const nds::Routing<std::string>& _routingNode,
+					  autoEnable_t autoEnable=autoEnable_t::none) :
       handlerSTM(true, ///Asynchronous state transitions.
                  switchOnFunction,
                  switchOffFunction,
                  startFunction,
                  stopFunction,
                  recoverFunction,
-                 allowStateChangeFunction),
+                 allowStateChangeFunction,
+				 autoEnable),
       PV_SetSW_Writer(_PV_SetSW_Writer),
       PV_LoadTrigConf_Writer(_PV_LoadTrigConf_Writer),
       PV_ResetTrigConf_Writer(_PV_ResetTrigConf_Writer),
@@ -326,7 +328,8 @@ public:
 			writerInt32_t PV_ResetTrigConf_Writer,
 			writerInt32_t PV_PLLSyncSET_Writer,
 			writerInt32_t PV_EnableDisablePLL_Writer,
-			nds::Routing<std::string> routingNode);
+			nds::Routing<std::string> routingNode,
+			autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**
 	 * @brief Simplified constructor of the TriggerAndClk node.
@@ -351,6 +354,13 @@ public:
      */
     //TODO: Discuss if necessary
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
      * @ingroup timing

@@ -40,7 +40,8 @@ public:
 			writerInt32_t PV_ResetTrigConf_Writer,
 			writerInt32_t PV_PLLSyncSET_Writer,
 			writerInt32_t PV_EnableDisablePLL_Writer,
-			const nds::Routing<std::string>& _routingNode);
+			const nds::Routing<std::string>& _routingNode,
+			autoEnable_t autoEnable);
 
         /**
          * @brief Constructs the TriggerAndClk node by means of its structure of functions.
@@ -76,6 +77,13 @@ public:
      *        delegated onStart function.
      */
     void onStart();
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     //getters
     std::int32_t getHWBlock();

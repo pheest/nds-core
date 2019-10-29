@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "../include/ndsTestInterface.h"
-#include "../include/ndsTestFactory.h"
-#include "../include/testUtils.h"
+#include "Device.h"
+#include "nds3/ndsTestInterface.h"
+#include "nds3/ndsTestFactory.h"
+#include "nds3/testUtils.h"
 
 /**
  * @brief Internal function to test the Set-PVs included in the FTE node.

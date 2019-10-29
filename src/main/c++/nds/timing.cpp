@@ -27,7 +27,8 @@ Timing::Timing(const std::string& name,
     stateChange_t stopFunction,
     stateChange_t recoverFunction,
     allowChange_t allowStateChangeFunction,
-    readerTime_t PV_Time_Reader):
+    readerTime_t PV_Time_Reader,
+autoEnable_t autoEnable):
     Node(std::shared_ptr<TimingImpl>(new TimingImpl(name,
     switchOnFunction,
     switchOffFunction,
@@ -35,7 +36,8 @@ Timing::Timing(const std::string& name,
     stopFunction,
     recoverFunction,
     allowStateChangeFunction,
-    PV_Time_Reader)))
+    PV_Time_Reader,
+	autoEnable)))
 {
 }
 
@@ -70,6 +72,11 @@ void Timing::push(const timespec& timestamp, const timespec& data)
 timespec Timing::getStartTimestamp() const
 {
     return std::static_pointer_cast<TimingImpl >(m_pImplementation)->getStartTimestamp();
+}
+
+nds::state_t Timing::getState()
+{
+    return std::static_pointer_cast<TimingImpl>(m_pImplementation)->getState();
 }
 
 // -------------------------------- Getters --------------------------------- //

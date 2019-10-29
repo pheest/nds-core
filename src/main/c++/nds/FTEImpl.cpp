@@ -32,7 +32,8 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 		writerInt32_t PV_Set_Writer,
 		writerInt32_t PV_Suppress_Writer,
 		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer):
+		writerInt32_t PV_PendingValue_Writer,
+		autoEnable_t autoEnable):
 		NodeImpl(name, nodeType_t::dataSourceChannel),
 		m_OnStartDelegate(startFunction),
 		m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -46,7 +47,8 @@ FTEImpl<T>::FTEImpl(const std::string& name,
 									 PV_Set_Writer,
 									 PV_Suppress_Writer,
 									 PV_ChgPeriod_Writer,
-									 PV_PendingValue_Writer);
+									 PV_PendingValue_Writer,
+									 autoEnable);
 	constructorBody(handlerFTE);
 }
 
@@ -260,7 +262,8 @@ inline void FTEImpl<T>::constructorBody(const FTEArgs_t& handlerFTE) {
 			std::bind(&FTEImpl::onStart, this),
 			handlerFTE.handlerSTM.stopFunction,
 			handlerFTE.handlerSTM.recoverFunction,
-			handlerFTE.handlerSTM.allowStateChangeFunction));
+			handlerFTE.handlerSTM.allowStateChangeFunction,
+			handlerFTE.handlerSTM.autoEnable));
 	addChild(m_StateMachine);
 }
 
@@ -281,6 +284,12 @@ void FTEImpl<T>::onStart()
 {
 	m_StartTime = m_StartTimestampFunction();
 	m_OnStartDelegate();
+}
+
+template<typename T>
+nds::state_t FTEImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
 }
 
 ///////////////////////////////////////////////////////////////

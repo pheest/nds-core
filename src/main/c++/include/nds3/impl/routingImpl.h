@@ -40,7 +40,8 @@ public:
 				writerInt32_t PV_ClkSet_Writer,
 				writerInt32_t PV_ClkDstRead_Writer,
 				writerInt32_t PV_TermSet_Writer,
-				writerInt32_t PV_TermDstRead_Writer
+				writerInt32_t PV_TermDstRead_Writer,
+				autoEnable_t autoEnable
 			);
 
     /**
@@ -95,6 +96,13 @@ public:
      *        delegated onStart function.
      */
     void onStart();
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
 
 protected:

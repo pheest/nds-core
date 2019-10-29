@@ -1,8 +1,9 @@
-#include <nds3/impl/factoryBaseImpl.h>
-#include <nds3/impl/logStreamGetterImpl.h>
 #include <set>
 #include <sstream>
 #include <map>
+
+#include <nds3/impl/factoryBaseImpl.h>
+#include <nds3/impl/logStreamGetterImpl.h>
 
 namespace nds
 {

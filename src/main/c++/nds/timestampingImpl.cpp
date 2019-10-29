@@ -13,6 +13,9 @@
 #include "nds3/impl/timestampingImpl.h"
 #include "nds3/impl/stateMachineImpl.h"
 
+#include<iostream>
+
+
 namespace nds {
 
   template<typename T>
@@ -26,7 +29,8 @@ namespace nds {
       allowChange_t allowStateChangeFunction,
       writerInt32_t PV_Enable_Writer,
       writerInt32_t PV_Edge_Writer,
-      writerInt32_t PV_ClearOverflow_Writer):
+      writerInt32_t PV_ClearOverflow_Writer,
+	  autoEnable_t autoEnable):
     NodeImpl(name, nodeType_t::dataSourceChannel),
     m_OnStartDelegate(startFunction),
     m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this))
@@ -39,7 +43,8 @@ namespace nds {
 														 allowStateChangeFunction,
 														 PV_Enable_Writer,
 														 PV_Edge_Writer,
-														 PV_ClearOverflow_Writer);
+														 PV_ClearOverflow_Writer,
+														 autoEnable);
 	  constructorBody(handlerTMS);
   }
   template <typename T>
@@ -158,7 +163,8 @@ namespace nds {
 												  std::bind(&TimestampingImpl::onStart, this),
 												  handlerTMS.handlerSTM.stopFunction,
 												  handlerTMS.handlerSTM.recoverFunction,
-												  handlerTMS.handlerSTM.allowStateChangeFunction));
+												  handlerTMS.handlerSTM.allowStateChangeFunction,
+												  handlerTMS.handlerSTM.autoEnable));
 	    addChild(m_StateMachine);
   }
 
@@ -187,6 +193,12 @@ namespace nds {
       m_StartTime = m_StartTimestampFunction();
       m_Timestamps_PV->setDecimation((std::uint32_t)(m_Decimation_PV->getValue()));
       m_OnStartDelegate();
+  }
+
+  template<typename T>
+  nds::state_t TimestampingImpl<T>::getState()
+  {
+  	return m_StateMachine->getLocalState();
   }
 
   // ---------------------------- Getters ---------------------------------- //
@@ -226,6 +238,15 @@ namespace nds {
     return overflow;
   }
 
+  template<typename T>
+  std::int32_t TimestampingImpl<T>::getDecimation()
+  {
+    std::int32_t decimation;
+    timespec timestamp;
+    m_Decimation_PV->read(&timestamp, &decimation);
+    return decimation;
+  }
+
   // --------------------------- Setters ----------------------------------- //
   template<typename T>
   void TimestampingImpl<T>::setEnable(const timespec& timestamp, const std::int32_t& value)
@@ -235,7 +256,7 @@ namespace nds {
       ndsWarningStream(*this) << "Warning: " <<
                       "Enable must take values 0 or 1. " <<
                       "Value " << enable << " entered. " <<
-                      "Setting enable value to 0." << std::endl;
+                      "Setting enable value to 1." << std::endl;
       enable = 1;
     }
     m_Enable_RBVPV->setValue(timestamp, enable);
@@ -251,7 +272,7 @@ namespace nds {
                       "Edge must take one of the following values: " <<
                       "0(RAISING), 1(FALLING), 2(ANY)." <<
                       "Value " << edge << " entered. " <<
-                      "Setting edge value to 0." << std::endl;
+                      "Setting edge value to 2." << std::endl;
       edge = 2; //ANY
     }
     m_Edge_RBVPV->setValue(timestamp, edge);
@@ -278,6 +299,19 @@ namespace nds {
     }
     m_Overflow_PV->setValue(timestamp, overflow);
     m_Overflow_PV->push(timestamp, overflow);
+  }
+
+  template<typename T>
+  void TimestampingImpl<T>::setDecimation(const timespec& /*timestamp*/, const std::int32_t& value)
+  {
+    std::int32_t decimation = value;
+    if (decimation < 1) {
+      ndsWarningStream(*this) << "Warning: Decimation must take values greater 1. "
+    		  << "Value "<< decimation << " entered."<<
+              "Setting decimation value to 1." << std::endl;
+      decimation = 1;
+    }
+    m_Timestamps_PV->setDecimation(decimation);
   }
 
 template class TimestampingImpl<timestamp_t>;

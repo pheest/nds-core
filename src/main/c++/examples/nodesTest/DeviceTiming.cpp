@@ -1,8 +1,9 @@
-#include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 #include <ctime>
+
+#include <nds3/nds.h>
 
 #include "DeviceTiming.h"
 

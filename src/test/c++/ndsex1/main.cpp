@@ -2,8 +2,10 @@
 //
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
+
 #include <ndsex1.h>
-#include "ndsTestFactory.h"
+
+#include "nds3/ndsTestFactory.h"
 
 
 int main(int argc, char **argv)

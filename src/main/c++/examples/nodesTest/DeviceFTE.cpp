@@ -1,10 +1,10 @@
-
-#include "DeviceFTE.h"
-
-#include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
+
+#include <nds3/nds.h>
+
+#include "DeviceFTE.h"
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
@@ -134,8 +134,6 @@ timespec DeviceFTE::getCurrentTime()
     return time;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //  FTE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,25 +149,21 @@ void DeviceFTE::switchOn_FTE(){
 
 // Called when the FTE node has to be switched off.
 void DeviceFTE::switchOff_FTE(){
-
 }
 
 // Called when the FTE node has to start working. We start the FTE thread.
 void DeviceFTE::start_FTE(){
-
 }
 
 // Stop the FTE node thread
 void DeviceFTE::stop_FTE(){
-
 }
 
 // A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
 
 void DeviceFTE::recover_FTE(){
-
-    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+	throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 // We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
@@ -220,8 +214,6 @@ void DeviceFTE::PV_FTE_Set_Writer(const timespec& timestamp, const std::int32_t&
 		m_FTE.setSetStatus(timestamp,"OK");
 		m_FTE.setSetCode(timestamp,(std::int32_t)FTESetCode);
 	}
-
-
 
 }
 void DeviceFTE::PV_FTE_Suppress_Writer(const timespec& timestamp, const std::int32_t& value){

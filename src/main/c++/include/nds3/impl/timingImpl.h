@@ -50,7 +50,8 @@ class TimingImpl: public NodeImpl {
         stateChange_t stopFunction,
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
-        readerTime_t PV_Time_Reader);
+        readerTime_t PV_Time_Reader,
+		autoEnable_t autoEnable);
 
     /**
      * @brief Construct the Timing node by means of its structure of functions.
@@ -98,6 +99,12 @@ class TimingImpl: public NodeImpl {
     *        then calls the delegated onStart function.
     */
    void onStart();
+   /**
+    * @brief Called to obtain the actual state of the State Machine of the Node
+    *
+    * @return The actual state of the State Machine of the Node
+    */
+   nds::state_t getState();
 
    // ---------------------------- Getters ---------------------------------- //
    /**

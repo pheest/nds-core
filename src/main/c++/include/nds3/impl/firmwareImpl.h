@@ -31,7 +31,8 @@ namespace nds
           stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
           stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
           allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
-          writerString_t PV_FirmwarePath_Writer); 	  ///< Delegate function that performs the actions to set the firmware path
+          writerString_t PV_FirmwarePath_Writer,		  ///< Delegate function that performs the actions to set the firmware path
+		  autoEnable_t autoEnable);
 
       FirmwareImpl(const std::string& name, ///< The node's name
     		  	   size_t maxElements, ///< Maximum length of the PV strings.
@@ -74,6 +75,14 @@ namespace nds
        *        delegated onStart function.
        */
       void onStart();
+
+      /**
+       * @brief Called to obtain the actual state of the State Machine of the Node
+       *
+       * @return The actual state of the State Machine of the Node
+       */
+      nds::state_t getState();
+
       /**
        * @brief Retrieve the Firmware Version
        *

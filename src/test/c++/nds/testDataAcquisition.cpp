@@ -1,9 +1,10 @@
 
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/Device.h"
-#include "../include/ndsTestInterface.h"
-#include "../include/ndsTestFactory.h"
+
+#include "Device.h"
+#include "nds3/ndsTestInterface.h"
+#include "nds3/ndsTestFactory.h"
 
 /**
  * @brief Internal function to test the PVs included in the DAQ node for vectors of type @c float.

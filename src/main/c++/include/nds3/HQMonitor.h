@@ -254,14 +254,16 @@ struct HQMonitorArgs_t {
 					writerInt32_t _PV_SelfTestCodeResultEnable_Writer,
 					readerString_t _PV_SelfTestTextResult_Reader,
 					readerInt32_t _PV_SignalQualityFlag_Reader,
-					writerDouble_t _PV_SignalQualityFlagLevel_Writer) :
+					writerDouble_t _PV_SignalQualityFlagLevel_Writer,
+					autoEnable_t autoEnable=autoEnable_t::none) :
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
 						switchOffFunction,
 						startFunction,
 						stopFunction,
 						recoverFunction,
-						allowStateChangeFunction),
+						allowStateChangeFunction,
+						autoEnable),
 			PV_DevicePower_Reader(_PV_DevicePower_Reader),
 			PV_DeviceTemperature_Reader(_PV_DeviceTemperature_Reader),
 			PV_DeviceVoltage_Reader(_PV_DeviceVoltage_Reader),
@@ -324,7 +326,8 @@ public:
 					writerInt32_t PV_SelfTestCodeResultEnable_Writer, ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerString_t PV_SelfTestTextResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_SignalQualityFlagLevel_Writer);    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					writerDouble_t PV_SignalQualityFlagLevel_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+					autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**
 	 * @brief Simplified constructor of the HQMonitor node.
@@ -341,6 +344,13 @@ public:
      * @param timestampDelegate the function that returns the exact starting time
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
 	 * @ingroup

@@ -19,15 +19,19 @@
 // of the distribution package.
 //
 //-======================================================================
-#include "ndsex1.h"
+
 #include <iostream>
-#include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 #include <vector>
 #include <map>
 #include <cstddef>
+
+#include <nds3/nds.h>
+
+#include "ndsex1.h"
+
 using namespace std;
 using namespace std::placeholders;
 static std::map<std::string, Device*> m_DevicesMap;

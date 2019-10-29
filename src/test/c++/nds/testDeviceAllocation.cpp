@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
-#include "../include/Device.h"
-#include "../include/ndsTestInterface.h"
+
+#include "Device.h"
+#include "nds3/ndsTestInterface.h"
 
 TEST(testDeviceAllocation, testAllocationMissingDevice)
 {

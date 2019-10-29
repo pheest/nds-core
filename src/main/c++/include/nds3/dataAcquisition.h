@@ -238,14 +238,16 @@ struct DataAcquisitionArgs_t {
 						  writerInt32_t _PV_SignalRefType_Writer,
 						  writerInt32_t _PV_Ground_Writer,
 						  writerInt32_t _PV_DMAEnable_Writer,
-						  writerDouble_t _PV_SamplingRate_Writer):
+						  writerDouble_t _PV_SamplingRate_Writer,
+						  autoEnable_t autoEnable=autoEnable_t::none):
 				   handlerSTM (true, ///Asynchronous state transitions.
 						   switchOnFunction,
 						   switchOffFunction,
 						   startFunction,
 						   stopFunction,
 						   recoverFunction,
-						   allowStateChangeFunction),
+						   allowStateChangeFunction,
+						   autoEnable),
 				   PV_Gain_Writer(_PV_Gain_Writer),
 				   PV_Offset_Writer(_PV_Offset_Writer),
 				   PV_Bandwidth_Writer(_PV_Bandwidth_Writer),
@@ -328,7 +330,8 @@ public:
 					writerInt32_t PV_SignalRefType_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_SamplingRate_Writer   ///< Delegate function to interact to the low level driver API
+					writerDouble_t PV_SamplingRate_Writer,   ///< Delegate function to interact to the low level driver API
+					autoEnable_t autoEnable=autoEnable_t::none
     );
 
     /**
@@ -350,6 +353,13 @@ public:
      *                           data acquisition
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
      * @ingroup datareadwrite
@@ -477,6 +487,7 @@ public:
     * @return the m_DMASamplingRate_PV value
     */
     double getSamplingRate();
+
     /**
      * @brief Sets the value of the m_Gain_RBV and pushes it to the control system.
      *

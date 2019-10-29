@@ -173,14 +173,16 @@ struct RoutingArgs_t {
 					writerInt32_t _PV_ClkSet_Writer,
 					writerInt32_t _PV_ClkDstRead_Writer,
 					writerInt32_t _PV_TermSet_Writer,
-					writerInt32_t _PV_TermDstRead_Writer	) :
+					writerInt32_t _PV_TermDstRead_Writer,
+					autoEnable_t autoEnable=autoEnable_t::none) :
 			handlerSTM(	true, ///Asynchronous state transitions.
 									switchOnFunction,
 									switchOffFunction,
 									startFunction,
 									stopFunction,
 									recoverFunction,
-									allowStateChangeFunction),
+									allowStateChangeFunction,
+									autoEnable),
 			PV_ClkSet_Writer(_PV_ClkSet_Writer),
 			PV_ClkDstRead_Writer(_PV_ClkDstRead_Writer),
 			PV_TermSet_Writer(_PV_TermSet_Writer),
@@ -240,8 +242,8 @@ public:
 					writerInt32_t PV_ClkSet_Writer,			///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_ClkDstRead_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_TermSet_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_TermDstRead_Writer		///< Delegate function setter/getter to interact to the Low Level Driver API
-    );
+					writerInt32_t PV_TermDstRead_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
+					autoEnable_t autoEnable=autoEnable_t::none);
 
 
     /**
@@ -252,6 +254,12 @@ public:
      */
     Routing(const std::string& name, const RoutingArgs_t& handlerRTN);
 
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     // TODO Is it necessary this delegate function?
     /**

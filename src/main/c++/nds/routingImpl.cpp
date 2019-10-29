@@ -32,7 +32,8 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
 							writerInt32_t PV_ClkSet_Writer,
 							writerInt32_t PV_ClkDstRead_Writer,
 							writerInt32_t PV_TermSet_Writer,
-							writerInt32_t PV_TermDstRead_Writer
+							writerInt32_t PV_TermDstRead_Writer,
+							autoEnable_t autoEnable
 ):
 	NodeImpl(name, nodeType_t::dataSourceChannel),
 	m_OnStartDelegate(startFunction),
@@ -47,7 +48,8 @@ RoutingImpl<T>::RoutingImpl(const std::string& name,
 											 PV_ClkSet_Writer,
 											 PV_ClkDstRead_Writer,
 											 PV_TermSet_Writer,
-											 PV_TermDstRead_Writer);
+											 PV_TermDstRead_Writer,
+											 autoEnable);
 	constructorBody(handlerRTN);
 }
 
@@ -210,7 +212,8 @@ inline void RoutingImpl<T>::constructorBody(const RoutingArgs_t& handlerRTN)
 			std::bind(&RoutingImpl::onStart, this),
 			handlerRTN.handlerSTM.stopFunction,
 			handlerRTN.handlerSTM.recoverFunction,
-			handlerRTN.handlerSTM.allowStateChangeFunction));
+			handlerRTN.handlerSTM.allowStateChangeFunction,
+			handlerRTN.handlerSTM.autoEnable));
 	addChild(m_StateMachine);
 }
 
@@ -234,6 +237,11 @@ void RoutingImpl<T>::onStart()
 	m_OnStartDelegate();
 }
 
+template<typename T>
+nds::state_t RoutingImpl<T>::getState()
+{
+	return m_StateMachine->getLocalState();
+}
 
 
 ///////////////////////////////////////////////////////////////

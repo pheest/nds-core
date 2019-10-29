@@ -24,7 +24,8 @@ namespace nds {
         stateChange_t stopFunction,
         stateChange_t recoverFunction,
         allowChange_t allowStateChangeFunction,
-        readerTime_t PV_Time_Reader):
+        readerTime_t PV_Time_Reader,
+		autoEnable_t autoEnable):
         NodeImpl(name, nodeType_t::dataSourceChannel),
         m_OnStartDelegate(startFunction),
         m_StartTimestampFunction(std::bind(&BaseImpl::getTimestamp, this)) {
@@ -34,7 +35,8 @@ namespace nds {
 											stopFunction,
 											recoverFunction,
 											allowStateChangeFunction,
-											PV_Time_Reader);
+											PV_Time_Reader,
+											autoEnable);
 	  constructorBody(handlerTM);
   }
 
@@ -118,7 +120,8 @@ namespace nds {
 										std::bind(&TimingImpl::onStart, this),
 										handlerTM.handlerSTM.stopFunction,
 										handlerTM.handlerSTM.recoverFunction,
-										handlerTM.handlerSTM.allowStateChangeFunction));
+										handlerTM.handlerSTM.allowStateChangeFunction,
+										handlerTM.handlerSTM.autoEnable));
 	     addChild(m_StateMachine);
   }
 
@@ -140,6 +143,11 @@ namespace nds {
     m_StartTime = m_StartTimestampFunction();
     m_Time_PV->setDecimation((std::uint32_t)(m_Decimation_PV->getValue()));
     m_OnStartDelegate();
+  }
+
+  nds::state_t TimingImpl::getState()
+  {
+  	return m_StateMachine->getLocalState();
   }
 
   // ------------------------ Delegate Functions ---------------------------- //

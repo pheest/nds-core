@@ -26,7 +26,7 @@ BOLD=\e[1m
 NC=\e[0m
 
 %:
-	echo -e "$(BOLD)Building Tests...$(NC)"
+	@echo -e "$(BOLD)Building Tests...$(NC)"
 	@set -e; for ii in $(SUBDIRS); do \
 		echo -e "$(BOLD)Building $$ii...$(NC)"; \
 		$(MAKE) $@ -C $$ii; \

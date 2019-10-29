@@ -46,7 +46,8 @@ public:
 						writerInt32_t PV_Coupling_Writer,
 						writerInt32_t PV_SignalRef_Writer,
 						writerInt32_t PV_SignalType_Writer,
-						writerInt32_t PV_Ground_Writer);
+						writerInt32_t PV_Ground_Writer,
+						autoEnable_t autoEnable);
 
     /**
      * @brief Constructs the WaveformGeneration node by means of its structure of functions.
@@ -79,6 +80,13 @@ public:
      * @return the time when the waveform generation started.
      */
     timespec getStartTimestamp() const;
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     void push(const timespec& timestamp, const T& data);
     T getDataAWG();

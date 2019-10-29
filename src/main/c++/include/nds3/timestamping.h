@@ -101,14 +101,16 @@ struct TimestampingArgs_t {
 					   allowChange_t allowStateChangeFunction,
 					   writerInt32_t _PV_Enable_Writer,
 					   writerInt32_t _PV_Edge_Writer,
-					   writerInt32_t _PV_ClearOverflow_Writer) :
+					   writerInt32_t _PV_ClearOverflow_Writer,
+					   autoEnable_t autoEnable=autoEnable_t::none) :
 			   handlerSTM (true, ///Asynchronous state transitions.
 					   switchOnFunction,
 					   switchOffFunction,
 					   startFunction,
 					   stopFunction,
 					   recoverFunction,
-					   allowStateChangeFunction),
+					   allowStateChangeFunction,
+					   autoEnable),
 			   PV_Enable_Writer(_PV_Enable_Writer),
 			   PV_Edge_Writer(_PV_Edge_Writer),
 			   PV_ClearOverflow_Writer(_PV_ClearOverflow_Writer) {}
@@ -170,7 +172,8 @@ class NDS3_API Timestamping: public Node  {
                  allowChange_t allowStateChangeFunction,
                  writerInt32_t PV_Enable_Writer,
                  writerInt32_t PV_Edge_Writer,
-                 writerInt32_t PV_ClearOverflow_Writer);
+                 writerInt32_t PV_ClearOverflow_Writer,
+				 autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the Timestamping node.
@@ -181,6 +184,7 @@ class NDS3_API Timestamping: public Node  {
     Timestamping(const std::string& name, const TimestampingArgs_t& handlerTMS);
 
     // ------------------ Functions common to all nodes ---------------------//
+
     /**
      * @ingroup
      * @brief Set the function that retrieves the exact start time when starts.
@@ -189,6 +193,13 @@ class NDS3_API Timestamping: public Node  {
      *
      */
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     /**
      * @ingroup
@@ -233,11 +244,18 @@ class NDS3_API Timestamping: public Node  {
     std::int32_t getMaxTimestamps();
 
     /**
-     * @brief Retreives overflow error status
+     * @brief Retrieves overflow error status
      *
      * @return overflow error status
      */
     std::int32_t getOverflow();
+
+    /**
+     * @brief Retrieves the decimation value set by the Control System
+     *
+     * @return decimation value
+     */
+    std::int32_t getDecimation();
 
     // --------------------------- Setters ----------------------------------- //
     /**
@@ -271,6 +289,14 @@ class NDS3_API Timestamping: public Node  {
     * @param value overflow error status
     */
     void setOverflow(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Sets the decimation factor to the timestamps PV
+     *
+     * @param timestamp timestamp
+     * @param value decimation factor
+     */
+    void setDecimation(const timespec& timestamp, const std::int32_t& value);
 
   };
 }

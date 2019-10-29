@@ -40,7 +40,8 @@ FTE<T>::FTE(
 		writerInt32_t PV_Set_Writer,
 		writerInt32_t PV_Suppress_Writer,
 		writerInt32_t PV_ChgPeriod_Writer,
-		writerInt32_t PV_PendingValue_Writer):
+		writerInt32_t PV_PendingValue_Writer,
+		autoEnable_t autoEnable):
 						Node(std::shared_ptr<FTEImpl<T> >(new FTEImpl<T>(	name,
 																switchOnFunction,
 																switchOffFunction,
@@ -51,7 +52,8 @@ FTE<T>::FTE(
 																PV_Set_Writer,
 																PV_Suppress_Writer,
 																PV_ChgPeriod_Writer,
-																PV_PendingValue_Writer)))
+																PV_PendingValue_Writer,
+																autoEnable)))
 {
 }
 
@@ -85,6 +87,12 @@ template <typename T>
 timespec FTE<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+nds::state_t FTE<T>::getState()
+{
+    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->getState();
 }
 
 ///////////////////////////////////////////////////////////////

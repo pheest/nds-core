@@ -37,7 +37,7 @@ LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 
 
 CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++11
-LDFLAGS +=$(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest -lnds3-dev-ndsex1 
+LDFLAGS +=$(LIBPATH) -lnds3-dev-ndsex1 -lnds3-testcontrolsystem -lnds3 -lpthread -ldl -lrt -lgtest
 
 TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))

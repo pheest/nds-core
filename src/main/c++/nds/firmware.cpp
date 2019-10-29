@@ -31,7 +31,8 @@ Firmware::Firmware(const std::string& name,
 		stateChange_t stopFunction,
 		stateChange_t recoverFunction,
 		allowChange_t allowStateChangeFunction,
-		writerString_t PV_FirmwarePath_Writer):
+		writerString_t PV_FirmwarePath_Writer,
+		autoEnable_t autoEnable):
 	Node(std::shared_ptr<FirmwareImpl>(new FirmwareImpl(name,
 							    maxElements,
 		switchOnFunction,
@@ -40,7 +41,8 @@ Firmware::Firmware(const std::string& name,
 		stopFunction,
 		recoverFunction,
 		allowStateChangeFunction,
-		PV_FirmwarePath_Writer)))
+		PV_FirmwarePath_Writer,
+		autoEnable)))
 {
 }
 

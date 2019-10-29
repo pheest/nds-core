@@ -28,6 +28,7 @@ template<typename T>
 class FTEImpl: public NodeImpl
 {
 public:
+
 	FTEImpl(const std::string& name,
 			stateChange_t switchOnFunction,
 			stateChange_t switchOffFunction,
@@ -38,7 +39,8 @@ public:
 			writerInt32_t PV_Set_Writer,
 			writerInt32_t PV_Suppress_Writer,
 			writerInt32_t PV_ChgPeriod_Writer,
-			writerInt32_t PV_PendingValue_Writer);
+			writerInt32_t PV_PendingValue_Writer,
+			autoEnable_t autoEnable);
 
 	/**
 	 * @brief Constructs the FTE node by means of its structure of functions.
@@ -108,7 +110,12 @@ public:
      */
     void onStart();
 
-
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 protected:
     /**
      * @brief In the state machine we set the start function to onStart(), so we

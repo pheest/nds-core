@@ -219,14 +219,16 @@ struct FTEArgs_t {
 			writerInt32_t _PV_Set_Writer,
 			writerInt32_t _PV_Suppress_Writer,
 			writerInt32_t _PV_ChgPeriod_Writer,
-			writerInt32_t _PV_PendingValue_Writer) :
+			writerInt32_t _PV_PendingValue_Writer,
+			autoEnable_t autoEnable=autoEnable_t::none) :
 		handlerSTM(	true, ///Asynchronous state transitions.
 								switchOnFunction,
 								switchOffFunction,
 								startFunction,
 								stopFunction,
 								recoverFunction,
-								allowStateChangeFunction),
+								allowStateChangeFunction,
+								autoEnable),
 		PV_Set_Writer(_PV_Set_Writer),
 		PV_Suppress_Writer(_PV_Suppress_Writer),
 		PV_ChgPeriod_Writer(_PV_ChgPeriod_Writer),
@@ -298,7 +300,8 @@ public:
 			writerInt32_t PV_Set_Writer,               	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_PendingValue_Writer);   	///< Delegate function setter/getter to interact to the Low Level Driver API
+			writerInt32_t PV_PendingValue_Writer,	///< Delegate function setter/getter to interact to the Low Level Driver API
+			autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**
 	 * @brief Simplified constructor of the FTE node.
@@ -327,6 +330,13 @@ public:
      */
     //TODO: Discuss if necessary
     timespec getStartTimestamp() const;
+
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Getters of Set functionality

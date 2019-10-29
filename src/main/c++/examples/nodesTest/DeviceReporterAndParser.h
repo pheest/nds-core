@@ -2,7 +2,6 @@
 #define DEVICE_DEVICE_REPORTERANDPARSER_H_
 
 #include <memory>
-
 #include <functional>
 #include <math.h>
 #include <unistd.h>

@@ -1,8 +1,8 @@
-
-#include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
+
+#include <nds3/nds.h>
 
 #include "DeviceVectorUI8.h"
 

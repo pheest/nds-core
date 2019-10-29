@@ -2,7 +2,6 @@
 #define DEVICEFTE_H_
 
 #include <memory>
-
 #include <functional>
 #include <math.h>
 #include <unistd.h>
@@ -60,9 +59,21 @@ private:
 	 * @brief FTE node
 	 */
 	nds::FTE<std::string> m_FTE;
+	nds::StateMachine m_StateMachine;
 
 	/**
-	 * Methods to control DigitalIO state machine
+	 * Methods to control RootNode state machine
+	 */
+	void switchOn_RootNode();  ///< Called to switch on the FTE node.
+	void switchOff_RootNode(); ///< Called to switch off the FTE node.
+	void start_RootNode();     ///< Called to start the FTE node.
+	void stop_RootNode();      ///< Called to stop the FTE node.
+	void recover_RootNode();   ///< Called to recover the FTE node from a failure.
+
+	bool allow_RootNode_Change(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * Methods to control FTE state machine
 	 */
 	void switchOn_FTE();  ///< Called to switch on the FTE node.
 	void switchOff_FTE(); ///< Called to switch off the FTE node.

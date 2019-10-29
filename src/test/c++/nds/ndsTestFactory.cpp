@@ -1,6 +1,7 @@
-#include "ndsTestFactory.h"
-#include "ndsTestInterface.h"
 #include <sstream>
+
+#include "nds3/ndsTestFactory.h"
+#include "nds3/ndsTestInterface.h"
 
 namespace nds
 {

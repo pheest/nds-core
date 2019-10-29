@@ -40,7 +40,8 @@ public:
 					writerVectorBool_t PV_dataOutMask_Writer,
 					writerDouble_t PV_voltLevelHigh_Writer,
 					writerDouble_t PV_voltLevelLow_Writer,
-					writerVectorBool_t PV_ChannelDir_Writer);
+					writerVectorBool_t PV_ChannelDir_Writer,
+					autoEnable_t autoEnable);
     /**
      * @brief Constructs the DigitalIO node by means of its structure of functions.
      * @param name Name of the node.
@@ -94,7 +95,12 @@ public:
      */
     void onStart();
 
-
+    /**
+     * @brief Called to obtain the actual state of the State Machine of the Node
+     *
+     * @return The actual state of the State Machine of the Node
+     */
+    nds::state_t getState();
 protected:
 
     /**

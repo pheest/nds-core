@@ -1,5 +1,5 @@
-#include "../include/ndsTestInterface.h"
 #include <iostream>
+#include "nds3/ndsTestInterface.h"
 
 namespace nds
 {

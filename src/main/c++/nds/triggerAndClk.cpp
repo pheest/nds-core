@@ -38,7 +38,8 @@ TriggerAndClk<T>::TriggerAndClk(
 		writerInt32_t PV_ResetTrigConf_Writer,
 		writerInt32_t PV_PLLSyncSET_Writer,
 		writerInt32_t PV_EnableDisablePLL_Writer,
-		nds::Routing<std::string> routingNode):    //Routing PV Delegate
+		nds::Routing<std::string> routingNode,
+		autoEnable_t autoEnable):    //Routing PV Delegate
 		Node(std::shared_ptr<TriggerAndClkImpl<T> >(new TriggerAndClkImpl<T>(name,
 				switchOnFunction,
 				switchOffFunction,
@@ -51,7 +52,8 @@ TriggerAndClk<T>::TriggerAndClk(
 				PV_ResetTrigConf_Writer,
 				PV_PLLSyncSET_Writer,
 				PV_EnableDisablePLL_Writer,
-				routingNode))),m_Routing(routingNode)
+				routingNode,
+				autoEnable))),m_Routing(routingNode)
 {
 	addChild(m_Routing);
 }
@@ -89,6 +91,12 @@ template <typename T>
 timespec TriggerAndClk<T>::getStartTimestamp() const
 {
     return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getStartTimestamp();
+}
+
+template <typename T>
+nds::state_t TriggerAndClk<T>::getState()
+{
+    return std::static_pointer_cast<TriggerAndClkImpl<T> >(m_pImplementation)->getState();
 }
 
 template <typename T>
