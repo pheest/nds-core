@@ -52,7 +52,7 @@
 #include "nds3/triggerAndClk.h"
 #include "nds3/triggering.h"
 #include "nds3/routing.h"
-
+#include "nds3/dataMultiplexing.h"
 
 
 
