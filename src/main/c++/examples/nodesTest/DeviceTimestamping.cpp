@@ -343,9 +343,8 @@ timespec DeviceTimestamping::getCurrentTime() {
     return time;
 }
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceTimestamping, DeviceTimestamping)
-#else
+
 /*
  * Allocation function
  *********************/
@@ -363,4 +362,4 @@ void DeviceTimestamping::deallocateDevice(void* DeviceName){
 
   delete (DeviceTimestamping*)DeviceName;
 }
-#endif
+

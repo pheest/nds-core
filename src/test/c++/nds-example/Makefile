@@ -39,7 +39,7 @@ LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
 CXXFLAGS +=$(INCLUDES) --coverage -MMD -MP -g -Wall -std=c++11
 LDFLAGS +=$(LIBPATH) -lnds3-dev-nds-example -lnds3-testcontrolsystem -lnds3 -lpthread -ldl -lrt -lgtest
 
-TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
+#TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
 TEST =nds3core-unit-ndsex1

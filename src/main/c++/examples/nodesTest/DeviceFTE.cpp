@@ -326,9 +326,7 @@ void DeviceFTE::PV_FTE_PendingValue_Initializer(timespec* timestamp,
 	*value = 0;  //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceFTE, DeviceFTE)
-#else
 /**
  * Allocation function
  *********************/
@@ -344,7 +342,3 @@ void DeviceFTE::deallocateDevice(void* deviceName)
 {
     delete (DeviceFTE*)deviceName;
 }
-
-
-#endif
-

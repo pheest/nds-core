@@ -844,9 +844,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
 	m_DigitalIO_I32.setNumberOfPushedDataBlocks(m_DigitalIO_I32.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceDigitalIO, DeviceDigitalIO)
-#else
  /**
   * Allocation function
   *********************/
@@ -862,5 +860,4 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
  {
      delete (DeviceDigitalIO*)deviceName;
  }
-#endif
 

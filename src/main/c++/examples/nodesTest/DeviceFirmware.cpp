@@ -265,9 +265,8 @@ timespec DeviceFirmware::getCurrentTime()
 }
 
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceFirmware, DeviceFirmware)
-#else
+
 /*
  * Allocation function
  *********************/
@@ -284,4 +283,4 @@ void DeviceFirmware::deallocateDevice(void* DeviceName)
 {
     delete (DeviceFirmware*)DeviceName;
 }
-#endif
+

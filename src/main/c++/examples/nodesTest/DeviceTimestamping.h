@@ -31,7 +31,6 @@ class DeviceTimestamping
 		     const nds::namedParameters_t& );
   ~DeviceTimestamping();
 
-#ifndef EPICS
   /*
    * Allocation/deallocation
    *
@@ -40,7 +39,6 @@ class DeviceTimestamping
                               const std::string& deviceName,
                               const nds::namedParameters_t& parameters);
   static void deallocateDevice(void* deviceName);
-#endif
 
   /**
    * For test purposes we make it possible to retrieve running instances of

@@ -31,14 +31,12 @@ public:
 	DevicePVs(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
 	~DevicePVs();
 
-#ifndef EPICS
 	/*
 	 * Allocation/deallocation
 	 *
 	 *******************************************************/
 	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	static void deallocateDevice(void* deviceName);
-#endif
 
 	/*
 	 * For test purposes we make it possible to retrieve running instances of

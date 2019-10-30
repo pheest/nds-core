@@ -159,10 +159,7 @@ void DeviceDataMultiplexing::increaseSourcePVs(const timespec &/*timestamp*/, co
 }
 
 
-
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceDataMultiplexing, DeviceDataMultiplexing)
-#else
 /*
  * Allocation function
  *********************/
@@ -179,4 +176,3 @@ void DeviceDataMultiplexing::deallocateDevice(void* DeviceName)
 {
     delete (DeviceDataMultiplexing*)DeviceName;
 }
-#endif

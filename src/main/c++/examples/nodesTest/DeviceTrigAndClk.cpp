@@ -559,10 +559,9 @@ DeviceTrigAndClk::PV_EnableDisablePLL_Initializer (timespec* timestamp,
   *value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceTrigAndClk, DeviceTrigAndClk)
-#else
-/**
+
+ /**
  * Allocation function
  *********************/
 void* DeviceTrigAndClk::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
@@ -577,5 +576,4 @@ void DeviceTrigAndClk::deallocateDevice(void* deviceName)
 {
     delete (DeviceTrigAndClk*)deviceName;
 }
-#endif
 

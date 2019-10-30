@@ -882,9 +882,8 @@ void DeviceVectorI8::WaveformGeneration_thread_body(){
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceVectorI8, DeviceVectorI8)
-#else
+
  /**
   * Allocation function
   *********************/
@@ -900,5 +899,4 @@ void DeviceVectorI8::WaveformGeneration_thread_body(){
  {
      delete (DeviceVectorI8*)deviceName;
  }
-#endif
 

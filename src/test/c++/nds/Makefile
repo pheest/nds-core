@@ -50,15 +50,17 @@ OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 
+LDLIBS := $(patsubst $(LIBRARY_DIR)/lib%.so, -l%, $(wildcard $(LIBRARY_DIR)/libnds3-Device*.so))
+
 #Objects
 OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
 DBG_COV=-g --coverage
 
 CXXFLAGS += -MMD -MP -Wall -Wextra -pedantic -fPIC -pthread -fvisibility-inlines-hidden -std=c++11 $(INCLUDES) $(DBG_COV)
-LDFLAGS += $(DBG_COV) $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest
+LDFLAGS += $(DBG_COV) $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest $(LDLIBS)
 
-TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
+#TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
 TEST = nds3core-unit-tests

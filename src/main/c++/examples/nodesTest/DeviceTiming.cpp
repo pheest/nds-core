@@ -250,9 +250,7 @@ timespec DeviceTiming::getCurrentTime() {
     return time;
 }
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceTiming, DeviceTiming)
-#else
 /*
  * Allocation function
  *********************/
@@ -270,4 +268,3 @@ void DeviceTiming::deallocateDevice(void* DeviceName){
 
   delete (DeviceTiming*)DeviceName;
 }
-#endif

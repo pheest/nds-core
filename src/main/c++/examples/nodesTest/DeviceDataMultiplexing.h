@@ -37,7 +37,6 @@ public:
 	 */
 	~DeviceDataMultiplexing();
 
-#ifndef EPICS
 	/*
 	 * Allocation/deallocation
 	 *
@@ -55,7 +54,6 @@ public:
 	 * @param deviceName The name given to the device.
 	 */
 	static void deallocateDevice(void* deviceName);
-#endif
 
 	/**
 	 * @brief Test function for getting instances of the device.

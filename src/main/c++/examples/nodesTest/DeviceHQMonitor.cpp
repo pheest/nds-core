@@ -552,9 +552,7 @@ timespec DeviceHQMonitor::getCurrentTime(){
   return time;
 }
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceHQMonitor, DeviceHQMonitor)
-#else
 /*
  * Allocation function
  *********************/
@@ -571,4 +569,3 @@ void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
 void DeviceHQMonitor::deallocateDevice(void* DeviceName){
   delete (DeviceHQMonitor*)DeviceName;
 }
-#endif

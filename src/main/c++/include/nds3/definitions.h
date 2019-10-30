@@ -397,7 +397,7 @@ const char* getDeviceName() \
 { \
     return #driverName; \
 } \
-nds::RegisterDevice<className> registerDevice##driverName(#driverName); \
+/*nds::RegisterDevice<className> registerDevice##driverName(#driverName); */\
 } // extern "C"
 
 // Generic helper definitions for shared library support

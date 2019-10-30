@@ -865,9 +865,7 @@ void DeviceFloat::WaveformGeneration_thread_body(){
 }
 
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceFloat, DeviceFloat)
-#else
 /*
  * Allocation function
  *********************/
@@ -883,5 +881,4 @@ void DeviceFloat::deallocateDevice(void* deviceName)
 {
     delete (DeviceFloat*)deviceName;
 }
-#endif
 

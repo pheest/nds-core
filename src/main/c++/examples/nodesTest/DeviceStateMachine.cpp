@@ -188,10 +188,7 @@ timespec DeviceStateMachine::getCurrentTime()
     return time;
 }
 
-
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DeviceStateMachine, DeviceStateMachine)
-#else
 
 /*
  * Allocation function
@@ -210,4 +207,3 @@ void DeviceStateMachine::deallocateDevice(void* DeviceName) {
 
   delete (DeviceStateMachine*)DeviceName;
 }
-#endif

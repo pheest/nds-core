@@ -667,9 +667,8 @@ void DevicePVs::initHandler(timespec* timestamp, std::int32_t* value) {
         *value = 0;
 }
 
-#ifdef EPICS
 NDS_DEFINE_DRIVER(DevicePVs, DevicePVs)
-#else
+
 /*
  * Allocation function
  ********************
@@ -689,5 +688,4 @@ void DevicePVs::deallocateDevice(void* DeviceName) {
 }
 
 
-#endif
 

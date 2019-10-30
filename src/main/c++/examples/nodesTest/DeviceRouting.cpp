@@ -295,9 +295,7 @@ void DeviceRouting::PV_Routing_TermDstRead_Initializer(timespec* timestamp,
 }
 
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceRouting, DeviceRouting)
-#else
 /**
  * Allocation function
  *********************/
@@ -314,5 +312,4 @@ void DeviceRouting::deallocateDevice(void* deviceName)
     delete (DeviceRouting*)deviceName;
 }
 
-#endif
 

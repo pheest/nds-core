@@ -100,9 +100,9 @@ void DeviceReporterAndParser::parseDB(void){
 m_parseDBandWriteToDriver=true;
 	std::cout<<"parseDB success."<<std::endl;
 }
-#ifdef EPICS
+
 NDS_DEFINE_DRIVER(DeviceReporterAndParser, DeviceReporterAndParser)
-#else
+
 /*
  * Allocation function
  ********************
@@ -120,7 +120,3 @@ void* DeviceReporterAndParser::allocateDevice(nds::Factory& factory,
 void DeviceReporterAndParser::deallocateDevice(void* DeviceName) {
   delete (DeviceReporterAndParser*)DeviceName;
 }
-
-
-#endif
-

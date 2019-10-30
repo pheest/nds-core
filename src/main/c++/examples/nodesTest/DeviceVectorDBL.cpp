@@ -899,10 +899,9 @@ void DeviceVectorDBL::WaveformGeneration_thread_body(){
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }
 
-#ifdef EPICS
  NDS_DEFINE_DRIVER(DeviceVectorDBL, DeviceVectorDBL)
-#else
-/**
+
+ /**
  * Allocation function
  *********************/
 void* DeviceVectorDBL::allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters)
@@ -917,5 +916,4 @@ void DeviceVectorDBL::deallocateDevice(void* deviceName)
 {
     delete (DeviceVectorDBL*)deviceName;
 }
-#endif
 
