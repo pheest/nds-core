@@ -42,7 +42,7 @@ LDFLAGS +=$(LIBPATH) -lnds3-dev-nds-example -lnds3-testcontrolsystem -lnds3 -lpt
 #TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
-TEST =nds3core-unit-ndsex1
+TEST =nds3core-unit-example
 
 all: $(TEST)
 

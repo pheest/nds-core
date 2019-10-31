@@ -181,60 +181,58 @@ void Device::DataAcquisition_thread_body() {
 
 
 	/**
-	      * Let's allocate a vector that will contain the data that we
-	      * will push to the control system or to the data acquisition
-	      * node*/
+	 * Let's allocate a vector that will contain the data that we
+	 * will push to the control system or to the data acquisition
+	 * node*/
 	std::vector<double> outputData(m_DataAcquisition.getMaxElements(),0);
+	size_t nElm = m_DataAcquisition.getMaxElements();
+	double counter(0);
 
-		double counter(0);
+	//Counter for number of pushed data blocks
+	std::int32_t NumberOfPushedDataBlocks(0);
 
-		//Counter for number of pushed data blocks
-		std::int32_t NumberOfPushedDataBlocks(0);
+	// Get Gain
+	double Gain = m_DataAcquisition.getGain();
+	// Get Bandwidth
+	double Bandwidth = m_DataAcquisition.getBandwidth();
+	// Get Resolution
+	double Resolution = m_DataAcquisition.getResolution();
+	// Get Coupling
+	double Coupling = m_DataAcquisition.getCoupling();
+	// Get SignalRefType
+	double SignalRefTYpe = m_DataAcquisition.getSignalRefType();
+	// Get Ground
+	double Ground = m_DataAcquisition.getGround();
+	// Get offset
+	double Offset = m_DataAcquisition.getOffset();
+	// Get impedance
+	std::int32_t Impedance = m_DataAcquisition.getImpedance();
+	// Get SamplingRate
+	double SamplingRate = m_DataAcquisition.getSamplingRate();
 
-		// Get Gain
-		double Gain = m_DataAcquisition.getGain();
-		// Get Bandwidth
-		double Bandwidth = m_DataAcquisition.getBandwidth();
-		// Get Resolution
-		double Resolution = m_DataAcquisition.getResolution();
-		// Get Coupling
-		double Coupling = m_DataAcquisition.getCoupling();
-		// Get SignalRefType
-		double SignalRefTYpe = m_DataAcquisition.getSignalRefType();
-		// Get Ground
-		double Ground = m_DataAcquisition.getGround();
-		// Get offset
-		double Offset = m_DataAcquisition.getOffset();
-		// Get impedance
-		std::int32_t Impedance = m_DataAcquisition.getImpedance();
-		// Get SamplingRate
-		double SamplingRate = m_DataAcquisition.getSamplingRate();
+	std::cout<<"\tGain = "<< Gain<<std::endl;
+	std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
+	std::cout<<"\tResolution = "<<Resolution<<std::endl;
+	std::cout<<"\tCoupling = "<<Coupling<<std::endl;
+	std::cout<<"\tSignalRefType = "<<SignalRefTYpe<<std::endl;
+	std::cout<<"\tGround = "<<Ground<<std::endl;
+	std::cout<<"\tOffset = "<<Offset<<std::endl;
+	std::cout<<"\tImpedance = "<<Impedance<<std::endl;
+	std::cout<<"\tSamplingRate = "<<SamplingRate<<std::endl;
+	// Run until the state machine stops us
+	while(!m_bStop_DataAcquisition){
 
-		std::cout<<"\tGain = "<< Gain<<std::endl;
-		std::cout<<"\tBandwidth = "<<Bandwidth<<std::endl;
-		std::cout<<"\tResolution = "<<Resolution<<std::endl;
-		std::cout<<"\tCoupling = "<<Coupling<<std::endl;
-		std::cout<<"\tSignalRefType = "<<SignalRefTYpe<<std::endl;
-		std::cout<<"\tGround = "<<Ground<<std::endl;
-		std::cout<<"\tOffset = "<<Offset<<std::endl;
-		std::cout<<"\tImpedance = "<<Impedance<<std::endl;
-		std::cout<<"\tSamplingRate = "<<SamplingRate<<std::endl;
-		// Run until the state machine stops us
-		while(!m_bStop_DataAcquisition){
+		outputData.clear();
+		outputData.resize(nElm,counter);
+		++counter;
 
-			size_t scanVector(0);
-			for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-				outputData[scanVector] = counter;
-			}
-			++counter;
-
-			// Push the vector to the control system
-			m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
-			++NumberOfPushedDataBlocks;
-			// Rest for a while
-			::usleep(100000);
-		}
-		m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
+		// Push the vector to the control system
+		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+		++NumberOfPushedDataBlocks;
+		// Rest for a while
+		::usleep(100000);
+	}
+	m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }
 void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp,
 	const double& value) {

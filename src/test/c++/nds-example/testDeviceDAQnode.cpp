@@ -1,23 +1,22 @@
 #include <gtest/gtest.h>
-
-#include <nds3/nds.h>
+#include "nds3/nds.h"
 #include "nds3/ndsTestInterface.h"
 
 
 TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 {
 
-  const timespec* pStateMachineSwitchTime;
-  const std::int32_t* pStateMachineState;
-  timespec timestamp = {0, 0}, readTimestamp{0,0};
+	const timespec* pStateMachineSwitchTime;
+	const std::int32_t* pStateMachineState;
+	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
-  nds::Factory factory("test");
+	nds::Factory factory("test");
+	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
+	EXPECT_NE((void*)0, pInterface);
 
-  factory.createDevice("Device", "rootNode", nds::namedParameters_t());
-
-  nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
-    std::vector<double> datos(2,0);
-  	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
+	std::vector<double> datos(2,0);
+	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
 
 	// Set/Get DecimationType
 	std::int32_t decimationType;
@@ -25,8 +24,8 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType",&readTimestamp,&decimationType); // PVVariables are thread safe
 	EXPECT_EQ((std::int32_t)0, decimationType);
 
-  // Set/Get Gain
-  	double Gain;
+	// Set/Get Gain
+	double Gain;
 	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Gain", timestamp, (double)10);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain_RBV",&readTimestamp,&Gain); // PVVariables are thread safe
 	EXPECT_EQ(10.0, Gain);
@@ -50,10 +49,10 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	EXPECT_EQ((double)0, Resolution);
 
 	// Set/Get Impedance
-	std::int32_t Impedance;
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Impedance", timestamp, (std::int32_t)0);
+	double Impedance;
+	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.Impedance", timestamp, (double)0.0);
 	pInterface->readCSValue("/rootNode-DataAcquisitionNode.Impedance_RBV",&readTimestamp,&Impedance); // PVVariables are thread safe
-	EXPECT_EQ((std::int32_t)0, Impedance);
+	EXPECT_EQ((double)0.0, Impedance);
 
 	// Set/Get Coupling
 	std::int32_t Coupling;
@@ -129,15 +128,13 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	const timespec* pTime;
 	double valueData=0;
 	std::int32_t pushCounter=0;
-	size_t scanVector(0);
+
 	try{
 		while(pushCounter<=NumberOfPushedDataBlocks){
+			pushData.clear();
+			pushData.resize(128,valueData);
 
-			for(scanVector=0; scanVector != pushData.size(); ++scanVector){
-				pushData[scanVector] = valueData;
-			}
-
-			pInterface->getPushedVectorDouble("/rootNode-DataAcquisitionNode.data", pTime, pRetrievedPushedValues);
+			pInterface->getPushedVectorDouble("/rootNode-DataAcquisitionNode.Data", pTime, pRetrievedPushedValues);
 			++pushCounter;
 			ASSERT_EQ(pushData.size(), pRetrievedPushedValues->size());
 			for(size_t compare(0); compare != pushData.size(); ++compare)
@@ -149,12 +146,9 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 	}
 	catch(const std::runtime_error& e)
 	{
-
-		std::cerr << e.what() << ". Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout<<"Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cerr << e.what() << std::endl;
 	}
 	factory.destroyDevice("rootNode");
 
 }
-
-
-

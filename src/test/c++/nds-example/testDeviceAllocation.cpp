@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <nds3/nds.h>
-#include "../../../main/c++/examples/nds-example/nds-example.h"
+#include "nds3/nds.h"
 #include "nds3/ndsTestInterface.h"
+#include "nds-example.h"
 
 TEST(testDeviceAllocation, testDeviceAllocation)
 {
