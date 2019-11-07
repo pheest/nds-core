@@ -2,18 +2,106 @@
 #include "nds3/nds.h"
 #include "nds3/ndsTestInterface.h"
 
+/**
+ * @brief Internal function to test the PVs included in the DAQ node for vectors of type @c double.
+ * @param testInitializers Flag to set to @c true when the initializers of
+ * output PVs shall be tested.
+ * As the initialization of output PVs is the only difference between
+ * testPushDataAcquiredVDBL and testPushDataAcquiredVDBLInit test,
+ * this function shares the full test and the evaluation or not of
+ * the initialization features depends on the @a testInitializers flag.
+ */
+static void commonPVsVDBLTest(const bool testInitializers = false);
+
 
 TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 {
+	commonPVsVDBLTest();
+}
+
+TEST(testDataAcquisition, testDataAcquiredVectorDoublesInit)
+{
+	commonPVsVDBLTest(true);
+}
+
+static void commonPVsVDBLTest(const bool testInitializers){
 
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
 	timespec timestamp = {0, 0}, readTimestamp{0,0};
 
 	nds::Factory factory("test");
-	factory.createDevice("Device", "rootNode", nds::namedParameters_t());
+
+	nds::namedParameters_t parameters;
+	if (testInitializers) {
+		parameters["INIT"]="YES";
+	}
+
+	factory.createDevice("Device", "rootNode", parameters);
+
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 	EXPECT_NE((void*)0, pInterface);
+
+	if (testInitializers) {
+		std::int32_t initialInt32Value;
+		double initialDoubleValue;
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initializers methods
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Gain", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.5, initialDoubleValue);
+		std::cout<<"\tInitial Gain = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Offset", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 3.0, initialDoubleValue);
+		std::cout<<"\tInitial Offset = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.BandWidth", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 10.0, initialDoubleValue);
+		std::cout<<"\tInitial BandWidth = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Resolution", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 15.0, initialDoubleValue);
+		std::cout<<"\tInitial Resolution = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Impedance", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 2.2, initialDoubleValue);
+		std::cout<<"\tInitial Impedance = "<< initialDoubleValue <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Coupling", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Coupling = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.SignalRefType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial SignalRefType = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Ground", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial Ground = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DMAEnable", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 0, initialInt32Value);
+		std::cout<<"\tInitial DMAEnable = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.SamplingRate", &timestamp, &initialDoubleValue);
+		EXPECT_EQ((double) 10.0, initialDoubleValue);
+		std::cout<<"\tInitial SamplingRate = "<< initialDoubleValue <<std::endl;
+
+
+		//--------------------------------------------------------------
+		//Verifies values provided by initialization variables
+		//--------------------------------------------------------------
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.Decimation", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 1, initialInt32Value);
+		std::cout<<"\tInitial Decimation = "<< initialInt32Value <<std::endl;
+
+		pInterface->readCSValue("/rootNode-DataAcquisitionNode.DecimationType", &timestamp, &initialInt32Value);
+		EXPECT_EQ((std::int32_t) 2, initialInt32Value);
+		std::cout<<"\tInitial DecimationType = "<< initialInt32Value <<std::endl;
+	}
+
 
 	std::vector<double> datos(2,0);
 	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
