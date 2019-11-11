@@ -1,38 +1,12 @@
-//+======================================================================
-// $HeadURL: https://svnpub.iter.org/codac/iter/codac/dev/units/m-codac-unit-templates/tags/CODAC-CORE-5.4.0/templates/cpp/main/c++/prog/prog.cpp.template $
-// $Id: prog.cpp.template 75208 2017-02-03 09:19:23Z cesnikt $
-//
-// Project       : CODAC Core System
-//
-// Description   : nds-example program
-//
-// Author        : codac-dev
-//
-// Copyright (c) : 2010-2017 ITER Organization,
-//                 CS 90 046
-//                 13067 St. Paul-lez-Durance Cedex
-//                 France
-//
-// This file is part of ITER CODAC software.
-// For the terms and conditions of redistribution or use of this software
-// refer to the file ITER-LICENSE.TXT located in the top level directory
-// of the distribution package.
-//
-//-======================================================================
-
 #include "nds-example.h"
 
 #include <iostream>
 #include <mutex>
 #include <unistd.h>
-#include <functional>
-#include <vector>
-#include <map>
-#include <cstddef>
 
 #include <nds3/nds.h>
 
-#define NDS_INIT_TIME 0
+#define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
 using namespace std;
 using namespace std::placeholders;
@@ -224,7 +198,6 @@ bool Device::allow_DataAcquisition_Change(const nds::state_t , const nds::state_
 
 void Device::DataAcquisition_thread_body() {
 
-
 	/**
 	 * Let's allocate a vector that will contain the data that we
 	 * will push to the control system or to the data acquisition
@@ -279,6 +252,7 @@ void Device::DataAcquisition_thread_body() {
 	}
 	m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }
+
 void Device::PV_DataAcquisition_Gain_Writer(const timespec& timestamp,
 	const double& value) {
 	double HW_value;
@@ -379,62 +353,62 @@ void Device::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp,
 
 void Device::PV_DataAcquisition_Gain_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 10};
+	*timestamp = {NDS_EPOCH, 10};
 	*value = 2.5; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_Offset_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 20};
+	*timestamp = {NDS_EPOCH, 20};
 	*value = 3.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_Bandwidth_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 30};
+	*timestamp = {NDS_EPOCH, 30};
 	*value = 10.0; //Note that this value has no sense and it is fixed only for testing purposes.
 
 }
 
 void Device::PV_DataAcquisition_Resolution_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 40};
+	*timestamp = {NDS_EPOCH, 40};
 	*value = 15.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_Impedance_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 50};
+	*timestamp = {NDS_EPOCH, 50};
 	*value = 2.2; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_Coupling_Initializer(timespec* timestamp,
 		int32_t* value) {
-	*timestamp = {NDS_INIT_TIME, 60};
+	*timestamp = {NDS_EPOCH, 60};
 	*value = 1; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_SignalRefType_Initializer(
 		timespec* timestamp, int32_t* value) {
-	*timestamp = {NDS_INIT_TIME, 70};
+	*timestamp = {NDS_EPOCH, 70};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_Ground_Initializer(timespec* timestamp,
 		int32_t* value) {
-	*timestamp = {NDS_INIT_TIME, 80};
+	*timestamp = {NDS_EPOCH, 80};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_DMAEnable_Initializer(timespec* timestamp,
 		int32_t* value) {
-	*timestamp = {NDS_INIT_TIME, 90};
+	*timestamp = {NDS_EPOCH, 90};
 	*value = 0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
 void Device::PV_DataAcquisition_SamplingRate_Initializer(timespec* timestamp,
 		double* value) {
-	*timestamp = {NDS_INIT_TIME, 100};
+	*timestamp = {NDS_EPOCH, 100};
 	*value = 10.0; //Note that this value has no sense and it is fixed only for testing purposes.
 }
 
