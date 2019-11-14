@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "nds3/nds.h"
 #include "nds3/ndsTestInterface.h"
+#include "nds3/testUtils.h"
 
 /**
  * @brief Internal function to test the PVs included in the DAQ node for vectors of type @c double.
@@ -11,8 +12,7 @@
  * this function shares the full test and the evaluation or not of
  * the initialization features depends on the @a testInitializers flag.
  */
-static void commonPVsVDBLTest(const bool testInitializers = false);
-
+static void commonPVsVDBLTest(const bool testInitializers = false, const bool autoEnable = false);
 
 TEST(testDataAcquisition, testDataAcquiredVectorDoubles)
 {
@@ -24,7 +24,12 @@ TEST(testDataAcquisition, testDataAcquiredVectorDoublesInit)
 	commonPVsVDBLTest(true);
 }
 
-static void commonPVsVDBLTest(const bool testInitializers){
+TEST(testDataAcquisition, testDataAcquiredVectorDoublesHSTM)
+{
+	commonPVsVDBLTest(true, true);
+}
+
+static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnable ){
 
 	const timespec* pStateMachineSwitchTime;
 	const std::int32_t* pStateMachineState;
@@ -33,8 +38,14 @@ static void commonPVsVDBLTest(const bool testInitializers){
 	nds::Factory factory("test");
 
 	nds::namedParameters_t parameters;
-	if (testInitializers) {
+	if (testInitializers){
 		parameters["INIT"]="YES";
+	}
+
+	if (autoEnable){
+		parameters["AUTOENABLE"]="RUNNING";
+	}else{
+		parameters["AUTOENABLE"]="NONE";
 	}
 
 	factory.createDevice("Device", "rootNode", parameters);
@@ -46,6 +57,7 @@ static void commonPVsVDBLTest(const bool testInitializers){
 		std::int32_t initialInt32Value;
 		double initialDoubleValue;
 
+		TestUtils::displayTitle("Verifying initial values");
 		//--------------------------------------------------------------
 		//Verifies values provided by initializers methods
 		//--------------------------------------------------------------
@@ -102,6 +114,8 @@ static void commonPVsVDBLTest(const bool testInitializers){
 		std::cout<<"\tInitial DecimationType = "<< initialInt32Value <<std::endl;
 	}
 
+
+	TestUtils::displayTitle("Configuring DAQ PV values");
 
 	std::vector<double> datos(2,0);
 	pInterface->readCSValue("/rootNode-VarIn_vDBL",&timestamp,&datos);
@@ -167,42 +181,90 @@ static void commonPVsVDBLTest(const bool testInitializers){
 	EXPECT_EQ((double)5000, SamplingRate);
 
 
+	TestUtils::displayTitle("Turning ON the Device");
 	// Check initial state (OFF)
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Change state:  OFF -> (initializing) -> ON
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
+	TestUtils::displayTitle("Starting the Device");
 	//Change state:  ON -> (starting) -> RUNNING
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
+
+	if(!autoEnable){
+		// Check initial state (OFF)
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
+
+		TestUtils::displayTitle("Turning ON the DAQ Node");
+		//Change state:  OFF -> (initializing) -> ON
+		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
+		::sleep(1);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
+
+		TestUtils::displayTitle("Starting the DAQ Node");
+		//Change state:  ON -> (starting) -> RUNNING
+		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
+		::sleep(1);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
+	}
 
 	::sleep(2);//Data is being generated and pushed to Control system
 
+	if(!autoEnable){
+		TestUtils::displayTitle("Stopping the DAQ Node");
+		//Change state:  RUNNING -> (stopping) -> ON
+		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
+		::sleep(1);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
+
+		TestUtils::displayTitle("Turning OFF the DAQ Node");
+		//Change state:  ON -> (switchingOff) -> OFF
+		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
+		::sleep(1);
+		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+		EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
+	}
+
+	TestUtils::displayTitle("Stopping the Device");
 	//Change state:  RUNNING -> (stopping) -> ON
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
+	TestUtils::displayTitle("Turning OFF the Device");
 	//Change state:  ON -> (switchingOff) -> OFF
-	pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
 	::sleep(1);
-	pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
+	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
 	//Get number of pushed vectors by the Acquisition node.
@@ -234,7 +296,7 @@ static void commonPVsVDBLTest(const bool testInitializers){
 	}
 	catch(const std::runtime_error& e)
 	{
-		std::cout<<"Number of pushed data blocks is: " <<pushCounter << std::endl;
+		std::cout<<"Number of pushed data blocks read is: " <<pushCounter << std::endl;
 		std::cerr << e.what() << std::endl;
 	}
 	factory.destroyDevice("rootNode");
