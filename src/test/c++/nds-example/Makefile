@@ -24,13 +24,16 @@
 NDSLIBDIR:=$(realpath ../../../../target/lib)
 # Path from which the device source file will be obtained.
 EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nds-example)
-EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
 # Necessary for make to find the source files in a different directory.
 VPATH =$(EXAMPLESDIR)
 
+# Path from which the device source file will be obtained once the example is installed in CODAC.
+EXAMPLESDIR+=$(realpath ../../../main/c++/devices/nds-example)
 
-INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR) -I../include
-LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR)
+EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))
+
+INCLUDES :=-I../../../main/c++/include -I$(EXAMPLESDIR) -I../include -I/opt/codac/include
+LIBPATH :=-L../../../lib -Wl,-rpath=$(NDSLIBDIR) -L/opt/codac/lib
 
 
 #############################################################################
