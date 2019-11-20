@@ -1,0 +1,23 @@
+/**
+
+@mainpage
+
+
+The NDS (Nominal Device Support) Core library gives the developer the possibility to organize its device support in a tree-like structure, with one or more NDS nodes, according to the functionality to be implemented. 
+These NDS nodes cover state machines, data acquisition, waveform generation, timing, data processing, digital acquisition, image acquisition, DMA acquisition, health monitoring, streaming, 
+and firmware control. As many nodes as needed can be added to each device. NDS also includes the possibility to add PVs to support extra functionality.
+NDS uses standard C++ types and UNIX EPOCH timing to communicate with the library. NDS Device Drivers need an underlying control system in charge of implementing the interface and the 
+management of the device driver. The user manual presents two possible implementations of the control system: a primary control system for test purposes and the interface with EPICS control 
+system using an additional software module called NDS EPICS.
+
+NDS provides the following features:
+
+- organizes your device in a tree-like structure using nodes.
+- provides the data pull mode (passive scanning on EPICS) and the push mode (Interrupt
+  on EPICS )
+- your code uses standard C++ types and Unix EPOCH timing to communicate with the library
+- supplies an hierarchical state machine
+- supplies a collection of specialized data acquisition, waveform generation and timing nodes.
+
+
+*/
