@@ -24,7 +24,6 @@ SUBDIRS = nds examples
 
 BOLD=\e[1m
 NC=\e[0m
-export RELEASE=YES
 
 all:
 

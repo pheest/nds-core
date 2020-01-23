@@ -46,7 +46,7 @@ SOURCES += $(SOURCE_DIR)/ndsTestUtils.cpp
 
 TARGET=../../..
 LIBRARY_DIR=$(TARGET)/lib
-OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
+OBJECT_DIR=$(SOURCE_DIR)/.obj
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 
@@ -55,10 +55,15 @@ LDLIBS := $(patsubst $(LIBRARY_DIR)/lib%.so, -l%, $(wildcard $(LIBRARY_DIR)/libn
 #Objects
 OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
-DBG_COV=-g --coverage
 
-CXXFLAGS += -MMD -MP -Wall -Wextra -pedantic -fPIC -pthread -fvisibility-inlines-hidden -std=c++11 $(INCLUDES) $(DBG_COV)
-LDFLAGS += $(DBG_COV) $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest $(LDLIBS)
+CXXFLAGS += -MMD -MP -Wall -Wextra -pedantic -fPIC -pthread -fvisibility-inlines-hidden -std=c++11 $(INCLUDES)
+LDFLAGS += $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest $(LDLIBS)
+
+ifeq ($(COVERAGE),true)
+	#CFLAGS+= -O0 -g --coverage
+	CXXFLAGS+= -O0 -g --coverage
+	LDFLAGS+= --coverage
+endif
 
 #TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
 TESTS_OBJS += $(patsubst %.cpp, %.o, $(wildcard *.cpp))
