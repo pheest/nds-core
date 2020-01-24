@@ -45,3 +45,10 @@ $(LIBRARY_DIR)/libnds3-%.so: $(OBJECT_DIR)/%.o
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp 
 	@mkdir -p $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@
+	
+listdeps:
+	@$(foreach lib,$(patsubst %.cpp,%,$(wildcard *.cpp)),echo -e "Dependencies of 'nds3-$(lib)' library:\n* syslib: nds3\n* libdir: \n";)
+#           @for lib in $(patsubst %.cpp,%,$(wildcard *.cpp)); do \
+#           echo "Dependencies of '${lib}' library:"; \
+#           echo "* syslib: "; \
+#           echo "* libdir: "; done
