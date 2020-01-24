@@ -1,46 +1,47 @@
-CXX =g++
 
-STD =-std=c++11
-INCLUDES =-I../../include -I/opt/codac/include
-DEFS =-DEPICS -DNDS3_DLL
-CXXFLAGS =$(STD) -Wall -Wextra -pedantic -fPIC -pthread $(DEFS) -g
-LDFLAGS =-L../../../../lib -L/opt/codac/lib -g
+#libraries
+LIBRARIES= nds3
+LIBRARY_DIRS=../../../../lib
+LDLIBS=-L$(CODAC_ROOT)/lib $(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) $(foreach libs,$(LIBRARIES),-l$(libs))
 
+#includes
+INCLUDE_DIRS=. ../../include/
+INCLUDES=$(foreach inc,$(INCLUDE_DIRS),-I$(inc))
 
-CXXFLAGS +=$(INCLUDES)
-TARGETDIR =../../../../lib
-# Flags passed to gcc during linking
-LINK = -shared -Wl,-as-needed
- 
-# List of targets 
-TARGET = $(patsubst %.cpp,$(TARGETDIR)/libnds3-%.so,$(wildcard *.cpp))
-#TARGET := $(patsubst %.cpp, %.so,$(wildcard *.cpp))
-SOURCES:=$(wildcard *.cpp) 
-# Additional linker libraries
-LIBS =-lnds3
+#Sources
+SOURCE_DIR=.
+SOURCES:=$(SOURCE_DIR)/$(wildcard *.cpp)
 
-#LIBRARIES=nds3 
-#LIBNAME=nds3-DeviceDBL
- 
-#all: $(patsubst %.cpp, %.so,$(wildcard *.cpp))
-all: $(TARGET)
+TARGET=../../../..
+LIBRARY_DIR=$(TARGET)/lib
+OBJECT_DIR=$(SOURCE_DIR)/.obj
+SHAREDLIBRARIES=$(addprefix $(LIBRARY_DIR)/,$(patsubst %.cpp,libnds3-%.so,$(notdir $(SOURCES))))
 
-#%.so:  %.cpp
-$(TARGETDIR)/libnds3-%.so: %.cpp
-#	mkdir -p $(TARGETDIR)
-#	$(CXX)  $(CXXFLAGS) $(LINK) $(LDFLAGS) $< -o $(TARGETDIR)/libnds3-$@ $(LIBS)
-	$(CXX)  $(CXXFLAGS) $(LINK) $(LDFLAGS) $< -o $@ $(LIBS)
+#Objects
+OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
-#.PHONY: clean
+CXX=g++
+
+STD=-std=c++11
+#CFLAGS=-c -Wall -fPIC 
+CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-hidden $(DEFS) 
+LDFLAGS= -shared 
+
+ifeq ($(COVERAGE),true)
+	#CFLAGS+= -O0 -g --coverage
+	CXXFLAGS+= -O0 -g --coverage
+	LDFLAGS+= --coverage
+endif
+
+all: $(SHAREDLIBRARIES)
+
 clean:
-	$(RM) $(TARGET) 
+	rm -rf "$(SHAREDLIBRARIES)" "$(OBJECT_DIR)" "$(HTARGETS)"
 
-listdeps:
-	@$(foreach lib,$(patsubst %.cpp,%,$(wildcard *.cpp)),echo -e "Dependencies of 'nds3-$(lib)' library:\n* syslib: nds3\n* libdir: \n";)
-#           @for lib in $(patsubst %.cpp,%,$(wildcard *.cpp)); do \
-#           echo "Dependencies of '${lib}' library:"; \
-#           echo "* syslib: "; \
-#           echo "* libdir: "; done
-             
-
- 
+$(LIBRARY_DIR)/libnds3-%.so: $(OBJECT_DIR)/%.o 
+	@mkdir -p $(LIBRARY_DIR)
+	$(CXX) $(LDFLAGS) $(LDLIBS) $< -o $@
+	
+$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.cpp 
+	@mkdir -p $(OBJECT_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@
