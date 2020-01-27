@@ -61,8 +61,8 @@ LDFLAGS += $(LIBPATH) -lpthread -lnds3 -ldl -lrt -lgtest $(LDLIBS)
 
 ifeq ($(COVERAGE),true)
 	#CFLAGS+= -O0 -g --coverage
-	CXXFLAGS+= -O0 -g --coverage
-	LDFLAGS+= --coverage
+	CXXFLAGS+= -O0 -g 
+	LDFLAGS+= -lgcov 
 endif
 
 #TESTS_OBJS := $(patsubst $(EXAMPLESDIR)/%.cpp, %.o, $(wildcard $(EXAMPLESDIR)/*.cpp))
