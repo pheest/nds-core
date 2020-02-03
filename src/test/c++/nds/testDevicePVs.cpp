@@ -167,7 +167,7 @@ static void commonPVsTest(const bool testInitializers) {
 		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-FloatArray", &timestamp, &floatArrayValues);
-		EXPECT_EQ((bool) true, (floatArrayDataInit == floatArrayDataInit) );
+		EXPECT_EQ((bool) true, (floatArrayDataInit == floatArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-DoubleArray", &timestamp, &doubleArrayValues);
 		EXPECT_EQ((bool) true, (doubleArrayDataInit == doubleArrayValues) );
@@ -301,7 +301,7 @@ static void commonPVsTest(const bool testInitializers) {
 		}
 		pInterface->getPushedVectorFloat("/devicePVs-FloatArray_RBV", pTimestamp, pFloatArray);
 		EXPECT_EQ(floatArrayData.size(), pFloatArray->size());
-		for (std::uint32_t i = 0; i < doubleArrayData.size(); i++) {
+		for (std::uint32_t i = 0; i < floatArrayData.size(); i++) {
 			EXPECT_EQ(floatArrayData[i], pFloatArray->at(i));
 		}
 		pInterface->getPushedVectorDouble("/devicePVs-DoubleArray_RBV", pTimestamp, pDoubleArray);
