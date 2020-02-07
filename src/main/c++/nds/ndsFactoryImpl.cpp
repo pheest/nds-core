@@ -52,8 +52,8 @@ NdsFactoryImpl::NdsFactoryImpl()
     {
         std::shared_ptr<DynamicModule> module(std::make_shared<DynamicModule>(*scanFiles));
 
-        //Cast from void* to the target type according to the size of pointer (long long for 64 bits-machine)
-        controSystemAllocateFunction_t allocateFunction = reinterpret_cast<controSystemAllocateFunction_t>(reinterpret_cast<long long>(module->getAddress("allocateControlSystem")));
+        //Cast from void* to the target type according to the size of pointer (target machine-independent)
+        controSystemAllocateFunction_t allocateFunction = reinterpret_cast<controSystemAllocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("allocateControlSystem")));
         if(allocateFunction == 0)
         {
             continue;
@@ -113,10 +113,10 @@ void NdsFactoryImpl::loadDriver(const std::string& driverModuleName)
     typedef void (*deviceDeallocateFunction_t)(void*) ;
     typedef const char* (*getDeviceNameFunction_t)() ;
 
-    //Cast from void* to the target type according to the size of pointer (long long for 64 bits-machine)
-    getDeviceNameFunction_t nameFunction = reinterpret_cast<getDeviceNameFunction_t>(reinterpret_cast<long long>(module->getAddress("getDeviceName")));
-    deviceAllocateFunction_t allocateFunction = reinterpret_cast<deviceAllocateFunction_t>(reinterpret_cast<long long>(module->getAddress("allocateDevice")));
-    deviceDeallocateFunction_t deallocateFunction = reinterpret_cast<deviceDeallocateFunction_t>(reinterpret_cast<long long>(module->getAddress("deallocateDevice")));
+    //Cast from void* to the target type according to the size of pointer (target machine-independent)
+    getDeviceNameFunction_t nameFunction = reinterpret_cast<getDeviceNameFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("getDeviceName")));
+    deviceAllocateFunction_t allocateFunction = reinterpret_cast<deviceAllocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("allocateDevice")));
+    deviceDeallocateFunction_t deallocateFunction = reinterpret_cast<deviceDeallocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("deallocateDevice")));
 
     if(allocateFunction == 0 || deallocateFunction == 0 || nameFunction == 0)
     {
