@@ -149,7 +149,7 @@ static void commonSetPVsTest(const bool testInitializers) {
 	const std::string* setStatus;
 	const std::int32_t* setCode;
 	const timespec* timestampSet;
-	timespec timestamp = {0, 0}, readTimestamp{0,0};
+	timespec timestamp = {0, 0}, readTimestamp{0,0}, timeSet{0,0};
 
 	nds::Factory factory("test");
 
@@ -246,15 +246,16 @@ static void commonSetPVsTest(const bool testInitializers) {
 	EXPECT_EQ((std::int32_t)1,levelSet);
 
 	// Set/Get StartTimeSet
+	timeSet = {1, 1};
 	timespec startTimeSet;
-	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSet",readTimestamp,(timespec){1,1}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSet",readTimestamp,timeSet); // PVVariables are thread safe
 	pInterface->readCSValue("/rootNode-FTENode.StartTimeSet",&readTimestamp,&startTimeSet); // PVVariables are thread safe
 	EXPECT_EQ(1,startTimeSet.tv_sec);
 	EXPECT_EQ(1,startTimeSet.tv_nsec);
 
 	// Set/Get SopTimeSet
 	timespec stopTimeSet;
-	pInterface->writeCSValue("/rootNode-FTENode.StopTimeSet",readTimestamp,(timespec){1,1}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StopTimeSet",readTimestamp,timeSet); // PVVariables are thread safe
 	pInterface->readCSValue("/rootNode-FTENode.StopTimeSet",&readTimestamp,&stopTimeSet); // PVVariables are thread safe
 	EXPECT_EQ(1,stopTimeSet.tv_sec);
 	EXPECT_EQ(1,stopTimeSet.tv_nsec);
@@ -295,11 +296,12 @@ static void commonSetPVsTest(const bool testInitializers) {
 	///TEST SET with incorrect values
 	////////////////////////////////////////////////////////////////
 	// Set/Get TerminalSet
+	timeSet = {0, 0};
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.ModeSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.LevelSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
-	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSet",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
-	pInterface->writeCSValue("/rootNode-FTENode.StopTimeSet",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSet",readTimestamp, timeSet); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StopTimeSet",readTimestamp, timeSet); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.PeriodNsecSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.DutyCycleSet",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 
@@ -319,7 +321,7 @@ static void commonSuppressPVsTest(const bool testInitializers) {
 	const std::string* suppressStatus;
 	const std::int32_t* suppressCode;
 	const timespec* timestampSuppress;
-	timespec timestamp = {0, 0}, readTimestamp{0,0};
+	timespec timestamp = {0, 0}, readTimestamp{0,0}, timeSet{0, 0};
 
 	nds::Factory factory("test");
 
@@ -404,7 +406,8 @@ static void commonSuppressPVsTest(const bool testInitializers) {
 
 	// Set/Get StartTimeSet
 	timespec startTimeSuppress;
-	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp,(timespec){1,1}); // PVVariables are thread safe
+	timeSet = {1, 1};
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp, timeSet); // PVVariables are thread safe
 	pInterface->readCSValue("/rootNode-FTENode.StartTimeSuppress",&readTimestamp,&startTimeSuppress); // PVVariables are thread safe
 	EXPECT_EQ(1,startTimeSuppress.tv_sec);
 	EXPECT_EQ(1,startTimeSuppress.tv_nsec);
@@ -433,10 +436,11 @@ static void commonSuppressPVsTest(const bool testInitializers) {
 	///TEST SUPPRESS with incorrect values
 	////////////////////////////////////////////////////////////////
 	// Set/Get TerminalSet
+	timeSet = {0, 0};
 	pInterface->writeCSValue("/rootNode-FTENode.TerminalSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.ModeSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
 	pInterface->writeCSValue("/rootNode-FTENode.AllSuppress",readTimestamp,(std::int32_t)0); // PVVariables are thread safe
-	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp,(timespec){0,0}); // PVVariables are thread safe
+	pInterface->writeCSValue("/rootNode-FTENode.StartTimeSuppress",readTimestamp, timeSet); // PVVariables are thread safe
 
 	// Set/Get SuppressStatus
 	pInterface->writeCSValue("/rootNode-FTENode.Suppress",readTimestamp,(std::int32_t)1); // PVVariables are thread safe
