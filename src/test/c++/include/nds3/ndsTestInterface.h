@@ -5,6 +5,7 @@
 
 #include <nds3/impl/interfaceBaseImpl.h>
 #include <nds3/definitions.h>
+#include <iostream>
 
 namespace nds
 {
@@ -146,9 +147,14 @@ private:
                          const timespec& timestamp,
                          const T& value)
     {
-    	mtx.lock();
-        storeInto[pvName].storeValue(timestamp, value);
-        mtx.unlock();
+    	try{
+    		storeInto.at(pvName).storeValue(timestamp, value);
+    	}
+    	catch(const std::out_of_range& ex){
+    		mtx.lock();
+    		storeInto[pvName].storeValue(timestamp, value);
+    		mtx.unlock();
+      	}
     }
 
     template <typename T>
