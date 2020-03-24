@@ -37,7 +37,7 @@ SOURCES:=$(SOURCE_DIR)/$(wildcard *.cpp)
 
 TARGET=../../..
 LIBRARY_DIR=$(TARGET)/lib
-OBJECT_DIR=$(TARGET)/obj/$(LIBNAME)
+OBJECT_DIR=$(SOURCE_DIR)/.obj
 SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
 STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 
@@ -45,17 +45,18 @@ STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.cpp,%.o,$(notdir $(SOURCES))))
 
 CC=g++
-ifeq ($(RELEASE), YES)
-DBG_COV=
-else
-DBG_COV=-g --coverage
-endif
+
 STD=-std=c++11
 DEFS=-DNDS3_DLL -DNDS3_DLL_EXPORTS
-CFLAGS=-c -Wall -fPIC $(DBG_COV)
-CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-hidden $(DEFS) $(DBG_COV)
-LDFLAGS= -shared $(DBG_COV)
+#CFLAGS=-c -Wall -fPIC 
+CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-hidden $(DEFS) 
+LDFLAGS= -shared 
 
+ifeq ($(COVERAGE),true)
+	#CFLAGS+= -O0 -g --coverage
+	CXXFLAGS+= -O0 -g --coverage
+	LDFLAGS+= --coverage
+endif
 
 all: $(SOURCES) $(SHAREDLIBRARY) $(STATICLIBRARY)
 
