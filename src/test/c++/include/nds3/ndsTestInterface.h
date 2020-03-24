@@ -5,6 +5,7 @@
 
 #include <nds3/impl/interfaceBaseImpl.h>
 #include <nds3/definitions.h>
+#include <iostream>
 
 namespace nds
 {
@@ -82,6 +83,8 @@ private:
     registeredPVs_t m_registeredPVs;
 
     reporter_t reporter;
+    std::mutex mtx;
+
 
     template <typename T>
     class PushedValues
@@ -96,6 +99,7 @@ private:
         std::array<timespec, (0x1 << m_historyBits)> m_timestamps;
 
         size_t m_firstUsed, m_firstAvailable;
+
 
         void storeValue(const timespec& timestamp, const T& value)
         {
@@ -143,7 +147,14 @@ private:
                          const timespec& timestamp,
                          const T& value)
     {
-        storeInto[pvName].storeValue(timestamp, value);
+    	try{
+    		storeInto.at(pvName).storeValue(timestamp, value);
+    	}
+    	catch(const std::out_of_range& ex){
+    		mtx.lock();
+    		storeInto[pvName].storeValue(timestamp, value);
+    		mtx.unlock();
+      	}
     }
 
     template <typename T>
