@@ -322,7 +322,8 @@ inline void TriggerAndClkImpl<T>::constructorBody(const TriggerAndClkArgs_t& han
 			std::bind(&TriggerAndClkImpl::onStart, this),
 			handlerTrig.handlerSTM.stopFunction,
 			handlerTrig.handlerSTM.recoverFunction,
-			handlerTrig.handlerSTM.allowStateChangeFunction));
+			handlerTrig.handlerSTM.allowStateChangeFunction,
+			handlerTrig.handlerSTM.autoEnable));
 	addChild(m_StateMachine);
 
 }
