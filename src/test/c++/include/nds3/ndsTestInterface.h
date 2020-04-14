@@ -57,22 +57,22 @@ public:
     template<typename T>
     void writeCSValue(const std::string& pvName, const timespec& timestamp, const T& value);
 
-    void getPushedInt32(const std::string& pvName, const timespec*& pTime, const int32_t*& pValue, const std::uint32_t& timeout=1);
-    void getPushedFloat(const std::string& pvName, const timespec*& pTime, const float*& pValue, const std::uint32_t& timeout=1);
-    void getPushedDouble(const std::string& pvName, const timespec*& pTime, const double*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorBool(const std::string& pvName, const timespec*& pTime, const std::vector<bool>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorUint8(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint8_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorUint16(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint16_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorUint32(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint32_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorInt8(const std::string& pvName, const timespec*& pTime, const std::vector<std::int8_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorInt16(const std::string& pvName, const timespec*& pTime, const std::vector<std::int16_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorFloat(const std::string& pvName, const timespec*& pTime, const std::vector<float>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue, const std::uint32_t& timeout=1);
-    void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue, const std::uint32_t& timeout=1);
-    void getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue, const std::uint32_t& timeout=1);
-    void getPushedTimestamp(const std::string& pvName, const timespec*& pTime, const timestamp_t*& pValue, const std::uint32_t& timeout=1);
+    void getPushedInt32(const std::string& pvName, const timespec*& pTime, const int32_t*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedFloat(const std::string& pvName, const timespec*& pTime, const float*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedDouble(const std::string& pvName, const timespec*& pTime, const double*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorBool(const std::string& pvName, const timespec*& pTime, const std::vector<bool>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorUint8(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint8_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorUint16(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint16_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorUint32(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint32_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorInt8(const std::string& pvName, const timespec*& pTime, const std::vector<std::int8_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorInt16(const std::string& pvName, const timespec*& pTime, const std::vector<std::int16_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorFloat(const std::string& pvName, const timespec*& pTime, const std::vector<float>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue, const std::uint32_t& timeoutMs=1000);
+    void getPushedTimestamp(const std::string& pvName, const timespec*& pTime, const timestamp_t*& pValue, const std::uint32_t& timeoutMs=1000);
 
     virtual void registerReporter(reporter_t reporter);
     virtual void report(FILE* file , int details);
@@ -164,9 +164,9 @@ private:
                            std::map<std::string, PushedValues<T> >& storeInto,
                            const timespec*& pTime,
                            const T*& pValue,
-						   const std::uint32_t& timeout=1)
+						   const std::uint32_t& timeoutMs=1000)
     {
-    	std::int64_t usTimeout = timeout*1000000; //Convert timeout from seconds to microseconds
+    	std::int64_t usTimeout = timeoutMs*1000; //Convert timeout from milliseconds to microseconds
     	bool getData=false;
     	std::chrono::system_clock::time_point begin = std::chrono::system_clock::now();
     	std::chrono::system_clock::time_point end;
@@ -182,7 +182,7 @@ private:
        				msg += " (PV name: " + pvName + ")";
        				throw std::runtime_error(msg);
        			}
-       			::usleep(10); //rest for a while
+       			::usleep(100); //rest for a while
        		}
        	}while(!getData);
     }

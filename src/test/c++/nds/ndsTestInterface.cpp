@@ -202,84 +202,84 @@ template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<timespec>
 template void TestControlSystemInterfaceImpl::writeCSValue<timestamp_t>(const std::string& pvName, const timespec& timestamp, const timestamp_t& value);
 
 
-void TestControlSystemInterfaceImpl::getPushedInt32(const std::string& pvName, const timespec*& pTime, const std::int32_t*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedInt32(const std::string& pvName, const timespec*& pTime, const std::int32_t*& pValue, const std::uint32_t& timeoutMs)
 {
-    getPushedData(pvName, m_pushedInt32, pTime, pValue, timeout);
+    getPushedData(pvName, m_pushedInt32, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedFloat(const std::string& pvName, const timespec*& pTime, const float*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedFloat(const std::string& pvName, const timespec*& pTime, const float*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedFloat, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedFloat, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedDouble(const std::string& pvName, const timespec*& pTime, const double*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedDouble(const std::string& pvName, const timespec*& pTime, const double*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedDouble, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedDouble, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorBool(const std::string& pvName, const timespec*& pTime, const std::vector<bool>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorBool(const std::string& pvName, const timespec*& pTime, const std::vector<bool>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorBool, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorBool, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorUint8(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint8_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorUint8(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint8_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorUint8, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorUint8, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorUint16(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint16_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorUint16(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint16_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorUint16, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorUint16, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorUint32(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint32_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorUint32(const std::string& pvName, const timespec*& pTime, const std::vector<std::uint32_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorUint32, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorUint32, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorInt8(const std::string& pvName, const timespec*& pTime, const std::vector<std::int8_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorInt8(const std::string& pvName, const timespec*& pTime, const std::vector<std::int8_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorInt8, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorInt8, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorInt16(const std::string& pvName, const timespec*& pTime, const std::vector<std::int16_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorInt16(const std::string& pvName, const timespec*& pTime, const std::vector<std::int16_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorInt16, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorInt16, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorInt32(const std::string& pvName, const timespec*& pTime, const std::vector<std::int32_t>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorInt32, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorInt32, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorFloat(const std::string& pvName, const timespec*& pTime, const std::vector<float>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorFloat(const std::string& pvName, const timespec*& pTime, const std::vector<float>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorFloat, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorFloat, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorDouble(const std::string& pvName, const timespec*& pTime, const std::vector<double>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorDouble, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorDouble, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedString(const std::string& pvName, const timespec*& pTime, const std::string*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedString, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedString, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedTimespec(const std::string& pvName, const timespec*& pTime, const timespec*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedTimespec, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedTimespec, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedVectorTimespec(const std::string& pvName, const timespec*& pTime, const std::vector<timespec>*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedVectorTimespec, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedVectorTimespec, pTime, pValue, timeoutMs);
 }
 
-void TestControlSystemInterfaceImpl::getPushedTimestamp(const std::string& pvName, const timespec*& pTime, const timestamp_t*& pValue, const std::uint32_t& timeout)
+void TestControlSystemInterfaceImpl::getPushedTimestamp(const std::string& pvName, const timespec*& pTime, const timestamp_t*& pValue, const std::uint32_t& timeoutMs)
 {
-    return getPushedData(pvName, m_pushedTimestamp, pTime, pValue, timeout);
+    return getPushedData(pvName, m_pushedTimestamp, pTime, pValue, timeoutMs);
 }
 
 void TestControlSystemInterfaceImpl::registerReporter(reporter_t reporter_in)
