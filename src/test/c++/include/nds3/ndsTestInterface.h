@@ -6,6 +6,8 @@
 #include <nds3/impl/interfaceBaseImpl.h>
 #include <nds3/definitions.h>
 #include <iostream>
+#include <unistd.h>
+#include <chrono>
 
 namespace nds
 {
@@ -161,20 +163,33 @@ private:
     void getPushedData(const std::string& pvName,
                            std::map<std::string, PushedValues<T> >& storeInto,
                            const timespec*& pTime,
-                           const T*& pValue)
+                           const T*& pValue,
+						   const std::uint32_t& timeout=1)
     {
-        try {
-		storeInto[pvName].getValue(pTime, pValue);
-	} catch (const std::runtime_error& ex) {
-		std::string msg = ex.what();
-		msg += " (PV name: " + pvName + ")";
-		throw std::runtime_error(msg);
-	}
+    	std::int64_t usTimeout = timeout*1000000; //Convert timeout from seconds to microseconds
+    	bool getData=false;
+    	std::chrono::system_clock::time_point begin = std::chrono::system_clock::now();
+    	std::chrono::system_clock::time_point end;
+
+    	do{
+       		try {
+       			storeInto[pvName].getValue(pTime, pValue);
+       			getData=true; //This flag only turns true if data is available
+       		} catch (const std::runtime_error& ex) {
+       			end = std::chrono::high_resolution_clock::now();
+       			if(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() >=usTimeout){
+       				std::string msg = ex.what();
+       				msg += " (PV name: " + pvName + ")";
+       				throw std::runtime_error(msg);
+       			}
+       			::usleep(10); //rest for a while
+       		}
+       	}while(!getData);
     }
 
 };
 
-}
+}//namespace tests
 
-}
+}//namespace nds
 #endif // NDSTESTINTERFACE_H
