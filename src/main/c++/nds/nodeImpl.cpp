@@ -145,7 +145,7 @@ void NodeImpl::getChildrenState(timespec* pTimestamp, state_t* pState) const
         if(scanChildren->second.get() != m_pStateMachine.get())
         {
             std::shared_ptr<NodeImpl> child = std::dynamic_pointer_cast<NodeImpl>(scanChildren->second);
-            if(child.get() != 0)
+            if(child.get() != 0 && child->m_pStateMachine.get()!=0)
             {
                 timespec childTimestamp;
                 state_t childState;
@@ -285,6 +285,9 @@ void nds::NodeImpl::setLocalState(state_t pState) {
 }
 
 autoEnable_t nds::NodeImpl::getAutoEnable() {
+	if(m_pStateMachine.get()==0){
+		return autoEnable_t::none;
+	}
 	return m_pStateMachine->getAutoEnable();
 }
 
