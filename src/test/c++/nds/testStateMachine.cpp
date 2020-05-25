@@ -60,6 +60,19 @@ bool returnTrue(const nds::state_t, const nds::state_t, const nds::state_t)
 {
     return true;
 }
+/*
+ * This is the tested structure
+ *
+ *
+ * rootNode
+ *      /
+ * 		|--> STM (stateMachine0)
+ * 		|--> ch0
+ * 		|		|--> STM (stateMachine1)
+ * 		|--> ch1
+ * 		|		|--> STM (stateMachine2)
+ *
+ */
 
 TEST(testStateMachine, testLocalGlobalState)
 {
@@ -136,17 +149,23 @@ TEST(testStateMachine, testLocalGlobalState)
 /*
  * This is the tested structure
  *
+ * An NDS node can have as children:
+ *    a) Different nodes and one STM (only one is allowed)
+ *    b) Only nodes
+ *    c) Only an STM
+ *
  * rootNode
- * 		| - STM
- * 		| - CH0
- * 				| - STM
- * 				| - CH0A
- * 						| - STM
- * 				| - CH0B
- * 		| - CH1
- * 				| - STM
- * 				| - CH1A
- * 						| -CH1AA
+ *      /
+ * 		|--> STM (stateMachineRN0)
+ * 		|--> ch0
+ * 		|		|--> STM (stateMachineCH0)
+ * 		|		|--> ch0A
+ * 		|				|--> STM (stateMachineCH0A)
+ * 		|		|--> ch0B
+ * 		|--> ch1
+ * 		|		|--> STM (stateMachineCH1)
+ * 		|		|--> ch1A
+ * 		|				|-->ch1AA
  *
  */
 
@@ -196,56 +215,69 @@ TEST(testStateMachine, testChildrenStates)
 
     rootNode.initialize(0, factory);
 
-    std::cout<<"-----------------------------------------------"<<std::endl;
-    std::cout<<"- INIT states"<<std::endl;
-    std::cout<<"-----------------------------------------------"<<std::endl;
-    std::cout<<"RootNode state: "<<stateToString(stateMachineRN0.getLocalState())<<std::endl;
-    std::cout<<"CH0 state: "<<stateToString(stateMachineCH0.getLocalState())<<std::endl;
-    std::cout<<"CH0A state: "<<stateToString(stateMachineCH0A.getLocalState())<<std::endl;
-    std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
-
-    //All STMs default state is off
+    //All STMs have as default state is off
     stateMachineRN0.setState(nds::state_t::on); //Turn on the rootNode (The rest of the STM stay at off state)
-    stateMachineRN0.setState(nds::state_t::running); //Start the rootNode (The rest of the STM stay at off state)
-
-    std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"- RootNode running "<<std::endl;
-	std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"RootNode state: "<<stateToString(stateMachineRN0.getLocalState())<<std::endl;
-	std::cout<<"CH0 state: "<<stateToString(stateMachineCH0.getLocalState())<<std::endl;
-	std::cout<<"CH0A state: "<<stateToString(stateMachineCH0A.getLocalState())<<std::endl;
-	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
-
+    stateMachineRN0.setState(nds::state_t::running); //Turn running the rootNode (The rest of the STM stay at off state)
+    /*    * rootNode
+         *      /
+         * 		|--> STM (stateMachineRN0) RUNNING
+         * 		|--> ch0
+         * 		|		|--> STM (stateMachineCH0)  OFF
+         * 		|		|--> ch0A
+         * 		|				|--> STM (stateMachineCH0A) OFF
+         * 		|		|--> ch0B
+         * 		|--> ch1
+         * 		|		|--> STM (stateMachineCH1) OFF
+         * 		|		|--> ch1A
+         * 		|				|-->ch1AA
+    */
+    // Get Lowest and Highest states in the hierarchy
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getHighestChildState());
 
-    //Start one of the children
+    //Setting a children to running state
+
     stateMachineCH0A.setState(nds::state_t::on);
     stateMachineCH0A.setState(nds::state_t::running);
 
-    std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"- One child node running "<<std::endl;
-	std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"RootNode state: "<<stateToString(stateMachineRN0.getLocalState())<<std::endl;
-	std::cout<<"CH0 state: "<<stateToString(stateMachineCH0.getLocalState())<<std::endl;
-	std::cout<<"CH0A state: "<<stateToString(stateMachineCH0A.getLocalState())<<std::endl;
-	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
+    /*    * rootNode
+         *      /
+         * 		|--> STM (stateMachineRN0) RUNNING
+         * 		|--> ch0
+         * 		|		|--> STM (stateMachineCH0) OFF
+         * 		|		|--> ch0A
+         * 		|				|--> STM (stateMachineCH0A) On->RUNNING
+         * 		|		|--> ch0B
+         * 		|--> ch1
+         * 		|		|--> STM (stateMachineCH1) OFF
+         * 		|		|--> ch1A
+         * 		|				|-->ch1AA
+    */
 
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineCH0.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineCH0.getHighestChildState());
 
-    //Turn ON the rest of the chlidren
+    //Turn ON remaining children
+
     stateMachineCH0.setState(nds::state_t::on);
     stateMachineCH1.setState(nds::state_t::on);
 
-    std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"- One child node running, the others in ON state "<<std::endl;
-	std::cout<<"-----------------------------------------------"<<std::endl;
-	std::cout<<"RootNode state: "<<stateToString(stateMachineRN0.getLocalState())<<std::endl;
-	std::cout<<"CH0 state: "<<stateToString(stateMachineCH0.getLocalState())<<std::endl;
-	std::cout<<"CH0A state: "<<stateToString(stateMachineCH0A.getLocalState())<<std::endl;
-	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
+    /*    * rootNode
+             *      /
+             * 		|--> STM (stateMachineRN0) RUNNING
+             * 		|--> ch0
+             * 		|		|--> STM (stateMachineCH0) ON
+             * 		|		|--> ch0A
+             * 		|				|--> STM (stateMachineCH0A) RUNNING
+             * 		|		|--> ch0B
+             * 		|--> ch1
+             * 		|		|--> STM (stateMachineCH1) ON
+             * 		|		|--> ch1A
+             * 		|				|-->ch1AA
+     */
+
 
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
