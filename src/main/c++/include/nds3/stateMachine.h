@@ -259,6 +259,7 @@ public:
      * @return the global state
      */
     state_t getGlobalState();
+    state_t getLowestChildState();
 
     /**
      * @brief Check if the transition to the new state is legal and is not denied by

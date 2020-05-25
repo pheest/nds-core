@@ -259,6 +259,11 @@ void FTE<T>::setMaximum(const timespec& timestamp, const std::int32_t& value)
     return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setMaximum(timestamp, value);
 }
 
+template <typename T>
+void FTE<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<FTEImpl<T> >(m_pImplementation)->setState(newState);
+}
 
 template class FTE<std::string>;
 }

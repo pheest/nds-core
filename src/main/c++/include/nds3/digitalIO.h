@@ -345,6 +345,13 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param timestamp timestamp for the value
+     * @param value New state to set the State Machine of the node
+     */
+    void setState(const timespec& timestamp, const nds::state_t& newState);
 
 };
 

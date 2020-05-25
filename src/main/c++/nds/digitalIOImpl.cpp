@@ -292,6 +292,11 @@ void DigitalIOImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, co
 	m_NumberOfPushedDataBlocks->push(timestamp, value);
 }
 
+template<typename T>
+void DigitalIOImpl<T>::setState(const timespec& timestamp, const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 
 /*
  * TODO: Major modifications must be done to include this new data types.

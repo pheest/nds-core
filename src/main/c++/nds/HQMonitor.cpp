@@ -277,4 +277,9 @@ void HQMonitor::setSelfTestTextResult(const timespec& timestamp, const std::stri
 	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> setSelfTextTxtResult(timestamp, value);
 }
 
+void HQMonitor::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<HQMonitorImpl>(m_pImplementation)->setState(newState);
+}
+
 }

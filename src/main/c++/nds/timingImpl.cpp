@@ -238,4 +238,9 @@ namespace nds {
      m_RefTimeBase_PV -> setValue(timestamp, value);
      m_RefTimeBase_PV -> push(timestamp, value);
   }
+
+  void TimingImpl::setState(const nds::state_t& newState)
+  {
+  	m_StateMachine->setState(newState);
+  }
 }

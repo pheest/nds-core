@@ -313,5 +313,10 @@ void FirmwareImpl::setFirmwarePath(const timespec& timestamp, const std::string&
     m_FirmwarePath_RBVPV->push(timestamp, value);
 }
 
+void FirmwareImpl::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
+
 
 }

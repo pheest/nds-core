@@ -49,7 +49,10 @@ public:
     virtual state_t getLocalState() const;
 
     virtual void getGlobalState(timespec* pTimestamp, state_t* pState) const;
+    virtual void getLowestChildState(timespec* pTimestamp, state_t* pState) const;
+    virtual void getHighestChildState(timespec* pTimestamp, state_t* pState) const;
     void getChildrenState(timespec* pTimestamp, state_t* pState) const;
+
 
     bool setChildrenState(timespec pTimestamp, state_t pState);
     void setLocalState(state_t pState);
@@ -63,6 +66,9 @@ public:
 
 protected:
     std::string buildFullExternalName(const FactoryBaseImpl& controlSystem, const bool bStopAtPort) const;
+
+    void getLowestChildrenState(timespec* pTimestamp, state_t* pState, uint32_t nodeLevel) const;
+    void getHighestChildrenState(timespec* pTimestamp, state_t* pState, uint32_t nodeLevel) const;
 
     nodeType_t m_nodeType;
 

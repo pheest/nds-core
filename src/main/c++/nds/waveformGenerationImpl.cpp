@@ -714,6 +714,11 @@ nds::state_t WaveformGenerationImpl<T>::getState()
 	return m_StateMachine->getLocalState();
 }
 
+template<typename T>
+void WaveformGenerationImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 
 template class WaveformGenerationImpl<std::int32_t>;
 template class WaveformGenerationImpl<float>;

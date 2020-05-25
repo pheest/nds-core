@@ -133,5 +133,10 @@ void Timing::setRefTimeBase(const timespec& timestamp, const timespec& value) {
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setRefTimeBase(timestamp, value);
 }
 
+void Timing::setState(const nds::state_t& newState)
+{
+    std::static_pointer_cast<TimingImpl>(m_pImplementation)->setState(newState);
+}
+
 }
 

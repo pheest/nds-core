@@ -402,6 +402,59 @@ void StateMachineImpl::getGlobalState(timespec* pTimestamp, state_t* pState) con
     }
 }
 
+/*
+ * Return the Lowest state of all its childrens
+ *
+ *************************/
+void StateMachineImpl::getLowestChildState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = state_t::unknown;
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+
+    pParentNode->getLowestChildState(pTimestamp, pState);
+
+//    if(
+//            ((int)*pState > (int)childrenState) ||
+//            ((int)*pState == (int)childrenState &&
+//             (pTimestamp->tv_sec < childrenTimestamp.tv_sec ||
+//              (pTimestamp->tv_sec == childrenTimestamp.tv_sec && pTimestamp->tv_nsec < childrenTimestamp.tv_nsec))))
+//    {
+//        *pTimestamp = childrenTimestamp;
+//        *pState = childrenState;
+//    }
+}
+
+/*
+ * Return the Highest state of all its childrens
+ *
+ *************************/
+void StateMachineImpl::getHighestChildState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = state_t::unknown;
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+
+    timespec childrenTimestamp;
+    state_t childrenState;
+    //pParentNode->getHighestChildrenState(&childrenTimestamp, &childrenState);
+
+    if(
+            ((int)*pState < (int)childrenState) ||
+            ((int)*pState == (int)childrenState &&
+             (pTimestamp->tv_sec < childrenTimestamp.tv_sec ||
+              (pTimestamp->tv_sec == childrenTimestamp.tv_sec && pTimestamp->tv_nsec < childrenTimestamp.tv_nsec))))
+    {
+        *pTimestamp = childrenTimestamp;
+        *pState = childrenState;
+    }
+}
 
 /*
  * Return true if the requested state transition is legal

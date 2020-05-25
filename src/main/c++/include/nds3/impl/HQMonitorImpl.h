@@ -262,6 +262,13 @@ public:
 	 */
 	void setSignalQualityFlagLevel(const timespec& timestamp, const double& value);
 
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param value New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
+
 protected:
 
     /**

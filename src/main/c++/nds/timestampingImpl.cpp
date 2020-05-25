@@ -314,5 +314,11 @@ namespace nds {
     m_Timestamps_PV->setDecimation(decimation);
   }
 
+  template<typename T>
+  void TimestampingImpl<T>::setState(const nds::state_t& newState)
+  {
+  	m_StateMachine->setState(newState);
+  }
+
 template class TimestampingImpl<timestamp_t>;
 }

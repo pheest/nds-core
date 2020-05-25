@@ -619,6 +619,12 @@ nds::state_t DataAcquisitionImpl<T>::getState()
 	return m_StateMachine->getLocalState();
 }
 
+template<typename T>
+void DataAcquisitionImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
+
 
 template class DataAcquisitionImpl<std::int32_t>;
 template class DataAcquisitionImpl<float>;

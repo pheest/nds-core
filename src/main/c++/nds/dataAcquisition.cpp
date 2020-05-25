@@ -301,6 +301,12 @@ void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const double
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSamplingRate(timestamp, value);
 }
 
+template <typename T>
+void DataAcquisition<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setState(newState);
+}
+
 template class DataAcquisition<std::int32_t>;
 template class DataAcquisition<float>;
 template class DataAcquisition<double>;

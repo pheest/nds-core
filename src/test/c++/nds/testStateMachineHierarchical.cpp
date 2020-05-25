@@ -100,7 +100,6 @@ TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine2.getLocalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine3.getLocalState());
 
-
     // Starting state machine of the RootNode
     stateMachineRN.setState(nds::state_t::running);
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN.getLocalState());

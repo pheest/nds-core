@@ -88,6 +88,18 @@ state_t StateMachine::getGlobalState()
     return state;
 }
 
+/*
+ * Get the lowest state of all its children
+ *
+ **********************/
+state_t StateMachine::getLowestChildState()
+{
+    state_t state;
+    timespec unused;
+    std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->getLowestChildState(&unused, &state);
+    return state;
+}
+
 
 /*
  * Check if a state transition is allowed

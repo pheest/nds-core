@@ -530,4 +530,10 @@ void HQMonitorImpl::setSignalQualityFlagLevel(const timespec& timestamp, const d
 	m_SignalQFlagTrigLevel_RBVPV->push(timestamp, value);
 }
 
+
+void HQMonitorImpl::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
+
 }

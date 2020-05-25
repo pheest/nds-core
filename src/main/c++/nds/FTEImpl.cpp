@@ -507,6 +507,10 @@ void FTEImpl<T>::setMaximum(const timespec& timestamp, const std::int32_t& value
 	m_Maximum_PV->push(timestamp, value);
 }
 
-
+template<typename T>
+void FTEImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 template class FTEImpl<std::string>;
 }

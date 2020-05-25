@@ -628,6 +628,12 @@ void TriggerAndClkImpl<T>::setEnableDisablePLLRBV(const timespec& timestamp, con
 	m_EnableDisablePLL_RBVPV->push(timestamp, value);
 }
 
+template<typename T>
+void TriggerAndClkImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
+
 template class TriggerAndClkImpl<std::vector<timespec>>;
 
 
