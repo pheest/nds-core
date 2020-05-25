@@ -417,15 +417,6 @@ void StateMachineImpl::getLowestChildState(timespec* pTimestamp, state_t* pState
 
     pParentNode->getLowestChildState(pTimestamp, pState);
 
-//    if(
-//            ((int)*pState > (int)childrenState) ||
-//            ((int)*pState == (int)childrenState &&
-//             (pTimestamp->tv_sec < childrenTimestamp.tv_sec ||
-//              (pTimestamp->tv_sec == childrenTimestamp.tv_sec && pTimestamp->tv_nsec < childrenTimestamp.tv_nsec))))
-//    {
-//        *pTimestamp = childrenTimestamp;
-//        *pState = childrenState;
-//    }
 }
 
 /*
@@ -441,19 +432,8 @@ void StateMachineImpl::getHighestChildState(timespec* pTimestamp, state_t* pStat
 
     std::shared_ptr<NodeImpl> pParentNode(getParent());
 
-    timespec childrenTimestamp;
-    state_t childrenState;
-    //pParentNode->getHighestChildrenState(&childrenTimestamp, &childrenState);
+    pParentNode->getHighestChildState(pTimestamp, pState);
 
-    if(
-            ((int)*pState < (int)childrenState) ||
-            ((int)*pState == (int)childrenState &&
-             (pTimestamp->tv_sec < childrenTimestamp.tv_sec ||
-              (pTimestamp->tv_sec == childrenTimestamp.tv_sec && pTimestamp->tv_nsec < childrenTimestamp.tv_nsec))))
-    {
-        *pTimestamp = childrenTimestamp;
-        *pState = childrenState;
-    }
 }
 
 /*

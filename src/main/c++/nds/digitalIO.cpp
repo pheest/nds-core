@@ -160,9 +160,9 @@ void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const 
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
 }
 template <typename T>
-void DigitalIO<T>::setState(const timespec& timestamp, const nds::state_t& newState)
+void DigitalIO<T>::setState(const nds::state_t& newState)
 {
-    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setState(timestamp, newState);
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setState(newState);
 }
 /*
  * TODO: Major modifications must be done to include this new data types.

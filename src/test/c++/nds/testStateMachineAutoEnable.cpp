@@ -69,7 +69,7 @@ bool alwaysReturnFalse(const nds::state_t,const nds::state_t , const nds::state_
 }
 
 
-TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
+TEST(testStateMachineAutoEnable, testSuccesfulTransitionState)
 {
 
     nds::Port rootNode("rootNode");
@@ -131,7 +131,7 @@ TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
 }
 
 
-TEST(testStateMachineHierarchical, testErrorTransitionState)
+TEST(testStateMachineAutoEnable, testErrorTransitionState)
 {
 
     nds::Port rootNode("rootNode");
@@ -167,7 +167,7 @@ TEST(testStateMachineHierarchical, testErrorTransitionState)
     factory.destroyDevice("");
 }
 
-TEST(testStateMachineHierarchical, testAsynTransitionState)
+TEST(testStateMachineAutoEnable, testAsynTransitionState)
 {
 
     nds::Port rootNode("rootNode");

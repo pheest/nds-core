@@ -150,7 +150,7 @@ TEST(testStateMachine, testLocalGlobalState)
  *
  */
 
-TEST(testStateMachine, testLowestChildState)
+TEST(testStateMachine, testChildrenStates)
 {
     nds::Port rootNode("rootNode");
     nds::StateMachine stateMachineRN0 = rootNode.addChild(nds::StateMachine(false,
@@ -205,7 +205,7 @@ TEST(testStateMachine, testLowestChildState)
     std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
 
     //All STMs default state is off
-    stateMachineRN0.setState(nds::state_t::on); //Turn ON the rootNode (The rest of the STM stay at off state)
+    stateMachineRN0.setState(nds::state_t::on); //Turn on the rootNode (The rest of the STM stay at off state)
     stateMachineRN0.setState(nds::state_t::running); //Start the rootNode (The rest of the STM stay at off state)
 
     std::cout<<"-----------------------------------------------"<<std::endl;
@@ -217,6 +217,7 @@ TEST(testStateMachine, testLowestChildState)
 	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
 
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getHighestChildState());
 
     //Start one of the children
     stateMachineCH0A.setState(nds::state_t::on);
@@ -231,7 +232,8 @@ TEST(testStateMachine, testLowestChildState)
 	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
 
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
-
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineCH0.getLowestChildState());
 
     //Turn ON the rest of the chlidren
     stateMachineCH0.setState(nds::state_t::on);
@@ -246,6 +248,7 @@ TEST(testStateMachine, testLowestChildState)
 	std::cout<<"CH1 state: "<<stateToString(stateMachineCH1.getLocalState())<<std::endl<<std::endl;
 
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN0.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
 
     factory.destroyDevice("");
 

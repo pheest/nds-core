@@ -259,7 +259,20 @@ public:
      * @return the global state
      */
     state_t getGlobalState();
+
+    /**
+     * @brief Returns the lowest state of all the children of the node
+     *
+     * @return the lowest children state
+     */
     state_t getLowestChildState();
+
+    /**
+     * @brief Returns the highest state of all the children of the node.
+     *
+     * @return the highest children state
+     */
+    state_t getHighestChildState();
 
     /**
      * @brief Check if the transition to the new state is legal and is not denied by

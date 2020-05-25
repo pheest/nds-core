@@ -100,6 +100,18 @@ state_t StateMachine::getLowestChildState()
     return state;
 }
 
+/*
+ * Get the highest state of all its children
+ *
+ **********************/
+state_t StateMachine::getHighestChildState()
+{
+    state_t state;
+    timespec unused;
+    std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->getHighestChildState(&unused, &state);
+    return state;
+}
+
 
 /*
  * Check if a state transition is allowed

@@ -293,7 +293,7 @@ void DigitalIOImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, co
 }
 
 template<typename T>
-void DigitalIOImpl<T>::setState(const timespec& timestamp, const nds::state_t& newState)
+void DigitalIOImpl<T>::setState(const nds::state_t& newState)
 {
 	m_StateMachine->setState(newState);
 }
