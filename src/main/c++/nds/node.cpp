@@ -60,6 +60,24 @@ void Node::addChildInternal(Base& child)
 }
 
 /*
+ * Get the state
+ *
+ **********************/
+void Node::setState(state_t state)
+{
+    std::static_pointer_cast<NodeImpl>(m_pImplementation)->setLocalState(state);
+}
+
+/*
+ * Get the state
+ *
+ **********************/
+state_t Node::getState()
+{
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLocalState();
+}
+
+/*
  * Get the global state
  *
  **********************/

@@ -144,7 +144,84 @@ TEST(testStateMachine, testLocalGlobalState)
     factory.destroyDevice("");
 }
 
+/*
+ * This tests shows how to use the hierarchical STMs in an NDS node.
+ *
+ * This is the tested structure
+ *
+ * rootNode
+ *      /
+ * 		|--> STM (stateMachine0)
+ * 		|--> ch0
+ * 		|		|--> STM (stateMachine1)
+ * 		|--> ch1
+ * 		|		|--> STM (stateMachine2)
+ *
+ */
 
+TEST(testStateMachine, testNodeStates)
+{
+    nds::Port rootNode("rootNode");
+    nds::StateMachine stateMachine0 = rootNode.addChild(nds::StateMachine(true,
+                                                                          std::bind(&wait1sec),
+                                                                          std::bind(&wait1sec),
+                                                                          std::bind(&wait1sec),
+                                                                          std::bind(&wait1sec),
+                                                                          std::bind(&wait1sec),
+                                                                          std::bind(&returnTrue, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
+
+    nds::Node ch0 = rootNode.addChild(nds::Node("ch0"));
+    nds::Node ch1 = rootNode.addChild(nds::Node("ch1"));
+
+    nds::StateMachine stateMachine1 = ch0.addChild(nds::StateMachine(true,
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&returnTrue, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
+
+
+    nds::StateMachine stateMachine2 = ch1.addChild(nds::StateMachine(true,
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&rollback),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&wait1sec),
+                                                                     std::bind(&returnTrue, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
+
+    nds::Factory factory("test");
+
+    rootNode.initialize(0, factory);
+
+    // Check the local and global state: should be 0
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getState());
+
+    // Switch on state machine 1. This STM is a child of ch0 node
+    ch0.setState(nds::state_t::on);
+    EXPECT_EQ((int)nds::state_t::initializing, (int)ch0.getState());
+    ::sleep(2);
+    EXPECT_EQ((int)nds::state_t::on, (int)ch0.getState());
+
+    // Switch state machine 2 to on and then to running. This STM is a child of ch1 node
+    // Should go back to on because of the rollback
+    ch1.setState(nds::state_t::on);
+    EXPECT_EQ((int)nds::state_t::initializing, (int)ch1.getState());
+    ::sleep(2);
+    EXPECT_EQ((int)nds::state_t::on, (int)ch1.getState());
+
+    ch1.setState(nds::state_t::running);
+    EXPECT_EQ((int)nds::state_t::starting, (int)ch1.getState());
+    ::sleep(1);
+    EXPECT_EQ((int)nds::state_t::on, (int)ch1.getState());
+
+    ch1.setState(nds::state_t::off);
+    EXPECT_EQ((int)nds::state_t::switchingOff, (int)ch1.getState());
+    ::sleep(2);
+    EXPECT_EQ((int)nds::state_t::off, (int)ch1.getState());
+
+    factory.destroyDevice("");
+}
 
 /*
  * This is the tested structure

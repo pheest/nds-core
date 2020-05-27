@@ -84,6 +84,9 @@ public:
 
     StateMachine addStateMachine(StateMachine& stateMachine); // Specialized for SWIG
 
+    void setState(state_t state);
+
+    state_t getState();
     state_t getGlobalState();
     state_t getLowestGlobalState();
     state_t getHighestGlobalState();
