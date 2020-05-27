@@ -261,6 +261,20 @@ public:
     state_t getGlobalState();
 
     /**
+     * @brief Returns the lowest global state
+     *
+     * @return the lowest children state
+     */
+    state_t getLowestGlobalState();
+
+    /**
+     * @brief Returns the highest global state
+     *
+     * @return the highest children state
+     */
+    state_t getHighestGlobalState();
+
+    /**
      * @brief Returns the lowest state of all the children of the node
      *
      * @return the lowest children state

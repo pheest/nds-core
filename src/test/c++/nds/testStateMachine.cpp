@@ -217,10 +217,10 @@ TEST(testStateMachine, testChildrenStates)
 
     //All STMs have as default state is off
     stateMachineRN0.setState(nds::state_t::on); //Turn on the rootNode (The rest of the STM stay at off state)
-    stateMachineRN0.setState(nds::state_t::running); //Turn running the rootNode (The rest of the STM stay at off state)
+    //stateMachineRN0.setState(nds::state_t::running); //Turn running the rootNode (The rest of the STM stay at off state)
     /*    * rootNode
          *      /
-         * 		|--> STM (stateMachineRN0) RUNNING
+         * 		|--> STM (stateMachineRN0) ON
          * 		|--> ch0
          * 		|		|--> STM (stateMachineCH0)  OFF
          * 		|		|--> ch0A
@@ -232,11 +232,20 @@ TEST(testStateMachine, testChildrenStates)
          * 		|				|-->ch1AA
     */
     // Get Lowest and Highest states in the hierarchy
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::on, (int)rootNode.getHighestGlobalState());
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getHighestChildState());
+
+    EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN0.getHighestGlobalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getHighestChildState());
 
-    //Setting a children to running state
+    //Setting a rootNode to running state
+    stateMachineRN0.setState(nds::state_t::running); //Turn running the rootNode (The rest of the STM stay at off state)
 
+    //Setting a children to running state
     stateMachineCH0A.setState(nds::state_t::on);
     stateMachineCH0A.setState(nds::state_t::running);
 
@@ -254,6 +263,13 @@ TEST(testStateMachine, testChildrenStates)
          * 		|				|-->ch1AA
     */
 
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::running, (int)rootNode.getHighestGlobalState());
+    EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestGlobalState());
+
+    EXPECT_EQ((int)nds::state_t::off, (int)rootNode.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::running, (int)rootNode.getHighestChildState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineCH0.getLowestChildState());
@@ -277,8 +293,13 @@ TEST(testStateMachine, testChildrenStates)
              * 		|		|--> ch1A
              * 		|				|-->ch1AA
      */
+    EXPECT_EQ((int)nds::state_t::on, (int)rootNode.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::running, (int)rootNode.getHighestGlobalState());
+    EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN0.getLowestGlobalState());
+    EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestGlobalState());
 
-
+    EXPECT_EQ((int)nds::state_t::on, (int)rootNode.getLowestChildState());
+    EXPECT_EQ((int)nds::state_t::running, (int)rootNode.getHighestChildState());
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN0.getLowestChildState());
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN0.getHighestChildState());
 

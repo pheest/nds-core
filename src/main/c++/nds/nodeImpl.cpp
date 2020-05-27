@@ -120,6 +120,25 @@ void NodeImpl::getGlobalState(timespec* pTimestamp, state_t* pState) const
     }
     m_pStateMachine->getGlobalState(pTimestamp, pState);
 }
+void NodeImpl::getLowestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    if(m_pStateMachine.get() == 0)
+    {
+        getLowestChildrenState(pTimestamp,pState, m_nodeLevel);
+        return;
+    }
+    m_pStateMachine->getLowestGlobalState(pTimestamp, pState);
+}
+
+void NodeImpl::getHighestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    if(m_pStateMachine.get() == 0)
+    {
+        getHighestChildrenState(pTimestamp, pState, m_nodeLevel);
+        return;
+    }
+    m_pStateMachine->getHighestGlobalState(pTimestamp, pState);
+}
 
 void NodeImpl::getLowestChildState(timespec* pTimestamp, state_t* pState) const
 {

@@ -403,6 +403,53 @@ void StateMachineImpl::getGlobalState(timespec* pTimestamp, state_t* pState) con
 }
 
 /*
+ * Return the lowest global state
+ *
+ *************************/
+void StateMachineImpl::getLowestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = getLocalState();
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+    timespec childrenTimestamp;
+    state_t childrenState;
+    pParentNode->getLowestChildState(&childrenTimestamp, &childrenState);
+
+    if((int)*pState >= (int)childrenState )
+    {
+        *pTimestamp = childrenTimestamp;
+        *pState = childrenState;
+    }
+
+}
+
+/*
+ * Return the highest global state
+ *
+ *************************/
+void StateMachineImpl::getHighestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = getLocalState();
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+    timespec childrenTimestamp;
+    state_t childrenState;
+    pParentNode->getHighestChildState(&childrenTimestamp, &childrenState);
+
+    if((int)*pState <= (int)childrenState )
+    {
+        *pTimestamp = childrenTimestamp;
+        *pState = childrenState;
+    }
+}
+
+/*
  * Return the Lowest state of all its childrens
  *
  *************************/

@@ -49,6 +49,8 @@ public:
     virtual state_t getLocalState() const;
 
     virtual void getGlobalState(timespec* pTimestamp, state_t* pState) const;
+    virtual void getLowestGlobalState(timespec* pTimestamp, state_t* pState) const;
+    virtual void getHighestGlobalState(timespec* pTimestamp, state_t* pState) const;
     virtual void getLowestChildState(timespec* pTimestamp, state_t* pState) const;
     virtual void getHighestChildState(timespec* pTimestamp, state_t* pState) const;
     void getChildrenState(timespec* pTimestamp, state_t* pState) const;

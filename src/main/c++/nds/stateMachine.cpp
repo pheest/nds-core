@@ -89,6 +89,30 @@ state_t StateMachine::getGlobalState()
 }
 
 /*
+ * Get the lowest global state
+ *
+ **********************/
+state_t StateMachine::getLowestGlobalState()
+{
+    state_t state;
+    timespec unused;
+    std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->getLowestGlobalState(&unused, &state);
+    return state;
+}
+
+/*
+ * Get the highest global state
+ *
+ **********************/
+state_t StateMachine::getHighestGlobalState()
+{
+    state_t state;
+    timespec unused;
+    std::static_pointer_cast<StateMachineImpl>(m_pImplementation)->getHighestGlobalState(&unused, &state);
+    return state;
+}
+
+/*
  * Get the lowest state of all its children
  *
  **********************/

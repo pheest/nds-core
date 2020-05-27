@@ -84,6 +84,12 @@ public:
 
     StateMachine addStateMachine(StateMachine& stateMachine); // Specialized for SWIG
 
+    state_t getGlobalState();
+    state_t getLowestGlobalState();
+    state_t getHighestGlobalState();
+    state_t getLowestChildState();
+    state_t getHighestChildState();
+
 protected:
 #ifndef SWIG
     void addChildInternal(Base& child);
