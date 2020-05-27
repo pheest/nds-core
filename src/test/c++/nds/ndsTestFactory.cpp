@@ -84,10 +84,29 @@ const std::string& TestControlSystemFactoryImpl::getDefaultSeparator(const uint3
     return separator2;
 }
 
-void TestControlSystemFactoryImpl::log(const std::string& logString, const logLevel_t /* logLevel */)
+void TestControlSystemFactoryImpl::log(const std::string& logString, const logLevel_t logLevel )
 {
     std::lock_guard<std::mutex> lock(m_logMutex);
     m_logs.insert(logString);
+    std::string prefixLevel;
+    switch(logLevel)
+    {
+		case logLevel_t::debug:
+			prefixLevel = "ndsDebugStream: ";
+			break;
+		case logLevel_t::info:
+			prefixLevel = "ndsInfoStream: ";
+			break;
+		case logLevel_t::warning:
+			prefixLevel = "ndsWarningStream: ";
+			break;
+		case logLevel_t::error:
+			prefixLevel = "ndsErrorStream: ";
+			break;
+		default:
+			prefixLevel = "ndsUnknownStream: ";
+	}
+	std::cout << prefixLevel << logString;
 }
 
 size_t TestControlSystemFactoryImpl::countStringInLog(const std::string &string)
