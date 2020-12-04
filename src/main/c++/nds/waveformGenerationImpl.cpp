@@ -408,7 +408,7 @@ inline void WaveformGenerationImpl<T>::constructorBody(size_t maxElements, const
 
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerWFG.handlerSTM.switchOnFunction,
 								   handlerWFG.handlerSTM.switchOffFunction,
                                    std::bind(&WaveformGenerationImpl::onStart, this),

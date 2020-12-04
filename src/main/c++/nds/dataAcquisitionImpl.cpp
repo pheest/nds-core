@@ -316,7 +316,7 @@ inline void DataAcquisitionImpl<T>::constructorBody(size_t maxElements, const Da
 	addChild(m_SamplingRate_RBVPV);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerDAQ.handlerSTM.switchOnFunction,
 								   handlerDAQ.handlerSTM.switchOffFunction,
                                    std::bind(&DataAcquisitionImpl::onStart, this),

@@ -206,7 +206,7 @@ inline void RoutingImpl<T>::constructorBody(const RoutingArgs_t& handlerRTN)
 
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerRTN.handlerSTM.switchOnFunction,
 			handlerRTN.handlerSTM.switchOffFunction,
 			std::bind(&RoutingImpl::onStart, this),

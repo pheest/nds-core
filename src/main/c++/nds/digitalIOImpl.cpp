@@ -171,7 +171,7 @@ inline void DigitalIOImpl<T>::constructorBody(size_t maxElements, const DigitalI
 	addChild(m_NumberOfPushedDataBlocks);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerDIO.handlerSTM.switchOnFunction,
 								   handlerDIO.handlerSTM.switchOffFunction,
                                    std::bind(&DigitalIOImpl::onStart, this),
