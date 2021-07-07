@@ -38,7 +38,7 @@ of the distribution package.
   <parent>
     <groupId>org.iter.codac.units</groupId>
     <artifactId>maven-iter-settings</artifactId>
-    <version>6.1.0</version>
+    <version>6.3.0</version>
   </parent>
 
   <!-- unit owner and developers -->
@@ -126,13 +126,13 @@ of the distribution package.
 	              <include type="library" name="nds3-DeviceTiming" />
 	              <include type="library" name="nds3-DeviceTimestamping" />
 	              <include type="library" name="nds3-DevicePVs" />
-	              <include type="library" name="nds3-DeviceVectorFloat"  />
+	              <include type="library" name="nds3-DeviceVectorFloat" />
 	              <include type="library" name="nds3-DeviceVectorI32" />
-	              <include type="library" name="nds3-DeviceVectorI8"  />
-	              <include type="library" name="nds3-DeviceVectorUI8"  />
-	              <include type="library" name="nds3-DeviceVectorDBL"  /> 
-	              <include type="library" name="nds3-DeviceTrigAndClk"  />
-	              <include type="library" name="nds3-DeviceReporterAndParser"  />
+	              <include type="library" name="nds3-DeviceVectorI8" />
+	              <include type="library" name="nds3-DeviceVectorUI8" />
+	              <include type="library" name="nds3-DeviceVectorDBL" /> 
+	              <include type="library" name="nds3-DeviceTrigAndClk" />
+	              <include type="library" name="nds3-DeviceReporterAndParser" />
 	   
               <requires codac="true">nds-core-devel</requires> 
             </package>
