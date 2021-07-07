@@ -157,7 +157,7 @@ namespace nds {
 	    addChild(m_Overflow_PV);
 
 	    // Add state machine
-	    m_StateMachine.reset(new StateMachineImpl(true,
+	    m_StateMachine.reset(new StateMachineImpl(false,
 	    										  handlerTMS.handlerSTM.switchOnFunction,
 												  handlerTMS.handlerSTM.switchOffFunction,
 												  std::bind(&TimestampingImpl::onStart, this),

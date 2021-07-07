@@ -140,7 +140,7 @@ inline void FirmwareImpl::constructorBody(const size_t maxElements, const Firmwa
 	addChild(m_FirmwarePath_RBVPV);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerFIRM.handlerSTM.switchOnFunction,
 								   handlerFIRM.handlerSTM.switchOffFunction,
                                    std::bind(&FirmwareImpl::onStart, this),

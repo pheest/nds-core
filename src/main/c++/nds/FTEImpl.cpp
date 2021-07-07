@@ -256,7 +256,7 @@ inline void FTEImpl<T>::constructorBody(const FTEArgs_t& handlerFTE) {
 	addChild(m_Maximum_PV);
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerFTE.handlerSTM.switchOnFunction,
 			handlerFTE.handlerSTM.switchOffFunction,
 			std::bind(&FTEImpl::onStart, this),

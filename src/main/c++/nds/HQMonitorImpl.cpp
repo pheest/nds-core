@@ -273,7 +273,7 @@ inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t& handlerHQM) {
 	  addChild(m_Decimation_PV);
 
 	  // Add state machine
-	  m_StateMachine.reset(new StateMachineImpl(true,
+	  m_StateMachine.reset(new StateMachineImpl(false,
 						      handlerHQM.handlerSTM.switchOnFunction,
 							  handlerHQM.handlerSTM.switchOffFunction,
 						      std::bind(&HQMonitorImpl::onStart, this),

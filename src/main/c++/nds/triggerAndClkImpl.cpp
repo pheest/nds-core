@@ -316,7 +316,7 @@ inline void TriggerAndClkImpl<T>::constructorBody(const TriggerAndClkArgs_t& han
     addChild(m_EnableDisablePLL_RBVPV);
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerTrig.handlerSTM.switchOnFunction,
 			handlerTrig.handlerSTM.switchOffFunction,
 			std::bind(&TriggerAndClkImpl::onStart, this),

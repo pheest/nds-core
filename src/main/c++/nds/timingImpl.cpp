@@ -114,7 +114,7 @@ namespace nds {
 
 
 	    // Add state machine
-	    m_StateMachine.reset(new StateMachineImpl(true,
+	    m_StateMachine.reset(new StateMachineImpl(false,
 	    								handlerTM.handlerSTM.switchOnFunction,
 										handlerTM.handlerSTM.switchOffFunction,
 										std::bind(&TimingImpl::onStart, this),

@@ -31,7 +31,7 @@ DataSchedulingImpl<T>::DataSchedulingImpl(const std::string& name,  ///< The nod
 
 
   // Add state machine
-  m_StateMachine.reset(new StateMachineImpl(true,
+  m_StateMachine.reset(new StateMachineImpl(false,
                                             switchOnFunction,
                                             switchOffFunction,
                                             std::bind(&DataSchedulingImpl::onStart, this),
