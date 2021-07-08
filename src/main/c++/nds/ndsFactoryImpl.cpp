@@ -70,6 +70,7 @@ NdsFactoryImpl::NdsFactoryImpl()
     devicesFolders.push_back(".");
     devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("LD_LIBRARY_PATH")));
     devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("NDS_DEVICES")));
+    devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("NDS_PLUGIN_PATH")));
 
     fileNames_t deviceModules = listFiles(devicesFolders, "lib", "NdsDevice.so");
     for(fileNames_t::const_iterator scanFiles(deviceModules.begin()), endFiles(deviceModules.end());
@@ -433,24 +434,30 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::listFiles(const fileNames_t& folders
         scanFolders != endFolders;
         ++scanFolders)
     {
-        Directory directory(*scanFolders);
+    	try{
+			Directory directory(*scanFolders);
 
-        for(std::string fileName = directory.getNextFileName(); !fileName.empty(); fileName = directory.getNextFileName())
-        {
-            if(fileName.size() < prefix.size() + suffix.size())
-            {
-                continue;
-            }
-            if(fileName.substr(0, prefix.size()) != prefix ||
-                    fileName.substr(fileName.size() - suffix.size()) != suffix)
-            {
-                continue;
-            }
+			for(std::string fileName = directory.getNextFileName(); !fileName.empty(); fileName = directory.getNextFileName())
+			{
+				if(fileName.size() < prefix.size() + suffix.size())
+				{
+					continue;
+				}
+				if(fileName.substr(0, prefix.size()) != prefix ||
+						fileName.substr(fileName.size() - suffix.size()) != suffix)
+				{
+					continue;
+				}
 
-            std::ostringstream fullName;
-            fullName << *scanFolders << "/" << fileName;
-            files.push_back(fullName.str());
-        }
+				std::ostringstream fullName;
+				fullName << *scanFolders << "/" << fileName;
+				files.push_back(fullName.str());
+			}
+    	}catch(DirectoryNotFoundError& /*e*/){
+    		/**
+    		 * This path is ignored
+    		 */
+    	}
     }
 
     return files;
