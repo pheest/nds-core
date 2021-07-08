@@ -12,8 +12,8 @@ static std::mutex m_lockDevicesMap;
 Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(DeviceName),
 
-	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),
-	PVVariable_vector_UI8(2,0),	PVDelegate_vector_UI8(2,0),PVVariable_vector_I32(2,0),PVDelegate_vector_I32(2,0),PVVariable_vector_DBL(2,0),PVDelegate_vector_DBL(2,0),
+	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_I64(0),PVDelegate_value_I64(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),
+	PVVariable_vector_UI8(2,0),	PVDelegate_vector_UI8(2,0),PVVariable_vector_I32(2,0),PVDelegate_vector_I32(2,0),PVVariable_vector_I64(2,0),PVDelegate_vector_I64(2,0),PVVariable_vector_DBL(2,0),PVDelegate_vector_DBL(2,0),
 	PVVariable_value_string{""},PVDelegate_value_string{""},
 
 	timestamp_device{0,0},readtimeStamp{0,0},
@@ -21,6 +21,10 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	m_int32_DelegateIn("int32_DelegateIn",std::bind(&Device::read_I32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
 	m_int32_DelegateOut("int32_DelegateOut",std::bind(&Device::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 	m_int32_DelegateOut_init("int32_DelegateOut_init",std::bind(&Device::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_int64_DelegateIn("int64_DelegateIn",std::bind(&Device::read_I64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int64_DelegateOut("int64_DelegateOut",std::bind(&Device::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int64_DelegateOut_init("int64_DelegateOut_init",std::bind(&Device::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
 	m_double_DelegateIn("double_DelegateIn",std::bind(&Device::read_DBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
 	m_double_DelegateOut("double_DelegateOut",std::bind(&Device::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
@@ -37,6 +41,10 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	m_vectorI32_DelegateIn("vectorI32_DelegateIn",std::bind(&Device::read_vectorI32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
 	m_vectorI32_DelegateOut("vectorI32_DelegateOut",std::bind(&Device::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 	m_vectorI32_DelegateOut_init("vectorI32_DelegateOut_init",std::bind(&Device::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+
+	m_vectorI64_DelegateIn("vectorI64_DelegateIn",std::bind(&Device::read_vectorI64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI64_DelegateOut("vectorI64_DelegateOut",std::bind(&Device::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI64_DelegateOut_init("vectorI64_DelegateOut_init",std::bind(&Device::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
 	m_vectorDBL_DelegateIn("vectorDBL_DelegateIn",std::bind(&Device::read_vectorDBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
 	m_vectorDBL_DelegateOut("vectorDBL_DelegateOut",std::bind(&Device::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
@@ -120,6 +128,13 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_int32_VariableOut.getValue();
 	    m_int32_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I32);
 
+	    m_int64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int64_t>("int64_VariableIn"));
+		m_int64_VariableIn.setValue((std::int64_t)0);
+		m_int64_VariableIn.setValue(timestamp_device,(std::int64_t)0);
+		m_int64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int64_t>("int64_VariableOut"));
+		m_int64_VariableOut.getValue();
+		m_int64_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I64);
+
 	    m_double_VariableIn = rootNode.addChild(nds::PVVariableIn<double>("double_VariableIn"));
 	    m_double_VariableIn.setValue((double)0);
 	    m_double_VariableIn.setValue(timestamp_device,(double)0);
@@ -151,6 +166,14 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    m_vectorI32_VariableOut.getValue();
 	    m_vectorI32_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I32);
 
+	    m_vectorI64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int64_t> >("vectorI64_VariableIn"));
+		m_vectorI64_VariableIn.setMaxElements(2);
+		m_vectorI64_VariableIn.setValue(std::vector<int64_t>(2,0));
+		m_vectorI64_VariableIn.setValue(timestamp_device,std::vector<int64_t>(2,0));
+		m_vectorI64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int64_t> >("vectorI64_VariableOut"));
+		m_vectorI64_VariableOut.getValue();
+		m_vectorI64_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I64);
+
 	    m_vectorDBL_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<double> >("vectorDBL_VariableIn"));
 	    m_vectorDBL_VariableIn.setMaxElements(2);
 	    m_vectorDBL_VariableIn.setValue(std::vector<double>(2,0));
@@ -178,6 +201,10 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    rootNode.addChild(m_int32_DelegateOut);
 	    rootNode.addChild(m_int32_DelegateOut_init);
 
+	    rootNode.addChild(m_int64_DelegateIn);
+		rootNode.addChild(m_int64_DelegateOut);
+		rootNode.addChild(m_int64_DelegateOut_init);
+
 	    rootNode.addChild(m_double_DelegateIn);
 	    rootNode.addChild(m_double_DelegateOut);
 	    rootNode.addChild(m_double_DelegateOut_init);
@@ -196,6 +223,11 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    rootNode.addChild(m_vectorI32_DelegateIn);
 	    rootNode.addChild(m_vectorI32_DelegateOut);
 	    rootNode.addChild(m_vectorI32_DelegateOut_init);
+
+	    m_vectorI64_DelegateIn.setMaxElements(2);
+		rootNode.addChild(m_vectorI64_DelegateIn);
+		rootNode.addChild(m_vectorI64_DelegateOut);
+		rootNode.addChild(m_vectorI64_DelegateOut_init);
 
 	    m_vectorDBL_DelegateIn.setMaxElements(2);
 	    rootNode.addChild(m_vectorDBL_DelegateIn);
@@ -329,6 +361,10 @@ void Device::read_I32_DelegateIn(timespec* timestamp, std::int32_t* value){
 	*value=PVDelegate_value_I32;
 	*timestamp=timestamp_device;
 }
+void Device::read_I64_DelegateIn(timespec* timestamp, std::int64_t* value){
+	*value=PVDelegate_value_I64;
+	*timestamp=timestamp_device;
+}
 void Device::read_DBL_DelegateIn(timespec* timestamp, double* value){
 	*value=PVDelegate_value_DBL;
 	*timestamp=timestamp_device;
@@ -345,6 +381,10 @@ void Device::read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int
 	*value=PVDelegate_vector_I32;
 	*timestamp=timestamp_device;
 }
+void Device::read_vectorI64_DelegateIn(timespec* timestamp, std::vector<std::int64_t>* value){
+	*value=PVDelegate_vector_I64;
+	*timestamp=timestamp_device;
+}
 void Device::read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value){
 	*value=PVDelegate_vector_DBL;
 	*timestamp=timestamp_device;
@@ -356,6 +396,10 @@ void Device::read_string_DelegateIn(timespec* timestamp, std::string* value){
 
 void Device::write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value){
 	PVDelegate_value_I32=value;
+	timestamp_device=timestamp;
+}
+void Device::write_I64_DelegateOut(const timespec& timestamp, const std::int64_t& value){
+	PVDelegate_value_I64=value;
 	timestamp_device=timestamp;
 }
 void Device::write_DBL_DelegateOut(const timespec& timestamp,const double& value){
@@ -374,6 +418,10 @@ void Device::write_vectorI32_DelegateOut(const timespec& timestamp,const std::ve
 	PVDelegate_vector_I32=value;
 	timestamp_device=timestamp;
 }
+void Device::write_vectorI64_DelegateOut(const timespec& timestamp,const std::vector<std::int64_t>& value){
+	PVDelegate_vector_I64=value;
+	timestamp_device=timestamp;
+}
 void Device::write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value){
 	PVDelegate_vector_DBL=value;
 	timestamp_device=timestamp;
@@ -385,6 +433,10 @@ void Device::write_string_DelegateOut(const timespec& timestamp,const std::strin
 
 void Device::init_I32_DelegateOut(timespec* timestamp,  std::int32_t* value){
 	*value=PVDelegate_value_I32;
+	*timestamp=timestamp_device;
+}
+void Device::init_I64_DelegateOut(timespec* timestamp,  std::int64_t* value){
+	*value=PVDelegate_value_I64;
 	*timestamp=timestamp_device;
 }
 void Device::init_DBL_DelegateOut(timespec* timestamp, double* value){
@@ -401,6 +453,10 @@ void Device::init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::ui
 }
 void Device::init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value){
 	*value=PVDelegate_vector_I32;
+	*timestamp=timestamp_device;
+}
+void Device::init_vectorI64_DelegateOut(timespec* timestamp, std::vector<std::int64_t>* value){
+	*value=PVDelegate_vector_I64;
 	*timestamp=timestamp_device;
 }
 void Device::init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value){

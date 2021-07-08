@@ -52,14 +52,16 @@ namespace nds
  * The following data types are supported:
  * <ul>
  * <li><code><std::int32_t></code></li>
+ * <li><code><std::int64_t></code></li>
  * <li><code><float></code></li>
  * <li><code><double></code></li>
  * <li><code><std::vector<std::int8_t>></code></li>
  * <li><code><std::vector<std::uint8_t>></code></li>
  * <li><code><std::vector<std::int16_t>></code></li>
- * <li><code></code><std::vector<std::int32_t>></li>
- * <li><code></code><std::vector<float>></li>
- * <li><code></code><std::vector<double>></li>
+ * <li><code><std::vector<std::int32_t>></code></li>
+ * <li><code><std::vector<std::int64_t>></code></li>
+ * <li><code><std::vector<float>></code></li>
+ * <li><code><std::vector<double>></code></li>
  * </ul>
  *
  *

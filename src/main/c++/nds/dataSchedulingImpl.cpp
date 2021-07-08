@@ -84,12 +84,14 @@ void DataSchedulingImpl<T>::onStart()
 }
 
 template class DataSchedulingImpl<std::int32_t>;
+template class DataSchedulingImpl<std::int64_t>;
 template class DataSchedulingImpl<float>;
 template class DataSchedulingImpl<double>;
 template class DataSchedulingImpl<std::vector<std::int8_t> >;
 template class DataSchedulingImpl<std::vector<std::uint8_t> >;
 template class DataSchedulingImpl<std::vector<std::int16_t> >;
 template class DataSchedulingImpl<std::vector<std::int32_t> >;
+template class DataSchedulingImpl<std::vector<std::int64_t> >;
 template class DataSchedulingImpl<std::vector<float> >;
 template class DataSchedulingImpl<std::vector<double> >;
 

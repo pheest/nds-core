@@ -48,6 +48,7 @@ public:
      * @param pValue
      */
     virtual void read(timespec* pTimestamp, std::int32_t* pValue) const;
+    virtual void read(timespec* pTimestamp, std::int64_t* pValue) const;
     virtual void read(timespec* pTimestamp, float* pValue) const;
     virtual void read(timespec* pTimestamp, double* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<bool>* pValue) const;
@@ -57,6 +58,7 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int16_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<std::int64_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<float>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
@@ -73,6 +75,7 @@ public:
      * @param value
      */
     virtual void write(const timespec& timestamp, const std::int32_t& value);
+    virtual void write(const timespec& timestamp, const std::int64_t& value);
     virtual void write(const timespec& timestamp, const float& value);
     virtual void write(const timespec& timestamp, const double& value);
     virtual void write(const timespec& timestamp, const std::vector<bool>& value);
@@ -82,6 +85,7 @@ public:
     virtual void write(const timespec& timestamp, const std::vector<std::int8_t>& value);
     virtual void write(const timespec& timestamp, const std::vector<std::int16_t>& value);
     virtual void write(const timespec& timestamp, const std::vector<std::int32_t>& value);
+    virtual void write(const timespec& timestamp, const std::vector<std::int64_t>& value);
     virtual void write(const timespec& timestamp, const std::vector<float>& value);
     virtual void write(const timespec& timestamp, const std::vector<double>& value);
     virtual void write(const timespec& timestamp, const std::string& value);
@@ -210,6 +214,7 @@ public:
     {
         const int type =
                 int(std::is_same<T, std::int32_t>::value) * (int)dataType_t::dataInt32 +
+				int(std::is_same<T, std::int64_t>::value) * (int)dataType_t::dataInt64 +
 				int(std::is_same<T, float>::value) * (int)dataType_t::dataFloat32 +
                 int(std::is_same<T, double>::value) * (int)dataType_t::dataFloat64 +
 				int(std::is_same<T, std::vector<bool> >::value) * (int)dataType_t::dataBoolArray +
@@ -219,6 +224,7 @@ public:
                 int(std::is_same<T, std::vector<std::int8_t> >::value) * (int)dataType_t::dataInt8Array +
                 int(std::is_same<T, std::vector<std::int16_t> >::value) * (int)dataType_t::dataInt16Array +
                 int(std::is_same<T, std::vector<std::int32_t> >::value) * (int)dataType_t::dataInt32Array +
+				int(std::is_same<T, std::vector<std::int64_t> >::value) * (int)dataType_t::dataInt64Array +
 				int(std::is_same<T, std::vector<float> >::value) * (int)dataType_t::dataFloat32Array +
                 int(std::is_same<T, std::vector<double> >::value) * (int)dataType_t::dataFloat64Array +
                 int(std::is_same<T, std::string>::value) * (int)dataType_t::dataString +

@@ -627,14 +627,15 @@ void DataAcquisitionImpl<T>::setState(const nds::state_t& newState)
 
 
 template class DataAcquisitionImpl<std::int32_t>;
+template class DataAcquisitionImpl<std::int64_t>;
 template class DataAcquisitionImpl<float>;
 template class DataAcquisitionImpl<double>;
 template class DataAcquisitionImpl<std::vector<std::int8_t> >;
 template class DataAcquisitionImpl<std::vector<std::uint8_t> >;
 template class DataAcquisitionImpl<std::vector<std::int16_t> >;
 template class DataAcquisitionImpl<std::vector<std::int32_t> >;
+template class DataAcquisitionImpl<std::vector<std::int64_t> >;
 template class DataAcquisitionImpl<std::vector<float> >;
 template class DataAcquisitionImpl<std::vector<double> >;
-
 
 }

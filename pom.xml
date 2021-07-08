@@ -121,6 +121,7 @@ of the distribution package.
 	              <include type="library" name="nds3-DeviceFTE" />
 	              <include type="library" name="nds3-DeviceHQMonitor" />
 	              <include type="library" name="nds3-DeviceI32" />
+	              <include type="library" name="nds3-DeviceI64" />
 	              <include type="library" name="nds3-DeviceRouting" />
 	              <include type="library" name="nds3-DeviceStateMachine" />
 	              <include type="library" name="nds3-DeviceTiming" />
@@ -128,6 +129,7 @@ of the distribution package.
 	              <include type="library" name="nds3-DevicePVs" />
 	              <include type="library" name="nds3-DeviceVectorFloat" />
 	              <include type="library" name="nds3-DeviceVectorI32" />
+	              <include type="library" name="nds3-DeviceVectorI64" />
 	              <include type="library" name="nds3-DeviceVectorI8" />
 	              <include type="library" name="nds3-DeviceVectorUI8" />
 	              <include type="library" name="nds3-DeviceVectorDBL" /> 

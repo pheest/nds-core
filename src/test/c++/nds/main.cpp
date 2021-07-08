@@ -9,8 +9,10 @@
 #include "DeviceDigitalIO.h"
 #include "DeviceFTE.h"
 #include "DeviceI32.h"
+#include "DeviceI64.h"
 #include "DeviceRouting.h"
 #include "DeviceVectorI32.h"
+#include "DeviceVectorI64.h"
 #include "DeviceVectorI8.h"
 #include "DeviceVectorUI8.h"
 #include "DeviceVectorFloat.h"
@@ -48,6 +50,14 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceVectorI32",
                            std::bind(&DeviceVectorI32::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceVectorI32::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceI64",
+						  std::bind(&DeviceI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+						  std::bind(&DeviceI64::deallocateDevice, std::placeholders::_1));
+
+   	nds::Factory::registerDriver("DeviceVectorI64",
+   						   std::bind(&DeviceVectorI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+   						   std::bind(&DeviceVectorI64::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceVectorI8",
                            std::bind(&DeviceVectorI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),

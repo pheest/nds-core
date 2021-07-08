@@ -176,6 +176,6 @@ template class DigitalIO<std::vector<bool>>;
 template class DigitalIO<std::vector<std::int8_t>>;
 template class DigitalIO<std::vector<std::int16_t>>;
 template class DigitalIO<std::vector<std::int32_t>>;
-
+template class DigitalIO<std::vector<std::int64_t>>;
 
 }

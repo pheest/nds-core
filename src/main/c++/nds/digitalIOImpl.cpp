@@ -310,6 +310,6 @@ template class DigitalIOImpl<std::vector<bool>>;
 template class DigitalIOImpl<std::vector<std::int8_t>>;
 template class DigitalIOImpl<std::vector<std::int16_t>>;
 template class DigitalIOImpl<std::vector<std::int32_t>>;
-
+template class DigitalIOImpl<std::vector<std::int64_t>>;
 
 }

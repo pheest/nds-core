@@ -45,6 +45,7 @@ void PVBaseIn::replicateFrom(const std::string &sourceInputPVName)
 }
 
 template void PVBaseIn::read<std::int32_t>(timespec*, std::int32_t*) const;
+template void PVBaseIn::read<std::int64_t>(timespec*, std::int64_t*) const;
 template void PVBaseIn::read<float>(timespec*, float*) const;
 template void PVBaseIn::read<double>(timespec*, double*) const;
 template void PVBaseIn::read<std::vector<bool> >(timespec*, std::vector<bool>*) const;
@@ -54,6 +55,7 @@ template void PVBaseIn::read<std::vector<std::uint32_t> >(timespec*, std::vector
 template void PVBaseIn::read<std::vector<std::int8_t> >(timespec*, std::vector<std::int8_t>*) const;
 template void PVBaseIn::read<std::vector<std::int16_t> >(timespec*, std::vector<std::int16_t>*) const;
 template void PVBaseIn::read<std::vector<std::int32_t> >(timespec*, std::vector<std::int32_t>*) const;
+template void PVBaseIn::read<std::vector<std::int64_t> >(timespec*, std::vector<std::int64_t>*) const;
 template void PVBaseIn::read<std::vector<float> >(timespec*, std::vector<float>*) const;
 template void PVBaseIn::read<std::vector<double> >(timespec*, std::vector<double>*) const;
 template void PVBaseIn::read<std::string >(timespec*, std::string*) const;
@@ -62,6 +64,7 @@ template void PVBaseIn::read<std::vector<timespec> >(timespec*, std::vector<time
 template void PVBaseIn::read<timestamp_t>(timespec*, timestamp_t*) const;
 
 template void PVBaseIn::push<std::int32_t>(const timespec&, const std::int32_t&, const statusPV_t&);
+template void PVBaseIn::push<std::int64_t>(const timespec&, const std::int64_t&, const statusPV_t&);
 template void PVBaseIn::push<float>(const timespec&, const float&, const statusPV_t&);
 template void PVBaseIn::push<double>(const timespec&, const double&, const statusPV_t&);
 template void PVBaseIn::push<std::vector<bool> >(const timespec&, const std::vector<bool>&, const statusPV_t&);
@@ -71,6 +74,7 @@ template void PVBaseIn::push<std::vector<std::uint32_t> >(const timespec&, const
 template void PVBaseIn::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
 template void PVBaseIn::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
 template void PVBaseIn::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
+template void PVBaseIn::push<std::vector<std::int64_t> >(const timespec&, const std::vector<std::int64_t>&, const statusPV_t&);
 template void PVBaseIn::push<std::vector<float> >(const timespec&, const std::vector<float>&, const statusPV_t&);
 template void PVBaseIn::push<std::vector<double> >(const timespec&, const std::vector<double>&, const statusPV_t&);
 template void PVBaseIn::push<std::string >(const timespec&, const std::string&, const statusPV_t&);

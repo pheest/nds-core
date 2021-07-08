@@ -82,6 +82,7 @@ void PortImpl::push(std::shared_ptr<PVBaseImpl> pv, const timespec& timestamp, c
 }
 
 template void PortImpl::push<std::int32_t>(std::shared_ptr<PVBaseImpl>, const timespec&, const std::int32_t&, const statusPV_t&);
+template void PortImpl::push<std::int64_t>(std::shared_ptr<PVBaseImpl>, const timespec&, const std::int64_t&, const statusPV_t&);
 template void PortImpl::push<float>(std::shared_ptr<PVBaseImpl>, const timespec&, const float&, const statusPV_t&);
 template void PortImpl::push<double>(std::shared_ptr<PVBaseImpl>, const timespec&, const double&, const statusPV_t&);
 template void PortImpl::push<std::vector<bool> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<bool>&, const statusPV_t&);
@@ -91,6 +92,7 @@ template void PortImpl::push<std::vector<std::uint32_t> >(std::shared_ptr<PVBase
 template void PortImpl::push<std::vector<std::int8_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
 template void PortImpl::push<std::vector<std::int16_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
 template void PortImpl::push<std::vector<std::int32_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
+template void PortImpl::push<std::vector<std::int64_t> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<std::int64_t>&, const statusPV_t&);
 template void PortImpl::push<std::vector<float> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<float>&, const statusPV_t&);
 template void PortImpl::push<std::vector<double> >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::vector<double>&, const statusPV_t&);
 template void PortImpl::push<std::string >(std::shared_ptr<PVBaseImpl>, const timespec&, const std::string&, const statusPV_t&);

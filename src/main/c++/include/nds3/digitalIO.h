@@ -36,6 +36,7 @@ namespace nds
  * 		- std::vector<std::int8_t>
  * 		- std::vector<std::int16_t>
  * 		- std::vector<std::int32_t>
+ * 		- std::vector<std::int64_t>
  */
 template<typename T>
 struct DigitalIOArgs_t{
@@ -168,6 +169,7 @@ template class DigitalIOArgs_t<std::vector<bool>>;
 template class DigitalIOArgs_t<std::vector<std::int8_t>>;
 template class DigitalIOArgs_t<std::vector<std::int16_t>>;
 template class DigitalIOArgs_t<std::vector<std::int32_t>>;
+template class DigitalIOArgs_t<std::vector<std::int64_t>>;
 
 /**
  * This is a node that supplies PVs that specifies how the IO acquisition
@@ -185,11 +187,13 @@ template class DigitalIOArgs_t<std::vector<std::int32_t>>;
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
+ *            - std::int64_t
  *            - std::double
  *            - std::vector<bool>
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<std::int64_t>
  *
  */
 template <typename T>

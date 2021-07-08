@@ -43,6 +43,7 @@ static void commonPVsTest(const bool testInitializers) {
 	timespec timestamp = {0, 0};
 	const timespec* pTimestamp;
 	const std::int32_t* pInteger;
+	const std::int64_t* pInteger64;
 	const float* pFloat;
 	const double* pDouble;
 	const std::vector<bool>* pBoolArray;
@@ -52,6 +53,7 @@ static void commonPVsTest(const bool testInitializers) {
 	const std::vector<std::int8_t>* pInt8Array;
 	const std::vector<std::int16_t>* pInt16Array;
 	const std::vector<std::int32_t>* pInt32Array;
+	const std::vector<std::int64_t>* pInt64Array;
 	const std::vector<float>* pFloatArray;
 	const std::vector<double>* pDoubleArray;
 	const std::string* pString;
@@ -64,6 +66,7 @@ static void commonPVsTest(const bool testInitializers) {
 	//VALUES OF THE PVS THAT HAVE BEEN PUSHED AT THE INITIALIZATION
 	//--------------------------------------------------------------------------------------
 	std::int32_t intData = 1;
+	std::int64_t int64Data = 1;
 	float floatData = 1.5;
 	double doubleData = 1.1;
 	std::vector<bool> boolArrayData = {true, true, false, true};
@@ -73,6 +76,7 @@ static void commonPVsTest(const bool testInitializers) {
 	std::vector<std::int8_t> int8ArrayData = {0,-1,2};
 	std::vector<std::int16_t> int16ArrayData = {3,-4};
 	std::vector<std::int32_t> int32ArrayData = {-5,6,-7};
+	std::vector<std::int64_t> int64ArrayData = {-8,6,-9};
 	std::vector<float> floatArrayData = {-0.5,0.5,2.5};
 	std::vector<double> doubleArrayData = {-0.1,0.2,1.5};
 	std::string stringData = "text";
@@ -96,6 +100,7 @@ static void commonPVsTest(const bool testInitializers) {
     if (testInitializers) { //Test initial value of output PVs.
 
     	std::int32_t intValue;
+    	std::int64_t int64Value;
     	float floatValue;
     	double doubleValue;
     	std::vector<bool> boolArrayValues;
@@ -105,6 +110,7 @@ static void commonPVsTest(const bool testInitializers) {
     	std::vector<std::int8_t> int8ArrayValues;
     	std::vector<std::int16_t> int16ArrayValues;
     	std::vector<std::int32_t> int32ArrayValues;
+    	std::vector<std::int64_t> int64ArrayValues;
     	std::vector<float> floatArrayValues;
     	std::vector<double> doubleArrayValues;
     	std::string stringValue ;
@@ -116,6 +122,7 @@ static void commonPVsTest(const bool testInitializers) {
     	//VALUES OF THE PVS THAT HAVE BEEN SET AT THE INITIALIZATION
     	//--------------------------------------------------------------------------------------
     	std::int32_t intDataInit = -2147483648;
+    	std::int64_t int64DataInit = -9223372036854775808;
     	double floatDataInit = 4e8;
     	double doubleDataInit = 5e8;
     	std::vector<bool> boolArrayDataInit(2, true); //Vector with 2 data to true
@@ -125,6 +132,7 @@ static void commonPVsTest(const bool testInitializers) {
     	std::vector<std::int8_t> int8ArrayDataInit(5, -128); //Vector with 5 data to -128.
     	std::vector<std::int16_t> int16ArrayDataInit(1, -32768); //Vector with 1 data to -32768.
     	std::vector<std::int32_t> int32ArrayDataInit(1, -2147483648); //Vector with 1 data to -2147483648.
+    	std::vector<std::int64_t> int64ArrayDataInit(1, -9223372036854775808); //Vector with 1 data to -9223372036854775808.
     	std::vector<float> floatArrayDataInit(4, 8e12); //Vector with 4 data to 9e12.
     	std::vector<double> doubleArrayDataInit(4, 9e12); //Vector with 4 data to 9e12.
     	std::string stringDataInit = "string";
@@ -138,6 +146,9 @@ static void commonPVsTest(const bool testInitializers) {
 
     	pInterface->readCSValue("/devicePVs-Integer", &timestamp, &intValue);
 		EXPECT_EQ((std::int32_t) intDataInit, intValue);
+
+		pInterface->readCSValue("/devicePVs-Integer64", &timestamp, &int64Value);
+		EXPECT_EQ((std::int64_t) int64DataInit, int64Value);
 
     	pInterface->readCSValue("/devicePVs-Float", &timestamp, &floatValue);
 		EXPECT_EQ((float) floatDataInit, floatValue);
@@ -165,6 +176,9 @@ static void commonPVsTest(const bool testInitializers) {
 
     	pInterface->readCSValue("/devicePVs-Int32Array", &timestamp, &int32ArrayValues);
 		EXPECT_EQ((bool) true, (int32ArrayDataInit == int32ArrayValues) );
+
+		pInterface->readCSValue("/devicePVs-Int64Array", &timestamp, &int64ArrayValues);
+		EXPECT_EQ((bool) true, (int64ArrayDataInit == int64ArrayValues) );
 
     	pInterface->readCSValue("/devicePVs-FloatArray", &timestamp, &floatArrayValues);
 		EXPECT_EQ((bool) true, (floatArrayDataInit == floatArrayValues) );
@@ -194,6 +208,7 @@ static void commonPVsTest(const bool testInitializers) {
 
 		std::cout << "\t-------------------Testing Initial Values-------------------" << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(intDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(int64DataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(floatDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(doubleDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(boolArrayDataInit) << std::endl;
@@ -203,6 +218,7 @@ static void commonPVsTest(const bool testInitializers) {
 		std::cout << "\t Initial " << TestUtils::getString(int8ArrayDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(int16ArrayDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(int32ArrayDataInit) << std::endl;
+		std::cout << "\t Initial " << TestUtils::getString(int64ArrayDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(floatArrayDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(doubleArrayDataInit) << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(stringDataInit) << std::endl;
@@ -221,6 +237,7 @@ static void commonPVsTest(const bool testInitializers) {
     	    //--------------------------------------------------------------------------------------
 
     		intData = 5;
+    		int64Data = 7;
     		floatData = 3.3;
     		doubleData = 4.3;
     		boolArrayData = {false, true};
@@ -230,6 +247,7 @@ static void commonPVsTest(const bool testInitializers) {
     		int8ArrayData = {-1, -2};
     		int16ArrayData = {-3,4};
     		int32ArrayData = {-5,6,32};
+    		int64ArrayData = {-8,6,3};
     		floatArrayData = {-2.5, 3.4};
     		doubleArrayData = {-1.5, 2.4};
     		stringData = "newText";
@@ -237,6 +255,7 @@ static void commonPVsTest(const bool testInitializers) {
     		timespecArrayData = {{3,4}, {10, 2}};
     		timestampData = {{1000,10}, 1, true};
     		pInterface->writeCSValue("/devicePVs-Integer", timestamp, intData);
+    		pInterface->writeCSValue("/devicePVs-Integer64", timestamp, int64Data);
     		pInterface->writeCSValue("/devicePVs-Float", timestamp, floatData);
     		pInterface->writeCSValue("/devicePVs-Double", timestamp, doubleData);
     		pInterface->writeCSValue("/devicePVs-BoolArray", timestamp, boolArrayData);
@@ -246,6 +265,7 @@ static void commonPVsTest(const bool testInitializers) {
     		pInterface->writeCSValue("/devicePVs-Int8Array", timestamp, int8ArrayData);
     		pInterface->writeCSValue("/devicePVs-Int16Array", timestamp, int16ArrayData);
     		pInterface->writeCSValue("/devicePVs-Int32Array", timestamp, int32ArrayData);
+    		pInterface->writeCSValue("/devicePVs-Int64Array", timestamp, int64ArrayData);
     		pInterface->writeCSValue("/devicePVs-FloatArray", timestamp, floatArrayData);
     		pInterface->writeCSValue("/devicePVs-DoubleArray", timestamp, doubleArrayData);
     		pInterface->writeCSValue("/devicePVs-String", timestamp, stringData);
@@ -260,6 +280,8 @@ static void commonPVsTest(const bool testInitializers) {
 		//--------------------------------------------------------------------------------------
 		pInterface->getPushedInt32("/devicePVs-Integer_RBV", pTimestamp, pInteger);
 		EXPECT_EQ((std::int32_t) intData, *pInteger);
+		pInterface->getPushedInt64("/devicePVs-Integer64_RBV", pTimestamp, pInteger64);
+		EXPECT_EQ((std::int64_t) int64Data, *pInteger64);
 		pInterface->getPushedFloat("/devicePVs-Float_RBV", pTimestamp, pFloat);
 		EXPECT_EQ((float) floatData, *pFloat);
 		pInterface->getPushedDouble("/devicePVs-Double_RBV", pTimestamp, pDouble);
@@ -299,6 +321,11 @@ static void commonPVsTest(const bool testInitializers) {
 		for (std::uint32_t i = 0; i < int32ArrayData.size(); i++) {
 			EXPECT_EQ(int32ArrayData[i], pInt32Array->at(i));
 		}
+		pInterface->getPushedVectorInt64("/devicePVs-Int64Array_RBV", pTimestamp, pInt64Array);
+		EXPECT_EQ(int64ArrayData.size(), pInt64Array->size());
+		for (std::uint32_t i = 0; i < int64ArrayData.size(); i++) {
+			EXPECT_EQ(int64ArrayData[i], pInt64Array->at(i));
+		}
 		pInterface->getPushedVectorFloat("/devicePVs-FloatArray_RBV", pTimestamp, pFloatArray);
 		EXPECT_EQ(floatArrayData.size(), pFloatArray->size());
 		for (std::uint32_t i = 0; i < floatArrayData.size(); i++) {
@@ -329,12 +356,14 @@ static void commonPVsTest(const bool testInitializers) {
 
 		std::cout << "\t--------------------------------------" << std::endl;
 		std::cout << "\t" << TestUtils::getString(intData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(int64Data) << std::endl;
 		std::cout << "\t" << TestUtils::getString(floatData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(doubleData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(boolArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(uInt8ArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(uInt16ArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(uInt32ArrayData) << std::endl;
+		std::cout << "\t" << TestUtils::getString(int64ArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(int8ArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(int16ArrayData) << std::endl;
 		std::cout << "\t" << TestUtils::getString(int32ArrayData) << std::endl;
@@ -483,8 +512,4 @@ static void dataSharingTest(const bool testInitializers) {
     factory.destroyDevice("devicePVs");
 
 }
-
-
-
-
 

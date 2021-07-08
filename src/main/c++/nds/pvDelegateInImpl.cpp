@@ -49,6 +49,7 @@ dataType_t PVDelegateInImpl<T>::getDataType() const
 // Instantiate all the needed data types
 ////////////////////////////////////////
 template class PVDelegateInImpl<std::int32_t>;
+template class PVDelegateInImpl<std::int64_t>;
 template class PVDelegateInImpl<float>;
 template class PVDelegateInImpl<double>;
 template class PVDelegateInImpl<std::vector<bool> >;
@@ -58,6 +59,7 @@ template class PVDelegateInImpl<std::vector<std::uint32_t> >;
 template class PVDelegateInImpl<std::vector<std::int8_t> >;
 template class PVDelegateInImpl<std::vector<std::int16_t> >;
 template class PVDelegateInImpl<std::vector<std::int32_t> >;
+template class PVDelegateInImpl<std::vector<std::int64_t> >;
 template class PVDelegateInImpl<std::vector<float> >;
 template class PVDelegateInImpl<std::vector<double> >;
 template class PVDelegateInImpl<std::string>;

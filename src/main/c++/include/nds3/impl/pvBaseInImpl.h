@@ -41,6 +41,7 @@ public:
     virtual void deinitialize();
 
     virtual void read(timespec* pTimestamp, std::int32_t* pValue) const;
+    virtual void read(timespec* pTimestamp, std::int64_t* pValue) const;
     virtual void read(timespec* pTimestamp, float* pValue) const;
     virtual void read(timespec* pTimestamp, double* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<bool>* pValue) const;
@@ -50,6 +51,7 @@ public:
     virtual void read(timespec* pTimestamp, std::vector<std::int8_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int16_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<std::int32_t>* pValue) const;
+    virtual void read(timespec* pTimestamp, std::vector<std::int64_t>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<float>* pValue) const;
     virtual void read(timespec* pTimestamp, std::vector<double>* pValue) const;
     virtual void read(timespec* pTimestamp, std::string* pValue) const;
