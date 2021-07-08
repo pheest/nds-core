@@ -35,7 +35,7 @@ namespace nds
 /**
  * @brief Available states, ordered by priority (lowest to higher).
  */
-enum class state_t
+enum class state_t : int
 {
     unknown,      ///< The state is Unknown
     off,          ///< The device is switched off
@@ -52,12 +52,12 @@ enum class state_t
 /**
  * @brief Available levels of automatic change in the State Machines that are following the state of the father Node.
  */
-enum class autoEnable_t
+enum class autoEnable_t : int
 {
-	none=state_t::unknown,          ///< The node won't follow its father STM
-    off=state_t::off,          ///< The node will follow its father until OFF state
-    on=state_t::on,          ///< The node will follow its father until ON state
-    running=state_t::running   ///< The node will follow its father until RUNNING state
+	none=static_cast<int>(state_t::unknown),          ///< The node won't follow its father STM
+    off=static_cast<int>(state_t::off),          ///< The node will follow its father until OFF state
+    on=static_cast<int>(state_t::on),          ///< The node will follow its father until ON state
+    running=static_cast<int>(state_t::running)   ///< The node will follow its father until RUNNING state
 
 };
 
