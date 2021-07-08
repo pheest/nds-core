@@ -311,7 +311,7 @@ void terminal::timestamping_thread_body() {
   while(!m_stop_timestamping) {
 
     timestamp.timestamp = m_timing.getTime();
-    timestamp.rising = false;
+    timestamp.edge = false;
     timestamp.id = ++m_Ntimestamps;
     m_timestamping.push(m_timestamping.getTimestamp(), timestamp);
     ::usleep(1000000);

@@ -252,7 +252,7 @@ typedef std::vector<std::string> parameters_t;
 typedef struct {
 	timespec timestamp; //Moment at the timestamp happened
 	std::int32_t id; //Identifier of the timestamp
-	bool rising; //Type of edge that triggers the timestamp (rising=true; falling=false)
+	bool edge; //Type of edge that triggers the timestamp (rising=true; falling=false)
 } timestamp_t;
 
 /**
