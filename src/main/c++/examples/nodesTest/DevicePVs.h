@@ -268,6 +268,11 @@ private:
         /* @brief Reference PV for subscription from PVs with double data. */
         nds::PVVariableOut<double> m_targetSubscriptionDouble_PV;
 
+	/**
+	 * @brief PV for testing unsubscription from a Delegate PV
+	 */
+	nds::PVDelegateOut<std::int32_t> m_unsubscribe_PV;
+	nds::PVVariableIn<std::int32_t> m_unsubscribeValue_RBVPV;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// MEMBER METHODS THAT SUPPORT SPECIFIC OPERATIONS
@@ -379,6 +384,10 @@ private:
 	 */
 	void setTimestamp(const timespec&, const nds::timestamp_t&);
 
+	/**
+	 * @brief Method to be used when an write action is required on the unsubscribe PV
+	 */
+	void setUnsubscribe(const timespec&, const std::int32_t&, const std::string& name);
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIST OF INITIALIZERS METHODS FOR ALL SUPPORTED TYPES
@@ -470,10 +479,15 @@ private:
 	 */
 	void initTimestamp(timespec* timestamp, nds::timestamp_t* value);
 
-        /**
-         * @brief Method to be used at initialization time for the handler of data sharing
-         */
-        void initHandler(timespec* timestamp, std::int32_t* value);
+	/**
+	 * @brief Method to be used at initialization time for the handler of data sharing
+	 */
+	void initHandler(timespec* timestamp, std::int32_t* value);
+	
+	/**
+	 * @brief Reference to factory
+	 */
+	nds::Factory& m_factory;
 
 };
 

@@ -24,6 +24,8 @@ static void commonPVsTest(const bool testInitializers = false);
  */
 static void dataSharingTest(const bool testInitializers = true);
 
+static void unsubscriptionTest();
+
 TEST(testDevicePVs, PVTypes)
 {
   commonPVsTest();
@@ -37,6 +39,47 @@ TEST(testDevicePVs, PVTypesInit)
 TEST(testDevicePVs, DataSharing)
 {
   dataSharingTest(true);
+}
+
+TEST(testDevicePVs, PVUnsubscribe)
+{
+  unsubscriptionTest();
+}
+
+static void unsubscriptionTest(){
+	timespec timestamp = {0, 0};
+	const timespec* pTime;
+	const std::int32_t* pValueUnsubPV;
+	std::int32_t valueSubsInt;
+
+	//Create factory
+	nds::Factory factory("test");
+
+	// Create test device of type DevicePVs and name it devicePVs
+	nds::namedParameters_t parameters;
+	factory.createDevice("DevicePVs", "devicePVs", parameters);
+
+	//Get instance of the Test Control System
+	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("devicePVs");
+
+	factory.subscribe("devicePVs-Integer_RBV", "devicePVs-SubscribedInt");
+	factory.subscribe("devicePVs-Integer_RBV", "devicePVs-delegateUnsubscribe");
+
+	pInterface->writeCSValue("/devicePVs-Integer", timestamp, 2);
+	pInterface->getPushedInt32("/devicePVs-unsubscribeValue_RBVPV", pTime, pValueUnsubPV);
+	EXPECT_EQ(2, *pValueUnsubPV);
+	pInterface->readCSValue("/devicePVs-SubscribedInt", &timestamp, &valueSubsInt);
+	EXPECT_EQ(2, valueSubsInt);
+
+	pInterface->writeCSValue("/devicePVs-Integer", timestamp, 3);
+	EXPECT_ANY_THROW(pInterface->getPushedInt32("/devicePVs-unsubscribeValue_RBVPV", pTime, pValueUnsubPV));
+	pInterface->readCSValue("/devicePVs-SubscribedInt", &timestamp, &valueSubsInt);
+	EXPECT_EQ(3, valueSubsInt);
+
+	factory.unsubscribe("devicePVs-SubscribedInt");
+
+	//Destroy the device
+	factory.destroyDevice("devicePVs");
 }
 
 static void commonPVsTest(const bool testInitializers) {

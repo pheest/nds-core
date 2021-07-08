@@ -13,6 +13,9 @@
 #include <string>
 #include <set>
 #include <mutex>
+#include <atomic>
+#include <queue>
+
 #include "nds3/definitions.h"
 #include "nds3/impl/baseImpl.h"
 #include "nds3/impl/pvBaseImpl.h"
@@ -22,6 +25,30 @@ namespace nds
 
 class PVBase;
 class PVBaseOutImpl;
+
+/**
+ * @brief Custom implementation of a recursive_mutex with a public counter.
+ */
+class recursive_mutex_counter
+{
+private:
+    std::recursive_mutex _mutex;
+    std::atomic<unsigned int> _counter;
+public:
+    /**
+     * @brief Constructor
+     */
+    recursive_mutex_counter() : _mutex(), _counter(0) {};
+    recursive_mutex_counter(recursive_mutex_counter&) = delete;
+    void operator=(recursive_mutex_counter&) = delete;
+    void lock() { _mutex.lock(); ++_counter; }
+    bool try_lock() { bool result = _mutex.try_lock(); _counter += result; return result; }
+    void unlock() { --_counter; _mutex.unlock(); }
+    /**
+     * @brief Retrieves the number of times the mutex has been taken recursively
+     */
+    unsigned get_count() { return _counter; }
+};
 
 /**
  * @brief Base class for all the PVs.
@@ -151,8 +178,28 @@ protected:
      */
     destinationList_t m_replicationDestinationPVs;
 
-    std::mutex m_lockSubscribersList; ///< Lock the access to m_subscriberOutputPVs.
+    /**
+     * @brief List of PVs to unsubscribe
+     */
+    typedef std::queue<PVBaseOutImpl*> unsubscribeList_t;
 
+    /**
+     * @brief List of PVs to unsubscribe
+     */
+    unsubscribeList_t m_unsubscribeOutputPVs;
+
+    /**
+     * @brief List of PVs to stop replication
+     */
+    typedef std::queue<PVBaseInImpl*> stopReplicationList_t;
+
+    /**
+     * @brief List of PVs to stop replication
+     */
+    stopReplicationList_t m_stopReplicationDestinationPVs;
+
+    //std::mutex m_lockSubscribersList; ///< Lock the access to m_subscriberOutputPVs.
+    nds::recursive_mutex_counter m_lockSubscribersList; ///< Lock the access to m_subscriberOutputPVs.
     std::uint32_t m_decimationFactor;  ///< Decimation factor.
     std::uint32_t m_decimationCount;   ///< Keeps track of the received data/vs data pushed to the control system.
 
