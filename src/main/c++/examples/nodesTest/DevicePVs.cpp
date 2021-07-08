@@ -33,7 +33,9 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 						m_timespecArray_PV(nds::PVDelegateOut<std::vector<timespec>>("TimespecArray", std::bind(&DevicePVs::setTimespecArray, this, std::placeholders::_1, std::placeholders::_2))),
 						m_timestamp_PV(nds::PVDelegateOut<nds::timestamp_t>("Timestamp", std::bind(&DevicePVs::setTimestamp, this, std::placeholders::_1, std::placeholders::_2))),
 						m_dataSharingHandler_PV(nds::PVDelegateOut<std::int32_t>("ShareData", std::bind(&DevicePVs::increaseDataSouce, this, std::placeholders::_1, std::placeholders::_2))),
-						m_delegateOutWithName_PV(nds::PVDelegateOut<std::int32_t>("delegateOutWithName",NULL, std::bind(&DevicePVs::delegateOutWithName, this, std::placeholders::_1, std::placeholders::_2,std::placeholders::_3)))
+						m_delegateOutWithName_PV(nds::PVDelegateOut<std::int32_t>("delegateOutWithName",NULL, std::bind(&DevicePVs::delegateOutWithName, this, std::placeholders::_1, std::placeholders::_2,std::placeholders::_3))),
+						m_unsubscribe_PV(nds::PVDelegateOut<std::int32_t>("delegateUnsubscribe", NULL, std::bind(&DevicePVs::setUnsubscribe, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
+						m_factory(factory)
 	{
 
 	//Verify that there is no devices of this type with the same name
@@ -122,6 +124,14 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 	}
 
 	//Add the children PVs
+	rootNode.addChild(m_unsubscribe_PV);
+	m_unsubscribe_PV.setDescription("PV to unsubscribe itself");
+	m_unsubscribe_PV.setScanType(nds::scanType_t::passive);
+
+	m_unsubscribeValue_RBVPV = rootNode.addChild(nds::PVVariableIn<std::int32_t>("unsubscribeValue_RBVPV"));
+	m_unsubscribeValue_RBVPV.setDescription("Check that the PV has been executed (RBV)");
+	m_unsubscribeValue_RBVPV.setScanType(nds::scanType_t::interrupt);
+
 	rootNode.addChild(m_int_PV);
 	m_int_PV.setDescription("Integer to be set");
 	m_int_PV.setScanType(nds::scanType_t::passive);
@@ -572,6 +582,12 @@ void DevicePVs::setTimestamp(const timespec& timestamp, const nds::timestamp_t& 
 	m_timestamp_RBVPV.push(timestamp, data);
 }
 
+void DevicePVs::setUnsubscribe(const timespec& timestamp, const std::int32_t& data, const std::string& name){
+	m_unsubscribeValue_RBVPV.setValue(timestamp, data);
+	m_unsubscribeValue_RBVPV.push(timestamp, data);
+	//Unsubscribe this PV
+	m_factory.unsubscribe(name.substr(1));
+}
 
 void DevicePVs::initInt(timespec* timestamp, std::int32_t* value) {
 	*timestamp = {NDS_EPOCH, 10};
