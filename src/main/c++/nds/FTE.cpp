@@ -24,9 +24,6 @@ FTE<T>::FTE(): Node()
 /**
  * @brief Constructs the FTE node.
  *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
 FTE<T>::FTE(

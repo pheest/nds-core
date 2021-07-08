@@ -33,6 +33,7 @@ public:
      * @brief Construct the node
      *
      * @param name  node's name (e.g. "CHANNEL0" or "CHANNELGROUP1")
+     * @param nodeType
      */
     NodeImpl(const std::string& name, const nodeType_t nodeType);
 

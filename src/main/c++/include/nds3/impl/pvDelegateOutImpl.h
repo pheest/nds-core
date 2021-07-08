@@ -57,8 +57,10 @@ public:
      * @brief Constructor. Specifies the methods used for read/write
      *
      * @param name          PV's name
-     * @param readFunction  read method
      * @param writeFunction write method
+     * @param pvType
+     * @param initValueFunction
+     *
      */
     PVDelegateOutImpl(const std::string& name, write_t writeFunction, initValue_t initValueFunction, const outputPvType_t pvType = outputPvType_t::generic);
 
@@ -69,6 +71,8 @@ public:
      *
      * @param name          the PV's name
      * @param writeFunction write method
+     * @param pvType
+     *
      */
     PVDelegateOutImpl(const std::string& name, write_t writeFunction, const outputPvType_t pvType = outputPvType_t::generic);
 

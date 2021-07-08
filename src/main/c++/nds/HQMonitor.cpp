@@ -22,8 +22,6 @@ HQMonitor::HQMonitor(): Node()
  * @brief Constructs the Health and Quality Monitor node.
  *
  * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
  */
 HQMonitor::HQMonitor(  const std::string& name,
 									stateChange_t switchOnFunction,

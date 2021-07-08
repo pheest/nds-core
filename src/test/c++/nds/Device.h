@@ -25,10 +25,10 @@ public:
 	 * @brief Constructor.
 	 *
 	 * @param factory    the control system factory that requested the creation of the device
-	 * @param device     the name given to the device
+	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	~Device();
 
 	/*

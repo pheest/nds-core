@@ -42,12 +42,12 @@ DeviceError::DeviceError(nds::Factory &factory, const std::string &deviceName,
 	 * control system thread.
 	 */
 	nds::Port rootNode(deviceName);
+	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 
 	rootNode.addChild(m_delegateOutError);
 	rootNode.addChild(m_delegateInError);
 	rootNode.addChild(m_variableOutError);
-	// 	We have declared all the nodes with several types of PVs in our Device: now we register them
-	//  with the control system that called this constructor.
+
 	////////////////////////////////////////////////////////////////////////////////
 	rootNode.initialize(this, factory);
 
@@ -103,8 +103,8 @@ void DeviceError::throwError(std::int32_t value) {
 		throw nds::NdsError("Other error", nds::statusPV_t::error);
 		break;
 	}
-
 }
+
 NDS_DEFINE_DRIVER(DeviceError, DeviceError)
 /**
 * Allocation function

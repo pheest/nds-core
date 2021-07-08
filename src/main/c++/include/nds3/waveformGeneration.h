@@ -307,6 +307,7 @@ struct WaveformGenerationArgs_t {
 	 * @param _PV_SignalRef_Writer Function to write the signal reference for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalRef_Writer.
 	 * @param _PV_SignalType_Writer Function to write the signal type for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalType_Writer.
 	 * @param _PV_Ground_Writer Function to write the ground for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Ground_Writer.
+	 * @param autoEnable Value of the parameter
 	 */
 	WaveformGenerationArgs_t(stateChange_t switchOnFunction,
 							 stateChange_t switchOffFunction,
@@ -419,7 +420,29 @@ public:
 
     /**
      * @brief Constructs the waveform generation node which generates vector of values
-     *
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+	 * @param switchOnFunction Switch-on function
+	 * @param switchOffFunction Switch-off function
+	 * @param startFunction Start function
+	 * @param stopFunction Stop function
+	 * @param recoverFunction Recover function
+	 * @param allowStateChangeFunction Checking state transitions function
+	 * @param PV_Frequency_Writer Function to write the frequency for waveform generation.
+	 * @param PV_RefFrequency_Writer Function to write the reference frequency for waveform generation.
+	 * @param PV_Amp_Writer Function to write the amplitude for waveform generation.
+	 * @param PV_Phase_Writer Function to write the phase for waveform generation.
+	 * @param PV_UpdateRate_Writer Function to write the update rate for waveform generation.
+	 * @param PV_DutyCycle_Writer Function to write the duty cycle for waveform generation.
+	 * @param PV_Gain_Writer Function to write the gain for waveform generation.
+	 * @param PV_Offset_Writer Function to write the offset for waveform generation.
+	 * @param PV_Bandwidth_Writer Function to write the bandwidth for waveform generation.
+	 * @param PV_Resolution_Writer Function to write the resolution for waveform generation.
+	 * @param PV_Impedance_Writer Function to write the impedance for waveform generation.
+	 * @param PV_Coupling_Writer Function to write the coupling for waveform generation.
+	 * @param PV_SignalRef_Writer Function to write the signal reference for waveform generation.
+	 * @param PV_SignalType_Writer Function to write the signal type for waveform generation.
+	 * @param PV_Ground_Writer Function to write the ground for waveform generation.
+	 * @param autoEnable Parameter value
      */
     WaveformGeneration( const std::string& name,              ///< The node's name
 					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
@@ -461,7 +484,7 @@ public:
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
-     * @param
+     * @param timestampDelegate todo
      *
      */
     //TODO: Discuss if necessary
@@ -719,7 +742,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 

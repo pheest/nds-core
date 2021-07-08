@@ -36,11 +36,11 @@ TimeConversionError::TimeConversionError(const std::string &what, statusPV_t sta
 {
 }
 
-NoPortDefinedError::NoPortDefinedError(const std::string &what, statusPV_t status): std::logic_error(what), pvStatus(status)
+NoPortDefinedError::NoPortDefinedError(const std::string &what, statusPV_t status ): std::logic_error(what), pvStatus(status)
 {
 }
 
-FactoryError::FactoryError(const std::string &what, statusPV_t status): NdsError(what, status)
+FactoryError::FactoryError(const std::string &what, statusPV_t status ): NdsError(what, status)
 {
 }
 
@@ -48,7 +48,7 @@ DirectoryNotFoundError::DirectoryNotFoundError(const std::string &what, statusPV
 {
 }
 
-DriverNotFound::DriverNotFound(const std::string &what, statusPV_t status): FactoryError(what, status)
+DriverNotFound::DriverNotFound(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
@@ -56,47 +56,47 @@ DriverAlreadyRegistered::DriverAlreadyRegistered(const std::string &what, status
 {
 }
 
-DriverDoesNotExportRegistrationFunctions::DriverDoesNotExportRegistrationFunctions(const std::string &what, statusPV_t status): FactoryError(what, status)
+DriverDoesNotExportRegistrationFunctions::DriverDoesNotExportRegistrationFunctions(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-ControlSystemNotFound::ControlSystemNotFound(const std::string &what, statusPV_t status): FactoryError(what, status)
+ControlSystemNotFound::ControlSystemNotFound(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-DeviceNotAllocated::DeviceNotAllocated(const std::string &what, statusPV_t status): FactoryError(what, status)
+DeviceNotAllocated::DeviceNotAllocated(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-DeviceAlreadyCreated::DeviceAlreadyCreated(const std::string &what, statusPV_t status): FactoryError(what, status)
+DeviceAlreadyCreated::DeviceAlreadyCreated(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-PVAlreadyDeclared::PVAlreadyDeclared(const std::string& what, statusPV_t status): FactoryError(what, status)
+PVAlreadyDeclared::PVAlreadyDeclared(const std::string& what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-MissingInputPV::MissingInputPV(const std::string& what, statusPV_t status): FactoryError(what, status)
+MissingInputPV::MissingInputPV(const std::string& what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-MissingOutputPV::MissingOutputPV(const std::string& what, statusPV_t status): FactoryError(what, status)
+MissingOutputPV::MissingOutputPV(const std::string& what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-MissingDestinationPV::MissingDestinationPV(const std::string &what, statusPV_t status): FactoryError(what, status)
+MissingDestinationPV::MissingDestinationPV(const std::string &what, statusPV_t status ): FactoryError(what, status)
 {
 }
 
-INIParserError::INIParserError(const std::string& what, statusPV_t status): NdsError(what, status)
+INIParserError::INIParserError(const std::string& what, statusPV_t status ): NdsError(what, status)
 {
 }
 
-INIParserMissingSection::INIParserMissingSection(const std::string& what, statusPV_t status): INIParserError(what, status)
+INIParserMissingSection::INIParserMissingSection(const std::string& what, statusPV_t status ): INIParserError(what, status)
 {
 }
 
-INIParserSyntaxError::INIParserSyntaxError(const std::string &what, statusPV_t status): INIParserError(what, status)
+INIParserSyntaxError::INIParserSyntaxError(const std::string &what, statusPV_t status ): INIParserError(what, status)
 {
 }
 

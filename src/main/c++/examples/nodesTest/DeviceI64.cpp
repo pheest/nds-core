@@ -878,3 +878,4 @@ void DeviceI64::deallocateDevice(void* deviceName)
 {
     delete (DeviceI64*)deviceName;
 }
+

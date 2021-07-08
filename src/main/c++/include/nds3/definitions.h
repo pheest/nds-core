@@ -55,9 +55,9 @@ enum class state_t : int
 enum class autoEnable_t : int
 {
 	none=static_cast<int>(state_t::unknown),          ///< The node won't follow its father STM
-    off=static_cast<int>(state_t::off),          ///< The node will follow its father until OFF state
-    on=static_cast<int>(state_t::on),          ///< The node will follow its father until ON state
-    running=static_cast<int>(state_t::running)   ///< The node will follow its father until RUNNING state
+	off=static_cast<int>(state_t::off),          ///< The node will follow its father until OFF state
+	on=static_cast<int>(state_t::on),          ///< The node will follow its father until ON state
+	running=static_cast<int>(state_t::running)   ///< The node will follow its father until RUNNING state
 
 };
 

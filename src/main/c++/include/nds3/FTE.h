@@ -209,6 +209,7 @@ struct FTEArgs_t {
 	 * @param _PV_Suppress_Writer Function to apply suppress configuration. To be set in @ref FTEArgs_t.PV_Suppress_Writer.
 	 * @param _PV_ChgPeriod_Writer Function to apply the configuration for changing the period. To be set in @ref FTEArgs_t.PV_ChgPeriod_Writer.
 	 * @param _PV_PendingValue_Writer Function to obtain the pending values. To be set in @ref FTEArgs_t.PV_PendingValue_Writer.
+	 * @param autoEnable Value
 	 */
 	FTEArgs_t(stateChange_t switchOnFunction,
             stateChange_t switchOffFunction,
@@ -288,9 +289,21 @@ public:
 
     /**
      * @brief Constructs the FTE node.
-     *
-     */
-	FTE(const std::string& name,
+	 *
+	 * @param name
+	 * @param switchOnFunction
+	 * @param switchOffFunction
+	 * @param startFunction
+	 * @param stopFunction
+	 * @param recoverFunction
+	 * @param allowStateChangeFunction
+	 * @param PV_Set_Writer
+	 * @param PV_Suppress_Writer
+	 * @param PV_ChgPeriod_Writer
+	 * @param PV_PendingValue_Writer
+	 * @param autoEnable
+	 */
+	FTE(const std::string& name,						///< String name
             stateChange_t switchOnFunction,          	///< Delegate function that performs the actions to switch the node on
             stateChange_t switchOffFunction,         	///< Delegate function that performs the actions to switch the node off
             stateChange_t startFunction,             	///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
@@ -301,7 +314,7 @@ public:
 			writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
 			writerInt32_t PV_PendingValue_Writer,	///< Delegate function setter/getter to interact to the Low Level Driver API
-			autoEnable_t autoEnable=autoEnable_t::none);
+			autoEnable_t autoEnable=autoEnable_t::none);	///< Autoenable value
 
 	/**
 	 * @brief Simplified constructor of the FTE node.
@@ -521,7 +534,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 

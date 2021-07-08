@@ -222,6 +222,7 @@ struct DataAcquisitionArgs_t {
 	 * @param _PV_Ground_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Ground_Writer.
 	 * @param _PV_DMAEnable_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_DMAEnable_Writer
 	 * @param _PV_SamplingRate_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SamplingRate_Writer.
+	 * @param autoEnable Value
 	 */
 	DataAcquisitionArgs_t(stateChange_t switchOnFunction,
 						  stateChange_t switchOffFunction,
@@ -315,6 +316,28 @@ public:
      * @brief Constructs the data acquisition node.
      *
      */
+    /**
+     *
+     * @param name
+     * @param maxElements
+     * @param switchOnFunction
+     * @param switchOffFunction
+     * @param startFunction
+     * @param stopFunction
+     * @param recoverFunction
+     * @param allowStateChangeFunction
+     * @param PV_Gain_Writer
+     * @param PV_Offset_Writer
+     * @param PV_Bandwidth_Writer
+     * @param PV_Resolution_Writer
+     * @param PV_Impedance_Writer
+     * @param PV_Coupling_Writer
+     * @param PV_SignalRefType_Writer
+     * @param PV_Ground_Writer
+     * @param PV_DMAEnable_Writer
+     * @param PV_SamplingRate_Writer
+     * @param autoEnable
+     */
     DataAcquisition(const std::string& name,                ///< The node's name
                     size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
                     stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
@@ -333,7 +356,7 @@ public:
 					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SamplingRate_Writer,   ///< Delegate function to interact to the low level driver API
-					autoEnable_t autoEnable=autoEnable_t::none
+					autoEnable_t autoEnable=autoEnable_t::none ///< Parameter value
     );
 
     /**
@@ -600,7 +623,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 };

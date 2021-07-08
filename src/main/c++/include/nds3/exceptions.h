@@ -36,6 +36,7 @@ public:
      * @brief Constructor.
      *
      * @param what Human readable string describing the cause of the exception.
+     * @param status
      */
     NdsError(const std::string& what, statusPV_t status = statusPV_t::error);
     statusPV_t status;
@@ -51,6 +52,7 @@ public:
      * @brief Constructor.
      *
      * @param what Human readable string describing the cause of the exception.
+     * @param status
      */
     StateMachineError(const std::string& what, statusPV_t status = statusPV_t::error);
 };
@@ -69,6 +71,7 @@ public:
      * @brief Constructor.
      *
      * @param what Human readable string describing the cause of the exception.
+     * @param status
      */
     StateMachineRollBack(const std::string& what, statusPV_t status = statusPV_t::error);
 };

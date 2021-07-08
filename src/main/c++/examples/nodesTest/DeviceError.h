@@ -52,20 +52,18 @@ private:
 	nds::PVDelegateOut<std::int32_t> m_delegateOutError;
 	nds::PVDelegateIn<std::int32_t> m_delegateInError;
 	nds::PVVariableOut<std::int32_t> m_variableOutError;
-
-	/**
-	 *
-	 * @param timespec
-	 * @param value NdsError type value
-	 */
+/**
+ *
+ * @param timespec
+ * @param value NdsError type value
+ */
 	void delegateError(const timespec& timespec, const std::int32_t& value);
-	/**
-	 *
-	 * @param timespec
-	 * @param value NdsError type value
-	 */
+/**
+ *
+ * @param timespec
+ * @param value NdsError type value
+ */
 	void readError(timespec* timespec, std::int32_t* value);
-
 
 };
 

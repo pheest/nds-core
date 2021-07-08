@@ -138,6 +138,7 @@ struct DigitalIOArgs_t{
 	 * @param _PV_voltLevelHigh_Writer Function to write the voltage for high level. To be set in @ref DigitalIOArgs_t.PV_voltLevelHigh_Writer.
 	 * @param _PV_voltLevelLow_Writer Function to write the voltage for low level. To be set in @ref DigitalIOArgs_t.PV_voltLevelLow_Writer.
 	 * @param _PV_ChannelDir_Writer Function to write the channels directions. To be set in @ref DigitalIOArgs_t.PV_ChannelDir_Writer.
+	 * @param autoEnable Value
 	 */
 	DigitalIOArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -220,6 +221,20 @@ public:
     /**
      * @brief Constructs the Digital IO node.
      *
+     * @param name
+     * @param maxElements
+     * @param switchOnFunction
+     * @param switchOffFunction
+     * @param startFunction
+     * @param stopFunction
+     * @param recoverFunction
+     * @param allowStateChangeFunction
+     * @param PV_dataOutMask_Writer
+     * @param PV_voltLevelHigh_Writer
+     * @param PV_voltLevelLow_Writer
+     * @param PV_ChannelDir_Writer
+     * @param autoEnable
+     *
      */
     DigitalIO( const std::string& name,                ///< The node's name
                size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
@@ -233,7 +248,7 @@ public:
 			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
 			   writerVectorBool_t PV_ChannelDir_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-    		   autoEnable_t autoEnable=autoEnable_t::none);
+    		   autoEnable_t autoEnable=autoEnable_t::none); ///< Parameter value
 
     /**
      * @brief Simplified constructor of the DigitalIO node.
@@ -352,7 +367,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 

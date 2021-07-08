@@ -23,10 +23,6 @@ Routing<T>::Routing(): Node()
 
 /**
  * @brief Constructs the routing node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
 Routing<T>::Routing(const std::string& name,

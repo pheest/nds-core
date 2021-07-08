@@ -41,6 +41,11 @@ TEST(testLogging, testLotOfPVs)
 
     std::vector<nds::PVBase> pvs;
 
+    std::cout<<"------------------------------------------------------------------------------ "<<std::endl;
+    std::cout<<"Many log messages will appear marked with the type and the string "<<std::endl;
+    std::cout<<"number to which they correspond "<<std::endl;
+    std::cout<<"------------------------------------------------------------------------------ "<<std::endl;
+
     for(size_t allocatePV(0); allocatePV != 1000; ++allocatePV)
     {
         std::ostringstream name;
@@ -116,5 +121,9 @@ TEST(testLogging, testLotOfPVs)
     factory.destroyDevice("");
 
     EXPECT_EQ(size_t(0), pFactory->getRegisteredCommandsNumber());
+    sleep(5);
+    std::cout<<"------------------------------------------------------------------------------ "<<std::endl;
+    std::cout<<"Ignore log messages that have been displayed, they are part of the test"<<std::endl;
+    std::cout<<"------------------------------------------------------------------------------ "<<std::endl;
 
 }

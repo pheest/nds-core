@@ -170,9 +170,6 @@ of the distribution package.
                   <HIDE_UNDOC_MEMBERS>NO</HIDE_UNDOC_MEMBERS>
                   <EXTRACT_PRIVATE>YES</EXTRACT_PRIVATE>
                   <SOURCE_BROWSER>YES</SOURCE_BROWSER>
-                  <SHOW_FILE>YES</SHOW_FILE>
-                  <HAVE_DOT>YES</HAVE_DOT>
-                  <DOT_FONTNAME>FreeSans</DOT_FONTNAME>
                   <DOT_FONTSIZE>10</DOT_FONTSIZE>
                   <CLASS_GRAPH>YES</CLASS_GRAPH>
                   <COLLABORATION_GRAPH>YES</COLLABORATION_GRAPH>

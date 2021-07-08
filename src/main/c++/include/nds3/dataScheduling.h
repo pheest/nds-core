@@ -22,7 +22,7 @@
  *
  * @ingroup Scheduling
  *
- * @defgroup Scheduling
+ * @defgroup Scheduling Scheduling
  *
  * Group to deal with MIMO (Multiple Inputs, Multiple Outputs) nodes whose purpose
  * is gathering data from its inputs and process them specifically in order to
@@ -53,8 +53,8 @@ namespace nds
  * <ul>
  * <li><code><std::int32_t></code></li>
  * <li><code><std::int64_t></code></li>
- * <li><code><float></code></li>
- * <li><code><double></code></li>
+ * <li><code><std::float></code></li>
+ * <li><code><std::double></code></li>
  * <li><code><std::vector<std::int8_t>></code></li>
  * <li><code><std::vector<std::uint8_t>></code></li>
  * <li><code><std::vector<std::int16_t>></code></li>
@@ -91,12 +91,12 @@ protected:
    *    <li>State Machine: to be accessed as <em>name.StateMachine</em>. It allows controlling the node behaviour.</li>
    *    <li>Trigger: to be accessed as <em>name.Trigger</em>. Whenever this PV is set to <code>1</code>, the
    *    current node runs its specific action.</li>
-   *    <li>Inputs: to be accessed as <em>DataIn_M</em>, being <em> M the index of the given input,
+   *    <li>Inputs: to be accessed as <em>DataIn_M</em>, being M the index of the given input,
    *    in the range of <em>[0, numberInputs-1]</em>. These are the data input PVs of the node that
    *    shall be subscribed to the corresponding data source PVs.</li>
-   *    <li>Outputs: to be accessed as <em>DataOut_N</em>, being <em> N the index of the given input,
+   *    <li>Outputs: to be accessed as <em>DataOut_N</em>, being N the index of the given input,
    *    in the range of <em>[0, numberOutputs-1]</em>. These are the data output PVs of the node that
-   *    will provide the processed data whenever the @em Trigger PV is processed.</li>
+   *    will provide the processed data whenever the Trigger PV is processed.</li>
    * </ul>
    */
   DataScheduling(const std::string& name,  ///< The node's name.

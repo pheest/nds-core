@@ -28,11 +28,10 @@ namespace nds {
 class TimingImpl: public NodeImpl {
   public:
     /**
-     * @ingroup
+     *
      * @brief Constructs the Timing node
      *
      * @param name node name
-     * @param maxElements not used in this node
      * @param switchOnFunction  Delegate function, performs the actions to switch the node on
      * @param switchOffFunction Delegate function, performs the actions to switch the node off
      * @param startFunction     Delegate function, performs the actions to start the timestamping
@@ -41,7 +40,7 @@ class TimingImpl: public NodeImpl {
      * @param allowStateChangeFunction  Delegate function that can deny a state change.
      *                                  Usually just returns true
      * @param PV_Time_Reader Delegate function, reads Time PV
-     *
+     * @param autoEnable Parameter value
      */
     TimingImpl( const std::string& name,
         stateChange_t switchOnFunction,
@@ -84,7 +83,7 @@ class TimingImpl: public NodeImpl {
    void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
    /**
-    * @ingroup
+    *
     * @brief Push data to the control system.
     *
     * Usually your device implementation will call this function from the
@@ -201,7 +200,7 @@ class TimingImpl: public NodeImpl {
    /**
     * @brief Called to change the actual state of the State Machine of the Node
     *
-    * @param value New state to set the State Machine of the node
+    * @param newState New state to set the State Machine of the node
     */
    void setState(const nds::state_t& newState);
 

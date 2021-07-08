@@ -46,6 +46,7 @@ public:
      * @brief Constructor.
      *
      * @param name the name of the PV
+     * @param pvType
      */
     PVVariableOutImpl(const std::string& name, const outputPvType_t pvType = outputPvType_t::generic);
 

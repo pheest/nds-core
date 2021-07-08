@@ -42,15 +42,15 @@ namespace nds
  * <ul>
  * <li><code><std::int32_t></code></li>
  * <li><code><std::int64_t></code></li>
- * <li><code><float></code></li>
- * <li><code><double></code></li>
+ * <li><code><std::float></code></li>
+ * <li><code><std::double></code></li>
  * <li><code><std::vector<std::int8_t>></code></li>
  * <li><code><std::vector<std::uint8_t>></code></li>
  * <li><code><std::vector<std::int16_t>></code></li>
- * <li><code></code><std::vector<std::int32_t>></li>
- * <li><code></code><std::vector<std::int64_t>></li>
- * <li><code></code><std::vector<float>></li>
- * <li><code></code><std::vector<double>></li>
+ * <li><code><std::vector<std::int32_t>></code></li>
+ * <li><code><std::vector<std::int64_t>></code></li>
+ * <li><code><std::vector<float>></code></li>
+ * <li><code><std::vector<double>></code></li>
  * </ul>
  *
  */
@@ -71,12 +71,12 @@ public:
    *    <li>State Machine: to be accessed as <em>name.StateMachine</em>. It allows controlling the node behaviour.</li>
    *    <li>Trigger: to be accessed as <em>name.Trigger</em>. Whenever this PV is set to <code>1</code>, the
    *    current node runs its specific action.</li>
-   *    <li>Inputs: to be accessed as <em>DataIn_M</em>, being <em> M the index of the given input,
+   *    <li>Inputs: to be accessed as <em>DataIn_M</em>, being M the index of the given input,
    *    in the range of <em>[0, numberInputs-1]</em>. These are the data input PVs of the node that
    *    shall be subscribed to the corresponding data source PVs.</li>
-   *    <li>Outputs: to be accessed as <em>DataOut_N</em>, being <em> N the index of the given input,
+   *    <li>Outputs: to be accessed as <em>DataOut_N</em>, being  N the index of the given input,
    *    in the range of <em>[0, numberOutputs-1]</em>. These are the data output PVs of the node that
-   *    will provide the processed data whenever the @em Trigger PV is processed.</li>
+   *    will provide the processed data whenever the Trigger PV is processed.</li>
    * </ul>
    *
    * @param name The node's name.
@@ -84,7 +84,7 @@ public:
    * @param numberOutputs Node's number of PV outputs for the node. . They are defined as NDS Input PVs.
    * @param switchOnFunction Delegate function that performs the actions to switch the node on.
    * @param switchOffFunction Delegate function that performs the actions to switch the node off.
-   * @param startFunctionDelegate function that performs the actions to start the data scheduling.
+   * @param startFunction Delegate function that performs the actions to start the data scheduling.
    * @param stopFunction Delegate function that performs the actions to stop the data scheduling.
    * @param recoverFunction Delegate function to execute to recover from an error state.
    * @param allowStateChangeFunction Delegate function that can deny a state change. Usually just returns true.
@@ -191,7 +191,7 @@ protected:
    * This vector is allocated to @ref nInputs at instantiation time and its size
    * is not modified any more.
    *
-   * These input PVs are named as <em>DataIn_M</em>, being <em> M the index of the given input,
+   * These input PVs are named as <em>DataIn_M</em>, being M the index of the given input,
    * in the range of <em>[0, nInputs-1]</em>.
    *
    * Finally, it is expected that each input PV in this vector is subscribed to the corresponding
@@ -206,7 +206,7 @@ protected:
    * This vector is allocated to @ref nOutputs at instantiation time and its size
    * is not modified any more.
    *
-   * These output PVs are named as <em>DataOut_N</em>, being <em> N the index of the given input,
+   * These output PVs are named as <em>DataOut_N</em>, being N the index of the given input,
    * in the range of <em>[0, nOutputs-1]</em>.
    *
    * Finally, this PV is updated whenever the @ref m_Trigger_PV PV has executed its

@@ -163,6 +163,7 @@ struct RoutingArgs_t {
 	 * @param _PV_ClkDstRead_Writer Function to set a %terminal and read its clock destination. To be set in @ref RoutingArgs_t.PV_ClkDstRead_Writer.
 	 * @param _PV_TermSet_Writer Function to set the routing configuration in a %terminal. To be set in @ref RoutingArgs_t.PV_TermSet_Writer.
 	 * @param _PV_TermDstRead_Writer Function to set a %terminal and read its clock %terminal configuration. To be set in @ref RoutingArgs_t.PV_TermDstRead_Writer.
+	 * @param autoEnable Value
 	 */
 	RoutingArgs_t(stateChange_t switchOnFunction,
                     stateChange_t switchOffFunction,
@@ -230,8 +231,20 @@ public:
 
     /**
      * @brief Constructs the routing node.
-     *
-     */
+     * @param name Node's name
+     * @param switchOnFunction Switch-on function to be set in @ref RoutingArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref RoutingArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref RoutingArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref RoutingArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref RoutingArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref RoutingArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_ClkSet_Writer Function to apply the CLK routing configuration. To be set in @ref RoutingArgs_t.PV_ClkSet_Writer.
+	 * @param PV_ClkDstRead_Writer Function to set a %terminal and read its clock destination. To be set in @ref RoutingArgs_t.PV_ClkDstRead_Writer.
+	 * @param PV_TermSet_Writer Function to set the routing configuration in a %terminal. To be set in @ref RoutingArgs_t.PV_TermSet_Writer.
+	 * @param PV_TermDstRead_Writer Function to set a %terminal and read its clock %terminal configuration. To be set in @ref RoutingArgs_t.PV_TermDstRead_Writer.
+	 * @param autoEnable Parameter value
+	 */
+
     Routing(const std::string& name,                		///< The node's name
                     stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
                     stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
@@ -378,7 +391,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 };

@@ -66,6 +66,7 @@ struct FirmwareArgs_t {
 	 * @param recoverFunction Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
 	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
 	 * @param PV_FirmwarePath_Writer Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 * @param autoEnable Value
 	 */
 	FirmwareArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -123,6 +124,16 @@ public:
     /**
      * @brief Constructs the firmware support device node.
      *
+     * @param name
+     * @param maxElements
+     * @param switchOnFunction
+     * @param switchOffFunction
+     * @param startFunction
+     * @param stopFunction
+     * @param recoverFunction
+     * @param allowStateChangeFunction
+     * @param PV_FirmwarePath_Writer
+     * @param autoEnable
      */
     Firmware(const std::string& name,  ///< The node's name
 	     size_t maxElements, ///< Maximum length of the PV strings.
@@ -133,7 +144,7 @@ public:
 	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
 	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
 	writerString_t PV_FirmwarePath_Writer,	 ///< Delegate function that performs the actions to set the firmware path
-	autoEnable_t autoEnable=autoEnable_t::none);
+	autoEnable_t autoEnable=autoEnable_t::none); ///< Parameter
 
     /**
      * @brief Simplified constructor of the firmware node.
@@ -147,10 +158,10 @@ public:
     			const FirmwareArgs_t& handlerFIRM);
 
     /**
-     * @ingroup
+     *
      * @brief Set the function that retrieves the exact start time when starts.
      *
-     * @param
+     * @param timestampDelegate
      *
      */
     //TODO: Discuss if necessary
@@ -164,7 +175,7 @@ public:
     nds::state_t getState();
 
     /**
-     * @ingroup
+     *
      * @brief Push data to the control system.
      *
      * Usually your device implementation will call this function from the
@@ -176,7 +187,7 @@ public:
     void push(const timespec& timestamp, const std::string& data);
 
     /**
-     * @ingroup
+     *
      * @brief Returns the timestamp at start.
      *
      * @return the time when started.
@@ -298,7 +309,7 @@ public:
     /**
      * @brief Called to change the actual state of the State Machine of the Node
      *
-     * @param value New state to set the State Machine of the node
+     * @param newState New state to set the State Machine of the node
      */
     void setState(const nds::state_t& newState);
 };

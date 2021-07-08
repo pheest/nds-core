@@ -122,8 +122,8 @@ int main(int argc, char **argv)
                            std::bind(&DeviceDataMultiplexing::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceError",
-                               std::bind(&DeviceError::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                               std::bind(&DeviceError::deallocateDevice, std::placeholders::_1));
+                           std::bind(&DeviceError::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceError::deallocateDevice, std::placeholders::_1));
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);

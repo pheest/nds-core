@@ -55,6 +55,7 @@ public:
      *
      * @param name          PV's name
      * @param readFunction  read method
+     * @param pvType
      */
     PVDelegateInImpl(const std::string& name, read_t readFunction, const inputPvType_t pvType = inputPvType_t::generic);
 

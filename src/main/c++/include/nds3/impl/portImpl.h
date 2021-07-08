@@ -31,9 +31,10 @@ class PortImpl: public NodeImpl
 public:
     /**
      * @brief Construct an AsynPort.
-     *
-     * @param port's name. Used also as port name in the AsynDriver
-     */
+		*
+		* @param name
+		* @param nodeType
+		*/
     PortImpl(const std::string& name, const nodeType_t nodeType);
 
     virtual ~PortImpl();

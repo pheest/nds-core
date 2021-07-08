@@ -23,6 +23,19 @@ namespace nds
   class FirmwareImpl: public NodeImpl
   {
     public:
+	  /**
+	   *
+	   * @param name
+	   * @param maxElements
+	   * @param switchOnFunction
+	   * @param switchOffFunction
+	   * @param startFunction
+	   * @param stopFunction
+	   * @param recoverFunction
+	   * @param allowStateChangeFunction
+	   * @param PV_FirmwarePath_Writer
+	   * @param autoEnable
+	   */
       FirmwareImpl(const std::string& name,  ///< The node's name
 		   size_t maxElements, ///< Maximum length of the PV strings.
           stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
@@ -32,25 +45,30 @@ namespace nds
           stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
           allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
           writerString_t PV_FirmwarePath_Writer,		  ///< Delegate function that performs the actions to set the firmware path
-		  autoEnable_t autoEnable);
-
+		  autoEnable_t autoEnable);						///< Value
+/**
+ *
+ * @param name
+ * @param maxElements
+ * @param handlerFIRM
+ */
       FirmwareImpl(const std::string& name, ///< The node's name
     		  	   size_t maxElements, ///< Maximum length of the PV strings.
 				   const FirmwareArgs_t& handlerFIRM); ///< Structure with delegate functions that perform the required actions.
 
 
       /**
-       * @ingroup
+       *
        * @brief Set the function that retrieves the exact start time when starts.
        *
-       * @param
+       * @param timestampDelegate
        *
        */
       //TODO: Discuss if necessary
       void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
       /**
-       * @ingroup
+       *
        * @brief Push data to the control system.
        *
        * Usually your device implementation will call this function from the
@@ -62,7 +80,7 @@ namespace nds
       void push(const timespec& timestamp, const std::string& data);
 
       /**
-       * @ingroup
+       *
        * @brief Returns the timestamp at start.
        *
        * @return the time when started.
@@ -196,7 +214,7 @@ namespace nds
       /**
        * @brief Called to change the actual state of the State Machine of the Node
        *
-       * @param value New state to set the State Machine of the node
+       * @param newState New state to set the State Machine of the node
        */
       void setState(const nds::state_t& newState);
 

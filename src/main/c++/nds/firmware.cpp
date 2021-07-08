@@ -21,7 +21,6 @@ Firmware::Firmware(): Node()
 /**
  * @brief Constructs the firmware support node
  *
- * @param name        the node name
  */
 Firmware::Firmware(const std::string& name,
 		   size_t maxElements,

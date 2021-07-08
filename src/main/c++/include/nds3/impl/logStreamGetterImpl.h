@@ -33,7 +33,6 @@ public:
      * It is the responsability of the caller to delete the logger when it is no longer
      *  needed.
      *
-     * @param node     the node that will stream data to the new log stream
      * @param logLevel the log level
      * @return         the newly allocate log stream
      */

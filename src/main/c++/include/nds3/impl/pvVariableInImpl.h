@@ -48,6 +48,8 @@ public:
      * @brief Constructor.
      *
      * @param name the PV name
+     * @param pvType
+     *
      */
     PVVariableInImpl(const std::string& name, const inputPvType_t pvType = inputPvType_t::generic);
 

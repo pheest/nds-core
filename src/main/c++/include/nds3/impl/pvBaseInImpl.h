@@ -60,6 +60,7 @@ public:
      * @brief Constructor.
      *
      * @param name the PV's name
+     * @param pvType
      */
     PVBaseInImpl(const std::string& name, const inputPvType_t pvType);
 
