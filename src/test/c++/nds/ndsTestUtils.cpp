@@ -192,7 +192,7 @@ std::string TestUtils::getString(std::vector<timespec> data){
 
 std::string TestUtils::getString(nds::timestamp_t data){
 	std::ostringstream oss;
-	oss << "Timestamp: Timespec = {" << data.timestamp.tv_sec << " s, " << data.timestamp.tv_nsec << " ns}, ID = " << data.id << ", Edge = " << (data.rising?"Rising":"Falling");
+	oss << "Timestamp: Timespec = {" << data.timestamp.tv_sec << " s, " << data.timestamp.tv_nsec << " ns}, ID = " << data.id << ", Edge = " << (data.edge?"Rising":"Falling");
 	return oss.str();
 }
 

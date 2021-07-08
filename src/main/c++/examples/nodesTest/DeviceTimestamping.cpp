@@ -246,7 +246,7 @@ void DeviceTimestamping::timestamping_thread_body() {
       ::usleep(500000);
 
       // Fourth Timestamp
-      pushed_timestamp.rising = false; /* FALLING */
+      pushed_timestamp.edge = false; /* FALLING */
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
       ::usleep(500000);
@@ -257,7 +257,7 @@ void DeviceTimestamping::timestamping_thread_body() {
       ::usleep(500000);
 
       // Sixth Timestamp
-      pushed_timestamp.rising = true; /* RISING */
+      pushed_timestamp.edge = true; /* RISING */
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
 

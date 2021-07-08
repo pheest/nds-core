@@ -190,7 +190,7 @@ static void commonPVsTest(const bool testInitializers) {
 		EXPECT_EQ(timestampDataInit.timestamp.tv_sec, timestampValue.timestamp.tv_sec);
 		EXPECT_EQ(timestampDataInit.timestamp.tv_nsec, timestampValue.timestamp.tv_nsec);
 		EXPECT_EQ(timestampDataInit.id, timestampValue.id);
-		EXPECT_EQ(timestampDataInit.rising, timestampValue.rising);
+		EXPECT_EQ(timestampDataInit.edge, timestampValue.edge);
 
 		std::cout << "\t-------------------Testing Initial Values-------------------" << std::endl;
 		std::cout << "\t Initial " << TestUtils::getString(intDataInit) << std::endl;
@@ -325,7 +325,7 @@ static void commonPVsTest(const bool testInitializers) {
 		EXPECT_EQ(timestampData.timestamp.tv_sec, pTimestampData->timestamp.tv_sec);
 		EXPECT_EQ(timestampData.timestamp.tv_nsec, pTimestampData->timestamp.tv_nsec);
 		EXPECT_EQ(timestampData.id, pTimestampData->id);
-		EXPECT_EQ(timestampData.rising, pTimestampData->rising);
+		EXPECT_EQ(timestampData.edge, pTimestampData->edge);
 
 		std::cout << "\t--------------------------------------" << std::endl;
 		std::cout << "\t" << TestUtils::getString(intData) << std::endl;

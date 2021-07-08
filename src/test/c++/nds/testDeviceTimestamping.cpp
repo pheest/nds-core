@@ -228,35 +228,35 @@ static void commonPVsTest(bool testInitializers){
 				   ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((bool)true, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)1, pushed_timestamp->id);
 
   pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((bool)true, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)2, pushed_timestamp->id);
 
   pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((bool)true, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)3, pushed_timestamp->id);
 
   pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)false, pushed_timestamp->rising);
+  EXPECT_EQ((bool)false, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)4, pushed_timestamp->id);
 
   pInterface->getPushedTimestamp("/deviceTimestamping-Timestamping.Timestamps",
 				   ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)false, pushed_timestamp->rising);
+  EXPECT_EQ((bool)false, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)5, pushed_timestamp->id);
 
   // Get overflow state.
@@ -268,7 +268,7 @@ static void commonPVsTest(bool testInitializers){
 				 ptimestamp, pushed_timestamp);
   EXPECT_EQ((std::int32_t)0, pushed_timestamp->timestamp.tv_sec);
   EXPECT_EQ((std::int32_t)10, pushed_timestamp->timestamp.tv_nsec);
-  EXPECT_EQ((bool)true, pushed_timestamp->rising);
+  EXPECT_EQ((bool)true, pushed_timestamp->edge);
   EXPECT_EQ((std::int32_t)6, pushed_timestamp->id);
 
   // Get overflow state.
