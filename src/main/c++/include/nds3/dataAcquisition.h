@@ -222,7 +222,7 @@ struct DataAcquisitionArgs_t {
 	 * @param _PV_Ground_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Ground_Writer.
 	 * @param _PV_DMAEnable_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_DMAEnable_Writer
 	 * @param _PV_SamplingRate_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SamplingRate_Writer.
-	 * @param autoEnable Value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	DataAcquisitionArgs_t(stateChange_t switchOnFunction,
 						  stateChange_t switchOffFunction,
@@ -336,7 +336,7 @@ public:
      * @param PV_Ground_Writer
      * @param PV_DMAEnable_Writer
      * @param PV_SamplingRate_Writer
-     * @param autoEnable
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     DataAcquisition(const std::string& name,                ///< The node's name
                     size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values

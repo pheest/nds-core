@@ -163,7 +163,7 @@ struct RoutingArgs_t {
 	 * @param _PV_ClkDstRead_Writer Function to set a %terminal and read its clock destination. To be set in @ref RoutingArgs_t.PV_ClkDstRead_Writer.
 	 * @param _PV_TermSet_Writer Function to set the routing configuration in a %terminal. To be set in @ref RoutingArgs_t.PV_TermSet_Writer.
 	 * @param _PV_TermDstRead_Writer Function to set a %terminal and read its clock %terminal configuration. To be set in @ref RoutingArgs_t.PV_TermDstRead_Writer.
-	 * @param autoEnable Value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	RoutingArgs_t(stateChange_t switchOnFunction,
                     stateChange_t switchOffFunction,

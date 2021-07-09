@@ -56,7 +56,7 @@ struct TimingArgs_t {
 	 * @param recoverFunction Recover function to be set in @ref TimingArgs_t.handlerSTM recoverFunction.
 	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref TimingArgs_t.handlerSTM allowStateChangeFunction.
 	 * @param _PV_Time_Reader Time reader to be set in @ref TimingArgs_t.PV_Time_Reader.
-	 * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	TimingArgs_t(stateChange_t switchOnFunction,
 				 stateChange_t switchOffFunction,
@@ -117,7 +117,7 @@ class NDS3_API Timing: public Node  {
      * @param allowStateChangeFunction  Delegate function that can deny a state change.
      *                                  Usually just returns true
      * @param PV_Time_Reader Delegate function, reads  Time PV
-     * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     Timing( const std::string& name,
         stateChange_t switchOnFunction,

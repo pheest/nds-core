@@ -92,7 +92,7 @@ struct TimestampingArgs_t {
      * @param _PV_Enable_Writer Function to enable/disable the generation of timestamps. To be set in @ref TimestampingArgs_t.PV_Enable_Writer.
      * @param _PV_Edge_Writer Function to write the type of Edge to generate timestamps. To be set in @ref TimestampingArgs_t.PV_Edge_Writer.
      * @param _PV_ClearOverflow_Writer Function to clear the overflow error. To be set in @ref TimestampingArgs_t.PV_ClearOverflow_Writer.
-     * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     TimestampingArgs_t(stateChange_t switchOnFunction,
     				   stateChange_t switchOffFunction,
@@ -161,7 +161,7 @@ class NDS3_API Timestamping: public Node  {
      * @param PV_Edge_Writer   Delegate function, sets the edges at which the
      *                         timestamping must be retrieved: RISING, FALLING, ANY.
      * @param PV_ClearOverflow_Writer Delegate function, performs the actions to clear the overflow.
-     * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     Timestamping(const std::string& name,
                  size_t maxElements,

@@ -244,8 +244,9 @@ struct TriggerAndClkArgs_t{
    * @param _PV_ResetTrigConf_Writer Function to reset the triggering configuration. To be set in @ref TriggerAndClkArgs_t.PV_ResetTrigConf_Writer.
    * @param _PV_PLLSyncSet_Writer Function to apply PLL configuration.
    * @param _PV_EnableDisablePLL_Writer Function to enable or disable PLL. To be set in @ref TriggerAndClkArgs_t.PV_EnableDisablePLL_Writer.
-   * @param autoEnable Value of the parameter
    * @param _routingNode Routing node to be used for triggering purposes. To be set in @ref TriggerAndClkArgs_t.routingNode.
+   * @param autoEnable See @ref autoEnable_t for further details.
+   *
    */
   TriggerAndClkArgs_t(stateChange_t switchOnFunction,
                       stateChange_t switchOffFunction,

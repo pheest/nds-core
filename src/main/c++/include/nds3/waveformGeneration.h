@@ -307,7 +307,7 @@ struct WaveformGenerationArgs_t {
 	 * @param _PV_SignalRef_Writer Function to write the signal reference for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalRef_Writer.
 	 * @param _PV_SignalType_Writer Function to write the signal type for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalType_Writer.
 	 * @param _PV_Ground_Writer Function to write the ground for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Ground_Writer.
-	 * @param autoEnable Value of the parameter
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	WaveformGenerationArgs_t(stateChange_t switchOnFunction,
 							 stateChange_t switchOffFunction,

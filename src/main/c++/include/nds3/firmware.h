@@ -59,14 +59,14 @@ struct FirmwareArgs_t {
 	/**
 	 * @brief Constructor to create an instance of the given structure.
 	 * It must be used to ensure that compulsory fields are always provided in compilation time.
-	 * @param switchOnFunction Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
-	 * @param switchOffFunction Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
-	 * @param startFunction Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
-	 * @param stopFunction Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
-	 * @param recoverFunction Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
-	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
-	 * @param PV_FirmwarePath_Writer Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
-	 * @param autoEnable Value
+	 * @param switchOnFunction 				Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction 			Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction 				Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
+	 * @param stopFunction 					Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction 				Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction 		Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_FirmwarePath_Writer 		Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 * @param autoEnable 					See @ref autoEnable_t for further details.
 	 */
 	FirmwareArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -124,16 +124,16 @@ public:
     /**
      * @brief Constructs the firmware support device node.
      *
-     * @param name
-     * @param maxElements
-     * @param switchOnFunction
-     * @param switchOffFunction
-     * @param startFunction
-     * @param stopFunction
-     * @param recoverFunction
-     * @param allowStateChangeFunction
-     * @param PV_FirmwarePath_Writer
-     * @param autoEnable
+     * @param name 						Name (unique) to identify the instance of the node.
+     * @param maxElements				Maximum number of elements to allocate vectors (if any).
+     * @param switchOnFunction          Switch-on function.
+     * @param switchOffFunction         Switch-off function.
+     * @param startFunction             Start function.
+     * @param stopFunction              Stop function.
+     * @param recoverFunction           Recover function.
+     * @param allowStateChangeFunction  Checking state transitions function.
+     * @param PV_FirmwarePath_Writer	Function to write the path of the firmware file.
+     * @param autoEnable				See @ref autoEnable_t for further details
      */
     Firmware(const std::string& name,
 	     size_t maxElements,

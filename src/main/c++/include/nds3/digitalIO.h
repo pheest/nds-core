@@ -138,7 +138,7 @@ struct DigitalIOArgs_t{
 	 * @param _PV_voltLevelHigh_Writer Function to write the voltage for high level. To be set in @ref DigitalIOArgs_t.PV_voltLevelHigh_Writer.
 	 * @param _PV_voltLevelLow_Writer Function to write the voltage for low level. To be set in @ref DigitalIOArgs_t.PV_voltLevelLow_Writer.
 	 * @param _PV_ChannelDir_Writer Function to write the channels directions. To be set in @ref DigitalIOArgs_t.PV_ChannelDir_Writer.
-	 * @param autoEnable Value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	DigitalIOArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -223,12 +223,12 @@ public:
 	 *
 	 * @param name Name (unique) to identify the instance of the node.
 	 * @param maxElements Maximum size of the acquired array. Set to 1 for scalar values
-	 * @param switchOnFunction Switch-on function to be set in @ref FTEArgs_t.handlerSTM switchOnFunction.
-	 * @param switchOffFunction Switch-off function to be set in @ref FTEArgs_t.handlerSTM switchOffFunction.
-	 * @param startFunction Start function to be set in @ref FTEArgs_t.handlerSTM startFunction.
-	 * @param stopFunction Stop function to be set in @ref FTEArgs_t.handlerSTM stopFunction.
-	 * @param recoverFunction Recover function to be set in @ref FTEArgs_t.handlerSTM recoverFunction.
-	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FTEArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param switchOnFunction Switch-on function.
+	 * @param switchOffFunction Switch-off function.
+	 * @param startFunction Start function.
+	 * @param stopFunction Stop function.
+	 * @param recoverFunction Recover function.
+	 * @param allowStateChangeFunction Checking state transitions function.
 	 * @param PV_dataOutMask_Writer Delegate function setter/getter to interact to the Low Level Driver API
 	 * @param PV_voltLevelHigh_Writer Delegate function setter/getter to interact to the Low Level Driver API
 	 * @param PV_voltLevelLow_Writer Delegate function setter/getter to interact to the Low Level Driver API

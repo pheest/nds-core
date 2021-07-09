@@ -233,7 +233,7 @@ struct HQMonitorArgs_t {
 	 * @param _PV_SelfTestTextResult_Reader Text result reader to be set in @ref HQMonitorArgs_t.PV_SelfTestTextResult_Reader.
 	 * @param _PV_SignalQualityFlag_Reader Signal Quality Flag reader to be set in @ref HQMonitorArgs_t.PV_SignalQualityFlag_Reader.
 	 * @param _PV_SignalQualityFlagLevel_Writer Function to set the Flag of Signal Quality Level. To be set in @ref HQMonitorArgs_t.PV_SignalQualityFlagLevel_Writer.
-	 * @param autoEnable Value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	HQMonitorArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,

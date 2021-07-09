@@ -102,7 +102,7 @@ struct StateMachineArgs_t {
 	 * @param _stopFunction Stop function to be set in @ref StateMachineArgs_t.stopFunction.
 	 * @param _recoverFunction Recover function to be set in @ref StateMachineArgs_t.recoverFunction.
 	 * @param _allowStateChangeFunction Checking state transitions function to be set in @ref StateMachineArgs_t.allowStateChangeFunction.
-	 * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,

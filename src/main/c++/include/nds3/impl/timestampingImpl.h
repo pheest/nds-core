@@ -45,7 +45,7 @@ namespace nds {
      * @param PV_Edge_Writer   Delegate function, sets the edges at which the
      *                         timestamping must be retrieved: RISING, FALLING, ANY.
      * @param PV_ClearOverflow_Writer Delegate function, performs the actions to clear the overflow.
-     * @param autoEnable Parameter value
+	 * @param autoEnable See @ref autoEnable_t for further details
      */
      TimestampingImpl(const std::string& name,
                  size_t maxElements,

@@ -40,7 +40,7 @@ class TimingImpl: public NodeImpl {
      * @param allowStateChangeFunction  Delegate function that can deny a state change.
      *                                  Usually just returns true
      * @param PV_Time_Reader Delegate function, reads Time PV
-     * @param autoEnable Parameter value
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     TimingImpl( const std::string& name,
         stateChange_t switchOnFunction,

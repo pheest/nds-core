@@ -209,7 +209,7 @@ struct FTEArgs_t {
 	 * @param _PV_Suppress_Writer Function to apply suppress configuration. To be set in @ref FTEArgs_t.PV_Suppress_Writer.
 	 * @param _PV_ChgPeriod_Writer Function to apply the configuration for changing the period. To be set in @ref FTEArgs_t.PV_ChgPeriod_Writer.
 	 * @param _PV_PendingValue_Writer Function to obtain the pending values. To be set in @ref FTEArgs_t.PV_PendingValue_Writer.
-	 * @param autoEnable Value
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	FTEArgs_t(stateChange_t switchOnFunction,
             stateChange_t switchOffFunction,
