@@ -2,10 +2,12 @@
 #include <unistd.h>
 #include <functional>
 #include <iostream>
+#include <limits>
 
 #include <nds3/nds.h>
 
 #include "DevicePVs.h"
+
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
 
@@ -640,7 +642,7 @@ void DevicePVs::initInt(timespec* timestamp, std::int32_t* value) {
 
 void DevicePVs::initInt64(timespec* timestamp, std::int64_t* value) {
 	*timestamp = {NDS_EPOCH, 10};
-	*value = -9223372036854775808;
+	*value = std::numeric_limits<std::int64_t>::min();
 }
 
 void DevicePVs::initFloat(timespec* timestamp, float* value) {
@@ -697,7 +699,7 @@ void DevicePVs::initInt32Array(timespec* timestamp,
 void DevicePVs::initInt64Array(timespec* timestamp,
 		std::vector<std::int64_t>* values) {
 	*timestamp = {NDS_EPOCH, 100};
-	*values = std::vector<std::int64_t>(1, -9223372036854775808); //Vector with 1 data to -9223372036854775808.
+	*values = std::vector<std::int64_t>(1, std::numeric_limits<std::int64_t>::min()); //Vector with 1 data to -9223372036854775808.
 }
 
 void DevicePVs::initFloatArray(timespec* timestamp,

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
+#include <limits>
 
 #include "nds3/ndsTestInterface.h"
 #include "nds3/ndsTestFactory.h"
@@ -164,8 +165,8 @@ static void commonPVsTest(const bool testInitializers) {
     	//--------------------------------------------------------------------------------------
     	//VALUES OF THE PVS THAT HAVE BEEN SET AT THE INITIALIZATION
     	//--------------------------------------------------------------------------------------
-    	std::int32_t intDataInit = -2147483648;
-    	std::int64_t int64DataInit = -9223372036854775808;
+    	std::int32_t intDataInit = std::numeric_limits<std::int32_t>::min();
+    	std::int64_t int64DataInit = std::numeric_limits<std::int64_t>::min();
     	double floatDataInit = 4e8;
     	double doubleDataInit = 5e8;
     	std::vector<bool> boolArrayDataInit(2, true); //Vector with 2 data to true
@@ -175,7 +176,7 @@ static void commonPVsTest(const bool testInitializers) {
     	std::vector<std::int8_t> int8ArrayDataInit(5, -128); //Vector with 5 data to -128.
     	std::vector<std::int16_t> int16ArrayDataInit(1, -32768); //Vector with 1 data to -32768.
     	std::vector<std::int32_t> int32ArrayDataInit(1, -2147483648); //Vector with 1 data to -2147483648.
-    	std::vector<std::int64_t> int64ArrayDataInit(1, -9223372036854775808); //Vector with 1 data to -9223372036854775808.
+    	std::vector<std::int64_t> int64ArrayDataInit(1, std::numeric_limits<std::int64_t>::min()); //Vector with 1 data to -9223372036854775808.
     	std::vector<float> floatArrayDataInit(4, 8e12); //Vector with 4 data to 9e12.
     	std::vector<double> doubleArrayDataInit(4, 9e12); //Vector with 4 data to 9e12.
     	std::string stringDataInit = "string";
