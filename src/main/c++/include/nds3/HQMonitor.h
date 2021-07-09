@@ -304,6 +304,7 @@ public:
 
     /**
      * @brief Constructs the node.
+     * @param name Name (unique) to identify the instance of the node.
      * @param switchOnFunction Switch-on function to be set in @ref HQMonitorArgs_t.handlerSTM switchOnFunction.
 	 * @param switchOffFunction Switch-off function to be set in @ref HQMonitorArgs_t.handlerSTM switchOffFunction.
 	 * @param startFunction Start function to be set in @ref HQMonitorArgs_t.handlerSTM startFunction.
@@ -325,30 +326,30 @@ public:
 	 * @param PV_SelfTestTextResult_Reader Text result reader to be set in @ref HQMonitorArgs_t.PV_SelfTestTextResult_Reader.
 	 * @param PV_SignalQualityFlag_Reader Signal Quality Flag reader to be set in @ref HQMonitorArgs_t.PV_SignalQualityFlag_Reader.
 	 * @param PV_SignalQualityFlagLevel_Writer Function to set the Flag of Signal Quality Level. To be set in @ref HQMonitorArgs_t.PV_SignalQualityFlagLevel_Writer.
-	 * @param autoEnable Value
+	 * @param autoEnable See @ref autoEnable_t for further details
      */
-	HQMonitor(	const std::string& name,                             ///< The node's name
-            		stateChange_t switchOnFunction,                      ///< Delegate function that performs the actions to switch the node on
-					stateChange_t switchOffFunction,                     ///< Delegate function that performs the actions to switch the node off
-					stateChange_t startFunction,                         ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-					stateChange_t stopFunction,                          ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-					stateChange_t recoverFunction,                       ///< Delegate function to execute to recover from an error state
-					allowChange_t allowStateChangeFunction,              ///< Delegate function that can deny a state change. Usually just returns truereaderDouble_t PV_DevicePower_Reader,
-					readerDouble_t PV_DevicePower_Reader,				 ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_DeviceTemperature_Reader,                 ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_DeviceVoltage_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerDouble_t PV_DeviceCurrent_Reader,              ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SEUEnable_Writer,                   ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_DAQEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestEnable_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestType_Writer,               ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestVerboseEnable_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestIDEnable_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestTxtEnable_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SelfTestCodeResultEnable_Writer, ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerString_t PV_SelfTestTextResult_Reader,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					readerInt32_t PV_SignalQualityFlag_Reader,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_SignalQualityFlagLevel_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
+	HQMonitor(	const std::string& name,
+            		stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					readerDouble_t PV_DevicePower_Reader,
+					readerDouble_t PV_DeviceTemperature_Reader,
+					readerDouble_t PV_DeviceVoltage_Reader,
+					readerDouble_t PV_DeviceCurrent_Reader,
+					writerInt32_t PV_SEUEnable_Writer,
+					writerInt32_t PV_DAQEnable_Writer,
+					writerInt32_t PV_SelfTestEnable_Writer,
+					writerInt32_t PV_SelfTestType_Writer,
+					writerInt32_t PV_SelfTestVerboseEnable_Writer,
+					writerInt32_t PV_SelfTestIDEnable_Writer,
+					writerInt32_t PV_SelfTestTxtEnable_Writer,
+					writerInt32_t PV_SelfTestCodeResultEnable_Writer,
+					readerString_t PV_SelfTestTextResult_Reader,
+					readerInt32_t PV_SignalQualityFlag_Reader,
+					writerDouble_t PV_SignalQualityFlagLevel_Writer,
 					autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**

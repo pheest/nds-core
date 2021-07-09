@@ -421,6 +421,8 @@ public:
     /**
      * @brief Constructs the waveform generation node which generates vector of values
 	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum size of the generated data array. Set to @c 1 for scalar values.
 	 * @param switchOnFunction Switch-on function
 	 * @param switchOffFunction Switch-off function
 	 * @param startFunction Start function
@@ -442,31 +444,31 @@ public:
 	 * @param PV_SignalRef_Writer Function to write the signal reference for waveform generation.
 	 * @param PV_SignalType_Writer Function to write the signal type for waveform generation.
 	 * @param PV_Ground_Writer Function to write the ground for waveform generation.
-	 * @param autoEnable Parameter value
+	 * @param autoEnable See @ref autoEnable_t for further details.
      */
-    WaveformGeneration( const std::string& name,              ///< The node's name
-					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
-					stateChange_t switchOnFunction,           ///< Delegate function that performs the actions to switch the node on
-					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node off
-					stateChange_t startFunction,              ///< Delegate function that performs the actions to start the waveform generation (usually launches the generation thread)
-					stateChange_t stopFunction,               ///< Delegate function that performs the actions to stop the waveform generation(usually stops the generation thread)
-					stateChange_t recoverFunction,            ///< Delegate function to execute to recover from an error state
-					allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
-					writerDouble_t PV_Frequency_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_RefFrequency_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Amp_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Phase_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_UpdateRate_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_DutyCycle_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Gain_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Offset_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Bandwidth_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Resolution_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Impedance_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Coupling_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalRef_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalType_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+    WaveformGeneration( const std::string& name,
+					size_t maxElements,
+					stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					writerDouble_t PV_Frequency_Writer,
+					writerDouble_t PV_RefFrequency_Writer,
+					writerDouble_t PV_Amp_Writer,
+					writerDouble_t PV_Phase_Writer,
+					writerDouble_t PV_UpdateRate_Writer,
+					writerDouble_t PV_DutyCycle_Writer,
+					writerDouble_t PV_Gain_Writer,
+					writerDouble_t PV_Offset_Writer,
+					writerDouble_t PV_Bandwidth_Writer,
+					writerDouble_t PV_Resolution_Writer,
+					writerInt32_t PV_Impedance_Writer,
+					writerInt32_t PV_Coupling_Writer,
+					writerInt32_t PV_SignalRef_Writer,
+					writerInt32_t PV_SignalType_Writer,
+					writerInt32_t PV_Ground_Writer,
 					autoEnable_t autoEnable=autoEnable_t::none);
 
     /**

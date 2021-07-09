@@ -18,7 +18,7 @@
  * The class does not need to be derived from any special class, but its constructor must
  *  accept few mandatory parameters and should register the root node via Node::initialize().
  */
-class Device
+class DeviceBasic
 {
 public:
 	/**
@@ -28,8 +28,8 @@ public:
 	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	Device(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
-	~Device();
+	DeviceBasic(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
+	~DeviceBasic();
 
 	/*
 	 * Allocation/deallocation
@@ -42,7 +42,7 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static Device* getInstance(const std::string& deviceName);
+	static DeviceBasic* getInstance(const std::string& deviceName);
 
 
 private:

@@ -18,11 +18,6 @@ HQMonitor::HQMonitor(): Node()
 {
 }
 
-/**
- * @brief Constructs the Health and Quality Monitor node.
- *
- * @param name        the node name
- */
 HQMonitor::HQMonitor(  const std::string& name,
 									stateChange_t switchOnFunction,
 									stateChange_t switchOffFunction,

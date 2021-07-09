@@ -1,15 +1,16 @@
 
+#include "DeviceBasic.h"
+
 #include <nds3/nds.h>
 #include <mutex>
 #include <unistd.h>
 #include <functional>
 
-#include "Device.h"
 
-static std::map<std::string, Device*> m_DevicesMap;
+static std::map<std::string, DeviceBasic*> m_DevicesMap;
 static std::mutex m_lockDevicesMap;
 
-Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
+DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, const nds::namedParameters_t &/*parameters*/):
 	m_name(DeviceName),
 
 	PVVariable_value_I32(0),PVDelegate_value_I32(0),PVVariable_value_I64(0),PVDelegate_value_I64(0),PVVariable_value_DBL(0),PVDelegate_value_DBL(0),PVVariable_vector_I8(2,0),PVDelegate_vector_I8(2,0),
@@ -18,47 +19,47 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 
 	timestamp_device{0,0},readtimeStamp{0,0},
 
-	m_int32_DelegateIn("int32_DelegateIn",std::bind(&Device::read_I32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_int32_DelegateOut("int32_DelegateOut",std::bind(&Device::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_int32_DelegateOut_init("int32_DelegateOut_init",std::bind(&Device::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int32_DelegateIn("int32_DelegateIn",std::bind(&DeviceBasic::read_I32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int32_DelegateOut("int32_DelegateOut",std::bind(&DeviceBasic::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int32_DelegateOut_init("int32_DelegateOut_init",std::bind(&DeviceBasic::write_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_I32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_int64_DelegateIn("int64_DelegateIn",std::bind(&Device::read_I64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_int64_DelegateOut("int64_DelegateOut",std::bind(&Device::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_int64_DelegateOut_init("int64_DelegateOut_init",std::bind(&Device::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int64_DelegateIn("int64_DelegateIn",std::bind(&DeviceBasic::read_I64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int64_DelegateOut("int64_DelegateOut",std::bind(&DeviceBasic::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_int64_DelegateOut_init("int64_DelegateOut_init",std::bind(&DeviceBasic::write_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_I64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_double_DelegateIn("double_DelegateIn",std::bind(&Device::read_DBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_double_DelegateOut("double_DelegateOut",std::bind(&Device::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_double_DelegateOut_init("double_DelegateOut_init",std::bind(&Device::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_double_DelegateIn("double_DelegateIn",std::bind(&DeviceBasic::read_DBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_double_DelegateOut("double_DelegateOut",std::bind(&DeviceBasic::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_double_DelegateOut_init("double_DelegateOut_init",std::bind(&DeviceBasic::write_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_DBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_vectorI8_DelegateIn("vectorI8_DelegateIn",std::bind(&Device::read_vectorI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI8_DelegateOut("vectorI8_DelegateOut",std::bind(&Device::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI8_DelegateOut_init("vectorI8_DelegateOut_init",std::bind(&Device::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI8_DelegateIn("vectorI8_DelegateIn",std::bind(&DeviceBasic::read_vectorI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI8_DelegateOut("vectorI8_DelegateOut",std::bind(&DeviceBasic::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI8_DelegateOut_init("vectorI8_DelegateOut_init",std::bind(&DeviceBasic::write_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_vectorI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_vectorUI8_DelegateIn("vectorUI8_DelegateIn",std::bind(&Device::read_vectorUI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorUI8_DelegateOut("vectorUI8_DelegateOut",std::bind(&Device::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorUI8_DelegateOut_init("vectorUI8_DelegateOut_init",std::bind(&Device::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorUI8_DelegateIn("vectorUI8_DelegateIn",std::bind(&DeviceBasic::read_vectorUI8_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorUI8_DelegateOut("vectorUI8_DelegateOut",std::bind(&DeviceBasic::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorUI8_DelegateOut_init("vectorUI8_DelegateOut_init",std::bind(&DeviceBasic::write_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_vectorUI8_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_vectorI32_DelegateIn("vectorI32_DelegateIn",std::bind(&Device::read_vectorI32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI32_DelegateOut("vectorI32_DelegateOut",std::bind(&Device::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI32_DelegateOut_init("vectorI32_DelegateOut_init",std::bind(&Device::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI32_DelegateIn("vectorI32_DelegateIn",std::bind(&DeviceBasic::read_vectorI32_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI32_DelegateOut("vectorI32_DelegateOut",std::bind(&DeviceBasic::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI32_DelegateOut_init("vectorI32_DelegateOut_init",std::bind(&DeviceBasic::write_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_vectorI32_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_vectorI64_DelegateIn("vectorI64_DelegateIn",std::bind(&Device::read_vectorI64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI64_DelegateOut("vectorI64_DelegateOut",std::bind(&Device::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorI64_DelegateOut_init("vectorI64_DelegateOut_init",std::bind(&Device::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI64_DelegateIn("vectorI64_DelegateIn",std::bind(&DeviceBasic::read_vectorI64_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI64_DelegateOut("vectorI64_DelegateOut",std::bind(&DeviceBasic::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorI64_DelegateOut_init("vectorI64_DelegateOut_init",std::bind(&DeviceBasic::write_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_vectorI64_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_vectorDBL_DelegateIn("vectorDBL_DelegateIn",std::bind(&Device::read_vectorDBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorDBL_DelegateOut("vectorDBL_DelegateOut",std::bind(&Device::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_vectorDBL_DelegateOut_init("vectorDBL_DelegateOut_init",std::bind(&Device::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorDBL_DelegateIn("vectorDBL_DelegateIn",std::bind(&DeviceBasic::read_vectorDBL_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorDBL_DelegateOut("vectorDBL_DelegateOut",std::bind(&DeviceBasic::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_vectorDBL_DelegateOut_init("vectorDBL_DelegateOut_init",std::bind(&DeviceBasic::write_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_vectorDBL_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_string_DelegateIn("string_DelegateIn",std::bind(&Device::read_string_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
-	m_string_DelegateOut("string_DelegateOut",std::bind(&Device::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
-	m_string_DelegateOut_init("string_DelegateOut_init",std::bind(&Device::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&Device::init_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_string_DelegateIn("string_DelegateIn",std::bind(&DeviceBasic::read_string_DelegateIn,this, std::placeholders::_1, std::placeholders::_2)),
+	m_string_DelegateOut("string_DelegateOut",std::bind(&DeviceBasic::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
+	m_string_DelegateOut_init("string_DelegateOut_init",std::bind(&DeviceBasic::write_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2),std::bind(&DeviceBasic::init_string_DelegateOut,this, std::placeholders::_1, std::placeholders::_2)),
 
-	m_delegateIn("delegateIn", std::bind(&Device::readDelegate, this, std::placeholders::_1, std::placeholders::_2)),
-	m_delegateOut("delegateOut", std::bind(&Device::writeDelegate, this, std::placeholders::_1, std::placeholders::_2)),
-	m_writeTestVariableIn("writeTestVariableIn", std::bind(&Device::writeTestVariableIn, this, std::placeholders::_1, std::placeholders::_2)),
-	m_pushTestVariableIn("pushTestVariableIn", std::bind(&Device::pushTestVariableIn, this, std::placeholders::_1, std::placeholders::_2)),
-	m_readTestVariableOut("readTestVariableOut", std::bind(&Device::readTestVariableOut, this, std::placeholders::_1, std::placeholders::_2))
+	m_delegateIn("delegateIn", std::bind(&DeviceBasic::readDelegate, this, std::placeholders::_1, std::placeholders::_2)),
+	m_delegateOut("delegateOut", std::bind(&DeviceBasic::writeDelegate, this, std::placeholders::_1, std::placeholders::_2)),
+	m_writeTestVariableIn("writeTestVariableIn", std::bind(&DeviceBasic::writeTestVariableIn, this, std::placeholders::_1, std::placeholders::_2)),
+	m_pushTestVariableIn("pushTestVariableIn", std::bind(&DeviceBasic::pushTestVariableIn, this, std::placeholders::_1, std::placeholders::_2)),
+	m_readTestVariableOut("readTestVariableOut", std::bind(&DeviceBasic::readTestVariableOut, this, std::placeholders::_1, std::placeholders::_2))
 	{
 	//TODO:Study this.
 	{
@@ -86,27 +87,27 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 
 	// Add state machine
 	m_Device_stateMachine = rootNode.addChild(nds::StateMachine(true,
-			std::bind(&Device::switchOn_Device, this),
-			std::bind(&Device::switchOff_Device, this),
-			std::bind(&Device::start_Device, this),
-			std::bind(&Device::stop_Device, this),
-			std::bind(&Device::recover_Device, this),
-			std::bind(&Device::allow__Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
+			std::bind(&DeviceBasic::switchOn_Device, this),
+			std::bind(&DeviceBasic::switchOff_Device, this),
+			std::bind(&DeviceBasic::start_Device, this),
+			std::bind(&DeviceBasic::stop_Device, this),
+			std::bind(&DeviceBasic::recover_Device, this),
+			std::bind(&DeviceBasic::allow__Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
 	    /**
 	     * Add Firmware node
 	     */
 	    m_Firmware = rootNode.addChild(nds::Firmware("Firm",
 	    		256, // Maximum string length.
-				std::bind(&Device::switchOn_Firmware, this),
-				std::bind(&Device::switchOff_Firmware, this),
-				std::bind(&Device::start_Firmware, this),
-				std::bind(&Device::stop_Firmware, this),
-				std::bind(&Device::recover_Firmware, this),
-				std::bind(&Device::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&Device::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+				std::bind(&DeviceBasic::switchOn_Firmware, this),
+				std::bind(&DeviceBasic::switchOff_Firmware, this),
+				std::bind(&DeviceBasic::start_Firmware, this),
+				std::bind(&DeviceBasic::stop_Firmware, this),
+				std::bind(&DeviceBasic::recover_Firmware, this),
+				std::bind(&DeviceBasic::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceBasic::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
 
-	    m_Firmware.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    m_Firmware.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
 	    m_Firmware.setLogLevel(nds::logLevel_t::debug);
 
 	    /**
@@ -265,7 +266,7 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 	    //    std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
 	    //    std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
 
-	    rootNode.setTimestampDelegate(std::bind(&Device::getCurrentTime,this));
+	    rootNode.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
 	    rootNode.setLogLevel(nds::logLevel_t::debug);
 
 	    rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
@@ -274,18 +275,18 @@ Device::Device(nds::Factory &factory, const std::string &DeviceName, const nds::
 }
 
 
-Device::~Device()
+DeviceBasic::~DeviceBasic()
 {
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
     m_DevicesMap.erase(m_name);
 
 }
 
-Device* Device::getInstance(const std::string& DeviceName)
+DeviceBasic* DeviceBasic::getInstance(const std::string& DeviceName)
 {
     std::lock_guard<std::mutex> lock(m_lockDevicesMap);
 
-    std::map<std::string, Device*>::const_iterator findDevice = m_DevicesMap.find(DeviceName);
+    std::map<std::string, DeviceBasic*>::const_iterator findDevice = m_DevicesMap.find(DeviceName);
     if(findDevice == m_DevicesMap.end())
     {
         return 0;
@@ -296,17 +297,17 @@ Device* Device::getInstance(const std::string& DeviceName)
 /*
  * Allocation function
  *********************/
-void* Device::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
+void* DeviceBasic::allocateDevice(nds::Factory& factory, const std::string& DeviceName, const nds::namedParameters_t& parameters)
 {
-    return new Device(factory, DeviceName, parameters);
+    return new DeviceBasic(factory, DeviceName, parameters);
 }
 
 /*
  * Deallocation function
  ***********************/
-void Device::deallocateDevice(void* DeviceName)
+void DeviceBasic::deallocateDevice(void* DeviceName)
 {
-    delete (Device*)DeviceName;
+    delete (DeviceBasic*)DeviceName;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +317,7 @@ void Device::deallocateDevice(void* DeviceName)
 /**
  * Methods to control Device state machine
  */
-void Device::switchOn_Device(){
+void DeviceBasic::switchOn_Device(){
 	// Call HW initialization function here,
 		//HW_CALL_INIT_FUNCTION
 
@@ -336,20 +337,20 @@ void Device::switchOn_Device(){
 		m_Firmware.setFirmwarePath(getCurrentTime(),"Firmware path to be uploaded");
 
 }
-void Device::switchOff_Device(){
+void DeviceBasic::switchOff_Device(){
 
 }
-void Device::start_Device(){
+void DeviceBasic::start_Device(){
 
 }
-void Device::stop_Device(){
+void DeviceBasic::stop_Device(){
 
 }
-void Device::recover_Device(){
+void DeviceBasic::recover_Device(){
 
 }
 
-bool Device::allow__Device_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool DeviceBasic::allow__Device_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
@@ -357,146 +358,146 @@ bool Device::allow__Device_Change(const nds::state_t, const nds::state_t, const 
 /// EXTRA PVDELEGATE IN/OUT FOR TESTING PURPOSES
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Device::read_I32_DelegateIn(timespec* timestamp, std::int32_t* value){
+void DeviceBasic::read_I32_DelegateIn(timespec* timestamp, std::int32_t* value){
 	*value=PVDelegate_value_I32;
 	*timestamp=timestamp_device;
 }
-void Device::read_I64_DelegateIn(timespec* timestamp, std::int64_t* value){
+void DeviceBasic::read_I64_DelegateIn(timespec* timestamp, std::int64_t* value){
 	*value=PVDelegate_value_I64;
 	*timestamp=timestamp_device;
 }
-void Device::read_DBL_DelegateIn(timespec* timestamp, double* value){
+void DeviceBasic::read_DBL_DelegateIn(timespec* timestamp, double* value){
 	*value=PVDelegate_value_DBL;
 	*timestamp=timestamp_device;
 }
-void Device::read_vectorI8_DelegateIn(timespec* timestamp, std::vector<std::int8_t>* value){
+void DeviceBasic::read_vectorI8_DelegateIn(timespec* timestamp, std::vector<std::int8_t>* value){
 	*value=PVDelegate_vector_I8;
 	*timestamp=timestamp_device;
 }
-void Device::read_vectorUI8_DelegateIn(timespec* timestamp, std::vector<std::uint8_t>* value){
+void DeviceBasic::read_vectorUI8_DelegateIn(timespec* timestamp, std::vector<std::uint8_t>* value){
 	*value=PVDelegate_vector_UI8;
 	*timestamp=timestamp_device;
 }
-void Device::read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int32_t>* value){
+void DeviceBasic::read_vectorI32_DelegateIn(timespec* timestamp, std::vector<std::int32_t>* value){
 	*value=PVDelegate_vector_I32;
 	*timestamp=timestamp_device;
 }
-void Device::read_vectorI64_DelegateIn(timespec* timestamp, std::vector<std::int64_t>* value){
+void DeviceBasic::read_vectorI64_DelegateIn(timespec* timestamp, std::vector<std::int64_t>* value){
 	*value=PVDelegate_vector_I64;
 	*timestamp=timestamp_device;
 }
-void Device::read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value){
+void DeviceBasic::read_vectorDBL_DelegateIn(timespec* timestamp, std::vector<double>* value){
 	*value=PVDelegate_vector_DBL;
 	*timestamp=timestamp_device;
 }
-void Device::read_string_DelegateIn(timespec* timestamp, std::string* value){
+void DeviceBasic::read_string_DelegateIn(timespec* timestamp, std::string* value){
 	*value=PVDelegate_value_string;
 	*timestamp=timestamp_device;
 }
 
-void Device::write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value){
+void DeviceBasic::write_I32_DelegateOut(const timespec& timestamp, const std::int32_t& value){
 	PVDelegate_value_I32=value;
 	timestamp_device=timestamp;
 }
-void Device::write_I64_DelegateOut(const timespec& timestamp, const std::int64_t& value){
+void DeviceBasic::write_I64_DelegateOut(const timespec& timestamp, const std::int64_t& value){
 	PVDelegate_value_I64=value;
 	timestamp_device=timestamp;
 }
-void Device::write_DBL_DelegateOut(const timespec& timestamp,const double& value){
+void DeviceBasic::write_DBL_DelegateOut(const timespec& timestamp,const double& value){
 	PVDelegate_value_DBL=value;
 	timestamp_device=timestamp;
 }
-void Device::write_vectorI8_DelegateOut(const timespec& timestamp,const std::vector<std::int8_t>& value){
+void DeviceBasic::write_vectorI8_DelegateOut(const timespec& timestamp,const std::vector<std::int8_t>& value){
 	PVDelegate_vector_I8=value;
 	timestamp_device=timestamp;
 }
-void Device::write_vectorUI8_DelegateOut(const timespec& timestamp,const std::vector<std::uint8_t>& value){
+void DeviceBasic::write_vectorUI8_DelegateOut(const timespec& timestamp,const std::vector<std::uint8_t>& value){
 	PVDelegate_vector_UI8=value;
 	timestamp_device=timestamp;
 }
-void Device::write_vectorI32_DelegateOut(const timespec& timestamp,const std::vector<std::int32_t>& value){
+void DeviceBasic::write_vectorI32_DelegateOut(const timespec& timestamp,const std::vector<std::int32_t>& value){
 	PVDelegate_vector_I32=value;
 	timestamp_device=timestamp;
 }
-void Device::write_vectorI64_DelegateOut(const timespec& timestamp,const std::vector<std::int64_t>& value){
+void DeviceBasic::write_vectorI64_DelegateOut(const timespec& timestamp,const std::vector<std::int64_t>& value){
 	PVDelegate_vector_I64=value;
 	timestamp_device=timestamp;
 }
-void Device::write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value){
+void DeviceBasic::write_vectorDBL_DelegateOut(const timespec& timestamp,const std::vector<double>& value){
 	PVDelegate_vector_DBL=value;
 	timestamp_device=timestamp;
 }
-void Device::write_string_DelegateOut(const timespec& timestamp,const std::string& value){
+void DeviceBasic::write_string_DelegateOut(const timespec& timestamp,const std::string& value){
 	PVDelegate_value_string=value;
 	timestamp_device=timestamp;
 }
 
-void Device::init_I32_DelegateOut(timespec* timestamp,  std::int32_t* value){
+void DeviceBasic::init_I32_DelegateOut(timespec* timestamp,  std::int32_t* value){
 	*value=PVDelegate_value_I32;
 	*timestamp=timestamp_device;
 }
-void Device::init_I64_DelegateOut(timespec* timestamp,  std::int64_t* value){
+void DeviceBasic::init_I64_DelegateOut(timespec* timestamp,  std::int64_t* value){
 	*value=PVDelegate_value_I64;
 	*timestamp=timestamp_device;
 }
-void Device::init_DBL_DelegateOut(timespec* timestamp, double* value){
+void DeviceBasic::init_DBL_DelegateOut(timespec* timestamp, double* value){
 	*value=PVDelegate_value_DBL;
 	*timestamp=timestamp_device;
 }
-void Device::init_vectorI8_DelegateOut(timespec* timestamp, std::vector<std::int8_t>* value){
+void DeviceBasic::init_vectorI8_DelegateOut(timespec* timestamp, std::vector<std::int8_t>* value){
 	*value=PVDelegate_vector_I8;
 	*timestamp=timestamp_device;
 }
-void Device::init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::uint8_t>* value){
+void DeviceBasic::init_vectorUI8_DelegateOut(timespec* timestamp, std::vector<std::uint8_t>* value){
 	*value=PVDelegate_vector_UI8;
 	*timestamp=timestamp_device;
 }
-void Device::init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value){
+void DeviceBasic::init_vectorI32_DelegateOut(timespec* timestamp, std::vector<std::int32_t>* value){
 	*value=PVDelegate_vector_I32;
 	*timestamp=timestamp_device;
 }
-void Device::init_vectorI64_DelegateOut(timespec* timestamp, std::vector<std::int64_t>* value){
+void DeviceBasic::init_vectorI64_DelegateOut(timespec* timestamp, std::vector<std::int64_t>* value){
 	*value=PVDelegate_vector_I64;
 	*timestamp=timestamp_device;
 }
-void Device::init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value){
+void DeviceBasic::init_vectorDBL_DelegateOut(timespec* timestamp, std::vector<double>* value){
 	*value=PVDelegate_vector_DBL;
 	*timestamp=timestamp_device;
 }
-void Device::init_string_DelegateOut(timespec* timestamp, std::string* value){
+void DeviceBasic::init_string_DelegateOut(timespec* timestamp, std::string* value){
 	*value=PVDelegate_value_string;
 	*timestamp=timestamp_device;
 }
 
 
-void Device::readDelegate(timespec* pTimestamp, std::string* pValue)
+void DeviceBasic::readDelegate(timespec* pTimestamp, std::string* pValue)
 {
     *pTimestamp = timestamp_device;
     *pValue = m_writtenByDelegate;
 }
 
-void Device::writeDelegate(const timespec& timestamp, const std::string& value)
+void DeviceBasic::writeDelegate(const timespec& timestamp, const std::string& value)
 {
 	timestamp_device = timestamp;
     m_writtenByDelegate = value;
 }
 
-void Device::writeTestVariableIn(const timespec& timestamp, const std::string& value)
+void DeviceBasic::writeTestVariableIn(const timespec& timestamp, const std::string& value)
 {
     m_testVariableIn.setValue(timestamp, value);
 }
 
-void Device::pushTestVariableIn(const timespec& timestamp, const std::string& value)
+void DeviceBasic::pushTestVariableIn(const timespec& timestamp, const std::string& value)
 {
     m_testVariableIn.push(timestamp, value);
 }
 
-void Device::readTestVariableOut(timespec* pTimestamp, std::string* pValue)
+void DeviceBasic::readTestVariableOut(timespec* pTimestamp, std::string* pValue)
 {
     m_testVariableOut.getValue(pTimestamp, pValue);
 }
 
-timespec Device::getCurrentTime()
+timespec DeviceBasic::getCurrentTime()
 {
     timespec time;
     time.tv_sec = m_setCurrentTime.getValue();
@@ -514,17 +515,17 @@ timespec Device::getCurrentTime()
 */
 
 // Called when the Firmware node has to be switched on.
-void Device::switchOn_Firmware(){
+void DeviceBasic::switchOn_Firmware(){
 
 }
 
 // Called when the Firmware node has to be switched off.
-void Device::switchOff_Firmware(){
+void DeviceBasic::switchOff_Firmware(){
 
 }
 
 // Called when the Firmware node has to start acquiring. We start the Firmware thread.
-void Device::start_Firmware(){
+void DeviceBasic::start_Firmware(){
 
 	m_bStop_Firmware = false; //< We will set to true to stop the Firmware thread
 	/**
@@ -533,30 +534,30 @@ void Device::start_Firmware(){
 	 *   machine guarantees that the start handler is called only while the state
 	 *   is ON.
 	 */
-	m_Firmware_Thread = std::thread(std::bind(&Device::Firmware_thread_body, this));
+	m_Firmware_Thread = std::thread(std::bind(&DeviceBasic::Firmware_thread_body, this));
 }
 
 // Stop the DataAcquisition node thread
-void Device::stop_Firmware(){
+void DeviceBasic::stop_Firmware(){
 	m_bStop_Firmware = true;
 	m_Firmware_Thread.join();
 }
 
 // A failure during a state transition will cause the state machine to switch to the failure state. For now we don't plan for this and every time the
 //  state machine wants to recover we throw StateMachineRollBack to force the state machine to stay on the failure state.
-void Device::recover_Firmware(){
+void DeviceBasic::recover_Firmware(){
     throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
 }
 
 // We always allow the state machine to switch state. Before calling this function the state machine has already verified that the requested state transition is legal.
-bool Device::allow_Firmware_Change(const nds::state_t, const nds::state_t, const nds::state_t){
+bool DeviceBasic::allow_Firmware_Change(const nds::state_t, const nds::state_t, const nds::state_t){
 	return true;
 }
 
 /*
 * Firmware support setters
 */
-void Device::PV_Firmware_Path_Writer(const timespec& timestamp, const std::string& value){
+void DeviceBasic::PV_Firmware_Path_Writer(const timespec& timestamp, const std::string& value){
 	std::string firmwarePath;
 	//firmwarePath has the firmware path to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real firmware path programmed. This value has to be set to the readback attribute.
@@ -565,7 +566,7 @@ void Device::PV_Firmware_Path_Writer(const timespec& timestamp, const std::strin
 	m_Firmware.setFirmwarePath(timestamp,firmwarePath);
 }
 
-void Device::Firmware_thread_body(){
+void DeviceBasic::Firmware_thread_body(){
 
 	// Get FirmwareVersion
 	std::string FirmwareVersion = m_Firmware.getFirmwareVersion();

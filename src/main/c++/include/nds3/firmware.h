@@ -135,16 +135,16 @@ public:
      * @param PV_FirmwarePath_Writer
      * @param autoEnable
      */
-    Firmware(const std::string& name,  ///< The node's name
-	     size_t maxElements, ///< Maximum length of the PV strings.
-	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
-	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
-	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-	stateChange_t stopFunction,      ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
-	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
-	writerString_t PV_FirmwarePath_Writer,	 ///< Delegate function that performs the actions to set the firmware path
-	autoEnable_t autoEnable=autoEnable_t::none); ///< Parameter
+    Firmware(const std::string& name,
+	     size_t maxElements,
+	stateChange_t switchOnFunction,
+	stateChange_t switchOffFunction,
+	stateChange_t startFunction,
+	stateChange_t stopFunction,
+	stateChange_t recoverFunction,
+	allowChange_t allowStateChangeFunction,
+	writerString_t PV_FirmwarePath_Writer,
+	autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the firmware node.

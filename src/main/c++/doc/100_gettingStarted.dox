@@ -89,7 +89,7 @@ The constructor takes three parameters passed by NDS3 when it allocates the devi
 We allocate a Port as root node: a Port node holds a reference to the underlying control system. PVs can be added only to Ports or to
 nodes that have a Port up in the hierarchy.
 
-The variable rootNode contains a shared pointer to the acual implementation of the Port: when we will register rootNode with the
+The variable rootNode contains a shared pointer to the actual implementation of the Port: when we will register rootNode with the
 Control System then NDS will take care of storing the shared pointer internally and therefore the Port will continue to exists
 even after rootNode goes out of scope.
 

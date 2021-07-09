@@ -29,7 +29,7 @@ public:
 	/**
 	 * @brief HQMonitorImpl constructor
 	 *
-	 * @param name The node's name
+	 * @param name Name (unique) to identify the instance of the node.
 	 * @param switchOnFunction Delegate function that performs the actions to switch the node on
 	 * @param switchOffFunction Delegate function that performs the actions to switch the node off
 	 * @param startFunction Delegate function that performs the actions to start the monitoring
@@ -51,7 +51,7 @@ public:
 	 * @param PV_SelfTestTextResult_Reader
 	 * @param PV_SignalQualityFlag_Reader
 	 * @param PV_SignalQualityFlagLevel_Writer
-	 * @param autoEnable
+	 * @param autoEnable See @ref autoEnable_t for further details
 	 */
 	HQMonitorImpl( const std::string& name,
 						stateChange_t switchOnFunction,
@@ -79,11 +79,11 @@ public:
 
 	/**
 	 *
-	 * @param name
-	 * @param handlerHQM
+	 * @param name Name (unique) to identify the instance of the node.
+	 * @param handlerHQM Structure with delegate functions that perform the required actions.
 	 */
-	HQMonitorImpl(const std::string& name,  ///< The node's name
-					const HQMonitorArgs_t& handlerHQM); ///< Structure with delegate functions that perform the required actions.
+	HQMonitorImpl(const std::string& name,
+					const HQMonitorArgs_t& handlerHQM);
 
 
     /**

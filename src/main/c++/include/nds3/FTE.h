@@ -290,31 +290,31 @@ public:
     /**
      * @brief Constructs the FTE node.
 	 *
-	 * @param name
-	 * @param switchOnFunction
-	 * @param switchOffFunction
-	 * @param startFunction
-	 * @param stopFunction
-	 * @param recoverFunction
-	 * @param allowStateChangeFunction
-	 * @param PV_Set_Writer
-	 * @param PV_Suppress_Writer
-	 * @param PV_ChgPeriod_Writer
-	 * @param PV_PendingValue_Writer
-	 * @param autoEnable
+	 * @param name 							Name (unique) to identify the instance of the node.
+	 * @param switchOnFunction              Delegate function that performs the actions to switch the node on
+	 * @param switchOffFunction             Delegate function that performs the actions to switch the node off
+	 * @param startFunction                 Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+	 * @param stopFunction                  Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+	 * @param recoverFunction               Delegate function to execute to recover from an error state
+	 * @param allowStateChangeFunction      Delegate function that can deny a state change. Usually just returns true
+	 * @param PV_Set_Writer                 Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_Suppress_Writer            Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_ChgPeriod_Writer           Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_PendingValue_Writer        Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param autoEnable					See @ref autoEnable_t for further details
 	 */
-	FTE(const std::string& name,						///< String name
-            stateChange_t switchOnFunction,          	///< Delegate function that performs the actions to switch the node on
-            stateChange_t switchOffFunction,         	///< Delegate function that performs the actions to switch the node off
-            stateChange_t startFunction,             	///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-            stateChange_t stopFunction,              	///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-            stateChange_t recoverFunction,           	///< Delegate function to execute to recover from an error state
-            allowChange_t allowStateChangeFunction,  	///< Delegate function that can deny a state change. Usually just returns true
-			writerInt32_t PV_Set_Writer,               	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_Suppress_Writer,          	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_ChgPeriod_Writer,         	///< Delegate function setter/getter to interact to the Low Level Driver API
-			writerInt32_t PV_PendingValue_Writer,	///< Delegate function setter/getter to interact to the Low Level Driver API
-			autoEnable_t autoEnable=autoEnable_t::none);	///< Autoenable value
+	FTE(const std::string& name,
+            stateChange_t switchOnFunction,
+            stateChange_t switchOffFunction,
+            stateChange_t startFunction,
+            stateChange_t stopFunction,
+            stateChange_t recoverFunction,
+            allowChange_t allowStateChangeFunction,
+			writerInt32_t PV_Set_Writer,
+			writerInt32_t PV_Suppress_Writer,
+			writerInt32_t PV_ChgPeriod_Writer,
+			writerInt32_t PV_PendingValue_Writer,
+			autoEnable_t autoEnable=autoEnable_t::none);
 
 	/**
 	 * @brief Simplified constructor of the FTE node.

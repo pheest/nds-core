@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "Device.h"
+#include "DeviceBasic.h"
 #include "DeviceFloat.h"
 #include "DeviceDBL.h"
 #include "DeviceDigitalIO.h"
@@ -33,8 +33,8 @@
 int main(int argc, char **argv)
 {
     nds::Factory::registerDriver("Device",
-                           std::bind(&Device::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&Device::deallocateDevice, std::placeholders::_1));
+                           std::bind(&DeviceBasic::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceBasic::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceFloat",
                            std::bind(&DeviceFloat::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),

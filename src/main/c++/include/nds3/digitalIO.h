@@ -219,36 +219,35 @@ public:
     DigitalIO& operator=(const DigitalIO<T>& right);
 
     /**
-     * @brief Constructs the Digital IO node.
-     *
-     * @param name
-     * @param maxElements
-     * @param switchOnFunction
-     * @param switchOffFunction
-     * @param startFunction
-     * @param stopFunction
-     * @param recoverFunction
-     * @param allowStateChangeFunction
-     * @param PV_dataOutMask_Writer
-     * @param PV_voltLevelHigh_Writer
-     * @param PV_voltLevelLow_Writer
-     * @param PV_ChannelDir_Writer
-     * @param autoEnable
-     *
-     */
-    DigitalIO( const std::string& name,                ///< The node's name
-               size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
-               stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
-               stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
-               stateChange_t startFunction,            ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-               stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-               stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
-	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerVectorBool_t PV_ChannelDir_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-    		   autoEnable_t autoEnable=autoEnable_t::none); ///< Parameter value
+	 * @brief Constructor to create a DigitalIO node
+	 *
+	 * @param name Name (unique) to identify the instance of the node.
+	 * @param maxElements Maximum size of the acquired array. Set to 1 for scalar values
+	 * @param switchOnFunction Switch-on function to be set in @ref FTEArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref FTEArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref FTEArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref FTEArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref FTEArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FTEArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_dataOutMask_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_voltLevelHigh_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_voltLevelLow_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_ChannelDir_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param autoEnable See @ref autoEnable_t for further details.
+	 */
+    DigitalIO( const std::string& name,
+               size_t maxElements,
+               stateChange_t switchOnFunction,
+               stateChange_t switchOffFunction,
+               stateChange_t startFunction,
+               stateChange_t stopFunction,
+               stateChange_t recoverFunction,
+	           allowChange_t allowStateChangeFunction,
+			   writerVectorBool_t PV_dataOutMask_Writer,
+			   writerDouble_t PV_voltLevelHigh_Writer,
+			   writerDouble_t PV_voltLevelLow_Writer,
+			   writerVectorBool_t PV_ChannelDir_Writer,
+    		   autoEnable_t autoEnable = autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the DigitalIO node.

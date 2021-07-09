@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "Device.h"
+#include "DeviceBasic.h"
 #include "nds3/ndsTestInterface.h"
 #include "nds3/ndsTestFactory.h"
 
