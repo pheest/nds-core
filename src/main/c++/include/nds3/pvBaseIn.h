@@ -61,7 +61,7 @@ public:
      *                     proper value
      */
     template<typename T>
-    void read(timespec* pTimestamp, T* pValue) const;
+    void NDS3_API read(timespec* pTimestamp, T* pValue) const;
 
     /**
      * @ingroup datareadwrite
@@ -86,7 +86,7 @@ public:
      * @param status       the status to be shown in the control system (if it is supported)
      */
     template<typename T>
-    void push(const timespec& timestamp, const T& value, const statusPV_t& status = statusPV_t::success);
+    void NDS3_API push(const timespec& timestamp, const T& value, const statusPV_t& status = statusPV_t::success);
 
     /**
      * @ingroup datareadwrite

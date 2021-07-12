@@ -391,19 +391,19 @@ typedef std::function<void (void)> dbParser_t;
 #define NDS_DEFINE_DRIVER(driverName, className)\
 extern "C" \
 { \
-void* allocateDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters) \
+NDS3_API void* allocateDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters) \
 { \
     return new className(factory, device, parameters); \
 } \
-void deallocateDevice(void* device) \
+NDS3_API void deallocateDevice(void* device) \
 { \
     delete (className*)device; \
 } \
-const char* getDeviceName() \
+NDS3_API const char* getDeviceName() \
 { \
     return #driverName; \
 } \
-/*nds::RegisterDevice<className> registerDevice##driverName(#driverName); */\
+NDS3_API nds::RegisterDevice<className> registerDevice##driverName(#driverName); \
 } // extern "C"
 
 // Generic helper definitions for shared library support

@@ -357,17 +357,17 @@ struct WaveformGenerationArgs_t {
 		   m_DataAWG_Init(T()), //Default value of the underlying data type
 	   	   m_Decimation_Init(1) {}
 };
-template class WaveformGenerationArgs_t<std::int32_t>;
-template class WaveformGenerationArgs_t<std::int64_t>;
-template class WaveformGenerationArgs_t<float>;
-template class WaveformGenerationArgs_t<double>;
-template class WaveformGenerationArgs_t<std::vector<std::int8_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::int16_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::int32_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::int64_t> >;
-template class WaveformGenerationArgs_t<std::vector<float> >;
-template class WaveformGenerationArgs_t<std::vector<double> >;
+template struct WaveformGenerationArgs_t<std::int32_t>;
+template struct WaveformGenerationArgs_t<std::int64_t>;
+template struct WaveformGenerationArgs_t<float>;
+template struct WaveformGenerationArgs_t<double>;
+template struct WaveformGenerationArgs_t<std::vector<std::int8_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int16_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int32_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int64_t> >;
+template struct WaveformGenerationArgs_t<std::vector<float> >;
+template struct WaveformGenerationArgs_t<std::vector<double> >;
 
 /**
  * This is a node that supplies waveform generation PVs and few control
@@ -486,7 +486,7 @@ public:
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
-     * @param timestampDelegate todo
+     * @param timestampDelegate 
      *
      */
     //TODO: Discuss if necessary

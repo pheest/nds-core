@@ -166,11 +166,11 @@ struct DigitalIOArgs_t{
 		   m_DataOut_Init(T()), //Default value of the underlying data type
 	   	   m_Decimation_Init(1) {}
 };
-template class DigitalIOArgs_t<std::vector<bool>>;
-template class DigitalIOArgs_t<std::vector<std::int8_t>>;
-template class DigitalIOArgs_t<std::vector<std::int16_t>>;
-template class DigitalIOArgs_t<std::vector<std::int32_t>>;
-template class DigitalIOArgs_t<std::vector<std::int64_t>>;
+template struct DigitalIOArgs_t<std::vector<bool>>;
+template struct DigitalIOArgs_t<std::vector<std::int8_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int16_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int32_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int64_t>>;
 
 /**
  * This is a node that supplies PVs that specifies how the IO acquisition

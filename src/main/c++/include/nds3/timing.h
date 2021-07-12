@@ -275,4 +275,9 @@ class NDS3_API Timing: public Node  {
 
 }
 
+#ifdef _WIN32
+#define CLOCK_REALTIME 0
+int NDS3_API clock_gettime(int, struct timespec *spec);
+#endif
+
 #endif // NDSTIMING_H
