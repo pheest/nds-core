@@ -151,3 +151,4 @@ int clock_gettime(int, struct timespec *spec)
     return 0;
 }
 #endif
+}
