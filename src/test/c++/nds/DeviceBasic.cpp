@@ -94,183 +94,183 @@ DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, c
 			std::bind(&DeviceBasic::recover_Device, this),
 			std::bind(&DeviceBasic::allow__Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
-	    /**
-	     * Add Firmware node
-	     */
-	    m_Firmware = rootNode.addChild(nds::Firmware("Firm",
-	    		256, // Maximum string length.
-				std::bind(&DeviceBasic::switchOn_Firmware, this),
-				std::bind(&DeviceBasic::switchOff_Firmware, this),
-				std::bind(&DeviceBasic::start_Firmware, this),
-				std::bind(&DeviceBasic::stop_Firmware, this),
-				std::bind(&DeviceBasic::recover_Firmware, this),
-				std::bind(&DeviceBasic::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-				std::bind(&DeviceBasic::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
+	/**
+	 * Add Firmware node
+	 */
+	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
+			256, // Maximum string length.
+			std::bind(&DeviceBasic::switchOn_Firmware, this),
+			std::bind(&DeviceBasic::switchOff_Firmware, this),
+			std::bind(&DeviceBasic::start_Firmware, this),
+			std::bind(&DeviceBasic::stop_Firmware, this),
+			std::bind(&DeviceBasic::recover_Firmware, this),
+			std::bind(&DeviceBasic::allow_Firmware_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceBasic::PV_Firmware_Path_Writer, this, std::placeholders::_1, std::placeholders::_2)));
 
-	    m_Firmware.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
-	    m_Firmware.setLogLevel(nds::logLevel_t::debug);
+	m_Firmware.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
+	m_Firmware.setLogLevel(nds::logLevel_t::debug);
 
-	    /**
-	     * Test PV variables:
-	     * 		- PVVariableIn: input variable to CS. The Device support sets its value using setValue, and the CS reads this value.
-	     * 		- PVVariableOut: output variable from CS. The Device support uses getValue()to retrieve the PV's value,
-	     * 		                 and the control system uses read() and write() to read and set the value.
-	     *
-	     * For testing purposes, we use:
-	     * 		- setValue(const T& value) and setValue(const timespec& timestamp, const T& value), over PVVariableIn
-	     *        but we do not modify the initial value.
-	     *      - getValue() and getValue(timespec* pTime, T* pValue) to retrieve the initial value and timestamp.
-	     */
+	/**
+	 * Test PV variables:
+	 * 		- PVVariableIn: input variable to CS. The Device support sets its value using setValue, and the CS reads this value.
+	 * 		- PVVariableOut: output variable from CS. The Device support uses getValue()to retrieve the PV's value,
+	 * 		                 and the control system uses read() and write() to read and set the value.
+	 *
+	 * For testing purposes, we use:
+	 * 		- setValue(const T& value) and setValue(const timespec& timestamp, const T& value), over PVVariableIn
+	 *        but we do not modify the initial value.
+	 *      - getValue() and getValue(timespec* pTime, T* pValue) to retrieve the initial value and timestamp.
+	 */
 
-	    m_int32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int32_t>("int32_VariableIn"));
-	    m_int32_VariableIn.setValue((std::int32_t)0);
-	    m_int32_VariableIn.setValue(timestamp_device,(std::int32_t)0);
-	    m_int32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int32_t>("int32_VariableOut"));
-	    m_int32_VariableOut.getValue();
-	    m_int32_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I32);
+	m_int32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int32_t>("int32_VariableIn"));
+	m_int32_VariableIn.setValue((std::int32_t)0);
+	m_int32_VariableIn.setValue(timestamp_device,(std::int32_t)0);
+	m_int32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int32_t>("int32_VariableOut"));
+	m_int32_VariableOut.getValue();
+	m_int32_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I32);
 
-	    m_int64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int64_t>("int64_VariableIn"));
-		m_int64_VariableIn.setValue((std::int64_t)0);
-		m_int64_VariableIn.setValue(timestamp_device,(std::int64_t)0);
-		m_int64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int64_t>("int64_VariableOut"));
-		m_int64_VariableOut.getValue();
-		m_int64_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I64);
+	m_int64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int64_t>("int64_VariableIn"));
+	m_int64_VariableIn.setValue((std::int64_t)0);
+	m_int64_VariableIn.setValue(timestamp_device,(std::int64_t)0);
+	m_int64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::int64_t>("int64_VariableOut"));
+	m_int64_VariableOut.getValue();
+	m_int64_VariableOut.getValue(&readtimeStamp,&PVVariable_value_I64);
 
-	    m_double_VariableIn = rootNode.addChild(nds::PVVariableIn<double>("double_VariableIn"));
-	    m_double_VariableIn.setValue((double)0);
-	    m_double_VariableIn.setValue(timestamp_device,(double)0);
-	    m_double_VariableOut = rootNode.addChild(nds::PVVariableOut<double>("double_VariableOut"));
-	    m_double_VariableOut.getValue();
-	    m_double_VariableOut.getValue(&readtimeStamp,&PVVariable_value_DBL);
+	m_double_VariableIn = rootNode.addChild(nds::PVVariableIn<double>("double_VariableIn"));
+	m_double_VariableIn.setValue((double)0);
+	m_double_VariableIn.setValue(timestamp_device,(double)0);
+	m_double_VariableOut = rootNode.addChild(nds::PVVariableOut<double>("double_VariableOut"));
+	m_double_VariableOut.getValue();
+	m_double_VariableOut.getValue(&readtimeStamp,&PVVariable_value_DBL);
 
-	    m_vectorI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int8_t> >("vectorI8_VariableIn"));
-	    m_vectorI8_VariableIn.setMaxElements(2);
-	    m_vectorI8_VariableIn.setValue(std::vector<int8_t>(2,0));
-	    m_vectorI8_VariableIn.setValue(timestamp_device,std::vector<int8_t>(2,0));
-	    m_vectorI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int8_t> >("vectorI8_VariableOut"));
-	    m_vectorI8_VariableOut.getValue();
-	    m_vectorI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I8);
+	m_vectorI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int8_t> >("vectorI8_VariableIn"));
+	m_vectorI8_VariableIn.setMaxElements(2);
+	m_vectorI8_VariableIn.setValue(std::vector<int8_t>(2,0));
+	m_vectorI8_VariableIn.setValue(timestamp_device,std::vector<int8_t>(2,0));
+	m_vectorI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int8_t> >("vectorI8_VariableOut"));
+	m_vectorI8_VariableOut.getValue();
+	m_vectorI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I8);
 
-	    m_vectorUI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint8_t> >("vectorUI8_VariableIn"));
-	    m_vectorUI8_VariableIn.setMaxElements(2);
-	    m_vectorUI8_VariableIn.setValue(std::vector<uint8_t>(2,0));
-	    m_vectorUI8_VariableIn.setValue(timestamp_device,std::vector<uint8_t>(2,0));
-	    m_vectorUI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::uint8_t> >("vectorUI8_VariableOut"));
-	    m_vectorUI8_VariableOut.getValue();
-	    m_vectorUI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_UI8);
+	m_vectorUI8_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::uint8_t> >("vectorUI8_VariableIn"));
+	m_vectorUI8_VariableIn.setMaxElements(2);
+	m_vectorUI8_VariableIn.setValue(std::vector<uint8_t>(2,0));
+	m_vectorUI8_VariableIn.setValue(timestamp_device,std::vector<uint8_t>(2,0));
+	m_vectorUI8_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::uint8_t> >("vectorUI8_VariableOut"));
+	m_vectorUI8_VariableOut.getValue();
+	m_vectorUI8_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_UI8);
 
-	    m_vectorI32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("vectorI32_VariableIn"));
-	    m_vectorI32_VariableIn.setMaxElements(2);
-	    m_vectorI32_VariableIn.setValue(std::vector<int32_t>(2,0));
-	    m_vectorI32_VariableIn.setValue(timestamp_device,std::vector<int32_t>(2,0));
-	    m_vectorI32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int32_t> >("vectorI32_VariableOut"));
-	    m_vectorI32_VariableOut.getValue();
-	    m_vectorI32_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I32);
+	m_vectorI32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int32_t> >("vectorI32_VariableIn"));
+	m_vectorI32_VariableIn.setMaxElements(2);
+	m_vectorI32_VariableIn.setValue(std::vector<int32_t>(2,0));
+	m_vectorI32_VariableIn.setValue(timestamp_device,std::vector<int32_t>(2,0));
+	m_vectorI32_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int32_t> >("vectorI32_VariableOut"));
+	m_vectorI32_VariableOut.getValue();
+	m_vectorI32_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I32);
 
-	    m_vectorI64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int64_t> >("vectorI64_VariableIn"));
-		m_vectorI64_VariableIn.setMaxElements(2);
-		m_vectorI64_VariableIn.setValue(std::vector<int64_t>(2,0));
-		m_vectorI64_VariableIn.setValue(timestamp_device,std::vector<int64_t>(2,0));
-		m_vectorI64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int64_t> >("vectorI64_VariableOut"));
-		m_vectorI64_VariableOut.getValue();
-		m_vectorI64_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I64);
+	m_vectorI64_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<std::int64_t> >("vectorI64_VariableIn"));
+	m_vectorI64_VariableIn.setMaxElements(2);
+	m_vectorI64_VariableIn.setValue(std::vector<int64_t>(2,0));
+	m_vectorI64_VariableIn.setValue(timestamp_device,std::vector<int64_t>(2,0));
+	m_vectorI64_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<std::int64_t> >("vectorI64_VariableOut"));
+	m_vectorI64_VariableOut.getValue();
+	m_vectorI64_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_I64);
 
-	    m_vectorDBL_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<double> >("vectorDBL_VariableIn"));
-	    m_vectorDBL_VariableIn.setMaxElements(2);
-	    m_vectorDBL_VariableIn.setValue(std::vector<double>(2,0));
-	    m_vectorDBL_VariableIn.setValue(timestamp_device,std::vector<double>(2,0));
-	    m_vectorDBL_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<double> >("vectorDBL_VariableOut"));
-	    m_vectorDBL_VariableOut.getValue();
-	    m_vectorDBL_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_DBL);
+	m_vectorDBL_VariableIn = rootNode.addChild(nds::PVVariableIn<std::vector<double> >("vectorDBL_VariableIn"));
+	m_vectorDBL_VariableIn.setMaxElements(2);
+	m_vectorDBL_VariableIn.setValue(std::vector<double>(2,0));
+	m_vectorDBL_VariableIn.setValue(timestamp_device,std::vector<double>(2,0));
+	m_vectorDBL_VariableOut = rootNode.addChild(nds::PVVariableOut<std::vector<double> >("vectorDBL_VariableOut"));
+	m_vectorDBL_VariableOut.getValue();
+	m_vectorDBL_VariableOut.getValue(&readtimeStamp,&PVVariable_vector_DBL);
 
-	    m_string_VariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("string_VariableIn"));
-	    m_string_VariableIn.setValue("");
-	    m_string_VariableIn.setValue(timestamp_device,"");
-	    m_string_VariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("string_VariableOut"));
-	    m_string_VariableOut.getValue();
-	    m_string_VariableOut.getValue(&readtimeStamp,&PVVariable_value_string);
+	m_string_VariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("string_VariableIn"));
+	m_string_VariableIn.setValue("");
+	m_string_VariableIn.setValue(timestamp_device,"");
+	m_string_VariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("string_VariableOut"));
+	m_string_VariableOut.getValue();
+	m_string_VariableOut.getValue(&readtimeStamp,&PVVariable_value_string);
 
-	    m_testVariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("testVariableIn"));
-	    m_testVariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("testVariableOut"));
+	m_testVariableIn= rootNode.addChild(nds::PVVariableIn<std::string>("testVariableIn"));
+	m_testVariableOut= rootNode.addChild(nds::PVVariableOut<std::string>("testVariableOut"));
 
-	    /**
-	     * Test PV Delegates: input Delegate to CS. The Device support sets its value, and the CS reads this value
-	     * The Device support uses getValue()to retrieve the PV's value and the control system use read() and write() to read and set the value.
-	     */
+	/**
+	 * Test PV Delegates: input Delegate to CS. The Device support sets its value, and the CS reads this value
+	 * The Device support uses getValue()to retrieve the PV's value and the control system use read() and write() to read and set the value.
+	 */
 
-	    rootNode.addChild(m_int32_DelegateIn);
-	    rootNode.addChild(m_int32_DelegateOut);
-	    rootNode.addChild(m_int32_DelegateOut_init);
+	rootNode.addChild(m_int32_DelegateIn);
+	rootNode.addChild(m_int32_DelegateOut);
+	rootNode.addChild(m_int32_DelegateOut_init);
 
-	    rootNode.addChild(m_int64_DelegateIn);
-		rootNode.addChild(m_int64_DelegateOut);
-		rootNode.addChild(m_int64_DelegateOut_init);
+	rootNode.addChild(m_int64_DelegateIn);
+	rootNode.addChild(m_int64_DelegateOut);
+	rootNode.addChild(m_int64_DelegateOut_init);
 
-	    rootNode.addChild(m_double_DelegateIn);
-	    rootNode.addChild(m_double_DelegateOut);
-	    rootNode.addChild(m_double_DelegateOut_init);
+	rootNode.addChild(m_double_DelegateIn);
+	rootNode.addChild(m_double_DelegateOut);
+	rootNode.addChild(m_double_DelegateOut_init);
 
-	    m_vectorI8_DelegateIn.setMaxElements(2);
-	    rootNode.addChild(m_vectorI8_DelegateIn);
-	    rootNode.addChild(m_vectorI8_DelegateOut);
-	    rootNode.addChild(m_vectorI8_DelegateOut_init);
+	m_vectorI8_DelegateIn.setMaxElements(2);
+	rootNode.addChild(m_vectorI8_DelegateIn);
+	rootNode.addChild(m_vectorI8_DelegateOut);
+	rootNode.addChild(m_vectorI8_DelegateOut_init);
 
-	    m_vectorUI8_DelegateIn.setMaxElements(2);
-	    rootNode.addChild(m_vectorUI8_DelegateIn);
-	    rootNode.addChild(m_vectorUI8_DelegateOut);
-	    rootNode.addChild(m_vectorUI8_DelegateOut_init);
+	m_vectorUI8_DelegateIn.setMaxElements(2);
+	rootNode.addChild(m_vectorUI8_DelegateIn);
+	rootNode.addChild(m_vectorUI8_DelegateOut);
+	rootNode.addChild(m_vectorUI8_DelegateOut_init);
 
-	    m_vectorI32_DelegateIn.setMaxElements(2);
-	    rootNode.addChild(m_vectorI32_DelegateIn);
-	    rootNode.addChild(m_vectorI32_DelegateOut);
-	    rootNode.addChild(m_vectorI32_DelegateOut_init);
+	m_vectorI32_DelegateIn.setMaxElements(2);
+	rootNode.addChild(m_vectorI32_DelegateIn);
+	rootNode.addChild(m_vectorI32_DelegateOut);
+	rootNode.addChild(m_vectorI32_DelegateOut_init);
 
-	    m_vectorI64_DelegateIn.setMaxElements(2);
-		rootNode.addChild(m_vectorI64_DelegateIn);
-		rootNode.addChild(m_vectorI64_DelegateOut);
-		rootNode.addChild(m_vectorI64_DelegateOut_init);
+	m_vectorI64_DelegateIn.setMaxElements(2);
+	rootNode.addChild(m_vectorI64_DelegateIn);
+	rootNode.addChild(m_vectorI64_DelegateOut);
+	rootNode.addChild(m_vectorI64_DelegateOut_init);
 
-	    m_vectorDBL_DelegateIn.setMaxElements(2);
-	    rootNode.addChild(m_vectorDBL_DelegateIn);
-	    rootNode.addChild(m_vectorDBL_DelegateOut);
-	    rootNode.addChild(m_vectorDBL_DelegateOut_init);
+	m_vectorDBL_DelegateIn.setMaxElements(2);
+	rootNode.addChild(m_vectorDBL_DelegateIn);
+	rootNode.addChild(m_vectorDBL_DelegateOut);
+	rootNode.addChild(m_vectorDBL_DelegateOut_init);
 
-	    rootNode.addChild(m_string_DelegateIn);
-	    rootNode.addChild(m_string_DelegateOut);
-	    rootNode.addChild(m_string_DelegateOut_init);
+	rootNode.addChild(m_string_DelegateIn);
+	rootNode.addChild(m_string_DelegateOut);
+	rootNode.addChild(m_string_DelegateOut_init);
 
-	    rootNode.addChild(m_delegateIn);
-	    rootNode.addChild(m_delegateOut);
-	    rootNode.addChild(m_writeTestVariableIn);
-	    rootNode.addChild(m_pushTestVariableIn);
-	    rootNode.addChild(m_readTestVariableOut);
+	rootNode.addChild(m_delegateIn);
+	rootNode.addChild(m_delegateOut);
+	rootNode.addChild(m_writeTestVariableIn);
+	rootNode.addChild(m_pushTestVariableIn);
+	rootNode.addChild(m_readTestVariableOut);
 
-	    m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
+	m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
 
-	    // We have declared all the nodes and PVs in our Device: now we register them
-	    //  with the control system that called this constructor.
-	    ////////////////////////////////////////////////////////////////////////////////
-	    rootNode.initialize(this, factory);
+	// We have declared all the nodes and PVs in our Device: now we register them
+	//  with the control system that called this constructor.
+	////////////////////////////////////////////////////////////////////////////////
+	rootNode.initialize(this, factory);
 
-	    std::string rootNodeComponentName = rootNode.getComponentName();
-	    std::string rootNodeFullExternalName = rootNode.getFullExternalName();
-	    std::string rootNodeFullName = rootNode.getFullName();
-	    std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
-	    //timespec rootNodetime = rootNode.getTimestamp();
-	    //    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
-	    //
-	    //    std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
-	    //    std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
-	    //    std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
-	    //    std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
-	    //    std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
-	    //    std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
+	std::string rootNodeComponentName = rootNode.getComponentName();
+	std::string rootNodeFullExternalName = rootNode.getFullExternalName();
+	std::string rootNodeFullName = rootNode.getFullName();
+	std::string rootNodeFullNameFromPort = rootNode.getFullNameFromPort();
+	//timespec rootNodetime = rootNode.getTimestamp();
+	//    bool isLogLevelEnabled = rootNode.isLogLevelEnabled(nds::logLevel_t::debug);
+	//
+	//    std::cout<<"\trootNodeComponentName = " <<rootNodeComponentName<<std::endl;
+	//    std::cout<<"\trootNodeFullExternalName = " <<rootNodeFullExternalName<<std::endl;
+	//    std::cout<<"\trootNodeFullName = " <<rootNodeFullName<<std::endl;
+	//    std::cout<<"\trootNodeFullNameFromPort = " <<rootNodeFullNameFromPort<<std::endl;
+	//    std::cout<<"\tisLogLevelEnabled = " <<isLogLevelEnabled<<std::endl;
+	//    std::cout<<"\trootNodetime.tv_sec = " <<rootNodetime.tv_sec<<"\t;\trootNodetime.tv_nsec = " <<rootNodetime.tv_nsec<<std::endl;
 
-	    rootNode.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
-	    rootNode.setLogLevel(nds::logLevel_t::debug);
+	rootNode.setTimestampDelegate(std::bind(&DeviceBasic::getCurrentTime,this));
+	rootNode.setLogLevel(nds::logLevel_t::debug);
 
-	    rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
-	    ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
+	rootNode.getLogger(nds::logLevel_t::debug) << "This is the debugging logger:The device is created" << std::endl;
+	ndsDebugStream(rootNode) << "This is the ndsDebugStream: The device is created" << std::endl;
 
 }
 
