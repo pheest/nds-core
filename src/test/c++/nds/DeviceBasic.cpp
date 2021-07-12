@@ -72,6 +72,7 @@ DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, c
 	}
 
 	/**
+	 * @verbatim
 	 * Here we declare the root node.
 	 * It is a good practice to name it with the Device name.
 	 *
@@ -82,6 +83,7 @@ DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, c
 	 * It is possible to have the root node as a simple Node and promote one or
 	 * more of its children to "Port": each port will interface with a different
 	 * control system thread.
+	 * @endverbatim
 	 */
 	nds::Port rootNode(DeviceName);
 
@@ -94,9 +96,7 @@ DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, c
 			std::bind(&DeviceBasic::recover_Device, this),
 			std::bind(&DeviceBasic::allow__Device_Change,this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 
-	/**
-	 * Add Firmware node
-	 */
+	// Add Firmware node
 	m_Firmware = rootNode.addChild(nds::Firmware("Firm",
 			256, // Maximum string length.
 			std::bind(&DeviceBasic::switchOn_Firmware, this),
@@ -111,15 +111,15 @@ DeviceBasic::DeviceBasic(nds::Factory &factory, const std::string &DeviceName, c
 	m_Firmware.setLogLevel(nds::logLevel_t::debug);
 
 	/**
+	 * @verbatim
 	 * Test PV variables:
 	 * 		- PVVariableIn: input variable to CS. The Device support sets its value using setValue, and the CS reads this value.
-	 * 		- PVVariableOut: output variable from CS. The Device support uses getValue()to retrieve the PV's value,
-	 * 		                 and the control system uses read() and write() to read and set the value.
+	 * 		- PVVariableOut: output variable from CS. The Device support uses getValue()to retrieve the PV's value, and the control system uses read() and write() to read and set the value.
 	 *
 	 * For testing purposes, we use:
-	 * 		- setValue(const T& value) and setValue(const timespec& timestamp, const T& value), over PVVariableIn
-	 *        but we do not modify the initial value.
+	 * 		- setValue(const T& value) and setValue(const timespec& timestamp, const T& value), over PVVariableIn but we do not modify the initial value.
 	 *      - getValue() and getValue(timespec* pTime, T* pValue) to retrieve the initial value and timestamp.
+	 * @endverbatim
 	 */
 
 	m_int32_VariableIn = rootNode.addChild(nds::PVVariableIn<std::int32_t>("int32_VariableIn"));
