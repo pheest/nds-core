@@ -162,6 +162,7 @@ of the distribution package.
                 <input>test/c++/nds</input>
                 <input>test/c++/include</input>
                 <examplepath>main/c++/examples</examplepath>
+                <imagepath>doc</imagepath>
                 <properties>
                   <SORT_MEMBER_DOCS>NO</SORT_MEMBER_DOCS>
                   <HIDE_UNDOC_CLASSES>YES</HIDE_UNDOC_CLASSES>
