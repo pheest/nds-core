@@ -10,6 +10,13 @@
 
 #include <nds3/nds.h>
 
+/**
+ * @brief Class that declares and implement a fictional device with a NDSError throwing function for testing purposes of nds-core V3.
+ *
+ *
+ *  The class does not need to be derived from any special class, but its constructor must
+ *  accept few mandatory parameters and should register the root node via Node::initialize().
+ */
 
 class DeviceError
 {
