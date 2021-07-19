@@ -569,7 +569,7 @@ Using the previously obtained interface, the operation to read a PV is done with
 void readCSValue(const std::string& pvName, timespec* pTimestamp, T* pValue);
 @endcode
 A similar function exists to write a PV, called writeCSValue.
-The NDS Device Driver can update the input process variables in the control system asynchronously. This asynchronous update is implemented in the NDS Device Driver with functions that push values. The function that allows to the user of the control system to read these values is called getPushed<T>. It is available for all data types and it also provides a timeout.
+The NDS Device Driver can update the input process variables in the control system asynchronously. This asynchronous update is implemented in the NDS Device Driver with functions that "push" values. The function that allows to the user of the control system to read these values is called getPushed<T>. It is available for all data types and it also provides a timeout.
 In the case of reading an int32, the function is:
 @code
 void getPushedInt32(const std::string& pvName, const timespec*& pTime, const int32_t*& pValue, const std::uint32_t& timeoutMs=1000);
