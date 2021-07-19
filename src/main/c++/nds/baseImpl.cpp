@@ -220,7 +220,7 @@ void BaseImpl::defineCommand(const std::string& command, const std::string& usag
     m_commands.emplace_back(command, usage, numParameters, function);
 }
 
-parameters_t BaseImpl::commandSetLogLevel(const logLevel_t logLevel, const parameters_t & parameters)
+parameters_t BaseImpl::commandSetLogLevel(const logLevel_t logLevel, const parameters_t & /*parameters*/)
 {
     setLogLevel(logLevel);
     return parameters_t();
