@@ -114,50 +114,50 @@ bool allowChange(const nds::state_t, const nds::state_t, const nds::state_t)
     return true;
 }
 
-TEST(testNode, testaddNode)
-{
-
-    nds::Factory factory("test");
-
-
-    nds::Port rootNode("rootNode");
-
-
-    nds::Node testNode("testNode");
-
-    rootNode.addNode(testNode);
-
-    nds::PVVariableIn<std::int32_t> PVVarIn0("PVVarIn0");
-    PVVarIn0.setUnits("TEST_Units");
-    PVVarIn0.setDescription("Test_PV");
-
-    //add enumeration for Signal Reference type
-    nds::enumerationStrings_t enumTest;
-    enumTest.push_back("Test_enum_0");
-    enumTest.push_back("Test_enum_1");
-    enumTest.push_back("Test_enum_2");
-
-    PVVarIn0.setEnumeration(enumTest);
-    PVVarIn0.setScanType(nds::scanType_t::periodic,1);
-    PVVarIn0.setDecimation(1);
-    testNode.addPV(PVVarIn0);
-
-
-    nds::StateMachine stateMachine0 = nds::StateMachine(true,
-            										   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&allowChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-    testNode.addStateMachine(stateMachine0);
-
-    rootNode.initialize(0, factory);
-
-    factory.destroyDevice("");
-
-}
+//TEST(testNode, testaddNode)
+//{
+//
+//    nds::Factory factory("test");
+//
+//
+//    nds::Port rootNode("rootNode");
+//
+//
+//    nds::Node testNode("testNode");
+//
+//    rootNode.addNode(testNode);
+//
+//    nds::PVVariableIn<std::int32_t> PVVarIn0("PVVarIn0");
+//    PVVarIn0.setUnits("TEST_Units");
+//    PVVarIn0.setDescription("Test_PV");
+//
+//    //add enumeration for Signal Reference type
+//    nds::enumerationStrings_t enumTest;
+//    enumTest.push_back("Test_enum_0");
+//    enumTest.push_back("Test_enum_1");
+//    enumTest.push_back("Test_enum_2");
+//
+//    PVVarIn0.setEnumeration(enumTest);
+//    PVVarIn0.setScanType(nds::scanType_t::periodic,1);
+//    PVVarIn0.setDecimation(1);
+//    testNode.addPV(PVVarIn0);
+//
+//
+//    nds::StateMachine stateMachine0 = nds::StateMachine(true,
+//            										   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&allowChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+//
+//    testNode.addStateMachine(stateMachine0);
+//
+//    rootNode.initialize(0, factory);
+//
+//    factory.destroyDevice("");
+//
+//}
 /*
  * test that checks correct functionality of PVBase class.
  */

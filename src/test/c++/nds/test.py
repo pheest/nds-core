@@ -17,7 +17,7 @@ val2="2000"
 # Unit test are stored into a list 
 tests = [
     
-# These test take a long time to run, so it is better to use a lower value.   
+# These test take a long time to run, so it is better to use a lower value.  
         ["testDataAcquisition.testPushDataAcquiredVFloat", val1],
         ["testDataAcquisition.testPushDataAcquiredVFloatInit", val1],
         ["testDataAcquisition.testPushDataAcquiredVDBL", val1],
@@ -45,11 +45,11 @@ tests = [
         ["testDeviceTimestamping.SetGetInitializationTest", val1],
            
 #These tests are faster. 
+        ["testDataAcquisition.testStateMachine", val2], 
         ["testDeviceAllocation.testAllocationMissingDevice", val2],
         ["testDeviceAllocation.testDoubleAllocation", val2],
         ["testDeviceAllocation.testInitDeinit", val2],
         ["testDeviceAllocation.testTwoAllocations", val2],
-        ["testNode.testaddNode", val2],
         ["testDeviceDataMultiplexing.Self", val2],
         ["testDeviceFirmware.StateMachineTest", val2],
         ["testDeviceFirmware.PVsTest", val2],
@@ -60,6 +60,7 @@ tests = [
         ["testDevicePVs.PVTypes", val2],
         ["testDevicePVs.PVTypesInit", val2],
         ["testDevicePVs.DataSharing", val2],
+        ["testDevicePVs.PVUnsubscribe", val2],
         ["testDeviceStateMachine.stateMachine", val2],
         ["testDeviceStateMachine.stateMachineStructure",   val2],
         ["testDeviceTimestamping.StateMachineTest", val2],
