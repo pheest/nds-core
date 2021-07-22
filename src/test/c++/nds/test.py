@@ -146,10 +146,10 @@ tests = [
         ["testWFG.testPushDataGeneratedI64Init", val2],
         ["testWFG.testdecimation", val2],
         ["testWFG.testdecimationInit", val2],  
-        ["testDeviceError.statusError", val2]
+        ["testDeviceError.statusError", val2],
 
 # This test can only be passed once in a row.
-        ["testLogging.testLotOfPVs", "1"],
+        ["testLogging.testLotOfPVs", "1"]
 
          
          ]
