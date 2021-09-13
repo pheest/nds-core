@@ -177,7 +177,8 @@ inline void DigitalIOImpl<T>::constructorBody(size_t maxElements, const DigitalI
                                    std::bind(&DigitalIOImpl::onStart, this),
 								   handlerDIO.handlerSTM.stopFunction,
 								   handlerDIO.handlerSTM.recoverFunction,
-								   handlerDIO.handlerSTM.allowStateChangeFunction));
+								   handlerDIO.handlerSTM.allowStateChangeFunction,
+								   handlerDIO.handlerSTM.autoEnable));
     addChild(m_StateMachine);
 }
 
