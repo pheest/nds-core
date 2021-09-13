@@ -280,7 +280,11 @@ void StateMachineImpl::setState(const state_t newState)
     }
     else
     {
-        executeTransition(localState, newState, transitionFunction);
+		try {
+			executeTransition(localState, newState, transitionFunction);
+		} catch (const std::runtime_error& e) {
+			ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
+		}
     }
 }
 
@@ -308,7 +312,7 @@ void StateMachineImpl::executeTransitionThread(const state_t initialState, const
     }
     catch(const std::runtime_error& e)
     {
-        ndsErrorStream(*this) << "Error while asyncronously changing the state: " << e.what() << std::endl;
+        ndsErrorStream(*this) << "Error while asynchronously changing the state: " << e.what() << std::endl;
     }
 }
 
