@@ -280,11 +280,16 @@ void StateMachineImpl::setState(const state_t newState)
     }
     else
     {
-		try {
-			executeTransition(localState, newState, transitionFunction);
-		} catch (const std::runtime_error& e) {
-			ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
-		}
+        /**
+        * State transition have to capture all possible exception raised by the specific device driver.
+        */
+        try {
+            executeTransition(localState, newState, transitionFunction);
+        } catch (std::exception& e) {
+            ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
+        } catch(...){
+            ndsErrorStream(*this) << "Error while synchronously changing the state" << std::endl;
+        }
     }
 }
 
@@ -306,14 +311,16 @@ bool StateMachineImpl::setChildrenStates(state_t futureState){
  *****************************************************/
 void StateMachineImpl::executeTransitionThread(const state_t initialState, const state_t finalState, stateChange_t transitionFunction)
 {
-    try
-    {
-        executeTransition(initialState, finalState, transitionFunction);
-    }
-    catch(const std::runtime_error& e)
-    {
-        ndsErrorStream(*this) << "Error while asynchronously changing the state: " << e.what() << std::endl;
-    }
+	/**
+	 * State transition have to capture all possible exception raised by the specific device driver.
+	 */
+	try {
+		executeTransition(initialState, finalState, transitionFunction);
+	} catch (std::exception& e) {
+		ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
+	} catch(...){
+		ndsErrorStream(*this) << "Error while synchronously changing the state" << std::endl;
+	}
 }
 
 
@@ -350,12 +357,32 @@ void StateMachineImpl::executeTransition(const state_t initialState, const state
         m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
         throw;
     }
-    catch(std::runtime_error& e)
+    catch(std::exception& e)
     {
-        // Go to fault if an error happens
+    	//////////////////////////////////
+        /// Go to fault if an error happens
         //////////////////////////////////
 
         ndsErrorStream(*this) << "Error: " << e.what() << " - Switching to state " << getStateName(state_t::fault) << std::endl;
+
+        std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+        m_localState = state_t::fault;
+        m_stateTimestamp = getTimestamp();
+        m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
+        throw;
+    }
+    catch(...)
+    {
+        /**
+        * State transition have to capture all possible exception raised by the specific device driver.
+        * Exceptions should be based in std::exception, but just in case this catch has been added.
+        */
+
+    	//////////////////////////////////
+        /// Go to fault if an error happens
+        //////////////////////////////////
+
+        ndsErrorStream(*this) << "Error unexpected exception - Switching to state " << getStateName(state_t::fault) << std::endl;
 
         std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
         m_localState = state_t::fault;
