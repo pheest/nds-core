@@ -296,7 +296,6 @@ void StateMachineImpl::setState(const state_t newState)
 bool StateMachineImpl::setChildrenStates(state_t futureState){
 
 	bool error=false;
-    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
 
     std::shared_ptr<NodeImpl> pParentNode(getParent());
     error = pParentNode->setChildrenState(this->getTimestamp(), futureState);
