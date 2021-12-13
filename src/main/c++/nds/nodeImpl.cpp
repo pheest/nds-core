@@ -278,6 +278,7 @@ bool nds::NodeImpl::setChildrenState(timespec /*pTimestamp*/, state_t futureStat
 
 	//If error==true, we revert all children to the previous state
 	if(error){
+        ndsInfoStream(*this) << "Reverting all children to the previous state" << std::endl;
 		std::map<std::string,state_t>::iterator scanPrevChildren;
 		for(tChildren::const_iterator scanChildren(m_children.begin()), endScan(m_children.end()); scanChildren != endScan; ++scanChildren)
 		{

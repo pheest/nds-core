@@ -286,9 +286,13 @@ void StateMachineImpl::setState(const state_t newState)
         try {
             executeTransition(localState, newState, transitionFunction);
         } catch (std::exception& e) {
-            ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
+        	const std::string msg = this->getFullExternalName() + "Error while synchronously changing the state: " + std::string(e.what());
+            ndsErrorStream(*this) << msg << std::endl;
+            throw nds::StateMachineTransitionDenied(msg);
         } catch(...){
-            ndsErrorStream(*this) << "Error while synchronously changing the state" << std::endl;
+        	const std::string msg = "Error while synchronously changing the state: Unexpected error.";
+            ndsErrorStream(*this) << msg << std::endl;
+            throw nds::StateMachineTransitionDenied(msg);
         }
     }
 }
@@ -316,9 +320,9 @@ void StateMachineImpl::executeTransitionThread(const state_t initialState, const
 	try {
 		executeTransition(initialState, finalState, transitionFunction);
 	} catch (std::exception& e) {
-		ndsErrorStream(*this) << "Error while synchronously changing the state: " << e.what() << std::endl;
+		ndsErrorStream(*this) << "Error while asynchronously changing the state: " << e.what() << std::endl;
 	} catch(...){
-		ndsErrorStream(*this) << "Error while synchronously changing the state" << std::endl;
+		ndsErrorStream(*this) << "Error while asynchronously changing the state: Unexpected error." << std::endl;
 	}
 }
 
@@ -480,7 +484,7 @@ void StateMachineImpl::getHighestGlobalState(timespec* pTimestamp, state_t* pSta
 }
 
 /*
- * Return the Lowest state of all its childrens
+ * Return the Lowest state of all its children
  *
  *************************/
 void StateMachineImpl::getLowestChildState(timespec* pTimestamp, state_t* pState) const
