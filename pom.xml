@@ -56,31 +56,13 @@ of the distribution package.
       </roles>
     </developer>
     <developer>
-      <id>morenoj1</id>
+      <id>costav</id>
       <roles>
         <role>developer</role>
       </roles>
     </developer>
     <developer>
-      <id>meliss</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>sanzd</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>perezp</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>degraca</id>
+      <id>esquems</id>
       <roles>
         <role>developer</role>
       </roles>
@@ -186,6 +168,7 @@ of the distribution package.
                 </properties>
               </include>
             </package>
+
             <package unitPrefix="false" name="nds-core-examples">
               <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
               <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
@@ -195,6 +178,7 @@ of the distribution package.
               <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile" />
               <requires codac="true">nds-core-devel</requires>
             </package>
+
           </packaging>
         </configuration>
       </plugin>
