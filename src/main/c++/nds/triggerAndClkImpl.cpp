@@ -316,13 +316,14 @@ inline void TriggerAndClkImpl<T>::constructorBody(const TriggerAndClkArgs_t& han
     addChild(m_EnableDisablePLL_RBVPV);
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerTrig.handlerSTM.switchOnFunction,
 			handlerTrig.handlerSTM.switchOffFunction,
 			std::bind(&TriggerAndClkImpl::onStart, this),
 			handlerTrig.handlerSTM.stopFunction,
 			handlerTrig.handlerSTM.recoverFunction,
-			handlerTrig.handlerSTM.allowStateChangeFunction));
+			handlerTrig.handlerSTM.allowStateChangeFunction,
+			handlerTrig.handlerSTM.autoEnable));
 	addChild(m_StateMachine);
 
 }
@@ -625,6 +626,12 @@ void TriggerAndClkImpl<T>::setEnableDisablePLLRBV(const timespec& timestamp, con
 
 	m_EnableDisablePLL_RBVPV->setValue(timestamp, value);
 	m_EnableDisablePLL_RBVPV->push(timestamp, value);
+}
+
+template<typename T>
+void TriggerAndClkImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
 }
 
 template class TriggerAndClkImpl<std::vector<timespec>>;

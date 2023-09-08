@@ -280,14 +280,26 @@ void StateMachineImpl::setState(const state_t newState)
     }
     else
     {
-        executeTransition(localState, newState, transitionFunction);
+        /**
+        * State transition have to capture all possible exception raised by the specific device driver.
+        */
+        try {
+            executeTransition(localState, newState, transitionFunction);
+        } catch (std::exception& e) {
+        	const std::string msg = this->getFullExternalName() + "Error while synchronously changing the state: " + std::string(e.what());
+            ndsErrorStream(*this) << msg << std::endl;
+            throw nds::StateMachineTransitionDenied(msg);
+        } catch(...){
+        	const std::string msg = "Error while synchronously changing the state: Unexpected error.";
+            ndsErrorStream(*this) << msg << std::endl;
+            throw nds::StateMachineTransitionDenied(msg);
+        }
     }
 }
 
 bool StateMachineImpl::setChildrenStates(state_t futureState){
 
 	bool error=false;
-    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
 
     std::shared_ptr<NodeImpl> pParentNode(getParent());
     error = pParentNode->setChildrenState(this->getTimestamp(), futureState);
@@ -302,14 +314,16 @@ bool StateMachineImpl::setChildrenStates(state_t futureState){
  *****************************************************/
 void StateMachineImpl::executeTransitionThread(const state_t initialState, const state_t finalState, stateChange_t transitionFunction)
 {
-    try
-    {
-        executeTransition(initialState, finalState, transitionFunction);
-    }
-    catch(const std::runtime_error& e)
-    {
-        ndsErrorStream(*this) << "Error while asyncronously changing the state: " << e.what() << std::endl;
-    }
+	/**
+	 * State transition have to capture all possible exception raised by the specific device driver.
+	 */
+	try {
+		executeTransition(initialState, finalState, transitionFunction);
+	} catch (std::exception& e) {
+		ndsErrorStream(*this) << "Error while asynchronously changing the state: " << e.what() << std::endl;
+	} catch(...){
+		ndsErrorStream(*this) << "Error while asynchronously changing the state: Unexpected error." << std::endl;
+	}
 }
 
 
@@ -346,12 +360,32 @@ void StateMachineImpl::executeTransition(const state_t initialState, const state
         m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
         throw;
     }
-    catch(std::runtime_error& e)
+    catch(std::exception& e)
     {
-        // Go to fault if an error happens
+    	//////////////////////////////////
+        /// Go to fault if an error happens
         //////////////////////////////////
 
         ndsErrorStream(*this) << "Error: " << e.what() << " - Switching to state " << getStateName(state_t::fault) << std::endl;
+
+        std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+        m_localState = state_t::fault;
+        m_stateTimestamp = getTimestamp();
+        m_pGetStatePV->push(m_stateTimestamp, (std::int32_t)m_localState);
+        throw;
+    }
+    catch(...)
+    {
+        /**
+        * State transition have to capture all possible exception raised by the specific device driver.
+        * Exceptions should be based in std::exception, but just in case this catch has been added.
+        */
+
+    	//////////////////////////////////
+        /// Go to fault if an error happens
+        //////////////////////////////////
+
+        ndsErrorStream(*this) << "Error unexpected exception - Switching to state " << getStateName(state_t::fault) << std::endl;
 
         std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
         m_localState = state_t::fault;
@@ -402,6 +436,86 @@ void StateMachineImpl::getGlobalState(timespec* pTimestamp, state_t* pState) con
     }
 }
 
+/*
+ * Return the lowest global state
+ *
+ *************************/
+void StateMachineImpl::getLowestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = getLocalState();
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+    timespec childrenTimestamp;
+    state_t childrenState;
+    pParentNode->getLowestChildState(&childrenTimestamp, &childrenState);
+
+    if((int)*pState >= (int)childrenState )
+    {
+        *pTimestamp = childrenTimestamp;
+        *pState = childrenState;
+    }
+
+}
+
+/*
+ * Return the highest global state
+ *
+ *************************/
+void StateMachineImpl::getHighestGlobalState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = getLocalState();
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+    timespec childrenTimestamp;
+    state_t childrenState;
+    pParentNode->getHighestChildState(&childrenTimestamp, &childrenState);
+
+    if((int)*pState <= (int)childrenState )
+    {
+        *pTimestamp = childrenTimestamp;
+        *pState = childrenState;
+    }
+}
+
+/*
+ * Return the Lowest state of all its children
+ *
+ *************************/
+void StateMachineImpl::getLowestChildState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = state_t::unknown;
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+
+    pParentNode->getLowestChildState(pTimestamp, pState);
+
+}
+
+/*
+ * Return the Highest state of all its childrens
+ *
+ *************************/
+void StateMachineImpl::getHighestChildState(timespec* pTimestamp, state_t* pState) const
+{
+    std::lock_guard<std::recursive_mutex> lock(m_stateMutex);
+
+    *pTimestamp = m_stateTimestamp;
+    *pState = state_t::unknown;
+
+    std::shared_ptr<NodeImpl> pParentNode(getParent());
+
+    pParentNode->getHighestChildState(pTimestamp, pState);
+
+}
 
 /*
  * Return true if the requested state transition is legal

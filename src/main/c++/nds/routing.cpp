@@ -23,10 +23,6 @@ Routing<T>::Routing(): Node()
 
 /**
  * @brief Constructs the routing node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
 Routing<T>::Routing(const std::string& name,
@@ -243,7 +239,11 @@ void Routing<T>::setTermInvertRead(const timespec& timestamp, const std::int32_t
     return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->setTermInvertRead(timestamp, value);
 }
 
-
+template <typename T>
+void Routing<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<RoutingImpl<T> >(m_pImplementation)->setState(newState);
+}
 
 template class Routing<std::string>;
 }

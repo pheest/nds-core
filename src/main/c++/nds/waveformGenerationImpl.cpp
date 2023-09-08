@@ -408,7 +408,7 @@ inline void WaveformGenerationImpl<T>::constructorBody(size_t maxElements, const
 
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerWFG.handlerSTM.switchOnFunction,
 								   handlerWFG.handlerSTM.switchOffFunction,
                                    std::bind(&WaveformGenerationImpl::onStart, this),
@@ -714,14 +714,21 @@ nds::state_t WaveformGenerationImpl<T>::getState()
 	return m_StateMachine->getLocalState();
 }
 
+template<typename T>
+void WaveformGenerationImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 
 template class WaveformGenerationImpl<std::int32_t>;
+template class WaveformGenerationImpl<std::int64_t>;
 template class WaveformGenerationImpl<float>;
 template class WaveformGenerationImpl<double>;
 template class WaveformGenerationImpl<std::vector<std::int8_t> >;
 template class WaveformGenerationImpl<std::vector<std::uint8_t> >;
 template class WaveformGenerationImpl<std::vector<std::int16_t> >;
 template class WaveformGenerationImpl<std::vector<std::int32_t> >;
+template class WaveformGenerationImpl<std::vector<std::int64_t> >;
 template class WaveformGenerationImpl<std::vector<float> >;
 template class WaveformGenerationImpl<std::vector<double> >;
 

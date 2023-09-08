@@ -11,7 +11,7 @@
 #define NDSTRIGGERANDCLK_H
 
 /**
- * @file TriggerAndClk.h
+ * @file
  * @brief TBD
  *
  * Include nds.h instead of this one, since nds3.h takes care of including all the
@@ -242,9 +242,11 @@ struct TriggerAndClkArgs_t{
    * @param _PV_SetSW_Writer Function to generate a SW trigger. To be set in @ref TriggerAndClkArgs_t.PV_SetSW_Writer.
    * @param _PV_LoadTrigConf_Writer Function to apply the triggering configuration. To be set in @ref TriggerAndClkArgs_t..
    * @param _PV_ResetTrigConf_Writer Function to reset the triggering configuration. To be set in @ref TriggerAndClkArgs_t.PV_ResetTrigConf_Writer.
-   * @param _PV_PLLSyncSet_Writer Function to apply PLL configuration.To be set in @ref TriggerAndClkArgs_t.PV_PLLSyncSET_Writer.
+   * @param _PV_PLLSyncSet_Writer Function to apply PLL configuration.
    * @param _PV_EnableDisablePLL_Writer Function to enable or disable PLL. To be set in @ref TriggerAndClkArgs_t.PV_EnableDisablePLL_Writer.
    * @param _routingNode Routing node to be used for triggering purposes. To be set in @ref TriggerAndClkArgs_t.routingNode.
+   * @param autoEnable See @ref autoEnable_t for further details.
+   *
    */
   TriggerAndClkArgs_t(stateChange_t switchOnFunction,
                       stateChange_t switchOffFunction,
@@ -349,9 +351,9 @@ public:
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
-     * @param
-     *
-     */
+	 *
+	 * @param timestampDelegate
+	 */
     //TODO: Discuss if necessary
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
@@ -634,7 +636,12 @@ public:
     */
 	void setEnableDisablePLLRBV(const timespec& timestamp, const std::int32_t& value);
 
-
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 };
 
 }

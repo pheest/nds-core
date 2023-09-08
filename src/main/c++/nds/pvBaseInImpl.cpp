@@ -48,6 +48,11 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, std::int32_t* /* pValue */) 
     throw;
 }
 
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::int64_t* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseInImpl::read(timespec* /* pTimestamp */, float* /* pValue */) const
 {
     throw;
@@ -105,6 +110,11 @@ void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int32_t>* /
     throw;
 }
 
+void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<std::int64_t>* /* pValue */) const
+{
+    throw;
+}
+
 void PVBaseInImpl::read(timespec* /* pTimestamp */, std::vector<float>* /* pValue */) const
 {
     throw;
@@ -146,54 +156,77 @@ void PVBaseInImpl::push(const timespec& timestamp, const T& value, const statusP
 
     // Push the value to the outputs (subscription) and inputs (replication)
     ////////////////////////////////////////////////////////////////////////
-    std::lock_guard<std::mutex> lock(m_lockSubscribersList);
+    //std::lock_guard<std::mutex> lock(m_lockSubscribersList);
 
-    for(subscribersList_t::iterator scanOutputs(m_subscriberOutputPVs.begin()), endOutputs(m_subscriberOutputPVs.end());
-        scanOutputs != endOutputs;
-        ++scanOutputs)
-    {
-        (*scanOutputs)->write(timestamp, value);
+	std::lock_guard<nds::recursive_mutex_counter> lock(m_lockSubscribersList);
+	for(subscribersList_t::iterator scanOutputs(m_subscriberOutputPVs.begin()), endOutputs(m_subscriberOutputPVs.end());
+		scanOutputs != endOutputs;
+		++scanOutputs)
+	{
+		(*scanOutputs)->write(timestamp, value);
+	}
+
+	for(destinationList_t::iterator scanInputs(m_replicationDestinationPVs.begin()), endInputs(m_replicationDestinationPVs.end());
+		scanInputs != endInputs;
+		++scanInputs)
+	{
+		(*scanInputs)->push(timestamp, value, status);
+	}
+
+
+    //If this function was the first to lock the recursive mutex, carry out unsubscribing and stop replication.
+    if(m_lockSubscribersList.get_count()==1){
+    	while(!m_unsubscribeOutputPVs.empty()){
+        	m_subscriberOutputPVs.erase(m_unsubscribeOutputPVs.front());
+    		m_unsubscribeOutputPVs.pop();
+    	}
+
+    	while(!m_stopReplicationDestinationPVs.empty()){
+    		m_replicationDestinationPVs.erase(m_stopReplicationDestinationPVs.front());
+			m_stopReplicationDestinationPVs.pop();
+		}
     }
 
-    for(destinationList_t::iterator scanInputs(m_replicationDestinationPVs.begin()), endInputs(m_replicationDestinationPVs.end());
-        scanInputs != endInputs;
-        ++scanInputs)
-    {
-        (*scanInputs)->push(timestamp, value, status);
-    }
+    /*
+     * It seems it is not necessary to do the same with subscription and replication as with unsubscription.
+     */
 }
 
 void PVBaseInImpl::subscribeReceiver(PVBaseOutImpl* pReceiver)
 {
-    std::lock_guard<std::mutex> lock(m_lockSubscribersList);
+    /*
+     * It seems it is not necessary to do the same with subscription and replication as with unsubscription.
+     */
+    std::lock_guard<nds::recursive_mutex_counter> lock(m_lockSubscribersList);
     m_subscriberOutputPVs.insert(pReceiver);
 }
 
 void PVBaseInImpl::unsubscribeReceiver(PVBaseOutImpl* pReceiver)
 {
-    std::lock_guard<std::mutex> lock(m_lockSubscribersList);
-
-    subscribersList_t::const_iterator findReceiver = m_subscriberOutputPVs.find(pReceiver);
-    if(findReceiver != m_subscriberOutputPVs.end())
-    {
-        m_subscriberOutputPVs.erase(findReceiver);
+    std::lock_guard<nds::recursive_mutex_counter> lock(m_lockSubscribersList);
+    if(m_lockSubscribersList.get_count()==1){
+    	m_subscriberOutputPVs.erase(pReceiver);
+    }else{
+    	m_unsubscribeOutputPVs.push(pReceiver);
     }
 }
 
 void PVBaseInImpl::replicateTo(PVBaseInImpl *pDestination)
 {
-    std::lock_guard<std::mutex> lock(m_lockSubscribersList);
+    /*
+     * It seems it is not necessary to do the same with subscription and replication as with unsubscription.
+     */
+    std::lock_guard<nds::recursive_mutex_counter> lock(m_lockSubscribersList);
     m_replicationDestinationPVs.insert(pDestination);
 }
 
 void PVBaseInImpl::stopReplicationTo(PVBaseInImpl* pDestination)
 {
-    std::lock_guard<std::mutex> lock(m_lockSubscribersList);
-
-    destinationList_t::const_iterator findDestination = m_replicationDestinationPVs.find(pDestination);
-    if(findDestination != m_replicationDestinationPVs.end())
-    {
-        m_replicationDestinationPVs.erase(findDestination);
+    std::lock_guard<nds::recursive_mutex_counter> lock(m_lockSubscribersList);
+    if(m_lockSubscribersList.get_count()==1){
+    	m_replicationDestinationPVs.erase(pDestination);
+    }else{
+    	m_stopReplicationDestinationPVs.push(pDestination);
     }
 }
 
@@ -280,6 +313,7 @@ std::string PVBaseInImpl::buildFullExternalName(const FactoryBaseImpl& controlSy
 
 
 template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&, const statusPV_t&);
+template void PVBaseInImpl::push<std::int64_t>(const timespec&, const std::int64_t&, const statusPV_t&);
 template void PVBaseInImpl::push<float>(const timespec&, const float&, const statusPV_t&);
 template void PVBaseInImpl::push<double>(const timespec&, const double&, const statusPV_t&);
 template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&, const statusPV_t&);
@@ -289,6 +323,7 @@ template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, c
 template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
 template void PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
 template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
+template void PVBaseInImpl::push<std::vector<std::int64_t> >(const timespec&, const std::vector<std::int64_t>&, const statusPV_t&);
 template void PVBaseInImpl::push<std::vector<float> >(const timespec&, const std::vector<float>&, const statusPV_t&);
 template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&, const statusPV_t&);
 template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&, const statusPV_t&);

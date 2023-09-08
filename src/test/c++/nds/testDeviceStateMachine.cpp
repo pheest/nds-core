@@ -9,7 +9,7 @@
  * @brief Internal function to test all constructors included in the StateMachine node.
  * @param structuredConstructor Flag to set to @c true when the constructor that
  * receives a structure shall be tested.
- * As the constructor used for the @ref StateMachine node is the only difference between
+ * As the constructor used for the StateMachine node is the only difference between
  * stateMachine and stateMachineStructure test, this function shares the full test
  * and the constructor used depends on the @a structuredConstructor flag.
  */

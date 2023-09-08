@@ -140,7 +140,7 @@ inline void FirmwareImpl::constructorBody(const size_t maxElements, const Firmwa
 	addChild(m_FirmwarePath_RBVPV);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerFIRM.handlerSTM.switchOnFunction,
 								   handlerFIRM.handlerSTM.switchOffFunction,
                                    std::bind(&FirmwareImpl::onStart, this),
@@ -311,6 +311,11 @@ void FirmwareImpl::setFirmwarePath(const timespec& timestamp, const std::string&
 {
     m_FirmwarePath_RBVPV->setValue(timestamp, value);
     m_FirmwarePath_RBVPV->push(timestamp, value);
+}
+
+void FirmwareImpl::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
 }
 
 

@@ -68,13 +68,13 @@ DeviceDataMultiplexing::DeviceDataMultiplexing(nds::Factory &factory, const std:
         m_PV_Source_1.processAtInit(true);
 
         m_PV_Source_2 = rootNode.addChild(nds::PVVariableIn<std::vector<float>>("FloatArray_Source_2"));
-        m_PV_Source_2.setDescription("FloatArray in channel 1");
+        m_PV_Source_2.setDescription("FloatArray in channel 2");
         m_PV_Source_2.setScanType(nds::scanType_t::interrupt);
         m_PV_Source_2.setMaxElements(maxElements);
         m_PV_Source_2.processAtInit(true);
 
         m_PV_Source_3 = rootNode.addChild(nds::PVVariableIn<std::vector<float>>("FloatArray_Source_3"));
-        m_PV_Source_3.setDescription("FloatArray in channel 1");
+        m_PV_Source_3.setDescription("FloatArray in channel 3");
         m_PV_Source_3.setScanType(nds::scanType_t::interrupt);
         m_PV_Source_3.setMaxElements(maxElements);
         m_PV_Source_3.processAtInit(true);

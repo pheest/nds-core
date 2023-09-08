@@ -18,13 +18,6 @@ HQMonitor::HQMonitor(): Node()
 {
 }
 
-/**
- * @brief Constructs the Health and Quality Monitor node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
- */
 HQMonitor::HQMonitor(  const std::string& name,
 									stateChange_t switchOnFunction,
 									stateChange_t switchOffFunction,
@@ -275,6 +268,11 @@ void HQMonitor::setSignalQualityFlagLevel(const timespec& timestamp, const doubl
 void HQMonitor::setSelfTestTextResult(const timespec& timestamp, const std::string& value)
 {
 	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> setSelfTextTxtResult(timestamp, value);
+}
+
+void HQMonitor::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<HQMonitorImpl>(m_pImplementation)->setState(newState);
 }
 
 }

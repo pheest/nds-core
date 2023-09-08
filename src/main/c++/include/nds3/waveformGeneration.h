@@ -30,12 +30,14 @@ namespace nds
  * @tparam T  the PV data type.
  * 		The following data types are supported:
  * 		- std::int32_t
+ * 		- std::int64_t
  * 		- float
  * 		- double
  * 		- std::vector<std::uint8_t>
  * 		- std::vector<std::int8_t>
  * 		- std::vector<std::int16_t>
  * 		- std::vector<std::int32_t>
+ * 		- std::vector<std::int64_t>
  * 		- std::vector<float>
  * 		- std::vector<double>
  */
@@ -305,6 +307,7 @@ struct WaveformGenerationArgs_t {
 	 * @param _PV_SignalRef_Writer Function to write the signal reference for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalRef_Writer.
 	 * @param _PV_SignalType_Writer Function to write the signal type for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_SignalType_Writer.
 	 * @param _PV_Ground_Writer Function to write the ground for waveform generation. To be set in @ref WaveformGenerationArgs_t.PV_Ground_Writer.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	WaveformGenerationArgs_t(stateChange_t switchOnFunction,
 							 stateChange_t switchOffFunction,
@@ -354,15 +357,17 @@ struct WaveformGenerationArgs_t {
 		   m_DataAWG_Init(T()), //Default value of the underlying data type
 	   	   m_Decimation_Init(1) {}
 };
-template class WaveformGenerationArgs_t<std::int32_t>;
-template class WaveformGenerationArgs_t<float>;
-template class WaveformGenerationArgs_t<double>;
-template class WaveformGenerationArgs_t<std::vector<std::int8_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::int16_t> >;
-template class WaveformGenerationArgs_t<std::vector<std::int32_t> >;
-template class WaveformGenerationArgs_t<std::vector<float> >;
-template class WaveformGenerationArgs_t<std::vector<double> >;
+template struct WaveformGenerationArgs_t<std::int32_t>;
+template struct WaveformGenerationArgs_t<std::int64_t>;
+template struct WaveformGenerationArgs_t<float>;
+template struct WaveformGenerationArgs_t<double>;
+template struct WaveformGenerationArgs_t<std::vector<std::int8_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::uint8_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int16_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int32_t> >;
+template struct WaveformGenerationArgs_t<std::vector<std::int64_t> >;
+template struct WaveformGenerationArgs_t<std::vector<float> >;
+template struct WaveformGenerationArgs_t<std::vector<double> >;
 
 /**
  * This is a node that supplies waveform generation PVs and few control
@@ -380,12 +385,14 @@ template class WaveformGenerationArgs_t<std::vector<double> >;
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
+ *            - std::int64_t
  *            - float
  *            - double
  *            - std::vector<std::uint8_t>
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<std::int64_t>
  *            - std::vector<float>
  *            - std::vector<double>
  *
@@ -413,31 +420,55 @@ public:
 
     /**
      * @brief Constructs the waveform generation node which generates vector of values
-     *
+	 * It must be used to ensure that compulsory fields are always provided in compilation time.
+     * @param name Name (unique) to identify the instance of the node.
+     * @param maxElements Maximum size of the generated data array. Set to @c 1 for scalar values.
+	 * @param switchOnFunction Switch-on function
+	 * @param switchOffFunction Switch-off function
+	 * @param startFunction Start function
+	 * @param stopFunction Stop function
+	 * @param recoverFunction Recover function
+	 * @param allowStateChangeFunction Checking state transitions function
+	 * @param PV_Frequency_Writer Function to write the frequency for waveform generation.
+	 * @param PV_RefFrequency_Writer Function to write the reference frequency for waveform generation.
+	 * @param PV_Amp_Writer Function to write the amplitude for waveform generation.
+	 * @param PV_Phase_Writer Function to write the phase for waveform generation.
+	 * @param PV_UpdateRate_Writer Function to write the update rate for waveform generation.
+	 * @param PV_DutyCycle_Writer Function to write the duty cycle for waveform generation.
+	 * @param PV_Gain_Writer Function to write the gain for waveform generation.
+	 * @param PV_Offset_Writer Function to write the offset for waveform generation.
+	 * @param PV_Bandwidth_Writer Function to write the bandwidth for waveform generation.
+	 * @param PV_Resolution_Writer Function to write the resolution for waveform generation.
+	 * @param PV_Impedance_Writer Function to write the impedance for waveform generation.
+	 * @param PV_Coupling_Writer Function to write the coupling for waveform generation.
+	 * @param PV_SignalRef_Writer Function to write the signal reference for waveform generation.
+	 * @param PV_SignalType_Writer Function to write the signal type for waveform generation.
+	 * @param PV_Ground_Writer Function to write the ground for waveform generation.
+	 * @param autoEnable See @ref autoEnable_t for further details.
      */
-    WaveformGeneration( const std::string& name,              ///< The node's name
-					size_t maxElements,                       ///< Maximum size of the array. Set to 1 for scalar values
-					stateChange_t switchOnFunction,           ///< Delegate function that performs the actions to switch the node on
-					stateChange_t switchOffFunction,          ///< Delegate function that performs the actions to switch the node off
-					stateChange_t startFunction,              ///< Delegate function that performs the actions to start the waveform generation (usually launches the generation thread)
-					stateChange_t stopFunction,               ///< Delegate function that performs the actions to stop the waveform generation(usually stops the generation thread)
-					stateChange_t recoverFunction,            ///< Delegate function to execute to recover from an error state
-					allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
-					writerDouble_t PV_Frequency_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_RefFrequency_Writer,    ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Amp_Writer,             ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Phase_Writer,           ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_UpdateRate_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_DutyCycle_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Gain_Writer,            ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Offset_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Bandwidth_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerDouble_t PV_Resolution_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Impedance_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Coupling_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalRef_Writer,        ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_SignalType_Writer,       ///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_Ground_Writer,          ///< Delegate function setter/getter to interact to the Low Level Driver API
+    WaveformGeneration( const std::string& name,
+					size_t maxElements,
+					stateChange_t switchOnFunction,
+					stateChange_t switchOffFunction,
+					stateChange_t startFunction,
+					stateChange_t stopFunction,
+					stateChange_t recoverFunction,
+					allowChange_t allowStateChangeFunction,
+					writerDouble_t PV_Frequency_Writer,
+					writerDouble_t PV_RefFrequency_Writer,
+					writerDouble_t PV_Amp_Writer,
+					writerDouble_t PV_Phase_Writer,
+					writerDouble_t PV_UpdateRate_Writer,
+					writerDouble_t PV_DutyCycle_Writer,
+					writerDouble_t PV_Gain_Writer,
+					writerDouble_t PV_Offset_Writer,
+					writerDouble_t PV_Bandwidth_Writer,
+					writerDouble_t PV_Resolution_Writer,
+					writerInt32_t PV_Impedance_Writer,
+					writerInt32_t PV_Coupling_Writer,
+					writerInt32_t PV_SignalRef_Writer,
+					writerInt32_t PV_SignalType_Writer,
+					writerInt32_t PV_Ground_Writer,
 					autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
@@ -455,7 +486,7 @@ public:
      * @ingroup timing
      * @brief Set the function that retrieves the exact start time when the waveform Generation starts.
      *
-     * @param
+     * @param timestampDelegate 
      *
      */
     //TODO: Discuss if necessary
@@ -710,7 +741,12 @@ public:
      * @param value Waveform generator grounded/degrounded
      */
     void setGround(const timespec& timestamp, const std::int32_t& value);
-
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 
 };
 

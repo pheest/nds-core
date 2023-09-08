@@ -61,6 +61,7 @@ public:
     virtual void registerReporter(reporter_t reporter) =0;
 
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::int32_t& value, const statusPV_t& status = statusPV_t::success) = 0;
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::int64_t& value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const float& value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const double& value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<bool> & value, const statusPV_t& status = statusPV_t::success) = 0;
@@ -70,6 +71,7 @@ public:
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int8_t> & value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int16_t> & value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int32_t> & value, const statusPV_t& status = statusPV_t::success) = 0;
+    virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<std::int64_t> & value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<float> & value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::vector<double> & value, const statusPV_t& status = statusPV_t::success) = 0;
     virtual void push(const PVBaseImpl& pv, const timespec& timestamp, const std::string & value, const statusPV_t& status = statusPV_t::success) = 0;

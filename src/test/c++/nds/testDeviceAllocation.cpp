@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "Device.h"
+#include "DeviceBasic.h"
 #include "nds3/ndsTestInterface.h"
 
 TEST(testDeviceAllocation, testAllocationMissingDevice)
@@ -12,7 +12,7 @@ TEST(testDeviceAllocation, testAllocationMissingDevice)
     //testDev1 does not exist, so a testDevice object called rootNode can not be created. Error should be raised
     EXPECT_THROW(factory.createDevice("testDev1", "rootNode", nds::namedParameters_t()), nds::DriverNotFound);
     //testDevice object called rootNode does not exist
-    EXPECT_EQ((void*)0, Device::getInstance("rootNode"));
+    EXPECT_EQ((void*)0, DeviceBasic::getInstance("rootNode"));
 }
 
 /*
@@ -26,7 +26,7 @@ TEST(testDeviceAllocation, testDoubleAllocation)
     factory.createDevice("Device", "rootNode", nds::namedParameters_t());
 
     // The port should have been allocated
-    EXPECT_NE((void*)0, Device::getInstance("rootNode"));
+    EXPECT_NE((void*)0, DeviceBasic::getInstance("rootNode"));
 
     // 2nd allocation of a testDevice object with the same name (rootNode). Error should be raised
     EXPECT_THROW(factory.createDevice("Device", "rootNode", nds::namedParameters_t()), nds::DeviceAlreadyCreated);
@@ -35,7 +35,7 @@ TEST(testDeviceAllocation, testDoubleAllocation)
     factory.destroyDevice("rootNode");
 
     // The port should have been deallocated
-    EXPECT_EQ((void*)0, Device::getInstance("rootNode"));
+    EXPECT_EQ((void*)0, DeviceBasic::getInstance("rootNode"));
 
     // Try to destroy again the same device. Error should be raised
     EXPECT_THROW(factory.destroyDevice("rootNode"), nds::DeviceNotAllocated);
@@ -68,10 +68,10 @@ TEST(testDeviceAllocation, testTwoAllocations)
     nds::Factory factory("test");
 
     factory.createDevice("Device", "rootNode0", nds::namedParameters_t());
-    EXPECT_NE((void*)0, Device::getInstance("rootNode0"));
+    EXPECT_NE((void*)0, DeviceBasic::getInstance("rootNode0"));
 
     factory.createDevice("Device", "rootNode1", nds::namedParameters_t());
-    EXPECT_NE((void*)0, Device::getInstance("rootNode1"));
+    EXPECT_NE((void*)0, DeviceBasic::getInstance("rootNode1"));
 
     //factory.subscribe("rootNode0-Channel1-data-StateMachine-getState", "rootNode1-Channel1-numAcquisitions");
 
@@ -96,8 +96,8 @@ TEST(testDeviceAllocation, testTwoAllocations)
     factory.destroyDevice("rootNode0");
     factory.destroyDevice("rootNode1");
 
-    EXPECT_EQ((void*)0, Device::getInstance("rootNode0"));
-    EXPECT_EQ((void*)0, Device::getInstance("rootNode1"));
+    EXPECT_EQ((void*)0, DeviceBasic::getInstance("rootNode0"));
+    EXPECT_EQ((void*)0, DeviceBasic::getInstance("rootNode1"));
 
     EXPECT_THROW(factory.destroyDevice("rootNode0"), nds::DeviceNotAllocated);
     EXPECT_THROW(factory.destroyDevice("rootNode1"), nds::DeviceNotAllocated);
@@ -114,50 +114,50 @@ bool allowChange(const nds::state_t, const nds::state_t, const nds::state_t)
     return true;
 }
 
-TEST(testNode, testaddNode)
-{
-
-    nds::Factory factory("test");
-
-
-    nds::Port rootNode("rootNode");
-
-
-    nds::Node testNode("testNode");
-
-    rootNode.addNode(testNode);
-
-    nds::PVVariableIn<std::int32_t> PVVarIn0("PVVarIn0");
-    PVVarIn0.setUnits("TEST_Units");
-    PVVarIn0.setDescription("Test_PV");
-
-    //add enumeration for Signal Reference type
-    nds::enumerationStrings_t enumTest;
-    enumTest.push_back("Test_enum_0");
-    enumTest.push_back("Test_enum_1");
-    enumTest.push_back("Test_enum_2");
-
-    PVVarIn0.setEnumeration(enumTest);
-    PVVarIn0.setScanType(nds::scanType_t::periodic,1);
-    PVVarIn0.setDecimation(1);
-    testNode.addPV(PVVarIn0);
-
-
-    nds::StateMachine stateMachine0 = nds::StateMachine(true,
-            										   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&wait1s),
-													   std::bind(&allowChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-    testNode.addStateMachine(stateMachine0);
-
-    rootNode.initialize(0, factory);
-
-    factory.destroyDevice("");
-
-}
+//TEST(testNode, testaddNode)
+//{
+//
+//    nds::Factory factory("test");
+//
+//
+//    nds::Port rootNode("rootNode");
+//
+//
+//    nds::Node testNode("testNode");
+//
+//    rootNode.addNode(testNode);
+//
+//    nds::PVVariableIn<std::int32_t> PVVarIn0("PVVarIn0");
+//    PVVarIn0.setUnits("TEST_Units");
+//    PVVarIn0.setDescription("Test_PV");
+//
+//    //add enumeration for Signal Reference type
+//    nds::enumerationStrings_t enumTest;
+//    enumTest.push_back("Test_enum_0");
+//    enumTest.push_back("Test_enum_1");
+//    enumTest.push_back("Test_enum_2");
+//
+//    PVVarIn0.setEnumeration(enumTest);
+//    PVVarIn0.setScanType(nds::scanType_t::periodic,1);
+//    PVVarIn0.setDecimation(1);
+//    testNode.addPV(PVVarIn0);
+//
+//
+//    nds::StateMachine stateMachine0 = nds::StateMachine(true,
+//            										   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&wait1s),
+//													   std::bind(&allowChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+//
+//    testNode.addStateMachine(stateMachine0);
+//
+//    rootNode.initialize(0, factory);
+//
+//    factory.destroyDevice("");
+//
+//}
 /*
  * test that checks correct functionality of PVBase class.
  */

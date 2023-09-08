@@ -42,7 +42,7 @@ FactoryBaseImpl::~FactoryBaseImpl()
  */
 void FactoryBaseImpl::preDelete()
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
     // Deregister all the PVs
     /////////////////////////
@@ -83,7 +83,7 @@ void FactoryBaseImpl::loadDriver(const std::string &libraryName)
 void* FactoryBaseImpl::createDevice(const std::string& driverName, const std::string& deviceName, const namedParameters_t& parameters)
 {
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
         if(m_allocatedDevices.find(deviceName) != m_allocatedDevices.end())
         {
@@ -101,13 +101,13 @@ void* FactoryBaseImpl::createDevice(const std::string& driverName, const std::st
     }
     catch(...)
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::recursive_mutex> lock(m_mutex);
         m_allocatedDevices.erase(deviceName);
         throw;
     }
 
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::recursive_mutex> lock(m_mutex);
         m_allocatedDevices[deviceName].m_pDevice = newDevice.first;
         m_allocatedDevices[deviceName].m_deallocationFunction = newDevice.second;
     }
@@ -119,7 +119,7 @@ void* FactoryBaseImpl::createDevice(const std::string& driverName, const std::st
 
 void FactoryBaseImpl::destroyDevice(void* pDevice)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
     // Deregister all the PVs
     /////////////////////////
@@ -164,7 +164,7 @@ void FactoryBaseImpl::destroyDevice(const std::string& deviceName)
 
     if(!deviceName.empty())
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
         allocatedDevices_t::const_iterator findDevice = m_allocatedDevices.find(deviceName);
         if(findDevice == m_allocatedDevices.end())
@@ -190,7 +190,7 @@ ThreadBaseImpl* FactoryBaseImpl::runInThread(const std::string &name, threadFunc
 
 void FactoryBaseImpl::holdNode(void* pDeviceObject, std::shared_ptr<NodeImpl> pHoldNode)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
     m_heldNodes[pDeviceObject].push_back(pHoldNode);
 

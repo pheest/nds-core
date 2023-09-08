@@ -26,6 +26,33 @@ template <typename T> class PVVariableOutImpl;
 class HQMonitorImpl: public NodeImpl
 {
 public:
+	/**
+	 * @brief HQMonitorImpl constructor
+	 *
+	 * @param name Name (unique) to identify the instance of the node.
+	 * @param switchOnFunction Delegate function that performs the actions to switch the node on
+	 * @param switchOffFunction Delegate function that performs the actions to switch the node off
+	 * @param startFunction Delegate function that performs the actions to start the monitoring
+	 * @param stopFunction Delegate function that performs the actions to stop the monitoring
+	 * @param recoverFunction Delegate function to execute to recover from an error state
+	 * @param allowStateChangeFunction Delegate function that can deny a state change.
+	 * @param PV_DevicePower_Reader
+	 * @param PV_DeviceTemperature_Reader
+	 * @param PV_DeviceVoltage_Reader
+	 * @param PV_DeviceCurrent_Reader
+	 * @param PV_SEUEnable_Writer
+	 * @param PV_DAQEnable_Writer
+	 * @param PV_SelfTestEnable_Writer
+	 * @param PV_SelfTestType_Writer
+	 * @param PV_SelfTestVerboseEnable_Writer
+	 * @param PV_SelfTestIDEnable_Writer
+	 * @param PV_SelfTestTextEnable_Writer
+	 * @param PV_SelfTestCodeResultEnable_Writer
+	 * @param PV_SelfTestTextResult_Reader
+	 * @param PV_SignalQualityFlag_Reader
+	 * @param PV_SignalQualityFlagLevel_Writer
+	 * @param autoEnable See @ref autoEnable_t for further details
+	 */
 	HQMonitorImpl( const std::string& name,
 						stateChange_t switchOnFunction,
 						stateChange_t switchOffFunction,
@@ -50,8 +77,13 @@ public:
 						writerDouble_t PV_SignalQualityFlagLevel_Writer,
 						autoEnable_t autoEnable);
 
-	HQMonitorImpl(const std::string& name,  ///< The node's name
-					const HQMonitorArgs_t& handlerHQM); ///< Structure with delegate functions that perform the required actions.
+	/**
+	 *
+	 * @param name Name (unique) to identify the instance of the node.
+	 * @param handlerHQM Structure with delegate functions that perform the required actions.
+	 */
+	HQMonitorImpl(const std::string& name,
+					const HQMonitorArgs_t& handlerHQM);
 
 
     /**
@@ -67,7 +99,7 @@ public:
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-	 * @ingroup
+	 *
 	 * @brief Push data to the control system.
 	 *
 	 * Usually your device implementation will call this function from the
@@ -261,6 +293,13 @@ public:
 	 * @brief Set the the trigger level below the signal quality flag should be flagged
 	 */
 	void setSignalQualityFlagLevel(const timespec& timestamp, const double& value);
+
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 
 protected:
 

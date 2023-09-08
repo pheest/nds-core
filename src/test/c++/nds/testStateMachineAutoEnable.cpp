@@ -30,15 +30,15 @@ void recover##NAME(){\
 	std::cout<<"I'm on "<<__func__<<std::endl;\
 }\
 
-STM(_RootNode,0);
-STM(_Child1,0);
-STM(_Child2,0);
-STM(_Child3,0);
+STM(_RootNode,0)
+STM(_Child1,0)
+STM(_Child2,0)
+STM(_Child3,0)
 
-STM(_RootNode_asyn,0);
-STM(_Child1_asyn,3);
-STM(_Child2_asyn,2);
-STM(_Child3_asyn,1);
+STM(_RootNode_asyn,0)
+STM(_Child1_asyn,3)
+STM(_Child2_asyn,2)
+STM(_Child3_asyn,1)
 
 #define STM_NODE(PARENT,NAME,RET,AUTOENABLE) PARENT.addChild(nds::StateMachine(false,\
                                                                           std::bind(&switchOn##NAME),\
@@ -69,7 +69,7 @@ bool alwaysReturnFalse(const nds::state_t,const nds::state_t , const nds::state_
 }
 
 
-TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
+TEST(testStateMachineAutoEnable, testSuccesfulTransitionState)
 {
 
     nds::Port rootNode("rootNode");
@@ -99,7 +99,6 @@ TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine1.getLocalState());
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine2.getLocalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine3.getLocalState());
-
 
     // Starting state machine of the RootNode
     stateMachineRN.setState(nds::state_t::running);
@@ -132,7 +131,7 @@ TEST(testStateMachineHierarchical, testSuccesfulTransitionState)
 }
 
 
-TEST(testStateMachineHierarchical, testErrorTransitionState)
+TEST(testStateMachineAutoEnable, testErrorTransitionState)
 {
 
     nds::Port rootNode("rootNode");
@@ -168,7 +167,7 @@ TEST(testStateMachineHierarchical, testErrorTransitionState)
     factory.destroyDevice("");
 }
 
-TEST(testStateMachineHierarchical, testAsynTransitionState)
+TEST(testStateMachineAutoEnable, testAsynTransitionState)
 {
 
     nds::Port rootNode("rootNode");

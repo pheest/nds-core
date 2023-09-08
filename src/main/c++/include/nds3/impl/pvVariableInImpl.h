@@ -23,6 +23,7 @@ namespace nds
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
+ *            - std::int64_t
  *            - float
  *            - double
  *            - std::vector<bool>
@@ -32,6 +33,7 @@ namespace nds
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<std::int64_t>
  *            - std::vector<float>
  *            - std::vector<double>
  *            - std::string
@@ -46,6 +48,8 @@ public:
      * @brief Constructor.
      *
      * @param name the PV name
+     * @param pvType
+     *
      */
     PVVariableInImpl(const std::string& name, const inputPvType_t pvType = inputPvType_t::generic);
 

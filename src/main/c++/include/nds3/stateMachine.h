@@ -102,6 +102,7 @@ struct StateMachineArgs_t {
 	 * @param _stopFunction Stop function to be set in @ref StateMachineArgs_t.stopFunction.
 	 * @param _recoverFunction Recover function to be set in @ref StateMachineArgs_t.recoverFunction.
 	 * @param _allowStateChangeFunction Checking state transitions function to be set in @ref StateMachineArgs_t.allowStateChangeFunction.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,
@@ -192,6 +193,7 @@ public:
      *                                  a confirmation that the state switch is allowed.
      *                                 The function is called only after other internal checks clear
      *                                  the state switch
+     * @param autoState Parameter value
      */
     StateMachine(bool bAsync,
                  stateChange_t switchOnFunction,
@@ -259,6 +261,34 @@ public:
      * @return the global state
      */
     state_t getGlobalState();
+
+    /**
+     * @brief Returns the lowest global state
+     *
+     * @return the lowest children state
+     */
+    state_t getLowestGlobalState();
+
+    /**
+     * @brief Returns the highest global state
+     *
+     * @return the highest children state
+     */
+    state_t getHighestGlobalState();
+
+    /**
+     * @brief Returns the lowest state of all the children of the node
+     *
+     * @return the lowest children state
+     */
+    state_t getLowestChildState();
+
+    /**
+     * @brief Returns the highest state of all the children of the node.
+     *
+     * @return the highest children state
+     */
+    state_t getHighestChildState();
 
     /**
      * @brief Check if the transition to the new state is legal and is not denied by

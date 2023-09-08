@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "Device.h"
+#include "DeviceBasic.h"
 #include "nds3/ndsTestInterface.h"
 #include "nds3/ndsTestFactory.h"
 
@@ -15,10 +15,12 @@ TEST(testPVs, testVariable)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	std::int32_t value_I32(0);
+	std::int64_t value_I64(0);
 	double  value_DBL(0);
 	std::vector<std::int8_t> vector_I8(2,0);
 	std::vector<std::uint8_t> vector_UI8(2,0);
 	std::vector<std::int32_t> vector_I32(2,0);
+	std::vector<std::int64_t> vector_I64(2,0);
 	std::vector<double> vector_DBL(2,0);
 	std::string value_string;
 
@@ -27,6 +29,11 @@ TEST(testPVs, testVariable)
 	//read initial value of PVVariablesIn
 	pInterface->readCSValue("/rootNode-int32_VariableIn", &readTimestamp, &value_I32);
 	EXPECT_EQ(0, value_I32);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
+	pInterface->readCSValue("/rootNode-int64_VariableIn", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
@@ -50,15 +57,22 @@ TEST(testPVs, testVariable)
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
 	pInterface->readCSValue("/rootNode-vectorI32_VariableIn", &readTimestamp, &vector_I32);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_I32[0]);
+	EXPECT_EQ(0, vector_I32[1]);
 	EXPECT_EQ((unsigned int)2, vector_I32.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-vectorI64_VariableIn", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-vectorDBL_VariableIn", &readTimestamp, &vector_DBL);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_DBL[0]);
+	EXPECT_EQ(0, vector_DBL[1]);
 	EXPECT_EQ((unsigned int)2, vector_DBL.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
@@ -77,6 +91,18 @@ TEST(testPVs, testVariable)
 	pInterface->writeCSValue("/rootNode-int32_VariableOut", timestamp, (std::int32_t)1);
 	pInterface->readCSValue("/rootNode-int32_VariableOut", &readTimestamp, &value_I32);
 	EXPECT_EQ(1, value_I32);
+	EXPECT_EQ(1, readTimestamp.tv_sec);
+	EXPECT_EQ(1, readTimestamp.tv_nsec);
+
+	//Testing write/read of PVVariableOut: /rootNode-int64_VariableOut
+	pInterface->readCSValue("/rootNode-int64_VariableOut", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+	timestamp.tv_sec =1; timestamp.tv_nsec=1;
+	pInterface->writeCSValue("/rootNode-int64_VariableOut", timestamp, (std::int64_t)1);
+	pInterface->readCSValue("/rootNode-int64_VariableOut", &readTimestamp, &value_I64);
+	EXPECT_EQ(1, value_I64);
 	EXPECT_EQ(1, readTimestamp.tv_sec);
 	EXPECT_EQ(1, readTimestamp.tv_nsec);
 
@@ -137,6 +163,21 @@ TEST(testPVs, testVariable)
 	EXPECT_EQ(5, readTimestamp.tv_sec);
 	EXPECT_EQ(5, readTimestamp.tv_nsec);
 
+	//Testing write/read of PVVariableOut: /rootNode-vectorI64_VariableOut
+	pInterface->readCSValue("/rootNode-vectorI64_VariableOut", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+	timestamp.tv_sec =5; timestamp.tv_nsec=5;
+	pInterface->writeCSValue("/rootNode-vectorI64_VariableOut", timestamp, std::vector<int64_t> (2,1));
+	pInterface->readCSValue("/rootNode-vectorI64_VariableOut", &readTimestamp, &vector_I64);
+	EXPECT_EQ(1, vector_I64[0]);
+	EXPECT_EQ(1, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(5, readTimestamp.tv_sec);
+	EXPECT_EQ(5, readTimestamp.tv_nsec);
+
 	//Testing write/read of PVVariableOut: /rootNode-vectorDBL_VariableOut
 	pInterface->readCSValue("/rootNode-vectorDBL_VariableOut", &readTimestamp, &vector_DBL);
 	EXPECT_EQ(0, vector_DBL[0]);
@@ -177,10 +218,12 @@ TEST(testPVs, testDelegate)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	std::int32_t value_I32(0);
+	std::int64_t value_I64(0);
 	double  value_DBL(0);
 	std::vector<std::int8_t> vector_I8(2,0);
 	std::vector<std::uint8_t> vector_UI8(2,0);
 	std::vector<std::int32_t> vector_I32(2,0);
+	std::vector<std::int64_t> vector_I64(2,0);
 	std::vector<double> vector_DBL(2,0);
 	std::string value_string;
 
@@ -189,6 +232,11 @@ TEST(testPVs, testDelegate)
 	//read initial value of PVDelegateIn without initializer function
 	pInterface->readCSValue("/rootNode-int32_DelegateIn", &readTimestamp, &value_I32);
 	EXPECT_EQ(0, value_I32);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
+	pInterface->readCSValue("/rootNode-int64_DelegateIn", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
@@ -218,6 +266,13 @@ TEST(testPVs, testDelegate)
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateIn", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-vectorDBL_DelegateIn", &readTimestamp, &vector_DBL);
 	EXPECT_EQ(0, vector_DBL[0]);
 	EXPECT_EQ(0, vector_DBL[1]);
@@ -236,6 +291,11 @@ TEST(testPVs, testDelegate)
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-int64_DelegateOut", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-double_DelegateOut", &readTimestamp, &value_DBL);
 	EXPECT_EQ(0, value_DBL);
 	EXPECT_EQ(0, readTimestamp.tv_sec);
@@ -249,22 +309,29 @@ TEST(testPVs, testDelegate)
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
 	pInterface->readCSValue("/rootNode-vectorUI8_DelegateOut", &readTimestamp, &vector_UI8);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_UI8[0]);
+	EXPECT_EQ(0, vector_UI8[1]);
 	EXPECT_EQ((unsigned int)2, vector_UI8.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
 	pInterface->readCSValue("/rootNode-vectorI32_DelegateOut", &readTimestamp, &vector_I32);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_I32[0]);
+	EXPECT_EQ(0, vector_I32[1]);
 	EXPECT_EQ((unsigned int)2, vector_I32.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateOut", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-vectorDBL_DelegateOut", &readTimestamp, &vector_DBL);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_DBL[0]);
+	EXPECT_EQ(0, vector_DBL[1]);
 	EXPECT_EQ((unsigned int)2, vector_DBL.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
@@ -280,6 +347,13 @@ TEST(testPVs, testDelegate)
 	pInterface->writeCSValue("/rootNode-int32_DelegateOut", timestamp, (std::int32_t)1);
 	pInterface->readCSValue("/rootNode-int32_DelegateIn", &readTimestamp, &value_I32);
 	EXPECT_EQ(1, value_I32);
+	EXPECT_EQ(1, readTimestamp.tv_sec);
+	EXPECT_EQ(1, readTimestamp.tv_nsec);
+
+	timestamp.tv_sec =1; timestamp.tv_nsec=1;
+	pInterface->writeCSValue("/rootNode-int64_DelegateOut", timestamp, (std::int64_t)1);
+	pInterface->readCSValue("/rootNode-int64_DelegateIn", &readTimestamp, &value_I64);
+	EXPECT_EQ(1, value_I64);
 	EXPECT_EQ(1, readTimestamp.tv_sec);
 	EXPECT_EQ(1, readTimestamp.tv_nsec);
 
@@ -317,6 +391,15 @@ TEST(testPVs, testDelegate)
 	EXPECT_EQ(5, readTimestamp.tv_sec);
 	EXPECT_EQ(5, readTimestamp.tv_nsec);
 
+	timestamp.tv_sec =5; timestamp.tv_nsec=5;
+	pInterface->writeCSValue("/rootNode-vectorI64_DelegateOut", timestamp, std::vector<int64_t> (2,1));
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateIn", &readTimestamp, &vector_I64);
+	EXPECT_EQ(1, vector_I64[0]);
+	EXPECT_EQ(1, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(5, readTimestamp.tv_sec);
+	EXPECT_EQ(5, readTimestamp.tv_nsec);
+
 	timestamp.tv_sec =6; timestamp.tv_nsec=6;
 	pInterface->writeCSValue("/rootNode-vectorDBL_DelegateOut", timestamp, std::vector<double> (2,1));
 	pInterface->readCSValue("/rootNode-vectorDBL_DelegateIn", &readTimestamp, &vector_DBL);
@@ -346,10 +429,12 @@ TEST(testPVs, testDelegateInitialized)
 	nds::tests::TestControlSystemInterfaceImpl* pInterface = nds::tests::TestControlSystemInterfaceImpl::getInstance("rootNode");
 
 	std::int32_t value_I32(0);
+	std::int64_t value_I64(0);
 	double  value_DBL(0);
 	std::vector<std::int8_t> vector_I8(2,0);
 	std::vector<std::uint8_t> vector_UI8(2,0);
 	std::vector<std::int32_t> vector_I32(2,0);
+	std::vector<std::int64_t> vector_I64(2,0);
 	std::vector<double> vector_DBL(2,0);
 	std::string value_string;
 
@@ -358,6 +443,11 @@ TEST(testPVs, testDelegateInitialized)
 	//read initial value of PVDelegateIn without initializer function
 	pInterface->readCSValue("/rootNode-int32_DelegateIn", &readTimestamp, &value_I32);
 	EXPECT_EQ(0, value_I32);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
+	pInterface->readCSValue("/rootNode-int64_DelegateIn", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
@@ -387,6 +477,13 @@ TEST(testPVs, testDelegateInitialized)
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateIn", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-vectorDBL_DelegateIn", &readTimestamp, &vector_DBL);
 	EXPECT_EQ(0, vector_DBL[0]);
 	EXPECT_EQ(0, vector_DBL[1]);
@@ -405,6 +502,11 @@ TEST(testPVs, testDelegateInitialized)
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-int64_DelegateOut_init", &readTimestamp, &value_I64);
+	EXPECT_EQ(0, value_I64);
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-double_DelegateOut_init", &readTimestamp, &value_DBL);
 	EXPECT_EQ(0, value_DBL);
 	EXPECT_EQ(0, readTimestamp.tv_sec);
@@ -418,22 +520,29 @@ TEST(testPVs, testDelegateInitialized)
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
 	pInterface->readCSValue("/rootNode-vectorUI8_DelegateOut_init", &readTimestamp, &vector_UI8);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_UI8[0]);
+	EXPECT_EQ(0, vector_UI8[1]);
 	EXPECT_EQ((unsigned int)2, vector_UI8.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
 	pInterface->readCSValue("/rootNode-vectorI32_DelegateOut_init", &readTimestamp, &vector_I32);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_I32[0]);
+	EXPECT_EQ(0, vector_I32[1]);
 	EXPECT_EQ((unsigned int)2, vector_I32.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
 
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateOut_init", &readTimestamp, &vector_I64);
+	EXPECT_EQ(0, vector_I64[0]);
+	EXPECT_EQ(0, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
+	EXPECT_EQ(0, readTimestamp.tv_sec);
+	EXPECT_EQ(0, readTimestamp.tv_nsec);
+
 	pInterface->readCSValue("/rootNode-vectorDBL_DelegateOut_init", &readTimestamp, &vector_DBL);
-	EXPECT_EQ(0, vector_I8[0]);
-	EXPECT_EQ(0, vector_I8[1]);
+	EXPECT_EQ(0, vector_DBL[0]);
+	EXPECT_EQ(0, vector_DBL[1]);
 	EXPECT_EQ((unsigned int)2, vector_DBL.size());
 	EXPECT_EQ(0, readTimestamp.tv_sec);
 	EXPECT_EQ(0, readTimestamp.tv_nsec);
@@ -449,6 +558,13 @@ TEST(testPVs, testDelegateInitialized)
 	pInterface->writeCSValue("/rootNode-int32_DelegateOut_init", timestamp, (std::int32_t)1);
 	pInterface->readCSValue("/rootNode-int32_DelegateIn", &readTimestamp, &value_I32);
 	EXPECT_EQ(1, value_I32);
+	EXPECT_EQ(1, readTimestamp.tv_sec);
+	EXPECT_EQ(1, readTimestamp.tv_nsec);
+
+	timestamp.tv_sec =1; timestamp.tv_nsec=1;
+	pInterface->writeCSValue("/rootNode-int64_DelegateOut_init", timestamp, (std::int64_t)1);
+	pInterface->readCSValue("/rootNode-int64_DelegateIn", &readTimestamp, &value_I64);
+	EXPECT_EQ(1, value_I64);
 	EXPECT_EQ(1, readTimestamp.tv_sec);
 	EXPECT_EQ(1, readTimestamp.tv_nsec);
 
@@ -483,6 +599,15 @@ TEST(testPVs, testDelegateInitialized)
 	EXPECT_EQ(1, vector_I32[0]);
 	EXPECT_EQ(1, vector_I32[1]);
 	EXPECT_EQ((unsigned int)2, vector_I32.size());
+	EXPECT_EQ(5, readTimestamp.tv_sec);
+	EXPECT_EQ(5, readTimestamp.tv_nsec);
+
+	timestamp.tv_sec =5; timestamp.tv_nsec=5;
+	pInterface->writeCSValue("/rootNode-vectorI64_DelegateOut_init", timestamp, std::vector<int64_t> (2,1));
+	pInterface->readCSValue("/rootNode-vectorI64_DelegateIn", &readTimestamp, &vector_I64);
+	EXPECT_EQ(1, vector_I64[0]);
+	EXPECT_EQ(1, vector_I64[1]);
+	EXPECT_EQ((unsigned int)2, vector_I64.size());
 	EXPECT_EQ(5, readTimestamp.tv_sec);
 	EXPECT_EQ(5, readTimestamp.tv_nsec);
 

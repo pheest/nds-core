@@ -16,13 +16,6 @@ DigitalIO<T>::DigitalIO(): Node()
 {
 }
 
-/**
- * @brief Constructs the DigitalIO node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
- */
 template <typename T>
 DigitalIO<T>::DigitalIO( const std::string& name,
 						 size_t maxElements,
@@ -159,7 +152,11 @@ void DigitalIO<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const 
 {
     return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setNumberOfPushedDataBlocks(timestamp, value);
 }
-
+template <typename T>
+void DigitalIO<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<DigitalIOImpl<T> >(m_pImplementation)->setState(newState);
+}
 /*
  * TODO: Major modifications must be done to include this new data types.
  */
@@ -172,6 +169,6 @@ template class DigitalIO<std::vector<bool>>;
 template class DigitalIO<std::vector<std::int8_t>>;
 template class DigitalIO<std::vector<std::int16_t>>;
 template class DigitalIO<std::vector<std::int32_t>>;
-
+template class DigitalIO<std::vector<std::int64_t>>;
 
 }

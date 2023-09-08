@@ -273,7 +273,7 @@ inline void HQMonitorImpl::constructorBody(const HQMonitorArgs_t& handlerHQM) {
 	  addChild(m_Decimation_PV);
 
 	  // Add state machine
-	  m_StateMachine.reset(new StateMachineImpl(true,
+	  m_StateMachine.reset(new StateMachineImpl(false,
 						      handlerHQM.handlerSTM.switchOnFunction,
 							  handlerHQM.handlerSTM.switchOffFunction,
 						      std::bind(&HQMonitorImpl::onStart, this),
@@ -528,6 +528,12 @@ void HQMonitorImpl::setSignalQualityFlagLevel(const timespec& timestamp, const d
 {
 	m_SignalQFlagTrigLevel_RBVPV->setValue(timestamp, value);
 	m_SignalQFlagTrigLevel_RBVPV->push(timestamp, value);
+}
+
+
+void HQMonitorImpl::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
 }
 
 }

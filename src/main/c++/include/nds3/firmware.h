@@ -59,13 +59,14 @@ struct FirmwareArgs_t {
 	/**
 	 * @brief Constructor to create an instance of the given structure.
 	 * It must be used to ensure that compulsory fields are always provided in compilation time.
-	 * @param switchOnFunction Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
-	 * @param switchOffFunction Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
-	 * @param startFunction Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
-	 * @param stopFunction Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
-	 * @param recoverFunction Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
-	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
-	 * @param PV_FirmwarePath_Writer Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 * @param switchOnFunction 				Switch-on function to be set in @ref FirmwareArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction 			Switch-off function to be set in @ref FirmwareArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction 				Start function to be set in @ref FirmwareArgs_t.handlerSTM startFunction
+	 * @param stopFunction 					Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction 				Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction 		Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_FirmwarePath_Writer 		Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 * @param autoEnable 					See @ref autoEnable_t for further details.
 	 */
 	FirmwareArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -123,16 +124,26 @@ public:
     /**
      * @brief Constructs the firmware support device node.
      *
+     * @param name 						Name (unique) to identify the instance of the node.
+     * @param maxElements				Maximum number of elements to allocate vectors (if any).
+     * @param switchOnFunction          Switch-on function.
+     * @param switchOffFunction         Switch-off function.
+     * @param startFunction             Start function.
+     * @param stopFunction              Stop function.
+     * @param recoverFunction           Recover function.
+     * @param allowStateChangeFunction  Checking state transitions function.
+     * @param PV_FirmwarePath_Writer	Function to write the path of the firmware file.
+     * @param autoEnable				See @ref autoEnable_t for further details
      */
-    Firmware(const std::string& name,  ///< The node's name
-	     size_t maxElements, ///< Maximum length of the PV strings.
-	stateChange_t switchOnFunction,   ///< Delegate function that performs the actions to switch the node on
-	stateChange_t switchOffFunction,  ///< Delegate function that performs the actions to switch the node off
-	stateChange_t startFunction,      ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-	stateChange_t stopFunction,      ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-	stateChange_t recoverFunction,   ///< Delegate function to execute to recover from an error state
-	allowChange_t allowStateChangeFunction,   ///< Delegate function that can deny a state change. Usually just returns true
-	writerString_t PV_FirmwarePath_Writer,	 ///< Delegate function that performs the actions to set the firmware path
+    Firmware(const std::string& name,
+	     size_t maxElements,
+	stateChange_t switchOnFunction,
+	stateChange_t switchOffFunction,
+	stateChange_t startFunction,
+	stateChange_t stopFunction,
+	stateChange_t recoverFunction,
+	allowChange_t allowStateChangeFunction,
+	writerString_t PV_FirmwarePath_Writer,
 	autoEnable_t autoEnable=autoEnable_t::none);
 
     /**
@@ -147,10 +158,10 @@ public:
     			const FirmwareArgs_t& handlerFIRM);
 
     /**
-     * @ingroup
+     *
      * @brief Set the function that retrieves the exact start time when starts.
      *
-     * @param
+     * @param timestampDelegate
      *
      */
     //TODO: Discuss if necessary
@@ -164,7 +175,7 @@ public:
     nds::state_t getState();
 
     /**
-     * @ingroup
+     *
      * @brief Push data to the control system.
      *
      * Usually your device implementation will call this function from the
@@ -176,7 +187,7 @@ public:
     void push(const timespec& timestamp, const std::string& data);
 
     /**
-     * @ingroup
+     *
      * @brief Returns the timestamp at start.
      *
      * @return the time when started.
@@ -295,7 +306,12 @@ public:
      *
      */
     void setFirmwarePath(const timespec& timestamp, const std::string& value);
-
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 };
 
 

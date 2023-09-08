@@ -20,37 +20,54 @@
 namespace nds
 {
 
-  class FirmwareImpl: public NodeImpl
-  {
-    public:
-      FirmwareImpl(const std::string& name,  ///< The node's name
-		   size_t maxElements, ///< Maximum length of the PV strings.
-          stateChange_t switchOnFunction,               ///< Delegate function that performs the actions to switch the node on
-          stateChange_t switchOffFunction,              ///< Delegate function that performs the actions to switch the node off
-          stateChange_t startFunction,                  ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-          stateChange_t stopFunction,                   ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-          stateChange_t recoverFunction,                ///< Delegate function to execute to recover from an error state
-          allowChange_t allowStateChangeFunction,       ///< Delegate function that can deny a state change. Usually just returns true
-          writerString_t PV_FirmwarePath_Writer,		  ///< Delegate function that performs the actions to set the firmware path
+class FirmwareImpl: public NodeImpl {
+public:
+	/**
+	 *
+	 * @param name The node's name
+	 * @param maxElements Maximum length of the PV strings.
+	 * @param switchOnFunction          Delegate function that performs the actions to switch the node on
+	 * @param switchOffFunction         Delegate function that performs the actions to switch the node off
+	 * @param startFunction             Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
+	 * @param stopFunction              Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
+	 * @param recoverFunction           Delegate function to execute to recover from an error state
+	 * @param allowStateChangeFunction  Delegate function that can deny a state change. Usually just returns true
+	 * @param PV_FirmwarePath_Writer Delegate function that performs the actions to set the firmware path
+	 * @param autoEnable See @ref autoEnable_t for further details
+	 */
+      FirmwareImpl(const std::string& name,
+		   size_t maxElements,
+          stateChange_t switchOnFunction,
+          stateChange_t switchOffFunction,
+          stateChange_t startFunction,
+          stateChange_t stopFunction,
+          stateChange_t recoverFunction,
+          allowChange_t allowStateChangeFunction,
+          writerString_t PV_FirmwarePath_Writer,
 		  autoEnable_t autoEnable);
 
-      FirmwareImpl(const std::string& name, ///< The node's name
-    		  	   size_t maxElements, ///< Maximum length of the PV strings.
-				   const FirmwareArgs_t& handlerFIRM); ///< Structure with delegate functions that perform the required actions.
+		/**
+		 * @param name The node's name
+		 * @param maxElements Maximum length of the PV strings.
+		 * @param handlerFIRM See @ref FirmwareArgs_t for futher details.
+		 */
+      FirmwareImpl(const std::string& name,
+    		  	   size_t maxElements,
+				   const FirmwareArgs_t& handlerFIRM);
 
 
       /**
-       * @ingroup
+       *
        * @brief Set the function that retrieves the exact start time when starts.
        *
-       * @param
+       * @param timestampDelegate
        *
        */
       //TODO: Discuss if necessary
       void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
       /**
-       * @ingroup
+       *
        * @brief Push data to the control system.
        *
        * Usually your device implementation will call this function from the
@@ -62,7 +79,7 @@ namespace nds
       void push(const timespec& timestamp, const std::string& data);
 
       /**
-       * @ingroup
+       *
        * @brief Returns the timestamp at start.
        *
        * @return the time when started.
@@ -193,6 +210,12 @@ namespace nds
        *
        */
       void setFirmwarePath(const timespec& timestamp, const std::string& value);
+      /**
+       * @brief Called to change the actual state of the State Machine of the Node
+       *
+       * @param newState New state to set the State Machine of the node
+       */
+      void setState(const nds::state_t& newState);
 
     protected:
 

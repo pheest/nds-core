@@ -236,6 +236,55 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 	m_DigitalIO_I32.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
 	m_DigitalIO_I32.getStartTimestamp();
 
+	/**
+	 * Add a Digital I/O node for int64_t PV:
+	 */
+	if (findParam != parameters.end() && findParam->second=="YES") {
+		 //Set compulsory methods
+		nds::DigitalIOArgs_t<std::vector<std::int64_t>> handlerDIO = nds::DigitalIOArgs_t<std::vector<std::int64_t>>(
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I64, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I64,this, std::placeholders::_1, std::placeholders::_2));
+		//Set optional methods
+		handlerDIO.PV_dataOutMask_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I64, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelHigh_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_voltLevelLow_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Initializer, this, std::placeholders::_1, std::placeholders::_2);
+		handlerDIO.PV_ChannelDir_Initializer = std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I64, this, std::placeholders::_1, std::placeholders::_2);
+		//Set init values
+		handlerDIO.m_Decimation_Init = 1;
+		handlerDIO.m_DataOut_Init = std::vector<std::int64_t> (128, 300); //128 integers(64) with value 300
+
+		m_DigitalIO_I64 = rootNode.addChild(nds::DigitalIO<std::vector<std::int64_t>>(
+				"DigitalIOI64Node",
+				128,
+				handlerDIO));
+
+	} else {
+		m_DigitalIO_I64 = rootNode.addChild(nds::DigitalIO<std::vector<std::int64_t> >(
+				"DigitalIOI64Node",
+				128,
+				std::bind(&DeviceDigitalIO::switchOn_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::switchOff_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::start_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::stop_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::recover_DigitalIO_I64, this),
+				std::bind(&DeviceDigitalIO::allow_DigitalIO_Change_I64, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I64,this, std::placeholders::_1, std::placeholders::_2),
+				std::bind(&DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I64,this, std::placeholders::_1, std::placeholders::_2)
+		));
+	}
+	m_DigitalIO_I64.setStartTimestampDelegate(std::bind(&DeviceDigitalIO::getCurrentTime,this));
+	m_DigitalIO_I64.getStartTimestamp();
+
     timespec timestamp={0,0};
     m_setCurrentTime = rootNode.addChild(nds::PVVariableOut<std::int32_t>("setCurrentTime"));
     m_setCurrentTime.write(timestamp, (std::int32_t)NDS_EPOCH);
@@ -659,6 +708,129 @@ void DeviceDigitalIO::DigitalIO_thread_body_I16(){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Int64_t Node STATE MACHINE
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+* Methods to control DigitalIO state machine
+*/
+void DeviceDigitalIO::switchOn_DigitalIO_I64(){
+
+}
+void DeviceDigitalIO::switchOff_DigitalIO_I64(){
+
+}
+void DeviceDigitalIO::start_DigitalIO_I64(){
+	m_bStop_DigitalIO_I64  = false;
+
+	/**
+	 *   Start the acquisition thread.
+	 *   We don't need to check if the thread was already started because the state
+	 *   machine guarantees that the start handler is called only while the state
+	 *   is ON.
+	 */
+	m_DigitalIO_Thread_I64 =
+	  m_DigitalIO_I64.runInThread("DIOI64",
+				      std::bind(&DeviceDigitalIO::DigitalIO_thread_body_I64, this));
+
+}
+void DeviceDigitalIO::stop_DigitalIO_I64(){
+	m_bStop_DigitalIO_I64 = true;
+	m_DigitalIO_Thread_I64.join();
+}
+void DeviceDigitalIO::recover_DigitalIO_I64(){
+    throw nds::StateMachineRollBack("Cannot recover"); //TODO: Study this
+}
+
+bool DeviceDigitalIO::allow_DigitalIO_Change_I64(const nds::state_t, const nds::state_t, const nds::state_t){
+	return true;
+}
+
+/**
+* DigitalIO setters
+*/
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I64(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the dataOutMask to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value = value;
+	m_DigitalIO_I64.setDataOutMask(timestamp,value);
+}
+
+void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I64(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelHigh to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_I64.setVoltLevelHigh(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_voltLevelLow_Writer_I64(const timespec& timestamp, const double& value){
+	double HW_value;
+	//Value has the voltLevelLow to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real voltLevelLow programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_I64.setVoltLevelLow(timestamp,HW_value);
+}
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Writer_I64(const timespec& timestamp, const std::vector<bool>& value){
+	std::vector<bool> HW_value;
+	//Value has the ChannelDir to be programmed on the hardware.
+	//Call to function programming the hardware. This function should return the real ChannelDir programmed. This value has to be set to the readback attribute.
+	//In the meantime, without real hardware value and  HW_value are equal.
+	HW_value=value;
+	m_DigitalIO_I64.setChannelDir(timestamp,HW_value);
+}
+
+/**
+* Body of function DigitalIO thread.
+*/
+void DeviceDigitalIO::DigitalIO_thread_body_I64(){
+
+	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
+	std::vector<std::int64_t> outputData(m_DigitalIO_I64.getMaxElements(),0);
+
+	//Counter for number of pushed data blocks
+	std::int32_t NumberOfPushedDataBlocks(0);
+
+	std::int64_t value(0);
+
+	// Get DataOutMask
+	std::vector<bool> DataOutMask = m_DigitalIO_I64.getDataOutMask();
+	// Get VoltLevelHigh
+	double VoltLevelHigh = m_DigitalIO_I64.getVoltLevelHigh();
+	// Get VoltLevelLow
+	double VoltLevelLow = m_DigitalIO_I64.getVoltLevelLow();
+	// Get ChannelDir
+	std::vector<bool> ChannelDir = m_DigitalIO_I64.getChannelDir();
+
+	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
+	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
+	//std::cout<<"\DataOutMask = "<<DataOutMask<<std::endl;
+	//std::cout<<"\tChannelDir = "<<ChannelDir<<std::endl;
+
+
+	// Run until the state machine stops us
+	while(!m_bStop_DigitalIO_I64){
+
+		size_t scanVector(0);
+
+		for(scanVector=0; scanVector != outputData.size(); ++scanVector){
+			outputData[scanVector] = value;
+		}
+		++value;
+		// Push the vector to the control system
+		m_DigitalIO_I64.push(m_DigitalIO_I64.getTimestamp(), outputData);
+		++NumberOfPushedDataBlocks;
+		//TODO: Send values to data acquisition node.
+
+		// Rest for a while
+		::usleep(100000);
+	}
+	m_DigitalIO_I64.setNumberOfPushedDataBlocks(m_DigitalIO_I64.getTimestamp(),NumberOfPushedDataBlocks);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Uint32_t Node STATE MACHINE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -794,6 +966,18 @@ void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I32(
 		timespec* timestamp, std::vector<bool>* value) {
 	*timestamp = {NDS_EPOCH, 100};
 	*value = std::vector<bool>(32, true); //Vector with 32 data to true.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Initializer_I64(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 110};
+	*value = std::vector<bool>(64, false); //Vector with 64 data to false.
+}
+
+void DeviceDigitalIO::PV_DigitalIO_ChannelDir_Initializer_I64(
+		timespec* timestamp, std::vector<bool>* value) {
+	*timestamp = {NDS_EPOCH, 120};
+	*value = std::vector<bool>(64, true); //Vector with 64 data to true.
 }
 
 /**

@@ -157,7 +157,7 @@ namespace nds {
 	    addChild(m_Overflow_PV);
 
 	    // Add state machine
-	    m_StateMachine.reset(new StateMachineImpl(true,
+	    m_StateMachine.reset(new StateMachineImpl(false,
 	    										  handlerTMS.handlerSTM.switchOnFunction,
 												  handlerTMS.handlerSTM.switchOffFunction,
 												  std::bind(&TimestampingImpl::onStart, this),
@@ -312,6 +312,12 @@ namespace nds {
       decimation = 1;
     }
     m_Timestamps_PV->setDecimation(decimation);
+  }
+
+  template<typename T>
+  void TimestampingImpl<T>::setState(const nds::state_t& newState)
+  {
+  	m_StateMachine->setState(newState);
   }
 
 template class TimestampingImpl<timestamp_t>;

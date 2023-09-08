@@ -56,6 +56,7 @@ struct TimingArgs_t {
 	 * @param recoverFunction Recover function to be set in @ref TimingArgs_t.handlerSTM recoverFunction.
 	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref TimingArgs_t.handlerSTM allowStateChangeFunction.
 	 * @param _PV_Time_Reader Time reader to be set in @ref TimingArgs_t.PV_Time_Reader.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	TimingArgs_t(stateChange_t switchOnFunction,
 				 stateChange_t switchOffFunction,
@@ -104,11 +105,10 @@ class NDS3_API Timing: public Node  {
     Timing& operator=(const Timing& right);
 
     /**
-     * @ingroup
+     *
      * @brief Constructs the Timing node
      *
      * @param name node name
-     * @param maxElements not used in this node
      * @param switchOnFunction  Delegate function, performs the actions to switch the node on
      * @param switchOffFunction Delegate function, performs the actions to switch the node off
      * @param startFunction     Delegate function, performs the actions to start the timestamping
@@ -117,7 +117,7 @@ class NDS3_API Timing: public Node  {
      * @param allowStateChangeFunction  Delegate function that can deny a state change.
      *                                  Usually just returns true
      * @param PV_Time_Reader Delegate function, reads  Time PV
-     *
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     Timing( const std::string& name,
         stateChange_t switchOnFunction,
@@ -139,7 +139,7 @@ class NDS3_API Timing: public Node  {
 
     // ------------------ Functions common to all nodes ---------------------//
     /**
-     * @ingroup
+     *
      * @brief Set the function that retrieves the exact start time when starts.
      *
      * @param timestampDelegate
@@ -148,7 +148,7 @@ class NDS3_API Timing: public Node  {
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @ingroup
+     *
      * @brief Push data to the control system.
      *
      * Usually your device implementation will call th`is function from the
@@ -160,7 +160,7 @@ class NDS3_API Timing: public Node  {
     void push(const timespec& timestamp, const timespec& data);
 
     /**
-     * @ingroup
+     *
      * @brief Returns the timestamp at start.
      *
      * @return the time when started.
@@ -265,8 +265,19 @@ class NDS3_API Timing: public Node  {
     */
    void setRefTimeBase(const timespec& timestamp, const timespec& value);
 
+   /**
+    * @brief Called to change the actual state of the State Machine of the Node
+    *
+    * @param newState New state to set the State Machine of the node
+    */
+   void setState(const nds::state_t& newState);
 };
 
 }
+
+#ifdef _WIN32
+#define CLOCK_REALTIME 0
+int NDS3_API clock_gettime(int, struct timespec *spec);
+#endif
 
 #endif // NDSTIMING_H

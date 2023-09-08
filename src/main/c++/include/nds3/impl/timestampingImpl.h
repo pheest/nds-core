@@ -29,7 +29,7 @@ namespace nds {
    public:
 
     /**
-     * @ingroup
+     *
      * @brief Constructs the Time stamping node
      *
      * @param name node name
@@ -44,8 +44,8 @@ namespace nds {
      * @param PV_Enable_Writer Delegate function to enable/disable timestamping
      * @param PV_Edge_Writer   Delegate function, sets the edges at which the
      *                         timestamping must be retrieved: RISING, FALLING, ANY.
-     * @param PV_ClearOverflowWriter    Delegate function, performs the actions to clear the overflow.
-     *
+     * @param PV_ClearOverflow_Writer Delegate function, performs the actions to clear the overflow.
+	 * @param autoEnable See @ref autoEnable_t for further details
      */
      TimestampingImpl(const std::string& name,
                  size_t maxElements,
@@ -91,7 +91,7 @@ namespace nds {
     void setStartTimestampDelegate(getTimestampPlugin_t timestampDelegate);
 
     /**
-     * @ingroup
+     *
      * @brief Push data to the control system.
      *
      * Usually your device implementation will call this function from the
@@ -192,6 +192,13 @@ namespace nds {
      * @param value decimation factor
      */
     void setDecimation(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 
    protected:
      /**

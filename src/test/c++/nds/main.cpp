@@ -3,14 +3,16 @@
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
-#include "Device.h"
+#include "DeviceBasic.h"
 #include "DeviceFloat.h"
 #include "DeviceDBL.h"
 #include "DeviceDigitalIO.h"
 #include "DeviceFTE.h"
 #include "DeviceI32.h"
+#include "DeviceI64.h"
 #include "DeviceRouting.h"
 #include "DeviceVectorI32.h"
+#include "DeviceVectorI64.h"
 #include "DeviceVectorI8.h"
 #include "DeviceVectorUI8.h"
 #include "DeviceVectorFloat.h"
@@ -23,6 +25,7 @@
 #include "DevicePVs.h"
 #include "DeviceTrigAndClk.h"
 #include "DeviceDataMultiplexing.h"
+#include "DeviceError.h"
 
 #include "nds3/ndsTestFactory.h"
 
@@ -30,8 +33,8 @@
 int main(int argc, char **argv)
 {
     nds::Factory::registerDriver("Device",
-                           std::bind(&Device::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&Device::deallocateDevice, std::placeholders::_1));
+                           std::bind(&DeviceBasic::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceBasic::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceFloat",
                            std::bind(&DeviceFloat::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -48,6 +51,14 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceVectorI32",
                            std::bind(&DeviceVectorI32::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceVectorI32::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceI64",
+						  std::bind(&DeviceI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+						  std::bind(&DeviceI64::deallocateDevice, std::placeholders::_1));
+
+   	nds::Factory::registerDriver("DeviceVectorI64",
+   						   std::bind(&DeviceVectorI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+   						   std::bind(&DeviceVectorI64::deallocateDevice, std::placeholders::_1));
 
     nds::Factory::registerDriver("DeviceVectorI8",
                            std::bind(&DeviceVectorI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -109,6 +120,10 @@ int main(int argc, char **argv)
     nds::Factory::registerDriver("DeviceDataMultiplexing",
                            std::bind(&DeviceDataMultiplexing::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceDataMultiplexing::deallocateDevice, std::placeholders::_1));
+
+    nds::Factory::registerDriver("DeviceError",
+                           std::bind(&DeviceError::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+                           std::bind(&DeviceError::deallocateDevice, std::placeholders::_1));
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);

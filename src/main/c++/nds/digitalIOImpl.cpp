@@ -171,13 +171,14 @@ inline void DigitalIOImpl<T>::constructorBody(size_t maxElements, const DigitalI
 	addChild(m_NumberOfPushedDataBlocks);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerDIO.handlerSTM.switchOnFunction,
 								   handlerDIO.handlerSTM.switchOffFunction,
                                    std::bind(&DigitalIOImpl::onStart, this),
 								   handlerDIO.handlerSTM.stopFunction,
 								   handlerDIO.handlerSTM.recoverFunction,
-								   handlerDIO.handlerSTM.allowStateChangeFunction));
+								   handlerDIO.handlerSTM.allowStateChangeFunction,
+								   handlerDIO.handlerSTM.autoEnable));
     addChild(m_StateMachine);
 }
 
@@ -292,6 +293,11 @@ void DigitalIOImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, co
 	m_NumberOfPushedDataBlocks->push(timestamp, value);
 }
 
+template<typename T>
+void DigitalIOImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 
 /*
  * TODO: Major modifications must be done to include this new data types.
@@ -305,6 +311,6 @@ template class DigitalIOImpl<std::vector<bool>>;
 template class DigitalIOImpl<std::vector<std::int8_t>>;
 template class DigitalIOImpl<std::vector<std::int16_t>>;
 template class DigitalIOImpl<std::vector<std::int32_t>>;
-
+template class DigitalIOImpl<std::vector<std::int64_t>>;
 
 }

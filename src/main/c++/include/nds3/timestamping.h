@@ -92,6 +92,7 @@ struct TimestampingArgs_t {
      * @param _PV_Enable_Writer Function to enable/disable the generation of timestamps. To be set in @ref TimestampingArgs_t.PV_Enable_Writer.
      * @param _PV_Edge_Writer Function to write the type of Edge to generate timestamps. To be set in @ref TimestampingArgs_t.PV_Edge_Writer.
      * @param _PV_ClearOverflow_Writer Function to clear the overflow error. To be set in @ref TimestampingArgs_t.PV_ClearOverflow_Writer.
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     TimestampingArgs_t(stateChange_t switchOnFunction,
     				   stateChange_t switchOffFunction,
@@ -144,11 +145,11 @@ class NDS3_API Timestamping: public Node  {
     Timestamping& operator=(const Timestamping<T>& right);
 
     /**
-     * @ingroup
+     *
      * @brief Constructs the Time stamping node
      *
      * @param name node name
-     * @param maxElements not used in this node
+     * @param maxElements used in this node
      * @param switchOnFunction  Delegate function, performs the actions to switch the node on
      * @param switchOffFunction Delegate function, performs the actions to switch the node off
      * @param startFunction     Delegate function, performs the actions to start the timestamping
@@ -159,8 +160,8 @@ class NDS3_API Timestamping: public Node  {
      * @param PV_Enable_Writer Delegate function to enable/disable timestamping
      * @param PV_Edge_Writer   Delegate function, sets the edges at which the
      *                         timestamping must be retrieved: RISING, FALLING, ANY.
-     * @param PV_ClearOverflowWriter    Delegate function, performs the actions to clear the overflow.
-     *
+     * @param PV_ClearOverflow_Writer Delegate function, performs the actions to clear the overflow.
+     * @param autoEnable See @ref autoEnable_t for further details.
      */
     Timestamping(const std::string& name,
                  size_t maxElements,
@@ -186,7 +187,7 @@ class NDS3_API Timestamping: public Node  {
     // ------------------ Functions common to all nodes ---------------------//
 
     /**
-     * @ingroup
+     *
      * @brief Set the function that retrieves the exact start time when starts.
      *
      * @param timestampDelegate
@@ -202,7 +203,7 @@ class NDS3_API Timestamping: public Node  {
     nds::state_t getState();
 
     /**
-     * @ingroup
+     *
      * @brief Push data to the control system.
      *
      * Usually your device implementation will call this function from the
@@ -214,7 +215,7 @@ class NDS3_API Timestamping: public Node  {
     void push(const timespec& timestamp, const T& data);
 
     /**
-     * @ingroup
+     *
      * @brief Returns the timestamp at start.
      *
      * @return the time when started.
@@ -297,6 +298,13 @@ class NDS3_API Timestamping: public Node  {
      * @param value decimation factor
      */
     void setDecimation(const timespec& timestamp, const std::int32_t& value);
+
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 
   };
 }

@@ -193,7 +193,7 @@ private:
     typedef std::map<void*, nodesList_t> heldNodes_t;
     heldNodes_t m_heldNodes;
 
-    std::mutex m_mutex;
+    std::recursive_mutex m_mutex;
 
     std::unique_ptr<IniFileParserImpl> m_namingRules;
     std::string m_namingRulesName;

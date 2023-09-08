@@ -8,7 +8,11 @@ std::string TestUtils::getString(const std::int32_t & data){
 	oss << "Integer: " << data;
 	return oss.str();
 }
-
+std::string TestUtils::getString(const std::int64_t & data){
+	std::ostringstream oss;
+	oss << "Integer64: " << data;
+	return oss.str();
+}
 std::string TestUtils::getString(const std::uint64_t & data){
 	std::ostringstream oss;
 	oss << "Unsigned Integer 64: " << data;
@@ -133,6 +137,20 @@ std::string TestUtils::getString(std::vector<std::int32_t> data){
 	}
 	return oss.str();
 }
+std::string TestUtils::getString(std::vector<std::int64_t> data){
+	std::ostringstream oss;
+	std::int64_t last = data.size() - 1;
+	oss << "Int64 Array: {";
+	for (int i = 0; i <= last; i++) {
+		oss << data.at(i);
+		if (i != last) {
+			oss << ", ";
+		} else {
+			oss << "}";
+		}
+	}
+	return oss.str();
+}
 
 std::string TestUtils::getString(std::vector<float> data){
 	std::ostringstream oss;
@@ -192,7 +210,7 @@ std::string TestUtils::getString(std::vector<timespec> data){
 
 std::string TestUtils::getString(nds::timestamp_t data){
 	std::ostringstream oss;
-	oss << "Timestamp: Timespec = {" << data.timestamp.tv_sec << " s, " << data.timestamp.tv_nsec << " ns}, ID = " << data.id << ", Edge = " << (data.rising?"Rising":"Falling");
+	oss << "Timestamp: Timespec = {" << data.timestamp.tv_sec << " s, " << data.timestamp.tv_nsec << " ns}, ID = " << data.id << ", Edge = " << (data.edge?"Rising":"Falling");
 	return oss.str();
 }
 
@@ -206,5 +224,4 @@ std::string TestUtils::getAbsolutePath (const std::string& relativePath)
 	}
 	return absolutePath;
 }
-
 

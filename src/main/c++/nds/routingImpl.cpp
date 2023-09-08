@@ -206,7 +206,7 @@ inline void RoutingImpl<T>::constructorBody(const RoutingArgs_t& handlerRTN)
 
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerRTN.handlerSTM.switchOnFunction,
 			handlerRTN.handlerSTM.switchOffFunction,
 			std::bind(&RoutingImpl::onStart, this),
@@ -385,6 +385,11 @@ void RoutingImpl<T>::setTermInvertRead(const timespec& timestamp, const std::int
 	m_TermInvertRead_PV->push(timestamp, value);
 }
 
+template<typename T>
+void RoutingImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 
 template class RoutingImpl<std::string>;
 

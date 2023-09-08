@@ -8,8 +8,6 @@
  */
 
 #include <cstdlib>
-#include <link.h>
-#include <elf.h>
 #include <dlfcn.h>
 #include <errno.h>
 #include <sstream>
@@ -52,7 +50,8 @@ NdsFactoryImpl::NdsFactoryImpl()
     {
         std::shared_ptr<DynamicModule> module(std::make_shared<DynamicModule>(*scanFiles));
 
-        controSystemAllocateFunction_t allocateFunction = (controSystemAllocateFunction_t)(module->getAddress("allocateControlSystem"));
+        //Cast from void* to the target type according to the size of pointer (target machine-independent)
+        controSystemAllocateFunction_t allocateFunction = reinterpret_cast<controSystemAllocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("allocateControlSystem")));
         if(allocateFunction == 0)
         {
             continue;
@@ -69,6 +68,7 @@ NdsFactoryImpl::NdsFactoryImpl()
     devicesFolders.push_back(".");
     devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("LD_LIBRARY_PATH")));
     devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("NDS_DEVICES")));
+    devicesFolders.splice(devicesFolders.end(), separateFoldersList(std::getenv("NDS_PLUGIN_PATH")));
 
     fileNames_t deviceModules = listFiles(devicesFolders, "lib", "NdsDevice.so");
     for(fileNames_t::const_iterator scanFiles(deviceModules.begin()), endFiles(deviceModules.end());
@@ -112,9 +112,10 @@ void NdsFactoryImpl::loadDriver(const std::string& driverModuleName)
     typedef void (*deviceDeallocateFunction_t)(void*) ;
     typedef const char* (*getDeviceNameFunction_t)() ;
 
-    getDeviceNameFunction_t nameFunction = (getDeviceNameFunction_t)(module->getAddress("getDeviceName"));
-    deviceAllocateFunction_t allocateFunction = (deviceAllocateFunction_t)(module->getAddress("allocateDevice"));
-    deviceDeallocateFunction_t deallocateFunction = (deviceDeallocateFunction_t)(module->getAddress("deallocateDevice"));
+    //Cast from void* to the target type according to the size of pointer (target machine-independent)
+    getDeviceNameFunction_t nameFunction = reinterpret_cast<getDeviceNameFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("getDeviceName")));
+    deviceAllocateFunction_t allocateFunction = reinterpret_cast<deviceAllocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("allocateDevice")));
+    deviceDeallocateFunction_t deallocateFunction = reinterpret_cast<deviceDeallocateFunction_t>(reinterpret_cast<intptr_t>(module->getAddress("deallocateDevice")));
 
     if(allocateFunction == 0 || deallocateFunction == 0 || nameFunction == 0)
     {
@@ -431,24 +432,30 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::listFiles(const fileNames_t& folders
         scanFolders != endFolders;
         ++scanFolders)
     {
-        Directory directory(*scanFolders);
+    	try{
+			Directory directory(*scanFolders);
 
-        for(std::string fileName = directory.getNextFileName(); !fileName.empty(); fileName = directory.getNextFileName())
-        {
-            if(fileName.size() < prefix.size() + suffix.size())
-            {
-                continue;
-            }
-            if(fileName.substr(0, prefix.size()) != prefix ||
-                    fileName.substr(fileName.size() - suffix.size()) != suffix)
-            {
-                continue;
-            }
+			for(std::string fileName = directory.getNextFileName(); !fileName.empty(); fileName = directory.getNextFileName())
+			{
+				if(fileName.size() < prefix.size() + suffix.size())
+				{
+					continue;
+				}
+				if(fileName.substr(0, prefix.size()) != prefix ||
+						fileName.substr(fileName.size() - suffix.size()) != suffix)
+				{
+					continue;
+				}
 
-            std::ostringstream fullName;
-            fullName << *scanFolders << "/" << fileName;
-            files.push_back(fullName.str());
-        }
+				std::ostringstream fullName;
+				fullName << *scanFolders << "/" << fileName;
+				files.push_back(fullName.str());
+			}
+    	}catch(DirectoryNotFoundError& /*e*/){
+    		/**
+    		 * This path is ignored
+    		 */
+    	}
     }
 
     return files;
@@ -507,6 +514,9 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::separateFoldersList(const char* fold
     return folders;
 }
 
+#ifndef RTLD_NODELETE
+#define RTLD_NODELETE 0
+#endif
 
 DynamicModule::DynamicModule(const std::string& libraryName):
     m_moduleHandle(dlopen(libraryName.c_str(), RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE))

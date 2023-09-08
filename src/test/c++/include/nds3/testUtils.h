@@ -45,6 +45,11 @@ public:
 	static std::string getString(const std::int32_t & data);
 
 	/**
+	 * @brief Get a string by identifying the type of data (std::int64_t) and its value
+	 */
+	static std::string getString(const std::int64_t & data);
+
+	/**
 	 * @brief Get a string by identifying the type of data (std::uint64_t) and its value
 	 */
 	static std::string getString(const std::uint64_t & data);
@@ -93,6 +98,11 @@ public:
 	 * @brief Get a string by identifying the type of data (std::vector<std::int32_t>) and its value
 	 */
 	static std::string getString(std::vector<std::int32_t> data);
+
+	/**
+	 * @brief Get a string by identifying the type of data (std::vector<std::int64_t>) and its value
+	 */
+	static std::string getString(std::vector<std::int64_t> data);
 
 	/**
 	 * @brief Get a string by identifying the type of data (float) and its value

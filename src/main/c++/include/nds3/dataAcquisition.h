@@ -222,6 +222,7 @@ struct DataAcquisitionArgs_t {
 	 * @param _PV_Ground_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_Ground_Writer.
 	 * @param _PV_DMAEnable_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_DMAEnable_Writer
 	 * @param _PV_SamplingRate_Writer Function to write the gain for data acquisition. To be set in @ref DataAcquisitionArgs_t.PV_SamplingRate_Writer.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	DataAcquisitionArgs_t(stateChange_t switchOnFunction,
 						  stateChange_t switchOffFunction,
@@ -278,12 +279,14 @@ struct DataAcquisitionArgs_t {
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
+ *            - std::int64_t
  *            - float
  *            - double
  *            - std::vector<std::uint8_t>
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<std::int64_t>
  *            - std::vector<float>
  *            - std::vector<double>
  *
@@ -313,6 +316,28 @@ public:
      * @brief Constructs the data acquisition node.
      *
      */
+    /**
+     *
+     * @param name
+     * @param maxElements
+     * @param switchOnFunction
+     * @param switchOffFunction
+     * @param startFunction
+     * @param stopFunction
+     * @param recoverFunction
+     * @param allowStateChangeFunction
+     * @param PV_Gain_Writer
+     * @param PV_Offset_Writer
+     * @param PV_Bandwidth_Writer
+     * @param PV_Resolution_Writer
+     * @param PV_Impedance_Writer
+     * @param PV_Coupling_Writer
+     * @param PV_SignalRefType_Writer
+     * @param PV_Ground_Writer
+     * @param PV_DMAEnable_Writer
+     * @param PV_SamplingRate_Writer
+     * @param autoEnable See @ref autoEnable_t for further details.
+     */
     DataAcquisition(const std::string& name,                ///< The node's name
                     size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
                     stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
@@ -331,7 +356,7 @@ public:
 					writerInt32_t PV_Ground_Writer,         ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerInt32_t PV_DMAEnable_Writer,      ///< Delegate function setter/getter to interact to the Low Level Driver API
 					writerDouble_t PV_SamplingRate_Writer,   ///< Delegate function to interact to the low level driver API
-					autoEnable_t autoEnable=autoEnable_t::none
+					autoEnable_t autoEnable=autoEnable_t::none ///< Parameter value
     );
 
     /**
@@ -594,6 +619,13 @@ public:
      * @param value Sampling rate value during data acquisition
      */
     void setSamplingRate(const timespec& timestamp, const double& value);
+
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 };
 
 }

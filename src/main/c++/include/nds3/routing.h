@@ -163,6 +163,7 @@ struct RoutingArgs_t {
 	 * @param _PV_ClkDstRead_Writer Function to set a %terminal and read its clock destination. To be set in @ref RoutingArgs_t.PV_ClkDstRead_Writer.
 	 * @param _PV_TermSet_Writer Function to set the routing configuration in a %terminal. To be set in @ref RoutingArgs_t.PV_TermSet_Writer.
 	 * @param _PV_TermDstRead_Writer Function to set a %terminal and read its clock %terminal configuration. To be set in @ref RoutingArgs_t.PV_TermDstRead_Writer.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	RoutingArgs_t(stateChange_t switchOnFunction,
                     stateChange_t switchOffFunction,
@@ -230,19 +231,31 @@ public:
 
     /**
      * @brief Constructs the routing node.
-     *
-     */
-    Routing(const std::string& name,                		///< The node's name
-                    stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
-                    stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
-                    stateChange_t startFunction,            ///< Delegate function that performs the actions to start the node
-                    stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the node
-                    stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
-                    allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-					writerInt32_t PV_ClkSet_Writer,			///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_ClkDstRead_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_TermSet_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
-					writerInt32_t PV_TermDstRead_Writer,		///< Delegate function setter/getter to interact to the Low Level Driver API
+     * @param name Name (unique) to identify the instance of the node.
+     * @param switchOnFunction Switch-on function to be set in @ref RoutingArgs_t.handlerSTM switchOnFunction.
+	 * @param switchOffFunction Switch-off function to be set in @ref RoutingArgs_t.handlerSTM switchOffFunction.
+	 * @param startFunction Start function to be set in @ref RoutingArgs_t.handlerSTM startFunction.
+	 * @param stopFunction Stop function to be set in @ref RoutingArgs_t.handlerSTM stopFunction.
+	 * @param recoverFunction Recover function to be set in @ref RoutingArgs_t.handlerSTM recoverFunction.
+	 * @param allowStateChangeFunction Checking state transitions function to be set in @ref RoutingArgs_t.handlerSTM allowStateChangeFunction.
+	 * @param PV_ClkSet_Writer Function to apply the CLK routing configuration. To be set in @ref RoutingArgs_t.PV_ClkSet_Writer.
+	 * @param PV_ClkDstRead_Writer Function to set a %terminal and read its clock destination. To be set in @ref RoutingArgs_t.PV_ClkDstRead_Writer.
+	 * @param PV_TermSet_Writer Function to set the routing configuration in a %terminal. To be set in @ref RoutingArgs_t.PV_TermSet_Writer.
+	 * @param PV_TermDstRead_Writer Function to set a %terminal and read its clock %terminal configuration. To be set in @ref RoutingArgs_t.PV_TermDstRead_Writer.
+	 * @param autoEnable See @ref autoEnable_t for further details.
+	 */
+
+    Routing(const std::string& name,
+                    stateChange_t switchOnFunction,
+                    stateChange_t switchOffFunction,
+                    stateChange_t startFunction,
+                    stateChange_t stopFunction,
+                    stateChange_t recoverFunction,
+                    allowChange_t allowStateChangeFunction,
+					writerInt32_t PV_ClkSet_Writer,
+					writerInt32_t PV_ClkDstRead_Writer,
+					writerInt32_t PV_TermSet_Writer,
+					writerInt32_t PV_TermDstRead_Writer,
 					autoEnable_t autoEnable=autoEnable_t::none);
 
 
@@ -375,7 +388,12 @@ public:
      */
     void setTermInvertRead(const timespec& timestamp, const std::int32_t& value);
 
-
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 };
 
 }

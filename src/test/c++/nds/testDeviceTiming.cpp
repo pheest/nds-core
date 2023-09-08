@@ -9,7 +9,7 @@
  * @brief Internal function to test all PVs included in the HQMonitor node.
  * @param structuredConstructor Flag to set to @c true when the constructor that
  * receives a structure shall be tested.
- * As the constructor used for the @ref Timing node is the only difference between
+ * As the constructor used for the Timing node is the only difference between
  * fullTest and fullTestStructure test, this function shares the full test
  * and the constructor used depends on the @a structuredConstructor flag.
  */

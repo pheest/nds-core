@@ -36,6 +36,7 @@ namespace nds
  * 		- std::vector<std::int8_t>
  * 		- std::vector<std::int16_t>
  * 		- std::vector<std::int32_t>
+ * 		- std::vector<std::int64_t>
  */
 template<typename T>
 struct DigitalIOArgs_t{
@@ -137,6 +138,7 @@ struct DigitalIOArgs_t{
 	 * @param _PV_voltLevelHigh_Writer Function to write the voltage for high level. To be set in @ref DigitalIOArgs_t.PV_voltLevelHigh_Writer.
 	 * @param _PV_voltLevelLow_Writer Function to write the voltage for low level. To be set in @ref DigitalIOArgs_t.PV_voltLevelLow_Writer.
 	 * @param _PV_ChannelDir_Writer Function to write the channels directions. To be set in @ref DigitalIOArgs_t.PV_ChannelDir_Writer.
+     * @param autoEnable See @ref autoEnable_t for further details.
 	 */
 	DigitalIOArgs_t(stateChange_t switchOnFunction,
 					stateChange_t switchOffFunction,
@@ -164,10 +166,11 @@ struct DigitalIOArgs_t{
 		   m_DataOut_Init(T()), //Default value of the underlying data type
 	   	   m_Decimation_Init(1) {}
 };
-template class DigitalIOArgs_t<std::vector<bool>>;
-template class DigitalIOArgs_t<std::vector<std::int8_t>>;
-template class DigitalIOArgs_t<std::vector<std::int16_t>>;
-template class DigitalIOArgs_t<std::vector<std::int32_t>>;
+template struct DigitalIOArgs_t<std::vector<bool>>;
+template struct DigitalIOArgs_t<std::vector<std::int8_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int16_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int32_t>>;
+template struct DigitalIOArgs_t<std::vector<std::int64_t>>;
 
 /**
  * This is a node that supplies PVs that specifies how the IO acquisition
@@ -185,11 +188,13 @@ template class DigitalIOArgs_t<std::vector<std::int32_t>>;
  * @tparam T  the PV data type.
  *            The following data types are supported:
  *            - std::int32_t
+ *            - std::int64_t
  *            - std::double
  *            - std::vector<bool>
  *            - std::vector<std::int8_t>
  *            - std::vector<std::int16_t>
  *            - std::vector<std::int32_t>
+ *            - std::vector<std::int64_t>
  *
  */
 template <typename T>
@@ -214,22 +219,35 @@ public:
     DigitalIO& operator=(const DigitalIO<T>& right);
 
     /**
-     * @brief Constructs the Digital IO node.
-     *
-     */
-    DigitalIO( const std::string& name,                ///< The node's name
-               size_t maxElements,                     ///< Maximum size of the acquired array. Set to 1 for scalar values
-               stateChange_t switchOnFunction,         ///< Delegate function that performs the actions to switch the node on
-               stateChange_t switchOffFunction,        ///< Delegate function that performs the actions to switch the node off
-               stateChange_t startFunction,            ///< Delegate function that performs the actions to start the acquisition (usually launches the acquisition thread)
-               stateChange_t stopFunction,             ///< Delegate function that performs the actions to stop the acquisition (usually stops the acquisition thread)
-               stateChange_t recoverFunction,          ///< Delegate function to execute to recover from an error state
-	           allowChange_t allowStateChangeFunction, ///< Delegate function that can deny a state change. Usually just returns true
-			   writerVectorBool_t PV_dataOutMask_Writer,///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerDouble_t PV_voltLevelHigh_Writer,  ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerDouble_t PV_voltLevelLow_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-			   writerVectorBool_t PV_ChannelDir_Writer,   ///< Delegate function setter/getter to interact to the Low Level Driver API
-    		   autoEnable_t autoEnable=autoEnable_t::none);
+	 * @brief Constructor to create a DigitalIO node
+	 *
+	 * @param name Name (unique) to identify the instance of the node.
+	 * @param maxElements Maximum size of the acquired array. Set to 1 for scalar values
+	 * @param switchOnFunction Switch-on function.
+	 * @param switchOffFunction Switch-off function.
+	 * @param startFunction Start function.
+	 * @param stopFunction Stop function.
+	 * @param recoverFunction Recover function.
+	 * @param allowStateChangeFunction Checking state transitions function.
+	 * @param PV_dataOutMask_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_voltLevelHigh_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_voltLevelLow_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param PV_ChannelDir_Writer Delegate function setter/getter to interact to the Low Level Driver API
+	 * @param autoEnable See @ref autoEnable_t for further details.
+	 */
+    DigitalIO( const std::string& name,
+               size_t maxElements,
+               stateChange_t switchOnFunction,
+               stateChange_t switchOffFunction,
+               stateChange_t startFunction,
+               stateChange_t stopFunction,
+               stateChange_t recoverFunction,
+	           allowChange_t allowStateChangeFunction,
+			   writerVectorBool_t PV_dataOutMask_Writer,
+			   writerDouble_t PV_voltLevelHigh_Writer,
+			   writerDouble_t PV_voltLevelLow_Writer,
+			   writerVectorBool_t PV_ChannelDir_Writer,
+    		   autoEnable_t autoEnable = autoEnable_t::none);
 
     /**
      * @brief Simplified constructor of the DigitalIO node.
@@ -345,6 +363,12 @@ public:
      * @return the time when the acquisition started.
      */
     timespec getStartTimestamp() const;
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
 
 };
 

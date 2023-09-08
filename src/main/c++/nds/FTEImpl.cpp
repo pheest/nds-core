@@ -256,7 +256,7 @@ inline void FTEImpl<T>::constructorBody(const FTEArgs_t& handlerFTE) {
 	addChild(m_Maximum_PV);
 
 	// Add state machine
-	m_StateMachine.reset(new StateMachineImpl(true,
+	m_StateMachine.reset(new StateMachineImpl(false,
 			handlerFTE.handlerSTM.switchOnFunction,
 			handlerFTE.handlerSTM.switchOffFunction,
 			std::bind(&FTEImpl::onStart, this),
@@ -507,6 +507,10 @@ void FTEImpl<T>::setMaximum(const timespec& timestamp, const std::int32_t& value
 	m_Maximum_PV->push(timestamp, value);
 }
 
-
+template<typename T>
+void FTEImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
 template class FTEImpl<std::string>;
 }

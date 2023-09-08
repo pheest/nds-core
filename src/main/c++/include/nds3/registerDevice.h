@@ -26,8 +26,8 @@ public:
         delete (T *)device;
     }
 
-    const char *getDriverName() {
-        return m_driverName;
+    const char *getDriverName() const {
+        return m_driverName.c_str();
     }
 
 protected:

@@ -116,6 +116,14 @@ public:
      * @return The actual state of the State Machine of the Node
      */
     nds::state_t getState();
+
+    /**
+     * @brief Called to change the actual state of the State Machine of the Node
+     *
+     * @param newState New state to set the State Machine of the node
+     */
+    void setState(const nds::state_t& newState);
+
 protected:
     /**
      * @brief In the state machine we set the start function to onStart(), so we

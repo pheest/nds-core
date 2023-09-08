@@ -106,7 +106,7 @@ public:
     void setState(const state_t newState);
 
     /**
-     * @brief Return the local state. The local state does not reflect the state of the children.
+     * @brief Return the local state of the State Machine.
      *
      * @return the current local state
      */
@@ -120,6 +120,40 @@ public:
      * @param pState     pointer to a variable that will be filled with the current global state
      */
     virtual void getGlobalState(timespec* pTimestamp, state_t* pState) const;
+
+    /**
+     * @brief Return the lowest global state of all its children.
+     *
+     * @param pTimestamp pointer to a variable that will be filled with the timestamp
+     * @param pState     pointer to a variable that will be filled with the current global state
+     */
+    void getLowestGlobalState(timespec* pTimestamp, state_t* pState) const;
+
+    /**
+     * @brief Return the highest global state of all its children.
+     *
+     * @param pTimestamp pointer to a variable that will be filled with the timestamp
+     * @param pState     pointer to a variable that will be filled with the current global state
+     */
+    void getHighestGlobalState(timespec* pTimestamp, state_t* pState) const;
+
+    /**
+     * @brief Return the lowest state of all its children. This state only takes into consideration the states
+     *        of the children of the node to which the state machine is attached.
+     *
+     * @param pTimestamp pointer to a variable that will be filled with the timestamp
+     * @param pState     pointer to a variable that will be filled with the current global state
+     */
+    void getLowestChildState(timespec* pTimestamp, state_t* pState) const;
+
+    /**
+     * @brief Return the highest state of all its children. This state only takes into consideration the states
+     *        of the children of the node to which the state machine is attached.
+     *
+     * @param pTimestamp pointer to a variable that will be filled with the timestamp
+     * @param pState     pointer to a variable that will be filled with the current global state
+     */
+    void getHighestChildState(timespec* pTimestamp, state_t* pState) const;
 
     /**
      * @brief Check if the transition to the new state is legal and is not denied by

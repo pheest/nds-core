@@ -25,7 +25,7 @@ public:
 	 * @brief Constructor.
 	 *
 	 * @param factory    the control system factory that requested the creation of the device
-	 * @param device     the name given to the device
+	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
 	DevicePVs(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
@@ -73,6 +73,16 @@ private:
 	 * @brief PV for testing an Input PV to get an integer
 	 */
 	nds::PVVariableIn<std::int32_t> m_int_RBVPV;
+
+	//dataType_t: dataInt64 -> std::int64_t
+	/**
+	 * @brief PV for testing an Output PV to set an integer
+	 */
+	nds::PVDelegateOut<std::int64_t> m_int64_PV;
+	/**
+	 * @brief PV for testing an Input PV to get an integer
+	 */
+	nds::PVVariableIn<std::int64_t> m_int64_RBVPV;
 
 	/*
 	 * @brief PV for testing an Output PV to set a double
@@ -165,9 +175,19 @@ private:
 	 */
 	nds::PVVariableIn<std::vector<std::int32_t>> m_int32Array_RBVPV;
 
+	//dataType_t: dataInt64Array -> std::vector<std::int64_t>
+	/*
+	 * @brief PV for testing an Output PV to set an array of integers (64)
+	 */
+	nds::PVDelegateOut<std::vector<std::int64_t>> m_int64Array_PV;
+	/*
+	 * @brief PV for testing an Input PV to get an array of integers (64)
+	 */
+	nds::PVVariableIn<std::vector<std::int64_t>> m_int64Array_RBVPV;
 	/*
 	 * @brief PV for testing an Output PV to set an array of doubles
 	 */
+
 	nds::PVDelegateOut<std::vector<float>> m_float32Array_PV;
 	/*
 	 * @brief PV for testing an Input PV to get an array of doubles
@@ -248,6 +268,11 @@ private:
         /* @brief Reference PV for subscription from PVs with double data. */
         nds::PVVariableOut<double> m_targetSubscriptionDouble_PV;
 
+	/**
+	 * @brief PV for testing unsubscription from a Delegate PV
+	 */
+	nds::PVDelegateOut<std::int32_t> m_unsubscribe_PV;
+	nds::PVVariableIn<std::int32_t> m_unsubscribeValue_RBVPV;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// MEMBER METHODS THAT SUPPORT SPECIFIC OPERATIONS
@@ -277,7 +302,10 @@ private:
 	 * @brief Method to be used when an write action is required on the integer PV
 	 */
 	void setInt(const timespec&, const std::int32_t&);
-
+	/**
+	 * @brief Method to be used when an write action is required on the integer64 PV
+	 */
+	void setInt64(const timespec&, const std::int64_t&);
 	/**
 	 * @brief Method to be used when an write action is required on the double PV
 	 */
@@ -322,7 +350,10 @@ private:
 	 * @brief Method to be used when an write action is required on the integers (32) array PV
 	 */
 	void setInt32Array(const timespec&, const std::vector<std::int32_t>&);
-
+	/**
+	 * @brief Method to be used when an write action is required on the integers (64) array PV
+	 */
+	void setInt64Array(const timespec&, const std::vector<std::int64_t>&);
 	/**
 	 * @brief Method to be used when an write action is required on the doubles array PV
 	 */
@@ -353,6 +384,10 @@ private:
 	 */
 	void setTimestamp(const timespec&, const nds::timestamp_t&);
 
+	/**
+	 * @brief Method to be used when an write action is required on the unsubscribe PV
+	 */
+	void setUnsubscribe(const timespec&, const std::int32_t&, const std::string& name);
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIST OF INITIALIZERS METHODS FOR ALL SUPPORTED TYPES
@@ -362,7 +397,10 @@ private:
 	 * @brief Method to be used at initialization time for the integer PV
 	 */
 	void initInt(timespec* timestamp, std::int32_t* value);
-
+	/**
+	 * @brief Method to be used at initialization time for the integer64 PV
+	 */
+	void initInt64(timespec* timestamp, std::int64_t* value);
 	/**
 	 * @brief Method to be used at initialization time for the float PV
 	 */
@@ -392,7 +430,10 @@ private:
 	 * @brief Method to be used at initialization time for the unsigned integers (32) array PV
 	 */
 	void initUInt32Array(timespec* timestamp, std::vector<std::uint32_t>* values);
-
+	/**
+	 * @brief Method to be used at initialization time for the integers (64) array PV
+	 */
+	void initInt64Array(timespec* timestamp, std::vector<std::int64_t>* values);
 	/**
 	 * @brief Method to be used at initialization time for the integers (8) array PV
 	 */
@@ -438,10 +479,15 @@ private:
 	 */
 	void initTimestamp(timespec* timestamp, nds::timestamp_t* value);
 
-        /**
-         * @brief Method to be used at initialization time for the handler of data sharing
-         */
-        void initHandler(timespec* timestamp, std::int32_t* value);
+	/**
+	 * @brief Method to be used at initialization time for the handler of data sharing
+	 */
+	void initHandler(timespec* timestamp, std::int32_t* value);
+	
+	/**
+	 * @brief Reference to factory
+	 */
+	nds::Factory& m_factory;
 
 };
 

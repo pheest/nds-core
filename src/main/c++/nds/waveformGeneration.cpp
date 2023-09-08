@@ -18,13 +18,6 @@ WaveformGeneration<T>::WaveformGeneration(): Node()
 {
 }
 
-/**
- * @brief Constructs the data generation node.
- *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the array
- */
 template <typename T>
 WaveformGeneration<T>::WaveformGeneration(const std::string& name,
 							      size_t maxElements,
@@ -321,13 +314,21 @@ void WaveformGeneration<T>::setGround(const timespec& timestamp, const std::int3
     return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->setGround(timestamp, value);
 }
 
+template <typename T>
+void WaveformGeneration<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<WaveformGenerationImpl<T> >(m_pImplementation)->setState(newState);
+}
+
 template class WaveformGeneration<std::int32_t>;
+template class WaveformGeneration<std::int64_t>;
 template class WaveformGeneration<float>;
 template class WaveformGeneration<double>;
 template class WaveformGeneration<std::vector<std::int8_t> >;
 template class WaveformGeneration<std::vector<std::uint8_t> >;
 template class WaveformGeneration<std::vector<std::int16_t> >;
 template class WaveformGeneration<std::vector<std::int32_t> >;
+template class WaveformGeneration<std::vector<std::int64_t> >;
 template class WaveformGeneration<std::vector<float> >;
 template class WaveformGeneration<std::vector<double> >;
 

@@ -24,7 +24,7 @@ public:
 	 * @brief Constructor.
 	 *
 	 * @param factory    the control system factory that requested the creation of the device
-	 * @param device     the name given to the device
+	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
 	DeviceDigitalIO(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
@@ -282,6 +282,57 @@ private:
 	 *        when true.
 	 */
 	volatile bool m_bStop_DigitalIO_I32;
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//  DIGITAL I/O int64_t
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * @brief DigitalIO node
+	 */
+
+	nds::DigitalIO<std::vector<std::int64_t> > m_DigitalIO_I64;
+
+	/**
+	 * Methods to control DigitalIO state machine
+	 */
+	void switchOn_DigitalIO_I64();  ///< Called to switch on the DigitalIO node.
+	void switchOff_DigitalIO_I64(); ///< Called to switch off the DigitalIO node.
+	void start_DigitalIO_I64();     ///< Called to start the DigitalIO node.
+	void stop_DigitalIO_I64();      ///< Called to stop the DigitalIO node.
+	void recover_DigitalIO_I64();   ///< Called to recover the DigitalIO node from a failure.
+
+	bool allow_DigitalIO_Change_I64(const nds::state_t, const nds::state_t, const nds::state_t); ///< Called to verify if a state change is allowed
+
+	/**
+	 * DigitalIO setters
+	 */
+	void PV_DigitalIO_dataOutMask_Writer_I64(const timespec& timestamp, const std::vector<bool>& value);
+	void PV_DigitalIO_voltLevelHigh_Writer_I64(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_voltLevelLow_Writer_I64(const timespec& timestamp, const double& value);
+	void PV_DigitalIO_ChannelDir_Writer_I64(const timespec& timestamp, const std::vector<bool>& value);
+
+	/**
+	 * DigitalIO initializers for std::vector<std::int64_t>
+	 */
+	void PV_DigitalIO_dataOutMask_Initializer_I64(timespec* timestamp, std::vector<bool>* value);
+	void PV_DigitalIO_ChannelDir_Initializer_I64(timespec* timestamp, std::vector<bool>* value);
+
+	/**
+	 * @brief Function that continuously acquires digital IO data.
+	 *        It is launched by start_DigitalIO() in a separate thread.
+	 */
+	void DigitalIO_thread_body_I64();
+
+	/**
+	 * @brief A thread that runs DataProcessing_thread_body().
+	 */
+	nds::Thread m_DigitalIO_Thread_I64;
+
+	/**
+	 * @brief A boolean flag that stop the DigitalIO loop in DigitalIO_thread_body()
+	 *        when true.
+	 */
+	volatile bool m_bStop_DigitalIO_I64;
 
 };
 

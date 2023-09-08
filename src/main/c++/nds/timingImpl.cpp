@@ -114,7 +114,7 @@ namespace nds {
 
 
 	    // Add state machine
-	    m_StateMachine.reset(new StateMachineImpl(true,
+	    m_StateMachine.reset(new StateMachineImpl(false,
 	    								handlerTM.handlerSTM.switchOnFunction,
 										handlerTM.handlerSTM.switchOffFunction,
 										std::bind(&TimingImpl::onStart, this),
@@ -237,5 +237,10 @@ namespace nds {
   void TimingImpl::setRefTimeBase(const timespec& timestamp, const timespec& value) {
      m_RefTimeBase_PV -> setValue(timestamp, value);
      m_RefTimeBase_PV -> push(timestamp, value);
+  }
+
+  void TimingImpl::setState(const nds::state_t& newState)
+  {
+  	m_StateMachine->setState(newState);
   }
 }

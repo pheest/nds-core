@@ -21,7 +21,6 @@ Firmware::Firmware(): Node()
 /**
  * @brief Constructs the firmware support node
  *
- * @param name        the node name
  */
 Firmware::Firmware(const std::string& name,
 		   size_t maxElements,
@@ -184,6 +183,9 @@ void Firmware::setFirmwarePath(const timespec& timestamp, const std::string& val
     return std::static_pointer_cast<FirmwareImpl >(m_pImplementation)->setFirmwarePath(timestamp, value);
 }
 
-
+void Firmware::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<FirmwareImpl >(m_pImplementation)->setState(newState);
+}
 
 }

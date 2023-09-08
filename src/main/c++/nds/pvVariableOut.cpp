@@ -61,6 +61,7 @@ void PVVariableOut<T>::getValue(timespec* pTime, T* pValue) const
 // Instantiate all the needed data types
 ////////////////////////////////////////
 template class PVVariableOut<std::int32_t>;
+template class PVVariableOut<std::int64_t>;
 template class PVVariableOut<float>;
 template class PVVariableOut<double>;
 template class PVVariableOut<std::vector<bool> >;
@@ -70,6 +71,7 @@ template class PVVariableOut<std::vector<std::uint32_t> >;
 template class PVVariableOut<std::vector<std::int8_t> >;
 template class PVVariableOut<std::vector<std::int16_t> >;
 template class PVVariableOut<std::vector<std::int32_t> >;
+template class PVVariableOut<std::vector<std::int64_t> >;
 template class PVVariableOut<std::vector<float> >;
 template class PVVariableOut<std::vector<double> >;
 template class PVVariableOut<std::string>;

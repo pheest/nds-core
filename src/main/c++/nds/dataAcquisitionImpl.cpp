@@ -316,7 +316,7 @@ inline void DataAcquisitionImpl<T>::constructorBody(size_t maxElements, const Da
 	addChild(m_SamplingRate_RBVPV);
 
     // Add state machine
-    m_StateMachine.reset(new StateMachineImpl(true,
+    m_StateMachine.reset(new StateMachineImpl(false,
                                    handlerDAQ.handlerSTM.switchOnFunction,
 								   handlerDAQ.handlerSTM.switchOffFunction,
                                    std::bind(&DataAcquisitionImpl::onStart, this),
@@ -619,16 +619,23 @@ nds::state_t DataAcquisitionImpl<T>::getState()
 	return m_StateMachine->getLocalState();
 }
 
+template<typename T>
+void DataAcquisitionImpl<T>::setState(const nds::state_t& newState)
+{
+	m_StateMachine->setState(newState);
+}
+
 
 template class DataAcquisitionImpl<std::int32_t>;
+template class DataAcquisitionImpl<std::int64_t>;
 template class DataAcquisitionImpl<float>;
 template class DataAcquisitionImpl<double>;
 template class DataAcquisitionImpl<std::vector<std::int8_t> >;
 template class DataAcquisitionImpl<std::vector<std::uint8_t> >;
 template class DataAcquisitionImpl<std::vector<std::int16_t> >;
 template class DataAcquisitionImpl<std::vector<std::int32_t> >;
+template class DataAcquisitionImpl<std::vector<std::int64_t> >;
 template class DataAcquisitionImpl<std::vector<float> >;
 template class DataAcquisitionImpl<std::vector<double> >;
-
 
 }

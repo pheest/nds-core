@@ -149,6 +149,12 @@ void Timestamping<T>::setDecimation(const timespec& timestamp, const std::int32_
   std::static_pointer_cast<TimestampingImpl<T>>(m_pImplementation)->setDecimation(timestamp, value);
 }
 
+template <typename T>
+void Timestamping<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<TimestampingImpl<T> >(m_pImplementation)->setState(newState);
+}
+
 template class Timestamping<timestamp_t>;
 
 }

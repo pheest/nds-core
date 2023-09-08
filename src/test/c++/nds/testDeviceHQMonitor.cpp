@@ -346,10 +346,11 @@ static void commonPVsTest(bool testInitializers){
 	  EXPECT_EQ((std::int32_t)1, *testCodeResultEnable);
 
 	  ::sleep(2);
-	  pInterface->getPushedString("/deviceHQMonitor-HQMonitor.TestTxtResult",
-				  pTimestamp, selfTestTxtResult);
+	  timespec valueTimespec;
+	  std::string valueString;
+	  pInterface->readCSValue("/deviceHQMonitor-HQMonitor.TestTxtResult", &valueTimespec, &valueString);
 	  EXPECT_EQ((std::string)"Verbose information\nTest ID: 123\nTest TxtID: Test-01\nCodeResult: 1\n",
-		    *selfTestTxtResult);
+			  valueString);
 
 	  std::int32_t signalQualityFlag;
 	  pInterface->readCSValue("/deviceHQMonitor-HQMonitor.SignalQFlag",

@@ -37,12 +37,12 @@ autoEnable_t autoEnable):
     recoverFunction,
     allowStateChangeFunction,
     PV_Time_Reader,
-	autoEnable)))
+    autoEnable)))
 {
 }
 
 Timing::Timing(const std::string& name, const TimingArgs_t& handlerTM):
-		Node(std::shared_ptr<TimingImpl>(new TimingImpl(name, handlerTM)))
+        Node(std::shared_ptr<TimingImpl>(new TimingImpl(name, handlerTM)))
 {
 }
 
@@ -133,5 +133,22 @@ void Timing::setRefTimeBase(const timespec& timestamp, const timespec& value) {
   std::static_pointer_cast<TimingImpl >(m_pImplementation)->setRefTimeBase(timestamp, value);
 }
 
+void Timing::setState(const nds::state_t& newState)
+{
+    std::static_pointer_cast<TimingImpl>(m_pImplementation)->setState(newState);
 }
 
+#ifdef _WIN32
+#include <Windows.h>
+// https://github.com/esa/pykep/issues/47
+//C-file part
+int clock_gettime(int, struct timespec *spec)
+{
+    __int64 wintime; GetSystemTimeAsFileTime((FILETIME*)&wintime);
+    wintime -= 116444736000000000i64;  //1jan1601 to 1jan1970
+    spec->tv_sec = wintime / 10000000i64;           //seconds
+    spec->tv_nsec = wintime % 10000000i64 * 100;      //nano-seconds
+    return 0;
+}
+#endif
+}

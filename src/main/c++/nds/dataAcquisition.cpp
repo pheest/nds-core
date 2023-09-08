@@ -21,9 +21,6 @@ DataAcquisition<T>::DataAcquisition(): Node()
 /**
  * @brief Constructs the data acquisition node.
  *
- * @param name        the node name
- * @param maxElements if the data type is an array, then indicated
- *                    the maximum size (in elements) of the acquired array
  */
 template <typename T>
 DataAcquisition<T>::DataAcquisition(const std::string& name,
@@ -301,13 +298,21 @@ void DataAcquisition<T>::setSamplingRate(const timespec& timestamp, const double
     return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setSamplingRate(timestamp, value);
 }
 
+template <typename T>
+void DataAcquisition<T>::setState(const nds::state_t& newState)
+{
+    return std::static_pointer_cast<DataAcquisitionImpl<T> >(m_pImplementation)->setState(newState);
+}
+
 template class DataAcquisition<std::int32_t>;
+template class DataAcquisition<std::int64_t>;
 template class DataAcquisition<float>;
 template class DataAcquisition<double>;
 template class DataAcquisition<std::vector<std::int8_t> >;
 template class DataAcquisition<std::vector<std::uint8_t> >;
 template class DataAcquisition<std::vector<std::int16_t> >;
 template class DataAcquisition<std::vector<std::int32_t> >;
+template class DataAcquisition<std::vector<std::int64_t> >;
 template class DataAcquisition<std::vector<float> >;
 template class DataAcquisition<std::vector<double> >;
 

@@ -27,10 +27,10 @@ public:
 	 * @brief Constructor.
 	 *
 	 * @param factory    the control system factory that requested the creation of the device
-	 * @param device     the name given to the device
+	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceDataMultiplexing(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	DeviceDataMultiplexing(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters );
 
 	/**
 	 * @brief Destructor.
@@ -43,7 +43,7 @@ public:
 	 *******************************************************/
 	/**
 	 * @brief Function required for allocating the resources of the device driver.
-	 * @param Factory the control system factory that requested the creation of the device.
+	 * @param factory the control system factory that requested the creation of the device.
 	 * @param deviceName The name given to the device.
 	 * @param parameters Optional parameters passed to the device.
 	 */
