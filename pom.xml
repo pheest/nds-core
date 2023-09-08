@@ -56,31 +56,13 @@ of the distribution package.
       </roles>
     </developer>
     <developer>
-      <id>morenoj1</id>
+      <id>costav</id>
       <roles>
         <role>developer</role>
       </roles>
     </developer>
     <developer>
-      <id>meliss</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>sanzd</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>perezp</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>degraca</id>
+      <id>esquems</id>
       <roles>
         <role>developer</role>
       </roles>
