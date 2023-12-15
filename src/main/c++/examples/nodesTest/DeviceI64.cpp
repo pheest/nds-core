@@ -425,8 +425,6 @@ void DeviceI64::PV_DataAcquisition_SamplingRate_Initializer(timespec* timestamp,
 */
 void DeviceI64::DataAcquisition_thread_body(){
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-		std::int64_t outputData(0);
-
 		std::int64_t counter(0);
 
 		//Counter for number of pushed data blocks
@@ -478,13 +476,10 @@ void DeviceI64::DataAcquisition_thread_body(){
 
 		// Run until the state machine stops us
 		while(!m_bStop_DataAcquisition){
-
-			outputData = counter;
-
 			counter++;
 
 		// Push the vector to the control system
-		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), counter-1);
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while
@@ -876,6 +871,6 @@ void* DeviceI64::allocateDevice(nds::Factory& factory, const std::string& device
  ***********************/
 void DeviceI64::deallocateDevice(void* deviceName)
 {
-    delete (DeviceI64*)deviceName;
+    delete reinterpret_cast<DeviceI64*>(deviceName);
 }
 

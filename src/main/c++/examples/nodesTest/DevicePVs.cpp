@@ -757,7 +757,7 @@ void* DevicePVs::allocateDevice(nds::Factory& factory,
  **********************
 */
 void DevicePVs::deallocateDevice(void* DeviceName) {
-  delete (DevicePVs*)DeviceName;
+  delete reinterpret_cast<DevicePVs*>(DeviceName);
 }
 
 

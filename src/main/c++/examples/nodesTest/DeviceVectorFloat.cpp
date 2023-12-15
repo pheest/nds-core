@@ -823,7 +823,7 @@ void DeviceVectorFloat::WaveformGeneration_thread_body(){
 		// Get signalType
 		size_t signalType = m_WaveformGeneration.getSignalType();
 		// Get amplitude
-		float amplitude = (float)m_WaveformGeneration.getAmplitude();
+		float amplitude = static_cast<float>(m_WaveformGeneration.getAmplitude());
 		// Get frequency
 		double frequency = m_WaveformGeneration.getFrequency();
 		// Get updateRate
@@ -835,26 +835,13 @@ void DeviceVectorFloat::WaveformGeneration_thread_body(){
 
 
 		switch(signalType){
-
 			case 0:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				last_sample+=scanVector;
-				break;
-			case 1:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 2:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
 				break;
 			case 3:
 				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = (float)amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
+					outputData[scanVector] = amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
 				}
 				break;
 			case 4:
@@ -862,25 +849,8 @@ void DeviceVectorFloat::WaveformGeneration_thread_body(){
 					outputData[scanVector] = ((angle & 0xff) < 128) ? amplitude : - amplitude;
 				}
 				break;
-			case 5:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 6:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 7:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
 			default:
-				for( scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				break;
 		}
 
@@ -913,6 +883,6 @@ void* DeviceVectorFloat::allocateDevice(nds::Factory& factory, const std::string
  ***********************/
 void DeviceVectorFloat::deallocateDevice(void* deviceName)
 {
-    delete (DeviceVectorFloat*)deviceName;
+    delete reinterpret_cast<DeviceVectorFloat*>(deviceName);
 }
 

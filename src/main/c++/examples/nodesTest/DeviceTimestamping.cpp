@@ -360,6 +360,6 @@ void* DeviceTimestamping::allocateDevice(nds::Factory& factory,
  ***********************/
 void DeviceTimestamping::deallocateDevice(void* DeviceName){
 
-  delete (DeviceTimestamping*)DeviceName;
+  delete reinterpret_cast<DeviceTimestamping*>(DeviceName);
 }
 

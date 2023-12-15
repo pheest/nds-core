@@ -281,6 +281,6 @@ void* DeviceFirmware::allocateDevice(nds::Factory& factory,
  ***********************/
 void DeviceFirmware::deallocateDevice(void* DeviceName)
 {
-    delete (DeviceFirmware*)DeviceName;
+	delete reinterpret_cast<DeviceFirmware*>(DeviceName);
 }
 

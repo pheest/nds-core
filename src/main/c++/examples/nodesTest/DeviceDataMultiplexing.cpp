@@ -174,5 +174,5 @@ void* DeviceDataMultiplexing::allocateDevice(nds::Factory& factory,
  ***********************/
 void DeviceDataMultiplexing::deallocateDevice(void* DeviceName)
 {
-    delete (DeviceDataMultiplexing*)DeviceName;
+    delete reinterpret_cast<DeviceDataMultiplexing*>(DeviceName);
 }

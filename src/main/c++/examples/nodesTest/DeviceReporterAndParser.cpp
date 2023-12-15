@@ -118,5 +118,5 @@ void* DeviceReporterAndParser::allocateDevice(nds::Factory& factory,
  **********************
 */
 void DeviceReporterAndParser::deallocateDevice(void* DeviceName) {
-  delete (DeviceReporterAndParser*)DeviceName;
+  delete reinterpret_cast<DeviceReporterAndParser*>(DeviceName);
 }

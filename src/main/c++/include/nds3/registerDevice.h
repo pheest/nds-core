@@ -23,7 +23,7 @@ public:
     }
 
     static void deallocateDevice(void *device) {
-        delete (T *)device;
+        delete reinterpret_cast<T*>(device);
     }
 
     const char *getDriverName() const {

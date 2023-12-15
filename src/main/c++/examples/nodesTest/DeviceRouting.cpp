@@ -309,7 +309,7 @@ void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& de
  ***********************/
 void DeviceRouting::deallocateDevice(void* deviceName)
 {
-    delete (DeviceRouting*)deviceName;
+    delete reinterpret_cast<DeviceRouting*>(deviceName);
 }
 
 

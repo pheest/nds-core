@@ -131,7 +131,8 @@ m_name(DeviceName)
 }
 Device::~Device()
 {
-
+	std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+	m_DevicesMap.erase(m_name);
 }
 
 Device* Device::getInstance(const std::string& DeviceName)
@@ -160,8 +161,9 @@ void* Device::allocateDevice(nds::Factory& factory, const std::string& DeviceNam
 void Device::deallocateDevice(void* DeviceName)
 {
 	// It is necessary to erase the device from the map. To free the name for further use
-	m_DevicesMap.erase(((Device*)DeviceName)->m_name);
-    delete (Device*)DeviceName;
+	Device* ptrDevice = reinterpret_cast<Device*>(DeviceName);
+	m_DevicesMap.erase(ptrDevice->m_name);
+    delete ptrDevice;
 }
 
 void Device::switchOn_Device() {

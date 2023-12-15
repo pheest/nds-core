@@ -340,5 +340,5 @@ void* DeviceFTE::allocateDevice(nds::Factory& factory, const std::string& device
  ***********************/
 void DeviceFTE::deallocateDevice(void* deviceName)
 {
-    delete (DeviceFTE*)deviceName;
+    delete reinterpret_cast<DeviceFTE*>(deviceName);
 }

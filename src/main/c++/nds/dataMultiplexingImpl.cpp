@@ -90,7 +90,7 @@ void DataMultiplexingImpl<T>::multiplex(const timespec &/*time*/, const std::int
       m_SamplesPerChannel_RBVPV->read(&timestamp, &samplesPerChannel);
       std::uint64_t offset = 0;
       T dataOut(samplesPerChannel*this->nInputs);
-      for (int i = 0; i < this->nInputs; i++) {
+      for (size_t i = 0; i < this->nInputs; i++) {
          T value;
          timespec time;
          this->m_DataIn_PV[i]->read(&time, &value);

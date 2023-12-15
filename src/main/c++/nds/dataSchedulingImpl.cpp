@@ -45,7 +45,7 @@ DataSchedulingImpl<T>::DataSchedulingImpl(const std::string& name,  ///< The nod
   m_Trigger_PV->setDescription("Trigger the node");
   this->addChild(m_Trigger_PV);
 
-  for (int i = 0; i < this->nInputs; i++) {
+  for (size_t i = 0; i < this->nInputs; i++) {
       std::string iTxt = std::to_string(i);
       std::shared_ptr< PVVariableOutImpl<T>> ptr(new PVVariableOutImpl<T>("DataIn_" + iTxt));
       ptr->setDescription("Data Input " + iTxt);
@@ -54,7 +54,7 @@ DataSchedulingImpl<T>::DataSchedulingImpl(const std::string& name,  ///< The nod
       this->addChild(ptr);
   }
 
-  for (int i = 0; i < this->nOutputs; i++) {
+  for (size_t i = 0; i < this->nOutputs; i++) {
       std::string iTxt = std::to_string(i);
       std::shared_ptr< PVVariableInImpl<T>> ptr(new PVVariableInImpl<T>("DataOut_" + iTxt));
       ptr->setDescription("Data Output " + iTxt);

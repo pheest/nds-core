@@ -816,26 +816,13 @@ void DeviceVectorI32::WaveformGeneration_thread_body(){
 		double phase = m_WaveformGeneration.getPhase();
 
 		switch(signalType){
-
 			case 0:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				last_sample+=scanVector;
-				break;
-			case 1:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 2:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
 				break;
 			case 3:
 				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = (double)amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
+					outputData[scanVector] = amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
 				}
 				break;
 			case 4:
@@ -843,25 +830,8 @@ void DeviceVectorI32::WaveformGeneration_thread_body(){
 					outputData[scanVector] = ((angle & 0xff) < 128) ? amplitude : - amplitude;
 				}
 				break;
-			case 5:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 6:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 7:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
 			default:
-				for( scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				break;
 		}
 
@@ -893,6 +863,6 @@ void* DeviceVectorI32::allocateDevice(nds::Factory& factory, const std::string& 
  ***********************/
 void DeviceVectorI32::deallocateDevice(void* deviceName)
 {
-    delete (DeviceVectorI32*)deviceName;
+    delete reinterpret_cast<DeviceVectorI32*>(deviceName);
 }
 

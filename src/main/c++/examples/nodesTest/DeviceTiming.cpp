@@ -266,5 +266,5 @@ void* DeviceTiming::allocateDevice(nds::Factory& factory,
  ***********************/
 void DeviceTiming::deallocateDevice(void* DeviceName){
 
-  delete (DeviceTiming*)DeviceName;
+  delete reinterpret_cast<DeviceTiming*>(DeviceName);
 }
