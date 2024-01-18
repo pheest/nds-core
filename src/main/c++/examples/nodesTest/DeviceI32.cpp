@@ -196,8 +196,7 @@ DeviceI32::DeviceI32(nds::Factory &factory, const std::string &deviceName, const
 
 DeviceI32::~DeviceI32()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -871,6 +870,7 @@ void* DeviceI32::allocateDevice(nds::Factory& factory, const std::string& device
  ***********************/
 void DeviceI32::deallocateDevice(void* deviceName)
 {
+	m_devicesMap.erase((static_cast<DeviceI32*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceI32*>(deviceName);
 }
 

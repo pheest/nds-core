@@ -199,8 +199,7 @@ DeviceVectorDBL::DeviceVectorDBL(nds::Factory &factory, const std::string &devic
 
 DeviceVectorDBL::~DeviceVectorDBL()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -884,6 +883,7 @@ void* DeviceVectorDBL::allocateDevice(nds::Factory& factory, const std::string& 
  ***********************/
 void DeviceVectorDBL::deallocateDevice(void* deviceName)
 {
+	m_devicesMap.erase((static_cast<DeviceVectorDBL*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceVectorDBL*>(deviceName);
 }
 

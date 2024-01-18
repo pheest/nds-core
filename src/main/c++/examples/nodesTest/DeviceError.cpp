@@ -53,8 +53,7 @@ DeviceError::DeviceError(nds::Factory &factory, const std::string &deviceName,
 }
 
 DeviceError::~DeviceError() {
-	std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-	m_devicesMap.erase(m_name);
+	
 
 }
 
@@ -118,5 +117,6 @@ void* DeviceError::allocateDevice(nds::Factory& factory, const std::string& devi
 ***********************/
 void DeviceError::deallocateDevice(void* deviceName)
 {
+	m_devicesMap.erase((static_cast<DeviceError*>(deviceName))->m_name);
 	delete reinterpret_cast<DeviceError*>(deviceName);
 }

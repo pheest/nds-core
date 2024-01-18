@@ -299,8 +299,7 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 
 DeviceDigitalIO::~DeviceDigitalIO()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -1042,6 +1041,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
   ***********************/
  void DeviceDigitalIO::deallocateDevice(void* deviceName)
  {
+	 m_devicesMap.erase((static_cast<DeviceDigitalIO*>(deviceName))->m_name);
      delete reinterpret_cast<DeviceDigitalIO*>(deviceName);
  }
 

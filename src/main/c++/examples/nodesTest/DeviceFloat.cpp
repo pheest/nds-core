@@ -196,8 +196,7 @@ DeviceFloat::DeviceFloat(nds::Factory &factory, const std::string &deviceName, c
 
 DeviceFloat::~DeviceFloat()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -874,6 +873,7 @@ void* DeviceFloat::allocateDevice(nds::Factory& factory, const std::string& devi
  ***********************/
 void DeviceFloat::deallocateDevice(void* deviceName)
 {
+	m_devicesMap.erase((static_cast<DeviceFloat*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceFloat*>(deviceName);
 }
 
