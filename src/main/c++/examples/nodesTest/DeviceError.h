@@ -28,7 +28,7 @@ public:
 	 * @param deviceName     the name given to the device
 	 * @param parameters optional parameters passed to the device
 	 */
-	DeviceError(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& );
+	DeviceError(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	~DeviceError();
 
 	/*
