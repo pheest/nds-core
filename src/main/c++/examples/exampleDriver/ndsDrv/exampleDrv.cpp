@@ -278,6 +278,6 @@ void* exampleDrv::allocateDevice(nds::Factory& factory,
  ***********************/
 void exampleDrv::deallocateDevice(void* DeviceName) {
 
-  delete (exampleDrv*)DeviceName;
+	delete reinterpret_cast<exampleDrv*>(DeviceName);
 }
 #endif

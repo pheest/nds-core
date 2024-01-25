@@ -94,8 +94,7 @@ DeviceFirmware::DeviceFirmware(nds::Factory &factory, const std::string &DeviceN
 
 DeviceFirmware::~DeviceFirmware()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_DevicesMap.erase(m_Name);
+    
 
 }
 
@@ -281,6 +280,7 @@ void* DeviceFirmware::allocateDevice(nds::Factory& factory,
  ***********************/
 void DeviceFirmware::deallocateDevice(void* DeviceName)
 {
-    delete (DeviceFirmware*)DeviceName;
+	m_DevicesMap.erase((static_cast<DeviceFirmware*>(DeviceName))->m_Name);
+	delete reinterpret_cast<DeviceFirmware*>(DeviceName);
 }
 

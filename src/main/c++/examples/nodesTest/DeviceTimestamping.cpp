@@ -118,8 +118,7 @@ DeviceTimestamping::DeviceTimestamping(nds::Factory &factory,
 
 DeviceTimestamping::~DeviceTimestamping() {
 
-  std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-  m_DevicesMap.erase(m_Name);
+  
 
 }
 
@@ -359,7 +358,7 @@ void* DeviceTimestamping::allocateDevice(nds::Factory& factory,
  * Deallocation function
  ***********************/
 void DeviceTimestamping::deallocateDevice(void* DeviceName){
-
-  delete (DeviceTimestamping*)DeviceName;
+  m_DevicesMap.erase((static_cast<DeviceTimestamping*>(DeviceName))->m_Name);
+  delete reinterpret_cast<DeviceTimestamping*>(DeviceName);
 }
 

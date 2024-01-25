@@ -198,8 +198,7 @@ DeviceVectorUI8::DeviceVectorUI8(nds::Factory &factory, const std::string &devic
 
 DeviceVectorUI8::~DeviceVectorUI8()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -817,26 +816,13 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
 		double phase = m_WaveformGeneration.getPhase();
 
 		switch(signalType){
-
 			case 0:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				last_sample+=scanVector;
-				break;
-			case 1:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 2:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
 				break;
 			case 3:
 				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = (double)amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
+					outputData[scanVector] = amplitude * sin((2*M_PI*(scanVector+last_sample)*frequency)/updateRate + phase) + offset;
 				}
 				break;
 			case 4:
@@ -844,25 +830,8 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
 					outputData[scanVector] = ((angle & 0xff) < 128) ? amplitude : - amplitude;
 				}
 				break;
-			case 5:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 6:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
-			case 7:
-				for(scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
-				break;
 			default:
-				for( scanVector=0; scanVector != outputData.size(); ++scanVector){
-					outputData[scanVector] = amplitude;
-				}
+				std::fill(outputData.begin(), outputData.end(), amplitude);
 				break;
 		}
 
@@ -895,5 +864,6 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
   ***********************/
  void DeviceVectorUI8::deallocateDevice(void* deviceName)
  {
-     delete (DeviceVectorUI8*)deviceName;
+	 m_devicesMap.erase((static_cast<DeviceVectorUI8*>(deviceName))->m_name);
+     delete reinterpret_cast<DeviceVectorUI8*>(deviceName);
  }

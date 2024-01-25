@@ -109,8 +109,7 @@ DeviceFTE::DeviceFTE(nds::Factory &factory, const std::string &deviceName, const
 
 DeviceFTE::~DeviceFTE()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -340,5 +339,6 @@ void* DeviceFTE::allocateDevice(nds::Factory& factory, const std::string& device
  ***********************/
 void DeviceFTE::deallocateDevice(void* deviceName)
 {
-    delete (DeviceFTE*)deviceName;
+	m_devicesMap.erase((static_cast<DeviceFTE*>(deviceName))->m_name);
+    delete reinterpret_cast<DeviceFTE*>(deviceName);
 }

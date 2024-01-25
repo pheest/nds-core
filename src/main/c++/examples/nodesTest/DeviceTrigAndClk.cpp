@@ -101,12 +101,12 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
     } else {
         m_TriggerAndClk = rootNode.addChild(nds::TriggerAndClk<std::vector<timespec>>(
     		"TrigAndClk",
-			std::bind(&DeviceTrigAndClk::switchOn_Routing, this),
-			std::bind(&DeviceTrigAndClk::switchOff_Routing, this),
-			std::bind(&DeviceTrigAndClk::start_Routing, this),
-			std::bind(&DeviceTrigAndClk::stop_Routing, this),
-			std::bind(&DeviceTrigAndClk::recover_Routing, this),
-			std::bind(&DeviceTrigAndClk::allow_Routing_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+			std::bind(&DeviceTrigAndClk::switchOn_TrigAndClk, this),
+			std::bind(&DeviceTrigAndClk::switchOff_TrigAndClk, this),
+			std::bind(&DeviceTrigAndClk::start_TrigAndClk, this),
+			std::bind(&DeviceTrigAndClk::stop_TrigAndClk, this),
+			std::bind(&DeviceTrigAndClk::recover_TrigAndClk, this),
+			std::bind(&DeviceTrigAndClk::allow_TrigAndClk_Change, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 			std::bind(&DeviceTrigAndClk::PV_SetSW_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceTrigAndClk::PV_LoadTrigConf_Writer,this, std::placeholders::_1, std::placeholders::_2),
 			std::bind(&DeviceTrigAndClk::PV_ResetTrigConf_Writer,this, std::placeholders::_1, std::placeholders::_2),
@@ -133,8 +133,7 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
 
 DeviceTrigAndClk::~DeviceTrigAndClk()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -574,6 +573,7 @@ void* DeviceTrigAndClk::allocateDevice(nds::Factory& factory, const std::string&
  ***********************/
 void DeviceTrigAndClk::deallocateDevice(void* deviceName)
 {
-    delete (DeviceTrigAndClk*)deviceName;
+	m_devicesMap.erase((static_cast<DeviceTrigAndClk*>(deviceName))->m_name);
+    delete reinterpret_cast<DeviceTrigAndClk*>(deviceName);
 }
 

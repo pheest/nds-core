@@ -196,9 +196,7 @@ DeviceDBL::DeviceDBL(nds::Factory &factory, const std::string &deviceName, const
 
 DeviceDBL::~DeviceDBL()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
-
+    
 }
 
 DeviceDBL* DeviceDBL::getInstance(const std::string& deviceName)
@@ -364,8 +362,6 @@ void DeviceDBL::PV_DataAcquisition_SamplingRate_Writer(const timespec& timestamp
 */
 void DeviceDBL::DataAcquisition_thread_body(){
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-		double outputData(0);
-
 		double counter(0);
 
 		//Counter for number of pushed data blocks
@@ -417,13 +413,10 @@ void DeviceDBL::DataAcquisition_thread_body(){
 
 		// Run until the state machine stops us
 		while(!m_bStop_DataAcquisition){
-
-			outputData = counter;
-
 			counter++;
 
 		// Push the vector to the control system
-		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), counter-1);
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while
@@ -878,6 +871,8 @@ void* DeviceDBL::allocateDevice(nds::Factory& factory, const std::string& device
  ***********************/
 void DeviceDBL::deallocateDevice(void* deviceName)
 {
-    delete (DeviceDBL*)deviceName;
+	// It is necessary to erase the device from the map. To free the name for further use
+	m_devicesMap.erase((static_cast<DeviceDBL*>(deviceName))->m_name);
+    delete reinterpret_cast<DeviceDBL*>(deviceName);
 }
 

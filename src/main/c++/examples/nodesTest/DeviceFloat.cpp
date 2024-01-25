@@ -196,8 +196,7 @@ DeviceFloat::DeviceFloat(nds::Factory &factory, const std::string &deviceName, c
 
 DeviceFloat::~DeviceFloat()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -364,8 +363,6 @@ void DeviceFloat::PV_DataAcquisition_SamplingRate_Writer(const timespec& timesta
 */
 void DeviceFloat::DataAcquisition_thread_body(){
 	// Let's allocate a vector that will contain the data that we will push to the control system or to the data acquisition node
-		float outputData(0);
-
 		double counter(0);
 
 		//Counter for number of pushed data blocks
@@ -417,13 +414,10 @@ void DeviceFloat::DataAcquisition_thread_body(){
 
 		// Run until the state machine stops us
 		while(!m_bStop_DataAcquisition){
-
-			outputData = counter;
-
 			counter++;
 
 		// Push the vector to the control system
-		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
+		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), counter-1);
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while
@@ -879,6 +873,7 @@ void* DeviceFloat::allocateDevice(nds::Factory& factory, const std::string& devi
  ***********************/
 void DeviceFloat::deallocateDevice(void* deviceName)
 {
-    delete (DeviceFloat*)deviceName;
+	m_devicesMap.erase((static_cast<DeviceFloat*>(deviceName))->m_name);
+    delete reinterpret_cast<DeviceFloat*>(deviceName);
 }
 

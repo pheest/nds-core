@@ -96,8 +96,7 @@ DeviceStateMachine::DeviceStateMachine(nds::Factory &factory, const std::string 
 
 DeviceStateMachine::~DeviceStateMachine()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_DevicesMap.erase(m_Name);
+    
 
 }
 
@@ -204,6 +203,6 @@ void* DeviceStateMachine::allocateDevice(nds::Factory& factory,
  * Deallocation function
  ***********************/
 void DeviceStateMachine::deallocateDevice(void* DeviceName) {
-
-  delete (DeviceStateMachine*)DeviceName;
+  m_DevicesMap.erase((static_cast<DeviceStateMachine*>(DeviceName))->m_Name);
+  delete reinterpret_cast<DeviceStateMachine*>(DeviceName);
 }

@@ -13,7 +13,7 @@ static std::map<std::string, DeviceError*> m_devicesMap;
 static std::mutex m_lockDevicesMap;
 
 DeviceError::DeviceError(nds::Factory &factory, const std::string &deviceName,
-		const nds::namedParameters_t &parameters) :
+		const nds::namedParameters_t& ) :
 		m_name(deviceName),
 		m_delegateOutError(nds::PVDelegateOut<std::int32_t>("delegateOutError",std::bind(&DeviceError::delegateError, this, std::placeholders::_1, std::placeholders::_2))),
 		m_delegateInError(nds::PVDelegateIn<std::int32_t>("delegateInError",std::bind(&DeviceError::readError, this, std::placeholders::_1, std::placeholders::_2))),
@@ -42,7 +42,6 @@ DeviceError::DeviceError(nds::Factory &factory, const std::string &deviceName,
 	 * control system thread.
 	 */
 	nds::Port rootNode(deviceName);
-	nds::namedParameters_t::const_iterator findParam =  parameters.find("INIT");
 
 	rootNode.addChild(m_delegateOutError);
 	rootNode.addChild(m_delegateInError);
@@ -54,8 +53,7 @@ DeviceError::DeviceError(nds::Factory &factory, const std::string &deviceName,
 }
 
 DeviceError::~DeviceError() {
-	std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-	m_devicesMap.erase(m_name);
+	
 
 }
 
@@ -119,5 +117,6 @@ void* DeviceError::allocateDevice(nds::Factory& factory, const std::string& devi
 ***********************/
 void DeviceError::deallocateDevice(void* deviceName)
 {
-	delete (DeviceError*)deviceName;
+	m_devicesMap.erase((static_cast<DeviceError*>(deviceName))->m_name);
+	delete reinterpret_cast<DeviceError*>(deviceName);
 }

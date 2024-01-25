@@ -397,7 +397,7 @@ NDS3_API void* allocateDevice(nds::Factory& factory, const std::string& device, 
 } \
 NDS3_API void deallocateDevice(void* device) \
 { \
-    delete (className*)device; \
+    delete reinterpret_cast<className*>(device); \
 } \
 NDS3_API const char* getDeviceName() \
 { \

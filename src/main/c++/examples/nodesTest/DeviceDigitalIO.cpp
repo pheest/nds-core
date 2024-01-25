@@ -299,8 +299,7 @@ DeviceDigitalIO::DeviceDigitalIO(nds::Factory &factory, const std::string &devic
 
 DeviceDigitalIO::~DeviceDigitalIO()
 {
-    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-    m_devicesMap.erase(m_name);
+    
 
 }
 
@@ -374,9 +373,9 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer(const timespec& timestamp,
 	//Value has the dataOutMask to be programmed on the hardware.
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
-	HW_value = value;
-	m_DigitalIO_Bool.setDataOutMask(timestamp,value);
 
+	HW_value = value;
+	m_DigitalIO_Bool.setDataOutMask(timestamp,HW_value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer(const timespec& timestamp, const double& value){
@@ -421,13 +420,13 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 	bool value = false;
 
 	// Get DataOutMask
-	std::vector<bool> DataOutMask = m_DigitalIO_Bool.getDataOutMask();
+	//std::vector<bool> DataOutMask = m_DigitalIO_Bool.getDataOutMask();
 	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO_Bool.getVoltLevelHigh();
 	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO_Bool.getVoltLevelLow();
 	// Get ChannelDir
-	std::vector<bool> ChannelDir = m_DigitalIO_Bool.getChannelDir();
+	//std::vector<bool> ChannelDir = m_DigitalIO_Bool.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -505,7 +504,7 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I8(const timespec& timesta
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
-	m_DigitalIO_I8.setDataOutMask(timestamp,value);
+	m_DigitalIO_I8.setDataOutMask(timestamp,HW_value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I8(const timespec& timestamp, const double& value){
@@ -548,13 +547,13 @@ void DeviceDigitalIO::DigitalIO_thread_body_I8(){
 	std::int8_t value(0);
 
 	// Get DataOutMask
-	std::vector<bool> DataOutMask = m_DigitalIO_I8.getDataOutMask();
+	//std::vector<bool> DataOutMask = m_DigitalIO_I8.getDataOutMask();
 	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO_I8.getVoltLevelHigh();
 	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO_I8.getVoltLevelLow();
 	// Get ChannelDir
-	std::vector<bool> ChannelDir = m_DigitalIO_I8.getChannelDir();
+	//std::vector<bool> ChannelDir = m_DigitalIO_I8.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -631,7 +630,7 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I16(const timespec& timest
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
-	m_DigitalIO_I16.setDataOutMask(timestamp,value);
+	m_DigitalIO_I16.setDataOutMask(timestamp,HW_value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I16(const timespec& timestamp, const double& value){
@@ -673,13 +672,13 @@ void DeviceDigitalIO::DigitalIO_thread_body_I16(){
 	std::int16_t value(0);
 
 	// Get DataOutMask
-	std::vector<bool> DataOutMask = m_DigitalIO_I16.getDataOutMask();
+	//std::vector<bool> DataOutMask = m_DigitalIO_I16.getDataOutMask();
 	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO_I16.getVoltLevelHigh();
 	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO_I16.getVoltLevelLow();
 	// Get ChannelDir
-	std::vector<bool> ChannelDir = m_DigitalIO_I16.getChannelDir();
+	//std::vector<bool> ChannelDir = m_DigitalIO_I16.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -754,7 +753,7 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I64(const timespec& timest
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
-	m_DigitalIO_I64.setDataOutMask(timestamp,value);
+	m_DigitalIO_I64.setDataOutMask(timestamp,HW_value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I64(const timespec& timestamp, const double& value){
@@ -796,13 +795,13 @@ void DeviceDigitalIO::DigitalIO_thread_body_I64(){
 	std::int64_t value(0);
 
 	// Get DataOutMask
-	std::vector<bool> DataOutMask = m_DigitalIO_I64.getDataOutMask();
+	//std::vector<bool> DataOutMask = m_DigitalIO_I64.getDataOutMask();
 	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO_I64.getVoltLevelHigh();
 	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO_I64.getVoltLevelLow();
 	// Get ChannelDir
-	std::vector<bool> ChannelDir = m_DigitalIO_I64.getChannelDir();
+	//std::vector<bool> ChannelDir = m_DigitalIO_I64.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -879,7 +878,7 @@ void DeviceDigitalIO::PV_DigitalIO_dataOutMask_Writer_I32(const timespec& timest
 	//Call to function programming the hardware. This function should return the real voltLevelHigh programmed. This value has to be set to the readback attribute.
 	//In the meantime, without real hardware value and  HW_value are equal.
 	HW_value = value;
-	m_DigitalIO_I32.setDataOutMask(timestamp,value);
+	m_DigitalIO_I32.setDataOutMask(timestamp,HW_value);
 }
 
 void DeviceDigitalIO::PV_DigitalIO_voltLevelHigh_Writer_I32(const timespec& timestamp, const double& value){
@@ -994,13 +993,13 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
 	std::int32_t value(0);
 
 	// Get DataOutMask
-	std::vector<bool> DataOutMask = m_DigitalIO_I32.getDataOutMask();
+	//std::vector<bool> DataOutMask = m_DigitalIO_I32.getDataOutMask();
 	// Get VoltLevelHigh
 	double VoltLevelHigh = m_DigitalIO_I32.getVoltLevelHigh();
 	// Get VoltLevelLow
 	double VoltLevelLow = m_DigitalIO_I32.getVoltLevelLow();
 	// Get ChannelDir
-	std::vector<bool> ChannelDir = m_DigitalIO_I32.getChannelDir();
+	//std::vector<bool> ChannelDir = m_DigitalIO_I32.getChannelDir();
 
 	std::cout<<"\tVoltLevelHigh = "<<VoltLevelHigh<<std::endl;
 	std::cout<<"\tVoltLevelLow = "<<VoltLevelLow<<std::endl;
@@ -1042,6 +1041,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
   ***********************/
  void DeviceDigitalIO::deallocateDevice(void* deviceName)
  {
-     delete (DeviceDigitalIO*)deviceName;
+	 m_devicesMap.erase((static_cast<DeviceDigitalIO*>(deviceName))->m_name);
+     delete reinterpret_cast<DeviceDigitalIO*>(deviceName);
  }
 

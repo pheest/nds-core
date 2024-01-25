@@ -175,8 +175,7 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
 
 DeviceHQMonitor::~DeviceHQMonitor()
 {
-  std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-  m_DevicesMap.erase(m_Name);
+  
 
 }
 
@@ -431,15 +430,16 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
   std::int32_t SelfTestTextEnableOld = m_HQMonitor.getSelfTestTextEnable();
   std::int32_t SelfTestCodeResultEnableOld = m_HQMonitor.getSelfTestCodeResultEnable();
 
-  std::cout<<"HealthMonitor support information:"<<std::endl;
-  std::cout<<"\tDevicePower = "<<devicePower<<std::endl;
-  std::cout<<"\tDeviceTemperature = "<<deviceTemperature<<std::endl;
-  std::cout<<"\tDeviceVoltage = "<<deviceVoltage<<std::endl;
-  std::cout<<"\tDeviceCurrent = "<<deviceCurrent<<std::endl;
-  std::cout<<"\tSelfTestEnable = "<<selfTestEnableOld<<std::endl;
 
   // Run until the state machine stops us
   while(!m_bStop_HQMonitor){
+
+	std::cout<<"HealthMonitor support information:"<<std::endl;
+	std::cout<<"\tDevicePower = "<<devicePower<<std::endl;
+	std::cout<<"\tDeviceTemperature = "<<deviceTemperature<<std::endl;
+	std::cout<<"\tDeviceVoltage = "<<deviceVoltage<<std::endl;
+	std::cout<<"\tDeviceCurrent = "<<deviceCurrent<<std::endl;
+	std::cout<<"\tSelfTestEnable = "<<selfTestEnableOld<<std::endl;
 
     devicePower = m_HQMonitor.getDevicePower();
     deviceVoltage = m_HQMonitor.getDeviceVoltage();
@@ -567,5 +567,6 @@ void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
  * Deallocation function
  ***********************/
 void DeviceHQMonitor::deallocateDevice(void* DeviceName){
-  delete (DeviceHQMonitor*)DeviceName;
+  m_DevicesMap.erase((static_cast<DeviceHQMonitor*>(DeviceName))->m_Name);
+  delete reinterpret_cast<DeviceHQMonitor*>(DeviceName);
 }
