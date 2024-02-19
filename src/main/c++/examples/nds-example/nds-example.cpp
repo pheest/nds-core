@@ -129,10 +129,7 @@ m_name(DeviceName)
 
 	m_DataAcquisition.setDMANumChannels(timest,nDChannels );
 }
-Device::~Device()
-{
-	std::lock_guard<std::mutex> lock(m_lockDevicesMap);
-	m_DevicesMap.erase(m_name);
+Device::~Device() {
 }
 
 Device* Device::getInstance(const std::string& DeviceName)
