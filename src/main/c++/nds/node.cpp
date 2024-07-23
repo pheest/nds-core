@@ -77,6 +77,27 @@ state_t Node::getState()
     return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLocalState();
 }
 
+/**
+ * @brief Get parent state
+ *
+ * Gets parent State
+ * If node is rootNode, it returns its own state
+ *
+ * @return state_t Parent state
+ */
+state_t Node::getParentState()
+{
+    auto parent_ptr = std::static_pointer_cast<NodeImpl>(m_pImplementation)->getParent();
+
+    if(parent_ptr.get() == nullptr) {
+        // We are a root node, return my current state
+        return getState();
+    } else {
+        return parent_ptr->getLocalState();
+    }
+}
+
+
 /*
  * Get the global state
  *

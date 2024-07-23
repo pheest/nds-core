@@ -87,6 +87,7 @@ public:
     void setState(state_t state);
 
     state_t getState();
+    state_t getParentState();
     state_t getGlobalState();
     state_t getLowestGlobalState();
     state_t getHighestGlobalState();
