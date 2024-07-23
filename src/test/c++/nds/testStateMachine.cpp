@@ -202,6 +202,9 @@ TEST(testStateMachine, testNodeStates)
     ::sleep(2);
     EXPECT_EQ((int)nds::state_t::on, (int)ch0.getState());
 
+    // Check Parent state: should be off
+    EXPECT_EQ((int)nds::state_t::off, (int)ch0.getParentState());
+
     // Switch state machine 2 to on and then to running. This STM is a child of ch1 node
     // Should go back to on because of the rollback
     ch1.setState(nds::state_t::on);
@@ -218,6 +221,27 @@ TEST(testStateMachine, testNodeStates)
     EXPECT_EQ((int)nds::state_t::switchingOff, (int)ch1.getState());
     ::sleep(2);
     EXPECT_EQ((int)nds::state_t::off, (int)ch1.getState());
+
+
+    rootNode.setState(nds::state_t::on);
+    ::sleep(2);
+    // Check Parent state: should be on
+    EXPECT_EQ((int)nds::state_t::on, (int)ch0.getParentState());
+    EXPECT_EQ((int)nds::state_t::on, (int)ch1.getParentState());
+
+    rootNode.setState(nds::state_t::running);
+    ::sleep(2);
+	// Check Parent state: should be running
+	EXPECT_EQ((int)nds::state_t::running, (int)ch0.getParentState());
+	EXPECT_EQ((int)nds::state_t::running, (int)ch1.getParentState());
+
+	rootNode.setState(nds::state_t::on);
+	::sleep(2);
+	rootNode.setState(nds::state_t::off);
+	::sleep(2);
+	// Check Parent state: should be off
+	EXPECT_EQ((int)nds::state_t::off, (int)ch0.getParentState());
+	EXPECT_EQ((int)nds::state_t::off, (int)ch1.getParentState());
 
     factory.destroyDevice("");
 }
