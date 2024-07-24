@@ -173,6 +173,12 @@ void FirmwareImpl::onStart()
     m_OnStartDelegate();
 }
 
+nds::state_t FirmwareImpl::getState()
+{
+return m_StateMachine->getLocalState();
+}
+
+
 std::string FirmwareImpl::getFirmwareVersion()
 {
     std::string FirmwareVersion;
