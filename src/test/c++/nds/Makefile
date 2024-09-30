@@ -21,7 +21,7 @@
 #
 #-======================================================================
 
-NDSLIBDIR:=$(realpath ../../../../target/lib)
+NDSLIBDIR:=../../../../target/lib
 # Path from which the device source file will be obtained.
 EXAMPLESDIR:=$(realpath ../../../main/c++/examples/nodesTest)
 EXAMPLESHEADERS:=$(wildcard $(EXAMPLESDIR)/*.h))

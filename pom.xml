@@ -178,6 +178,11 @@ of the distribution package.
               <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile" />
               <requires codac="true">nds-core-devel</requires>
             </package>
+            
+            <package name="test">
+              <include type="file" source="test/c++/nds/nds3core-unit-tests" target="tests/nds3/"/>
+              <requires version="current" buildOnly="true">gtest-devel</requires>
+            </package>
 
           </packaging>
         </configuration>
