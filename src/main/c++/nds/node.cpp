@@ -65,7 +65,7 @@ void Node::addChildInternal(Base& child)
  **********************/
 void Node::setState(state_t state)
 {
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->setLocalState(state);
+    std::static_pointer_cast<NodeImpl>(m_pImplementation)->setState(state);
 }
 
 /*
@@ -74,7 +74,7 @@ void Node::setState(state_t state)
  **********************/
 state_t Node::getState()
 {
-    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLocalState();
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getState();
 }
 
 /**
@@ -87,14 +87,7 @@ state_t Node::getState()
  */
 state_t Node::getParentState()
 {
-    auto parent_ptr = std::static_pointer_cast<NodeImpl>(m_pImplementation)->getParent();
-
-    if(parent_ptr.get() == nullptr) {
-        // We are a root node, return my current state
-        return getState();
-    } else {
-        return parent_ptr->getLocalState();
-    }
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getParentState();
 }
 
 
@@ -104,10 +97,7 @@ state_t Node::getParentState()
  **********************/
 state_t Node::getGlobalState()
 {
-    state_t state;
-    timespec unused;
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->getGlobalState(&unused, &state);
-    return state;
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getGlobalState();
 }
 
 /*
@@ -116,10 +106,7 @@ state_t Node::getGlobalState()
  **********************/
 state_t Node::getLowestGlobalState()
 {
-    state_t state;
-    timespec unused;
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLowestGlobalState(&unused, &state);
-    return state;
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLowestGlobalState();
 }
 
 /*
@@ -128,10 +115,7 @@ state_t Node::getLowestGlobalState()
  **********************/
 state_t Node::getHighestGlobalState()
 {
-    state_t state;
-    timespec unused;
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->getHighestGlobalState(&unused, &state);
-    return state;
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getHighestGlobalState();
 }
 
 /*
@@ -140,10 +124,7 @@ state_t Node::getHighestGlobalState()
  **********************/
 state_t Node::getLowestChildState()
 {
-    state_t state;
-    timespec unused;
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLowestChildState(&unused, &state);
-    return state;
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getLowestChildState();
 }
 
 /*
@@ -152,10 +133,7 @@ state_t Node::getLowestChildState()
  **********************/
 state_t Node::getHighestChildState()
 {
-    state_t state;
-    timespec unused;
-    std::static_pointer_cast<NodeImpl>(m_pImplementation)->getHighestChildState(&unused, &state);
-    return state;
+    return std::static_pointer_cast<NodeImpl>(m_pImplementation)->getHighestChildState();
 }
 
 }

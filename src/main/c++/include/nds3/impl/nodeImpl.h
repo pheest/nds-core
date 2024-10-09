@@ -67,6 +67,14 @@ public:
     virtual std::string buildFullExternalName(const FactoryBaseImpl& controlSystem) const;
     virtual std::string buildFullExternalNameFromPort(const FactoryBaseImpl& controlSystem) const;
 
+    void setState(state_t state);
+    state_t getState();
+    state_t getParentState();
+    state_t getGlobalState();
+    state_t getLowestGlobalState();
+    state_t getHighestGlobalState();
+    state_t getLowestChildState();
+    state_t getHighestChildState();
 protected:
     std::string buildFullExternalName(const FactoryBaseImpl& controlSystem, const bool bStopAtPort) const;
 

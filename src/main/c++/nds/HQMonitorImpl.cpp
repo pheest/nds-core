@@ -416,6 +416,14 @@ size_t HQMonitorImpl::getSelfTestCodeResultEnable()
 	return (std::int32_t) selfTestResult;
 }
 
+std::string HQMonitorImpl::getSelfTestTextResult()
+{
+	std::string selfTestTextResult;
+	timespec timestamp;
+	m_TestTxtResult_PV->read(&timestamp, &selfTestTextResult);
+	return (std::string) selfTestTextResult;
+}
+
 std::string HQMonitorImpl::getSelfTextTxtResult()
 {
 	std::string selfTestTextResult;
@@ -507,6 +515,10 @@ void HQMonitorImpl::setSelfTestTextEnable(const timespec& timestamp, const std::
 {
 	m_TestTxtEnable_RBVPV->setValue(timestamp, value);
 	m_TestTxtEnable_RBVPV->push(timestamp, value);
+}
+
+void HQMonitorImpl::setSelfTestTextResult(const timespec& timestamp, const std::string& value){
+	m_TestTxtResult_PV->push(timestamp, value);
 }
 
 void HQMonitorImpl::setSelfTextTxtResult(const timespec& timestamp, const std::string& value){

@@ -173,7 +173,7 @@ size_t HQMonitor::getSelfTestCodeResultEnable()
 
   std::string HQMonitor::getSelfTestTextResult()
 {
-	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> getSelfTextTxtResult();
+	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> getSelfTestTextResult();
 }
 
 
@@ -267,7 +267,7 @@ void HQMonitor::setSignalQualityFlagLevel(const timespec& timestamp, const doubl
 
 void HQMonitor::setSelfTestTextResult(const timespec& timestamp, const std::string& value)
 {
-	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> setSelfTextTxtResult(timestamp, value);
+	return std::static_pointer_cast<HQMonitorImpl> (m_pImplementation) -> setSelfTestTextResult(timestamp, value);
 }
 
 void HQMonitor::setState(const nds::state_t& newState)
