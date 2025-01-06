@@ -24,10 +24,12 @@ of the distribution package.
   <artifactId>nds-core</artifactId>
   <packaging>codac</packaging>
   <version>3.2.5.3</version>
-  <name>CODAC Core System NDS-Core (v3) module</name>
-  <description>NDS (Nominal Device Support) is a library that allows to write
-    device support, hiding control system details and focusing on device functionalities.</description>
-  <url>https://github.com/Cosylab/nds3</url>
+  <name>NDSv3 - Core Library</name>
+  <description>NDSv3 (Nominal Device Support) is a library that allows to write
+    device support focusing on device functionalities.
+    The nds-core module contains common code, device base classes and libraries.
+  </description>
+  <url>https://github.com/NDSv3</url>
 
   <!-- project properties -->
   <properties>
@@ -83,7 +85,9 @@ of the distribution package.
           <packaging>
             <package>
               <include type="library" name="nds3" />
+              <component>nds</component>
             </package>
+
             <package develof="">
               <include type="file" source="main/c++/include/nds3" target="include/">
                 <include>*.h</include>
@@ -94,44 +98,44 @@ of the distribution package.
               <include type="file" source="main/c++/include/nds3/impl" target="include/nds3/" />
               <requires codac="true">nds-core-devel</requires>
             </package>
+
             <package name="testdevices-nds-epics">
-            	  <include type="library" name="nds3-DeviceDataMultiplexing" />
-	              <include type="library" name="nds3-DeviceDBL" />
-	              <include type="library" name="nds3-DeviceDigitalIO" />
-	              <include type="library" name="nds3-DeviceFirmware" />
-	              <include type="library" name="nds3-DeviceFloat" />
-	              <include type="library" name="nds3-DeviceFTE" />
-	              <include type="library" name="nds3-DeviceHQMonitor" />
-	              <include type="library" name="nds3-DeviceI32" />
-	              <include type="library" name="nds3-DeviceI64" />
-	              <include type="library" name="nds3-DeviceRouting" />
-	              <include type="library" name="nds3-DeviceStateMachine" />
-	              <include type="library" name="nds3-DeviceTiming" />
-	              <include type="library" name="nds3-DeviceTimestamping" />
-	              <include type="library" name="nds3-DevicePVs" />
-	              <include type="library" name="nds3-DeviceVectorFloat" />
-	              <include type="library" name="nds3-DeviceVectorI32" />
-	              <include type="library" name="nds3-DeviceVectorI64" />
-	              <include type="library" name="nds3-DeviceVectorI8" />
-	              <include type="library" name="nds3-DeviceVectorUI8" />
-	              <include type="library" name="nds3-DeviceVectorDBL" /> 
-	              <include type="library" name="nds3-DeviceTrigAndClk" />
-	              <include type="library" name="nds3-DeviceReporterAndParser" />
-	              <include type="library" name="nds3-DeviceError" />
-	   
-              <requires codac="true">nds-core-devel</requires> 
+              <include type="library" name="nds3-DeviceDataMultiplexing" />
+              <include type="library" name="nds3-DeviceDBL" />
+              <include type="library" name="nds3-DeviceDigitalIO" />
+              <include type="library" name="nds3-DeviceFirmware" />
+              <include type="library" name="nds3-DeviceFloat" />
+              <include type="library" name="nds3-DeviceFTE" />
+              <include type="library" name="nds3-DeviceHQMonitor" />
+              <include type="library" name="nds3-DeviceI32" />
+              <include type="library" name="nds3-DeviceI64" />
+              <include type="library" name="nds3-DeviceRouting" />
+              <include type="library" name="nds3-DeviceStateMachine" />
+              <include type="library" name="nds3-DeviceTiming" />
+              <include type="library" name="nds3-DeviceTimestamping" />
+              <include type="library" name="nds3-DevicePVs" />
+              <include type="library" name="nds3-DeviceVectorFloat" />
+              <include type="library" name="nds3-DeviceVectorI32" />
+              <include type="library" name="nds3-DeviceVectorI64" />
+              <include type="library" name="nds3-DeviceVectorI8" />
+              <include type="library" name="nds3-DeviceVectorUI8" />
+              <include type="library" name="nds3-DeviceVectorDBL" />
+              <include type="library" name="nds3-DeviceTrigAndClk" />
+              <include type="library" name="nds3-DeviceReporterAndParser" />
+              <include type="library" name="nds3-DeviceError" />
+              <requires codac="true">nds-core-devel</requires>
             </package>
 
             <package name="testcontrolsystem-devel">
-            <include type="file" source="test/c++/include/nds3" target="include/">
-              <include>*est*.h</include>
-            </include>
-            <include type="file" source="lib/libnds3-testcontrolsystem.a" target="lib/" />
-            <include type="file" source="lib/libnds3-testcontrolsystem.so" target="lib/" />
-            <requires codac="true">nds-core-impl-devel</requires>
+              <include type="file" source="test/c++/include/nds3" target="include/">
+                <include>*est*.h</include>
+              </include>
+              <include type="file" source="lib/libnds3-testcontrolsystem.a" target="lib/" />
+              <include type="file" source="lib/libnds3-testcontrolsystem.so" target="lib/" />
+              <requires codac="true">nds-core-impl-devel</requires>
             </package>
 
-              <package name="doc">
+            <package name="doc">
               <include type="doxygen" name="NDS3" project="${project.name}" version="${project.version}" optimize="c">
                 <filepattern>*.dox</filepattern>
                 <filepattern>*.h</filepattern>
