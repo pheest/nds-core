@@ -397,7 +397,7 @@ void NodeImpl::setState(state_t state)
  **********************/
 state_t NodeImpl::getState()
 {
-    getLocalState();
+    return getLocalState();
 }
 
 /**
