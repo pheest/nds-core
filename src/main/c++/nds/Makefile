@@ -53,9 +53,10 @@ CXXFLAGS=-c $(STD) -Wall -Wextra -pedantic -fPIC -pthread  -fvisibility-inlines-
 LDFLAGS= -shared 
 
 ifeq ($(COVERAGE),true)
-	#CFLAGS+= -O0 -g --coverage
 	CXXFLAGS+= -O0 -g --coverage
 	LDFLAGS+= --coverage
+else
+	CXXFLAGS+= -O3
 endif
 
 all: $(SOURCES) $(SHAREDLIBRARY) $(STATICLIBRARY)
