@@ -20,7 +20,7 @@
 #
 #-======================================================================
 
-SUBDIRS=$(dir $(wildcard */Makefile))
+SUBDIRS=testControlSystem nds nds-example
 
 BOLD=\e[1m
 NC=\e[0m
