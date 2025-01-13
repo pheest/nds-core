@@ -382,6 +382,103 @@ std::string NodeImpl::buildFullExternalName(const FactoryBaseImpl& controlSystem
     return temporaryPointer->buildFullExternalName(controlSystem) + controlSystem.getSeparator(m_nodeLevel) + name;
 }
 
+/**
+ * Get the state
+ *
+ **********************/
+void NodeImpl::setState(state_t state)
+{
+    setLocalState(state);
+}
+
+/**
+ * Get the state
+ *
+ **********************/
+state_t NodeImpl::getState()
+{
+    return getLocalState();
+}
+
+/**
+ * @brief Get parent state
+ *
+ * Gets parent state
+ * If node is rootNode, it returns its own state
+ *
+ * @return state_t Parent state
+ */
+state_t NodeImpl::getParentState()
+{
+    auto parent_ptr = getParent();
+
+    if(parent_ptr.get() == nullptr) {
+        // We are a root node, return my current state
+        return getState();
+    } else {
+        return parent_ptr->getLocalState();
+    }
+}
+
+/**
+ * Get the global state
+ *
+ **********************/
+state_t NodeImpl::getGlobalState()
+{
+    state_t state;
+    timespec unused;
+    getGlobalState(&unused, &state);
+    return state;
+}
+
+/**
+ * Get the lowest global state
+ *
+ **********************/
+state_t NodeImpl::getLowestGlobalState()
+{
+    state_t state;
+    timespec unused;
+    getLowestGlobalState(&unused, &state);
+    return state;
+}
+
+/**
+ * Get the highest global state
+ *
+ **********************/
+state_t NodeImpl::getHighestGlobalState()
+{
+    state_t state;
+    timespec unused;
+    getHighestGlobalState(&unused, &state);
+    return state;
+}
+
+/**
+ * Get the lowest state of all its children
+ *
+ **********************/
+state_t NodeImpl::getLowestChildState()
+{
+    state_t state;
+    timespec unused;
+    getLowestChildState(&unused, &state);
+    return state;
+}
+
+/**
+ * Get the highest state of all its children
+ *
+ **********************/
+state_t NodeImpl::getHighestChildState()
+{
+    state_t state;
+    timespec unused;
+    getHighestChildState(&unused, &state);
+    return state;
+}
 
 }
 

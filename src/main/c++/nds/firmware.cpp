@@ -80,6 +80,11 @@ timespec Firmware::getStartTimestamp() const
     return std::static_pointer_cast<FirmwareImpl >(m_pImplementation)->getStartTimestamp();
 }
 
+nds::state_t Firmware::getState()
+{
+    return std::static_pointer_cast<FirmwareImpl >(m_pImplementation)->getState();
+}
+
 std::string Firmware::getFirmwareVersion()
 {
     return std::static_pointer_cast<FirmwareImpl >(m_pImplementation)->getFirmwareVersion();

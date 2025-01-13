@@ -199,6 +199,12 @@ public:
 	/**
 	 * @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
 	 */
+	std::string getSelfTestTextResult();
+
+	/**
+	* @brief Retrieve a text summarizing the self-test result with the fields whose flags are enabled
+	* @deprecated Use getSelfTestTextResult
+	*/
 	std::string getSelfTextTxtResult();
 
 	/**
@@ -281,6 +287,12 @@ public:
 
 	/**
 	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
+	 */
+	void setSelfTestTextResult(const timespec& timestamp, const std::string& value);
+
+	/**
+	 * @brief Set the text that summarizes the self-test result with the fields whose flags are enabled
+	 * @deprecated Use setSelfTestTextResult
 	 */
 	void setSelfTextTxtResult(const timespec& timestamp, const std::string& value);
 

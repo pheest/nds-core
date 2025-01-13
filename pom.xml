@@ -174,13 +174,19 @@ of the distribution package.
             </package>
 
             <package unitPrefix="false" name="nds-core-examples">
-              <include type="source" source="src/main/c++/examples" target="examples/nds3/src/main/c++/devices" />
+              <include type="source" source="src/main/c++/examples/nds-example" target="examples/nds3/src/main/c++/devices/nds-example" />
+              <include type="source" source="src/main/c++/examples/Makefile" target="examples/nds3/src/main/c++/devices/Makefile" />
               <include type="source" source="example-Makefile" target="examples/nds3/src/main/c++/Makefile" />
               <include type="source" source="example-pom.xml" target="examples/nds3/pom.xml" />
               <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include" />
               <include type="source" source="src/test/c++/nds-example" target="examples/nds3/src/test/c++/nds-example" />
               <include type="source" source="src/test/c++/Makefile" target="examples/nds3/src/test/c++/Makefile" />
               <requires codac="true">nds-core-devel</requires>
+            </package>
+            
+            <package name="test">
+              <include type="file" source="test/c++/nds/nds3core-unit-tests" target="tests/nds3/"/>
+              <requires version="current" buildOnly="true">gtest-devel</requires>
             </package>
 
           </packaging>

@@ -20,50 +20,64 @@
 # of the distribution package.
 #
 #-======================================================================
-PROGNAME=nds3core-unit-tests
+
+LIBNAME=nds3-testcontrolsystem
 
 TARGET=../../../../target
 
+LIBRARIES=nds3
+
 LIBRARY_DIRS=$(TARGET)/lib
-LIBRARIES_DEVICES= $(patsubst lib%.so,%, $(notdir $(wildcard $(TARGET)/lib/libnds3-Device*.so)))
+INCLUDE_DIRS=./include ../include $(TARGET)/main/c++/include
 
-LIBRARIES=pthread nds3 nds3-testcontrolsystem dl rt gtest $(LIBRARIES_DEVICES)
-INCLUDE_DIRS=. ./include ../include $(TARGET)/main/c++/include $(TARGET)/main/c++/examples/nodesTest
+LIBRARY_DIR=$(TARGET)/lib
+SOURCES_DIR=.
+OBJECT_DIR=$(SOURCES_DIR)/.obj
 
-BINARY_DIR=.
-SOURCE_BASE_DIR=.
-SOURCES_DIR=$(SOURCE_BASE_DIR)
-OBJECT_DIR = $(SOURCE_BASE_DIR)/.obj
-
-EXECUTABLE=$(BINARY_DIR)/$(PROGNAME)
+SHAREDLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).so
+STATICLIBRARY=$(LIBRARY_DIR)/lib$(LIBNAME).a
 INCLUDES=$(foreach inc,$(INCLUDE_DIRS),-I$(inc))
-LDPATHS=$(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs))
+LDPATHS=$(foreach libs,$(LIBRARY_DIRS),-L$(libs) -Wl,-rpath,$(libs)) 
 LDLIBS=$(foreach libs,$(LIBRARIES),-l$(libs))
-SOURCES=$(foreach dir,$(SOURCES_DIR),$(wildcard $(dir)/*.cpp)) $(foreach dir,$(SOURCES_DIR),$(wildcard $(dir)/*.c))
+SOURCES=$(wildcard *.cpp)
 OBJECTS=$(addprefix $(OBJECT_DIR)/,$(patsubst %.c, %.o,$(patsubst %.cpp,%.o,$(notdir $(SOURCES)))))
 
 C=gcc
 CC=g++
-CFLAGS=-c -Wno-variadic-macros -Wno-class-memaccess -O0 -g
-CCFLAGS=-c -Wno-variadic-macros -Wno-class-memaccess -std=c++11 -O0 -g
-LDFLAGS=
+CFLAGS=-c -Wall -Wextra -Wpedantic -Wshadow -fPIC
+CCFLAGS=-c -Wall -Wextra -Wpedantic -Wshadow -fPIC -std=c++11
+LDFLAGS= -shared
+
+ifeq ($(COVERAGE),true)
+	CFLAGS+= -O0 -g --coverage
+	CCFLAGS+= -O0 -g --coverage
+	LDFLAGS+= --coverage
+else
+	CFLAGS+= -O3
+	CCFLAGS+= -O3
+endif
 
 VPATH=$(SOURCES_DIR)
 
-.PHONY: all clean run
 
-all: $(SOURCES) $(EXECUTABLE)
+.PHONY: all clean run 
+
+all: $(SOURCES) $(SHAREDLIBRARY) $(STATICLIBRARY)
 
 clean:
-	rm -rf "$(EXECUTABLE)" "$(OBJECT_DIR)"
+	rm -rf "$(SHAREDLIBRARY)" "$(STATICLIBRARY)" "$(OBJECT_DIR)" "$(HTARGETS)"
 
-run: $(SOURCES) $(EXECUTABLE)
-	$(EXECUTABLE)
+run: $(SOURCES) $(SHAREDLIBRARY) 
+	$(SHAREDLIBRARY)
 
-$(EXECUTABLE): $(OBJECTS)
-	mkdir -p $(BINARY_DIR)
-	$(CC) $(LDFLAGS) $(LDPATHS) $(LDLIBS) $(OBJECTS) -o $@ 
+$(SHAREDLIBRARY): $(OBJECTS)
+	mkdir -p $(LIBRARY_DIR)
+	$(CC) $(LDFLAGS) $(LDPATHS) $(OBJECTS) -o $(SHAREDLIBRARY) $(LDLIBS)
 
+$(STATICLIBRARY): $(OBJECTS)
+	mkdir -p $(LIBRARY_DIR)
+	$(AR) rcs $@ $^
+	
 $(OBJECT_DIR)/%.o: %.cpp
 	mkdir -p $(OBJECT_DIR)
 	$(CC) $(CCFLAGS) $(INCLUDES) $< -o $@
