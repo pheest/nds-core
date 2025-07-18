@@ -41,6 +41,8 @@ public:
 
     size_t countStringInLog(const std::string& string);
 
+    void clearLog();
+    
     static TestControlSystemFactoryImpl* getInstance();
 
 

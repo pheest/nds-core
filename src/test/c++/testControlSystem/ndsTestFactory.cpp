@@ -114,6 +114,11 @@ size_t TestControlSystemFactoryImpl::countStringInLog(const std::string &string)
     return m_logs.count(string);
 }
 
+void TestControlSystemFactoryImpl::clearLog()
+{
+	m_logs.clear();
+}
+
 std::ostream* TestControlSystemFactoryImpl::createLogStream(const logLevel_t logLevel)
 {
     return new TestLogStream(logLevel, this);

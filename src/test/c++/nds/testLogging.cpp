@@ -35,6 +35,8 @@ void logPV(std::vector<nds::PVBase>& pvs, nds::logLevel_t severity)
 
 TEST(testLogging, testLotOfPVs)
 {
+    nds::tests::TestControlSystemFactoryImpl* pFactory = nds::tests::TestControlSystemFactoryImpl::getInstance();
+    pFactory->clearLog();
 
 	nds::Port rootNode("testLogging");
 
@@ -91,8 +93,6 @@ TEST(testLogging, testLotOfPVs)
     logInfo.join();
     logWarning.join();
     logError.join();
-
-    nds::tests::TestControlSystemFactoryImpl* pFactory = nds::tests::TestControlSystemFactoryImpl::getInstance();
 
     for(size_t scanPVs(0); scanPVs != pvs.size(); ++scanPVs)
     {
