@@ -130,6 +130,8 @@ m_name(DeviceName)
 	m_DataAcquisition.setDMANumChannels(timest,nDChannels );
 }
 Device::~Device() {
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+	m_DevicesMap.erase(this->m_name);
 }
 
 Device* Device::getInstance(const std::string& DeviceName)
@@ -159,7 +161,6 @@ void Device::deallocateDevice(void* DeviceName)
 {
 	// It is necessary to erase the device from the map. To free the name for further use
 	Device* ptrDevice = reinterpret_cast<Device*>(DeviceName);
-	m_DevicesMap.erase(ptrDevice->m_name);
     delete ptrDevice;
 }
 

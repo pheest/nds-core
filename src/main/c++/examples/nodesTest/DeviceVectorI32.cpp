@@ -197,8 +197,8 @@ DeviceVectorI32::DeviceVectorI32(nds::Factory &factory, const std::string &devic
 
 DeviceVectorI32::~DeviceVectorI32()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
 }
 
 DeviceVectorI32* DeviceVectorI32::getInstance(const std::string& deviceName)
@@ -862,7 +862,5 @@ void* DeviceVectorI32::allocateDevice(nds::Factory& factory, const std::string& 
  ***********************/
 void DeviceVectorI32::deallocateDevice(void* deviceName)
 {
-	m_devicesMap.erase((static_cast<DeviceVectorI32*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceVectorI32*>(deviceName);
 }
-

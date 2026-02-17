@@ -104,8 +104,8 @@ DeviceRouting::DeviceRouting(nds::Factory &factory, const std::string &deviceNam
 
 DeviceRouting::~DeviceRouting()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
 }
 
 DeviceRouting* DeviceRouting::getInstance(const std::string& deviceName)
@@ -308,8 +308,5 @@ void* DeviceRouting::allocateDevice(nds::Factory& factory, const std::string& de
  ***********************/
 void DeviceRouting::deallocateDevice(void* deviceName)
 {
-	m_devicesMap.erase((static_cast<DeviceRouting*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceRouting*>(deviceName);
 }
-
-

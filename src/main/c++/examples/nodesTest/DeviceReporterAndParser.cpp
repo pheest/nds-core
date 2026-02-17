@@ -59,8 +59,8 @@ DeviceReporterAndParser::DeviceReporterAndParser(nds::Factory &factory, const st
 
 DeviceReporterAndParser::~DeviceReporterAndParser()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_DevicesMap.erase(m_Name);
 }
 
 DeviceReporterAndParser* DeviceReporterAndParser::getInstance(const std::string& DeviceName)
@@ -117,6 +117,5 @@ void* DeviceReporterAndParser::allocateDevice(nds::Factory& factory,
  **********************
 */
 void DeviceReporterAndParser::deallocateDevice(void* DeviceName) {
-  m_DevicesMap.erase((static_cast<DeviceReporterAndParser*>(DeviceName))->m_Name);
   delete reinterpret_cast<DeviceReporterAndParser*>(DeviceName);
 }

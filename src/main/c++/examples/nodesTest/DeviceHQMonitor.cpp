@@ -175,7 +175,8 @@ DeviceHQMonitor::DeviceHQMonitor(nds::Factory &factory,
 
 DeviceHQMonitor::~DeviceHQMonitor()
 {
-  
+  std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+  m_DevicesMap.erase(m_Name);
 
 }
 
@@ -567,6 +568,5 @@ void* DeviceHQMonitor::allocateDevice(nds::Factory& factory,
  * Deallocation function
  ***********************/
 void DeviceHQMonitor::deallocateDevice(void* DeviceName){
-  m_DevicesMap.erase((static_cast<DeviceHQMonitor*>(DeviceName))->m_Name);
   delete reinterpret_cast<DeviceHQMonitor*>(DeviceName);
 }

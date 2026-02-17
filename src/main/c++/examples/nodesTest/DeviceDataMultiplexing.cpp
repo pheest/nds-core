@@ -100,8 +100,8 @@ DeviceDataMultiplexing::DeviceDataMultiplexing(nds::Factory &factory, const std:
 
 DeviceDataMultiplexing::~DeviceDataMultiplexing()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_DevicesMap.erase(m_Name);
 }
 
 DeviceDataMultiplexing* DeviceDataMultiplexing::getInstance(const std::string& DeviceName)
@@ -174,6 +174,5 @@ void* DeviceDataMultiplexing::allocateDevice(nds::Factory& factory,
 void DeviceDataMultiplexing::deallocateDevice(void* DeviceName)
 {
 	// It is necessary to erase the device from the map. To free the name for further use
-	m_DevicesMap.erase((static_cast<DeviceDataMultiplexing*>(DeviceName))->m_Name);
     delete reinterpret_cast<DeviceDataMultiplexing*>(DeviceName);
 }

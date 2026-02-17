@@ -133,8 +133,8 @@ DeviceTrigAndClk::DeviceTrigAndClk(nds::Factory &factory, const std::string &dev
 
 DeviceTrigAndClk::~DeviceTrigAndClk()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
 }
 
 DeviceTrigAndClk* DeviceTrigAndClk::getInstance(const std::string& deviceName)
@@ -573,7 +573,5 @@ void* DeviceTrigAndClk::allocateDevice(nds::Factory& factory, const std::string&
  ***********************/
 void DeviceTrigAndClk::deallocateDevice(void* deviceName)
 {
-	m_devicesMap.erase((static_cast<DeviceTrigAndClk*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceTrigAndClk*>(deviceName);
 }
-

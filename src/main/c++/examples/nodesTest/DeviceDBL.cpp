@@ -196,7 +196,8 @@ DeviceDBL::DeviceDBL(nds::Factory &factory, const std::string &deviceName, const
 
 DeviceDBL::~DeviceDBL()
 {
-    
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
 }
 
 DeviceDBL* DeviceDBL::getInstance(const std::string& deviceName)
@@ -872,7 +873,5 @@ void* DeviceDBL::allocateDevice(nds::Factory& factory, const std::string& device
 void DeviceDBL::deallocateDevice(void* deviceName)
 {
 	// It is necessary to erase the device from the map. To free the name for further use
-	m_devicesMap.erase((static_cast<DeviceDBL*>(deviceName))->m_name);
     delete reinterpret_cast<DeviceDBL*>(deviceName);
 }
-

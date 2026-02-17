@@ -388,7 +388,8 @@ DevicePVs::DevicePVs(nds::Factory &factory, const std::string &DeviceName, const
 
 DevicePVs::~DevicePVs()
 {
-
+	std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+	m_DevicesMap.erase(m_Name);
 }
 
 DevicePVs* DevicePVs::getInstance(const std::string& DeviceName)
@@ -756,9 +757,5 @@ void* DevicePVs::allocateDevice(nds::Factory& factory,
 */
 void DevicePVs::deallocateDevice(void* DeviceName) {
   // It is necessary to erase the device from the map. To free the name for further use
-  m_DevicesMap.erase((static_cast<DevicePVs*>(DeviceName))->m_Name);
   delete reinterpret_cast<DevicePVs*>(DeviceName);
 }
-
-
-

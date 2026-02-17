@@ -198,8 +198,8 @@ DeviceVectorUI8::DeviceVectorUI8(nds::Factory &factory, const std::string &devic
 
 DeviceVectorUI8::~DeviceVectorUI8()
 {
-    
-
+    std::lock_guard<std::mutex> lock(m_lockDevicesMap);
+    m_devicesMap.erase(m_name);
 }
 
 DeviceVectorUI8* DeviceVectorUI8::getInstance(const std::string& deviceName)
@@ -864,6 +864,5 @@ void DeviceVectorUI8::WaveformGeneration_thread_body(){
   ***********************/
  void DeviceVectorUI8::deallocateDevice(void* deviceName)
  {
-	 m_devicesMap.erase((static_cast<DeviceVectorUI8*>(deviceName))->m_name);
      delete reinterpret_cast<DeviceVectorUI8*>(deviceName);
  }
