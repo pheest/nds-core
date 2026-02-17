@@ -36,94 +36,28 @@ int main(int argc, char **argv)
                            std::bind(&DeviceBasic::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                            std::bind(&DeviceBasic::deallocateDevice, std::placeholders::_1));
 
-    nds::Factory::registerDriver("DeviceFloat",
-                           std::bind(&DeviceFloat::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceFloat::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceDBL",
-                           std::bind(&DeviceDBL::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceDBL::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceI32",
-                           std::bind(&DeviceI32::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceI32::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceVectorI32",
-                           std::bind(&DeviceVectorI32::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceVectorI32::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceI64",
-						  std::bind(&DeviceI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-						  std::bind(&DeviceI64::deallocateDevice, std::placeholders::_1));
-
-   	nds::Factory::registerDriver("DeviceVectorI64",
-   						   std::bind(&DeviceVectorI64::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-   						   std::bind(&DeviceVectorI64::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceVectorI8",
-                           std::bind(&DeviceVectorI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceVectorI8::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceVectorUI8",
-                           std::bind(&DeviceVectorUI8::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceVectorUI8::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceVectorFloat",
-                               std::bind(&DeviceVectorFloat::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                               std::bind(&DeviceVectorFloat::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceVectorDBL",
-                           std::bind(&DeviceVectorDBL::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceVectorDBL::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceDigitalIO",
-                           std::bind(&DeviceDigitalIO::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceDigitalIO::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceFTE",
-                           std::bind(&DeviceFTE::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceFTE::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceRouting",
-                               std::bind(&DeviceRouting::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                               std::bind(&DeviceRouting::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceHQMonitor",
-                           std::bind(&DeviceHQMonitor::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceHQMonitor::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceTiming",
-                           std::bind(&DeviceTiming::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceTiming::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceTimestamping",
-                           std::bind(&DeviceTimestamping::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceTimestamping::deallocateDevice, std::placeholders::_1));
-
-
-    nds::Factory::registerDriver("DeviceStateMachine",
-                           std::bind(&DeviceStateMachine::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceStateMachine::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceFirmware",
-                           std::bind(&DeviceFirmware::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceFirmware::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DevicePVs",
-                           std::bind(&DevicePVs::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DevicePVs::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceTrigAndClk",
-                           std::bind(&DeviceTrigAndClk::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceTrigAndClk::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceDataMultiplexing",
-                           std::bind(&DeviceDataMultiplexing::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceDataMultiplexing::deallocateDevice, std::placeholders::_1));
-
-    nds::Factory::registerDriver("DeviceError",
-                           std::bind(&DeviceError::allocateDevice, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
-                           std::bind(&DeviceError::deallocateDevice, std::placeholders::_1));
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceFloat.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceDBL.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceI32.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorI32.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceI64.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorI64.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorI8.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorUI8.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorFloat.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceVectorDBL.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceDigitalIO.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceFTE.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceRouting.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceHQMonitor.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceTiming.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceTimestamping.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceStateMachine.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceFirmware.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DevicePVs.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceTrigAndClk.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceDataMultiplexing.so");
+    nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-DeviceError.so");
 
     nds::Factory testControlSystem(std::shared_ptr<nds::FactoryBaseImpl>(new nds::tests::TestControlSystemFactoryImpl()));
     nds::Factory::registerControlSystem(testControlSystem);
