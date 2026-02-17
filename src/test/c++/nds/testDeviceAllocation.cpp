@@ -103,6 +103,25 @@ TEST(testDeviceAllocation, testTwoAllocations)
     EXPECT_THROW(factory.destroyDevice("rootNode1"), nds::DeviceNotAllocated);
 }
 
+TEST(testDeviceAllocation, testReallocation) {
+    nds::Factory factory("test");
+
+    const std::vector<std::string> driverNames = {"Device", "DeviceFloat", "DeviceDBL", "DeviceI32", "DeviceVectorI32", "DeviceI64", "DeviceVectorI64", "DeviceVectorI8", "DeviceVectorUI8", "DeviceVectorFloat", "DeviceVectorDBL", "DeviceDigitalIO", "DeviceFTE", "DeviceRouting", "DeviceHQMonitor", "DeviceTiming", "DeviceTimestamping", "DeviceStateMachine", "DeviceFirmware", "DevicePVs", "DeviceTrigAndClk", "DeviceDataMultiplexing", "DeviceError"};
+
+    const int TRIES = 5;
+
+    for (auto driverName: driverNames) {
+        std::string rootName = driverName + "root";
+        std::string otherName = driverName + "otherDevice";
+
+        factory.createDevice(driverName, otherName, nds::namedParameters_t());
+        for (int i = 0; i < TRIES; i++) {
+            factory.createDevice(driverName, rootName, nds::namedParameters_t());
+            factory.destroyDevice(rootName);
+        }
+        factory.destroyDevice(otherName);
+    }
+}
 
 void wait1s()
 {
