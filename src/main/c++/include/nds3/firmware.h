@@ -65,7 +65,7 @@ struct FirmwareArgs_t {
 	 * @param stopFunction 					Stop function to be set in @ref FirmwareArgs_t.handlerSTM stopFunction.
 	 * @param recoverFunction 				Recover function to be set in @ref FirmwareArgs_t.handlerSTM recoverFunction.
 	 * @param allowStateChangeFunction 		Checking state transitions function to be set in @ref FirmwareArgs_t.handlerSTM allowStateChangeFunction.
-	 * @param PV_FirmwarePath_Writer 		Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
+	 * @param FirmwarePath_Writer 		Function to write the path of the firmware file to be set in @ref FirmwareArgs_t.PV_FirmwarePath_Writer.
 	 * @param autoEnable 					See @ref autoEnable_t for further details.
 	 */
 	FirmwareArgs_t(stateChange_t switchOnFunction,
@@ -74,7 +74,7 @@ struct FirmwareArgs_t {
 					stateChange_t stopFunction,
 					stateChange_t recoverFunction,
 					allowChange_t allowStateChangeFunction,
-					writerString_t PV_FirmwarePath_Writer,
+					writerString_t FirmwarePath_Writer,
 					autoEnable_t autoEnable=autoEnable_t::none):
 			handlerSTM(	true, ///Asynchronous state transitions.
 						switchOnFunction,
@@ -84,7 +84,7 @@ struct FirmwareArgs_t {
 						recoverFunction,
 						allowStateChangeFunction,
 						autoEnable),
-			PV_FirmwarePath_Writer(PV_FirmwarePath_Writer) {}
+			PV_FirmwarePath_Writer(FirmwarePath_Writer) {}
 };
 
 

@@ -102,13 +102,13 @@ struct StateMachineArgs_t {
 	 * @param _stopFunction Stop function to be set in @ref StateMachineArgs_t.stopFunction.
 	 * @param _recoverFunction Recover function to be set in @ref StateMachineArgs_t.recoverFunction.
 	 * @param _allowStateChangeFunction Checking state transitions function to be set in @ref StateMachineArgs_t.allowStateChangeFunction.
-     * @param autoEnable See @ref autoEnable_t for further details.
+     * @param _autoEnable See @ref autoEnable_t for further details.
 	 */
 	StateMachineArgs_t(bool _bAsync, stateChange_t _switchOnFunction,
 			stateChange_t _switchOffFunction, stateChange_t _startFunction,
 			stateChange_t _stopFunction, stateChange_t _recoverFunction,
 			allowChange_t _allowStateChangeFunction,
-			autoEnable_t autoEnable=autoEnable_t::none):
+			autoEnable_t _autoEnable=autoEnable_t::none):
 				bAsync(_bAsync),
 				switchOnFunction(_switchOnFunction),
 				switchOffFunction(_switchOffFunction),
@@ -116,7 +116,7 @@ struct StateMachineArgs_t {
 				stopFunction(_stopFunction),
 				recoverFunction(_recoverFunction),
 				allowStateChangeFunction(_allowStateChangeFunction),
-				autoEnable(autoEnable){}
+				autoEnable(_autoEnable){}
 };
 
 /**
