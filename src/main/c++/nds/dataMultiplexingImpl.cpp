@@ -94,7 +94,7 @@ void DataMultiplexingImpl<T>::multiplex(const timespec &/*time*/, const std::int
          T value;
          timespec time;
          this->m_DataIn_PV[i]->read(&time, &value);
-         if (value.size() < samplesPerChannel) {
+         if (value.size() < static_cast<size_t>(samplesPerChannel)) {
              throw std::runtime_error(m_SamplesPerChannel_RBVPV->getFullExternalName() + " greater than " +
                                       this->m_DataIn_PV[i]->getFullExternalName() +
                                       " (" + std::to_string(samplesPerChannel) + " > " +
