@@ -23,7 +23,7 @@ of the distribution package.
   <groupId>org.iter.codac.units</groupId>
   <artifactId>nds-core</artifactId>
   <packaging>codac</packaging>
-  <version>3.2.5.3</version>
+  <version>3.2.5.4</version>
   <name>NDSv3 - Core Library</name>
   <description>NDSv3 (Nominal Device Support) is a library that allows to write
     device support focusing on device functionalities.
