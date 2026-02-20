@@ -43,39 +43,9 @@ of the distribution package.
   <!-- unit owner and developers -->
   <developers>
     <developer>
-      <id>langer</id>
+      <id>USER</id>
       <roles>
         <role>unit owner</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>ruizm</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>morenoj1</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>meliss</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>casali</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>perezp</id>
-      <roles>
-        <role>developer</role>
       </roles>
     </developer>
   </developers>
@@ -93,8 +63,7 @@ of the distribution package.
         <configuration>
           <packaging>
             <package>
-              <include type="library" name="nds3-dev-ndsex1" />
-              <include type="library" name="nds3-exampleDrv" />
+              <include type="library" name="nds3-dev-nds-example" />
               <requires codac="true">nds-core</requires>
             </package>
           </packaging>
