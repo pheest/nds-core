@@ -187,6 +187,8 @@ of the distribution package.
               <include type="source" source="src/test/c++/include" target="examples/nds3/src/test/c++/include" />
               <include type="source" source="src/test/c++/nds-example" target="examples/nds3/src/test/c++/nds-example" />
               <include type="source" source="example-Makefile" target="examples/nds3/src/test/c++/Makefile" />
+              <include type="library" name="nds3-dev-nds-example"/>
+              <requires codac="true">nds-core</requires>
               <requires codac="true">nds-core-devel</requires>
             </package>
             
