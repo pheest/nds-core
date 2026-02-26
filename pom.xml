@@ -52,25 +52,19 @@ of the distribution package.
       </roles>
     </developer>
     <developer>
-      <id>ruizm</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>costav</id>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-    <developer>
       <id>esquems</id>
       <roles>
         <role>developer</role>
       </roles>
     </developer>
     <developer>
-      <id>andrind</id>
+      <id>ruizm</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>arranzg</id>
       <roles>
         <role>developer</role>
       </roles>
@@ -89,6 +83,7 @@ of the distribution package.
         <extensions>true</extensions>
         <configuration>
           <packaging>
+
             <package>
               <include type="library" name="nds3" />
               <component>nds</component>
@@ -195,6 +190,8 @@ of the distribution package.
             <package name="test">
               <include type="file" source="test/c++/nds/nds3core-unit-tests" target="tests/nds3/"/>
               <requires version="current" buildOnly="true">gtest-devel</requires>
+              <requires codac="true">testdevices-nds-epics</requires>
+              <requires codac="true">testcontrolsystem-devel</requires>
             </package>
 
           </packaging>
