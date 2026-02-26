@@ -190,8 +190,8 @@ of the distribution package.
             <package name="test">
               <include type="file" source="test/c++/nds/nds3core-unit-tests" target="tests/nds3/"/>
               <requires version="current" buildOnly="true">gtest-devel</requires>
-              <requires codac="true">testdevices-nds-epics</requires>
-              <requires codac="true">testcontrolsystem-devel</requires>
+              <requires codac="true">nds-core-testdevices-nds-epics</requires>
+              <requires codac="true">nds-core-testcontrolsystem-devel</requires>
             </package>
 
           </packaging>
