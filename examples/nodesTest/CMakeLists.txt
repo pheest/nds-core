@@ -1,0 +1,11 @@
+file(GLOB NODE_SOURCES "*.cpp")
+
+foreach(SOURCE ${NODE_SOURCES})
+    get_filename_component(NAME ${SOURCE} NAME_WE)
+    add_library(nds3-${NAME} SHARED ${SOURCE})
+    target_link_libraries(nds3-${NAME} PRIVATE nds3)
+    target_compile_definitions(nds3-${NAME} PRIVATE NDS3_DLL)
+    if(NOT MSVC)
+        target_compile_options(nds3-${NAME} PRIVATE -Wall -Wextra -pedantic)
+    endif()
+endforeach()
