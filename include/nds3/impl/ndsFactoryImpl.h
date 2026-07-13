@@ -15,7 +15,14 @@
 #include <list>
 #include <memory>
 #include <mutex>
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#else
 #include <dirent.h>
+#endif
 #include "nds3/definitions.h"
 
 namespace nds
@@ -154,7 +161,14 @@ public:
     std::string getNextFileName();
 
 private:
+#ifdef _WIN32
+    void* m_hFind;
+    bool m_first;
+    std::string m_searchPath;
+    std::string m_directory;
+#else
     DIR* m_pDirectory;
+#endif
 };
 
 }

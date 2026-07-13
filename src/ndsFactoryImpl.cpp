@@ -8,7 +8,9 @@
  */
 
 #include <cstdlib>
+#ifndef _WIN32
 #include <dlfcn.h>
+#endif
 #include <errno.h>
 #include <sstream>
 #include <string.h>
@@ -514,6 +516,74 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::separateFoldersList(const char* fold
     return folders;
 }
 
+#ifdef _WIN32
+
+DynamicModule::DynamicModule(const std::string& libraryName):
+    m_moduleHandle((void*)LoadLibraryA(libraryName.c_str()))
+{
+    if (!m_moduleHandle)
+        fprintf(stderr, "LoadLibraryA failed for %s\n", libraryName.c_str());
+}
+
+DynamicModule::~DynamicModule()
+{
+    if(m_moduleHandle != 0)
+    {
+        FreeLibrary((HMODULE)m_moduleHandle);
+    }
+}
+
+void* DynamicModule::getAddress(const std::string &functionName)
+{
+    return (void*)GetProcAddress((HMODULE)m_moduleHandle, functionName.c_str());
+}
+
+
+Directory::Directory(const std::string &directory): m_hFind((void*)INVALID_HANDLE_VALUE), m_first(true), m_directory(directory)
+{
+    m_searchPath = directory + "\\*";
+}
+
+Directory::~Directory()
+{
+    if (m_hFind != (void*)INVALID_HANDLE_VALUE)
+    {
+        FindClose((HANDLE)m_hFind);
+    }
+}
+
+std::string Directory::getNextFileName()
+{
+    WIN32_FIND_DATAA findData;
+    if (m_first)
+    {
+        m_first = false;
+        m_hFind = (void*)FindFirstFileA(m_searchPath.c_str(), &findData);
+        if (m_hFind == (void*)INVALID_HANDLE_VALUE)
+        {
+            return "";
+        }
+        return findData.cFileName;
+    }
+    else
+    {
+        if (m_hFind == (void*)INVALID_HANDLE_VALUE)
+        {
+            return "";
+        }
+        if (FindNextFileA((HANDLE)m_hFind, &findData))
+        {
+            return findData.cFileName;
+        }
+        else
+        {
+            return "";
+        }
+    }
+}
+
+#else
+
 #ifndef RTLD_NODELETE
 #define RTLD_NODELETE 0
 #endif
@@ -570,5 +640,7 @@ std::string Directory::getNextFileName()
 
     return directoryEntry->d_name;
 }
+
+#endif
 
 }
