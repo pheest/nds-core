@@ -68,10 +68,14 @@ jobs:
           pip install sphinx breathe sphinx-rtd-theme
 
       - name: Generate Doxygen XML
-        run: doxygen doc/Doxyfile
+        run: |
+          mkdir -p doc/_build/doxygen
+          doxygen doc/Doxyfile
 
       - name: Build Sphinx Documentation
-        run: sphinx-build -b html doc/sphinx doc/_build/html
+        run: |
+          mkdir -p doc/_build/html
+          sphinx-build -b html doc/sphinx doc/_build/html
 
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v7
