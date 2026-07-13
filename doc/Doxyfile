@@ -1,0 +1,11 @@
+PROJECT_NAME           = "NDS3"
+PROJECT_NUMBER         = "3.3.0.0"
+STRIP_FROM_PATH        = .
+INPUT                  = include/nds3 doc/api
+FILE_PATTERNS          = *.h *.hpp *.cpp *.dox
+RECURSIVE              = YES
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+OUTPUT_DIRECTORY       = doc/_build/doxygen
