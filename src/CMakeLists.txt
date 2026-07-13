@@ -1,3 +1,20 @@
+if(WIN32)
+    # Search for pthread header and library
+    find_path(PTHREAD_INCLUDE_DIR pthread.h)
+    find_library(PTHREAD_LIBRARY NAMES pthreadVC2 pthreadVC3 pthread)
+
+    # Search for dlfcn-win32 header and library
+    find_path(DLFCN_INCLUDE_DIR dlfcn.h)
+    find_library(DLFCN_LIBRARY NAMES dl dlfcn)
+
+    if(PTHREAD_INCLUDE_DIR)
+        include_directories(${PTHREAD_INCLUDE_DIR})
+    endif()
+    if(DLFCN_INCLUDE_DIR)
+        include_directories(${DLFCN_INCLUDE_DIR})
+    endif()
+endif()
+
 file(GLOB SOURCES "*.cpp")
 
 add_library(nds3 SHARED ${SOURCES})
@@ -14,11 +31,16 @@ target_include_directories(nds3_static PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_definitions(nds3 PRIVATE NDS3_DLL NDS3_DLL_EXPORTS)
-target_compile_definitions(nds3_static PRIVATE NDS3_DLL NDS3_DLL_EXPORTS)
+target_compile_definitions(nds3 PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)
+target_compile_definitions(nds3_static PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)
 
 target_link_libraries(nds3 PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
 target_link_libraries(nds3_static PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
+
+if(WIN32)
+    target_link_libraries(nds3 PUBLIC ${PTHREAD_LIBRARY} ${DLFCN_LIBRARY})
+    target_link_libraries(nds3_static PUBLIC ${PTHREAD_LIBRARY} ${DLFCN_LIBRARY})
+endif()
 
 if(NOT MSVC)
     target_compile_options(nds3 PRIVATE -Wall -Wextra -pedantic -fvisibility-inlines-hidden)

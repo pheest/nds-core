@@ -33,8 +33,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
+      - name: Install Dependencies via vcpkg
+        run: vcpkg install dlfcn-win32:x64-windows pthreads:x64-windows
+
       - name: Configure CMake
-        run: cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -A x64
+        run: cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -A x64
 
       - name: Build
         run: cmake --build build --config Release

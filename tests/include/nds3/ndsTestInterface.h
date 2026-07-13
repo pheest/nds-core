@@ -15,7 +15,7 @@ namespace nds
 namespace tests
 {
 
-class TestControlSystemInterfaceImpl: public InterfaceBaseImpl
+class NDS3_API TestControlSystemInterfaceImpl: public InterfaceBaseImpl
 {
 public:
     TestControlSystemInterfaceImpl(const std::string& fullName);

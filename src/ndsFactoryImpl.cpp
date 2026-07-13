@@ -8,9 +8,7 @@
  */
 
 #include <cstdlib>
-#ifndef _WIN32
 #include <dlfcn.h>
-#endif
 #include <errno.h>
 #include <sstream>
 #include <string.h>
@@ -516,28 +514,32 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::separateFoldersList(const char* fold
     return folders;
 }
 
-#ifdef _WIN32
+#ifndef RTLD_NODELETE
+#define RTLD_NODELETE 0
+#endif
 
 DynamicModule::DynamicModule(const std::string& libraryName):
-    m_moduleHandle((void*)LoadLibraryA(libraryName.c_str()))
+    m_moduleHandle(dlopen(libraryName.c_str(), RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE))
 {
     if (!m_moduleHandle)
-        fprintf(stderr, "LoadLibraryA failed for %s\n", libraryName.c_str());
+            fprintf(stderr, "%s\n", dlerror());
 }
 
 DynamicModule::~DynamicModule()
 {
     if(m_moduleHandle != 0)
     {
-        FreeLibrary((HMODULE)m_moduleHandle);
+        dlclose(m_moduleHandle);
     }
 }
 
 void* DynamicModule::getAddress(const std::string &functionName)
 {
-    return (void*)GetProcAddress((HMODULE)m_moduleHandle, functionName.c_str());
+    return dlsym(m_moduleHandle, functionName.c_str());
 }
 
+
+#ifdef _WIN32
 
 Directory::Directory(const std::string &directory): m_hFind((void*)INVALID_HANDLE_VALUE), m_first(true), m_directory(directory)
 {
@@ -583,31 +585,6 @@ std::string Directory::getNextFileName()
 }
 
 #else
-
-#ifndef RTLD_NODELETE
-#define RTLD_NODELETE 0
-#endif
-
-DynamicModule::DynamicModule(const std::string& libraryName):
-    m_moduleHandle(dlopen(libraryName.c_str(), RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE))
-{
-    if (!m_moduleHandle)
-            fprintf(stderr, "%s\n", dlerror());
-}
-
-DynamicModule::~DynamicModule()
-{
-    if(m_moduleHandle != 0)
-    {
-        dlclose(m_moduleHandle);
-    }
-}
-
-void* DynamicModule::getAddress(const std::string &functionName)
-{
-    return dlsym(m_moduleHandle, functionName.c_str());
-}
-
 
 Directory::Directory(const std::string &directory)
 {

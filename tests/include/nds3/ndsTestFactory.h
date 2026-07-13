@@ -11,7 +11,7 @@ namespace nds
 namespace tests
 {
 
-class TestControlSystemFactoryImpl: public FactoryBaseImpl, public LogStreamGetterImpl
+class NDS3_API TestControlSystemFactoryImpl: public FactoryBaseImpl, public LogStreamGetterImpl
 {
 public:
     TestControlSystemFactoryImpl();
@@ -58,7 +58,7 @@ protected:
     commandNodes_t m_commandNodes;
 };
 
-class TestLogStreamBufferImpl: public std::stringbuf
+class NDS3_API TestLogStreamBufferImpl: public std::stringbuf
 {
 public:
     TestLogStreamBufferImpl(const logLevel_t logLevel, TestControlSystemFactoryImpl* pFactory);
@@ -70,7 +70,7 @@ protected:
     TestControlSystemFactoryImpl* m_pFactory;
 };
 
-class TestLogStream: public std::ostream
+class NDS3_API TestLogStream: public std::ostream
 {
 public:
     TestLogStream(const logLevel_t logLevel, TestControlSystemFactoryImpl* pFactory);
