@@ -19,6 +19,6 @@
 ### Added
 - Initial NDS3 implementation
 
-[Unreleased]: https://github.com/cosylab/nds3/compare/v3.1.0...HEAD
-[3.1.0]: https://github.com/cosylab/nds3/compare/v3.0.0...v3.1.0
-[3.0.0]: https://github.com/cosylab/nds3/compare/c3048bc...v3.0.0
+[Unreleased]: https://github.com/NDSv3/nds-core/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/NDSv3/nds-core/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/NDSv3/nds-core/compare/c3048bc...v3.0.0

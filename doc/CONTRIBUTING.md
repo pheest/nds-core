@@ -7,7 +7,7 @@ interested to hear from you if you considered to or considered not to use NDS
 for your driver development.
 
 If you have an idea for improvement of NDS we welcome you to open an issue in
-[the issue tracker](https://github.com/Cosylab/nds3/issues). Opening an issue
+[the issue tracker](https://github.com/NDSv3/nds-core/issues). Opening an issue
 before starting any development will increase the success rate of that
 contribution to eventually get merged. When the overall design of the change
 has been decided fork the repository and implement the changes in your fork.
