@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -65,7 +67,7 @@ static void commonPVsTest(const bool structuredConstructor) {
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pTimingStateMachineState);
 
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::on, *pTimingStateMachineState);
@@ -114,11 +116,11 @@ static void commonPVsTest(const bool structuredConstructor) {
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::starting, *pTimingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::running, *pTimingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 
   //Get the Timing global state
@@ -148,7 +150,7 @@ static void commonPVsTest(const bool structuredConstructor) {
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pTimingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::on, *pTimingStateMachineState);
@@ -159,7 +161,7 @@ static void commonPVsTest(const bool structuredConstructor) {
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pTimingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTiming-Timing.StateMachine.getState",
       pTimingStateMachineSwitchTime, pTimingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::off, *pTimingStateMachineState);

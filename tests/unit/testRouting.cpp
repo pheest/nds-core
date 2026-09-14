@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -49,7 +51,7 @@ TEST(testRouting, testStateMachineRouting)
     pInterface->writeCSValue("/rootNode-RoutingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -57,7 +59,7 @@ TEST(testRouting, testStateMachineRouting)
     pInterface->writeCSValue("/rootNode-RoutingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -65,7 +67,7 @@ TEST(testRouting, testStateMachineRouting)
     pInterface->writeCSValue("/rootNode-RoutingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -73,7 +75,7 @@ TEST(testRouting, testStateMachineRouting)
     pInterface->writeCSValue("/rootNode-RoutingNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-RoutingNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 

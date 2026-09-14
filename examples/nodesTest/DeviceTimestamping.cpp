@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <nds3/nds.h>
@@ -232,36 +233,36 @@ void DeviceTimestamping::timestamping_thread_body() {
       // First timestamp
       nds::timestamp_t pushed_timestamp = {{0, 0}, ++m_Ntimestamps /* ID */, true /* RISING */};
       push_timestamp(max_tstamps, pushed_timestamp);
-      ::usleep(500000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       // Second timestamp
       pushed_timestamp.timestamp.tv_nsec = 10; /* nsec */
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
-      ::usleep(500000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       // Third Timestamp
       pushed_timestamp.id  = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
-      ::usleep(500000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       // Fourth Timestamp
       pushed_timestamp.edge = false; /* FALLING */
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
-      ::usleep(500000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       // Fifth Timestamp
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
-      ::usleep(500000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       // Sixth Timestamp
       pushed_timestamp.edge = true; /* RISING */
       pushed_timestamp.id = ++m_Ntimestamps; /* ID */
       push_timestamp(max_tstamps, pushed_timestamp);
 
-      ::usleep(1000000);
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
 }

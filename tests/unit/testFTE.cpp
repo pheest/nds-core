@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -72,7 +74,7 @@ TEST(testFTE, testStateMachineFTE)
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -80,7 +82,7 @@ TEST(testFTE, testStateMachineFTE)
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -88,7 +90,7 @@ TEST(testFTE, testStateMachineFTE)
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -96,7 +98,7 @@ TEST(testFTE, testStateMachineFTE)
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -588,7 +590,7 @@ static void commonPendingPVsTest(const bool testInitializers){
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -654,7 +656,7 @@ static void commonPendingPVsTest(const bool testInitializers){
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -662,7 +664,7 @@ static void commonPendingPVsTest(const bool testInitializers){
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -670,7 +672,7 @@ static void commonPendingPVsTest(const bool testInitializers){
     pInterface->writeCSValue("/rootNode-FTENode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-FTENode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 

@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <numeric>
 
@@ -76,7 +78,7 @@ static void dataSelfTest() {
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pState);
 
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pState);
@@ -100,11 +102,11 @@ static void dataSelfTest() {
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     //Get the DataMultiplexing_4_float global state
     pInterface->readCSValue("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getGlobalState",
@@ -158,7 +160,7 @@ static void dataSelfTest() {
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pState);
@@ -169,7 +171,7 @@ static void dataSelfTest() {
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/deviceDataMultiplexing-DataMultiplexing_4_float.StateMachine.getState",
                                pTimestamp, pState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pState);

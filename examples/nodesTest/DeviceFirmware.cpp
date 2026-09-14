@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <nds3/nds.h>
@@ -251,7 +252,7 @@ void DeviceFirmware::Firmware_thread_body(){
 			FirmwarePathOld=FirmwarePath;
 		}
 		// Rest for a while
-		::usleep(1000000);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 

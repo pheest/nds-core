@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -125,7 +127,7 @@ TEST(testDeviceAllocation, testReallocation) {
 
 void wait1s()
 {
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 bool allowChange(const nds::state_t, const nds::state_t, const nds::state_t)

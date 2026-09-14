@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <math.h>
 
 #include <gtest/gtest.h>
@@ -129,7 +131,7 @@ TEST(testWFG, testStateMachine)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -137,10 +139,10 @@ TEST(testWFG, testStateMachine)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
     //TODO: Check generated data
 
@@ -148,7 +150,7 @@ TEST(testWFG, testStateMachine)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -156,7 +158,7 @@ TEST(testWFG, testStateMachine)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -386,7 +388,7 @@ static void commonPVsVDBLTest(const bool testInitializers) {
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -399,17 +401,17 @@ static void commonPVsVDBLTest(const bool testInitializers) {
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -417,7 +419,7 @@ static void commonPVsVDBLTest(const bool testInitializers) {
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -735,7 +737,7 @@ static void commonPVsVI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -743,17 +745,17 @@ static void commonPVsVI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -761,7 +763,7 @@ static void commonPVsVI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -1074,7 +1076,7 @@ static void commonPVsVUI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1082,17 +1084,17 @@ static void commonPVsVUI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1100,7 +1102,7 @@ static void commonPVsVUI8Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -1414,7 +1416,7 @@ static void commonPVsVI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1422,17 +1424,17 @@ static void commonPVsVI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1440,7 +1442,7 @@ static void commonPVsVI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -1753,7 +1755,7 @@ static void commonPVsVI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1761,17 +1763,17 @@ static void commonPVsVI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1779,7 +1781,7 @@ static void commonPVsVI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -2099,7 +2101,7 @@ static void commonPVsDBLTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2107,17 +2109,17 @@ static void commonPVsDBLTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2125,7 +2127,7 @@ static void commonPVsDBLTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -2423,7 +2425,7 @@ static void commonPVsI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2431,17 +2433,17 @@ static void commonPVsI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2449,7 +2451,7 @@ static void commonPVsI32Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -2746,7 +2748,7 @@ static void commonPVsI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2754,17 +2756,17 @@ static void commonPVsI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -2772,7 +2774,7 @@ static void commonPVsI64Test(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -3001,7 +3003,7 @@ static void commonDecimationTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -3014,17 +3016,17 @@ static void commonDecimationTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-    ::sleep(2);//Data is being generated and pushed to Control system
+    std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
     //Change state:  RUNNING -> (stopping) -> ON
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -3032,7 +3034,7 @@ static void commonDecimationTest(const bool testInitializers)
     pInterface->writeCSValue("/rootNode-WFGNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-WFGNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 

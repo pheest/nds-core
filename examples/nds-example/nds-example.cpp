@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 
 #include <nds3/nds.h>
 
@@ -261,7 +262,7 @@ void Device::DataAcquisition_thread_body() {
 		m_DataAcquisition.push(m_DataAcquisition.getTimestamp(), outputData);
 		++NumberOfPushedDataBlocks;
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }

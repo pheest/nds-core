@@ -3,7 +3,8 @@
 
 #include <nds3/nds.h>
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #define NDS_EPOCH 1514764800 /* 00:00 of 1/1/2018 in UTC format. */
@@ -421,7 +422,7 @@ void DeviceFloat::DataAcquisition_thread_body(){
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 		m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -853,7 +854,7 @@ void DeviceFloat::WaveformGeneration_thread_body(){
 	//TODO: Send values to data acquisition node.
 
 	// Rest for a while
-	::usleep(40000);
+	std::this_thread::sleep_for(std::chrono::milliseconds(40));
 	}
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }

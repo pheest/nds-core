@@ -1,4 +1,5 @@
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 #include <iostream>
 
@@ -45,12 +46,12 @@ std::string stateToString(nds::state_t state){
 
 void wait1sec()
 {
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void rollback()
 {
-    ::usleep(100000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     throw nds::StateMachineRollBack("rolling back");
 }
 
@@ -117,7 +118,7 @@ TEST(testStateMachine, testLocalGlobalState)
     EXPECT_EQ((int)nds::state_t::initializing, (int)stateMachine0.getGlobalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine0.getLocalState());
 
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine0.getGlobalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine0.getLocalState());
 
@@ -125,19 +126,19 @@ TEST(testStateMachine, testLocalGlobalState)
     // Should go back to on because of the rollback
     stateMachine2.setState(nds::state_t::on);
     EXPECT_EQ((int)nds::state_t::initializing, (int)stateMachine2.getLocalState());
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine2.getLocalState());
 
     stateMachine2.setState(nds::state_t::running);
     EXPECT_EQ((int)nds::state_t::starting, (int)stateMachine0.getGlobalState());
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine0.getLocalState());
     EXPECT_EQ((int)nds::state_t::starting, (int)stateMachine2.getLocalState());
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachine2.getLocalState());
 
     stateMachine2.setState(nds::state_t::off);
     EXPECT_EQ((int)nds::state_t::switchingOff, (int)stateMachine2.getLocalState());
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachine2.getLocalState());
 
     factory.destroyDevice("");
@@ -199,7 +200,7 @@ TEST(testStateMachine, testNodeStates)
     // Switch on state machine 1. This STM is a child of ch0 node
     ch0.setState(nds::state_t::on);
     EXPECT_EQ((int)nds::state_t::initializing, (int)ch0.getState());
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::on, (int)ch0.getState());
 
     // Check Parent state: should be off
@@ -209,36 +210,36 @@ TEST(testStateMachine, testNodeStates)
     // Should go back to on because of the rollback
     ch1.setState(nds::state_t::on);
     EXPECT_EQ((int)nds::state_t::initializing, (int)ch1.getState());
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::on, (int)ch1.getState());
 
     ch1.setState(nds::state_t::running);
     EXPECT_EQ((int)nds::state_t::starting, (int)ch1.getState());
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     EXPECT_EQ((int)nds::state_t::on, (int)ch1.getState());
 
     ch1.setState(nds::state_t::off);
     EXPECT_EQ((int)nds::state_t::switchingOff, (int)ch1.getState());
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     EXPECT_EQ((int)nds::state_t::off, (int)ch1.getState());
 
 
     rootNode.setState(nds::state_t::on);
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     // Check Parent state: should be on
     EXPECT_EQ((int)nds::state_t::on, (int)ch0.getParentState());
     EXPECT_EQ((int)nds::state_t::on, (int)ch1.getParentState());
 
     rootNode.setState(nds::state_t::running);
-    ::sleep(2);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 	// Check Parent state: should be running
 	EXPECT_EQ((int)nds::state_t::running, (int)ch0.getParentState());
 	EXPECT_EQ((int)nds::state_t::running, (int)ch1.getParentState());
 
 	rootNode.setState(nds::state_t::on);
-	::sleep(2);
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 	rootNode.setState(nds::state_t::off);
-	::sleep(2);
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 	// Check Parent state: should be off
 	EXPECT_EQ((int)nds::state_t::off, (int)ch0.getParentState());
 	EXPECT_EQ((int)nds::state_t::off, (int)ch1.getParentState());

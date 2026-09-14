@@ -6,7 +6,7 @@
 #include <nds3/impl/interfaceBaseImpl.h>
 #include <nds3/definitions.h>
 #include <iostream>
-#include <unistd.h>
+#include <thread>
 #include <chrono>
 
 namespace nds
@@ -188,7 +188,7 @@ private:
        				msg += " (PV name: " + pvName + ")";
        				throw std::runtime_error(msg);
        			}
-       			::usleep(100); //rest for a while
+       			std::this_thread::sleep_for(std::chrono::microseconds(100)); //rest for a while
        		}
        	}while(!getData);
     }

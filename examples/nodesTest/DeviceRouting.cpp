@@ -1,5 +1,4 @@
 #include <mutex>
-#include <unistd.h>
 #include <functional>
 
 #include <nds3/nds.h>

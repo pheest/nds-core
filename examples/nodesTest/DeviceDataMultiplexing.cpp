@@ -1,6 +1,5 @@
 #include <nds3/nds.h>
 #include <mutex>
-#include <unistd.h>
 #include <functional>
 #include <numeric>
 #include <iostream>

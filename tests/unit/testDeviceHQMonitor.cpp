@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -50,7 +52,7 @@ TEST(testDeviceHQMonitor, stateMachine)
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pHQMonitorStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.StateMachine.getState",
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
@@ -68,13 +70,13 @@ TEST(testDeviceHQMonitor, stateMachine)
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::starting, *pHQMonitorStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.StateMachine.getState",
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::running, *pHQMonitorStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   //Get the HQMonitor global state
   pInterface->readCSValue("/deviceHQMonitor-HQMonitor.StateMachine.getGlobalState",
@@ -88,7 +90,7 @@ TEST(testDeviceHQMonitor, stateMachine)
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pHQMonitorStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.StateMachine.getState",
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
@@ -102,7 +104,7 @@ TEST(testDeviceHQMonitor, stateMachine)
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pHQMonitorStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceHQMonitor-HQMonitor.StateMachine.getState",
 			     pHQMonitorStateMachineSwitchTime,
 			     pHQMonitorStateMachineState);
@@ -141,12 +143,12 @@ static void commonPVsTest(bool testInitializers){
 	  //Change HQMonitor state:  OFF -> (initializing) -> ON
 	  pInterface->writeCSValue("/deviceHQMonitor-HQMonitor.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::on);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	  //Change HQMonitor state:  ON -> (starting) -> RUNNING
 	  pInterface->writeCSValue("/deviceHQMonitor-HQMonitor.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::running);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	  /*
 	   * ---------------------------------------------------------------------------
@@ -345,7 +347,7 @@ static void commonPVsTest(bool testInitializers){
 				     pTimestamp, testCodeResultEnable);
 	  EXPECT_EQ((std::int32_t)1, *testCodeResultEnable);
 
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 	  timespec valueTimespec;
 	  std::string valueString;
 	  pInterface->readCSValue("/deviceHQMonitor-HQMonitor.TestTxtResult", &valueTimespec, &valueString);
@@ -377,12 +379,12 @@ static void commonPVsTest(bool testInitializers){
 	  //Change HQMonitor state:  RUNNING -> (stopping) -> ON
 	  pInterface->writeCSValue("/deviceHQMonitor-HQMonitor.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::on);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	  //Change HQMonitor state:  ON -> (switchingOff) -> OFF
 	  pInterface->writeCSValue("/deviceHQMonitor-HQMonitor.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::off);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	  // Destroy test device
 	  factory.destroyDevice("deviceHQMonitor");

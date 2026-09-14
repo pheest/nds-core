@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -82,7 +84,7 @@ TEST(testDigitalIO, testStateMachineBool)
     pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -90,7 +92,7 @@ TEST(testDigitalIO, testStateMachineBool)
     pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -98,7 +100,7 @@ TEST(testDigitalIO, testStateMachineBool)
     pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -106,7 +108,7 @@ TEST(testDigitalIO, testStateMachineBool)
     pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -229,7 +231,7 @@ static void commonPVsBoolTest(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -237,17 +239,17 @@ static void commonPVsBoolTest(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -255,7 +257,7 @@ static void commonPVsBoolTest(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOBoolNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOBoolNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -325,7 +327,7 @@ TEST(testDigitalIO, testStateMachineI8)
     pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -333,7 +335,7 @@ TEST(testDigitalIO, testStateMachineI8)
     pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -341,7 +343,7 @@ TEST(testDigitalIO, testStateMachineI8)
     pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -349,7 +351,7 @@ TEST(testDigitalIO, testStateMachineI8)
     pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -468,7 +470,7 @@ static void commonPVsInt8Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -481,17 +483,17 @@ static void commonPVsInt8Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -499,7 +501,7 @@ static void commonPVsInt8Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI8Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI8Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -567,7 +569,7 @@ TEST(testDigitalIO, testStateMachineI16)
     pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -575,7 +577,7 @@ TEST(testDigitalIO, testStateMachineI16)
     pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -583,7 +585,7 @@ TEST(testDigitalIO, testStateMachineI16)
     pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -591,7 +593,7 @@ TEST(testDigitalIO, testStateMachineI16)
     pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -709,7 +711,7 @@ static void commonPVsInt16Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -722,17 +724,17 @@ static void commonPVsInt16Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -740,7 +742,7 @@ static void commonPVsInt16Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI16Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI16Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -809,7 +811,7 @@ TEST(testDigitalIO, testStateMachineI32)
     pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -817,7 +819,7 @@ TEST(testDigitalIO, testStateMachineI32)
     pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -825,7 +827,7 @@ TEST(testDigitalIO, testStateMachineI32)
     pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -833,7 +835,7 @@ TEST(testDigitalIO, testStateMachineI32)
     pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -952,7 +954,7 @@ static void commonPVsInt32Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -965,17 +967,17 @@ static void commonPVsInt32Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -983,7 +985,7 @@ static void commonPVsInt32Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI32Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI32Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -1050,7 +1052,7 @@ TEST(testDigitalIO, testStateMachineI64)
     pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1058,7 +1060,7 @@ TEST(testDigitalIO, testStateMachineI64)
     pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -1066,7 +1068,7 @@ TEST(testDigitalIO, testStateMachineI64)
     pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1074,7 +1076,7 @@ TEST(testDigitalIO, testStateMachineI64)
     pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-    ::sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
     EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 
@@ -1193,7 +1195,7 @@ static void commonPVsInt64Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1206,17 +1208,17 @@ static void commonPVsInt64Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	//Change state:  RUNNING -> (stopping) -> ON
 	pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -1224,7 +1226,7 @@ static void commonPVsInt64Test(const bool testInitializers)
 	pInterface->writeCSValue("/rootNode-DigitalIOI64Node.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-DigitalIOI64Node.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 

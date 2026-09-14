@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <nds3/nds.h>
@@ -482,7 +483,7 @@ void DeviceHQMonitor::HQMonitor_thread_body(){
       SelfTestCodeResultEnableOld = SelfTestCodeResultEnable;
 
     // Rest for a while
-    ::usleep(1000000);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 

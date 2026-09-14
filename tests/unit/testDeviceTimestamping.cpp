@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -55,7 +57,7 @@ TEST(testDeviceTimestamping, StateMachineTest){
 			     pTimestampingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pTimestampingStateMachineState);
 
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.StateMachine.getState",
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
@@ -73,12 +75,12 @@ TEST(testDeviceTimestamping, StateMachineTest){
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::starting, *pTimestampingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.StateMachine.getState",
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::running, *pTimestampingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Get the Timestamping global state
   pInterface->readCSValue("/deviceTimestamping-Timestamping.StateMachine.getGlobalState",
@@ -92,7 +94,7 @@ TEST(testDeviceTimestamping, StateMachineTest){
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pTimestampingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.StateMachine.getState",
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
@@ -105,7 +107,7 @@ TEST(testDeviceTimestamping, StateMachineTest){
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pTimestampingStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.StateMachine.getState",
 			     pTimestampingStateMachineSwitchTime,
 			     pTimestampingStateMachineState);
@@ -153,7 +155,7 @@ static void commonPVsTest(bool testInitializers){
   // Change TimestampingNode state:  OFF -> (initializing) -> ON
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.StateMachine.setState",
 			   timestamp, (std::int32_t)nds::state_t::on);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Get enable status.
   const std::int32_t * enable_val = NULL;
@@ -203,7 +205,7 @@ static void commonPVsTest(bool testInitializers){
   //Change TimestampingNode state: ON -> (starting) -> RUNNING
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.StateMachine.setState",
 			   timestamp, (std::int32_t)nds::state_t::running);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Set Edge to ANY
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.Edge",
@@ -220,7 +222,7 @@ static void commonPVsTest(bool testInitializers){
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Enable_RBV",
 			     ptimestamp, enable_val);
   EXPECT_EQ((std::int32_t)1 /* ON */, *enable_val);
-  ::sleep(4);
+  std::this_thread::sleep_for(std::chrono::seconds(4));
 
   // Testing values of the timestamps pushed.
   const nds::timestamp_t * pushed_timestamp;
@@ -280,7 +282,7 @@ static void commonPVsTest(bool testInitializers){
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.ClearOverflow",
 			   timestamp, (std::int32_t)2736);
 			   /*TODO: this function should not accept any value. */
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Get overflow state.
   pInterface->getPushedInt32("/deviceTimestamping-Timestamping.Overflow",
@@ -291,12 +293,12 @@ static void commonPVsTest(bool testInitializers){
   // Change TimestampingNode state: RUNNING -> (stopping) -> ON
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.StateMachine.setState",
 			   timestamp, (std::int32_t)nds::state_t::on);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Change TimestampingNode state: ON -> (switchingOff) -> OFF
   pInterface->writeCSValue("/deviceTimestamping-Timestamping.StateMachine.setState",
 			   timestamp, (std::int32_t)nds::state_t::off);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Destroy test device
   factory.destroyDevice("deviceTimestamping");

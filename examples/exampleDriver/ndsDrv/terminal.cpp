@@ -1,7 +1,10 @@
+#include <chrono>
 #include <functional>
 #include <iostream>
+#include <thread>
+#ifndef _WIN32
 #include <sys/time.h>
-#include <unistd.h>
+#endif
 
 #include <nds3/nds.h>
 #include "terminal.h"
@@ -211,7 +214,7 @@ void terminal::timing_thread_body() {
     // secondly a set is done to push it to the CS (is an IO interrupt PV).
     timespec time_val = m_timing.getTime();
     m_timing.setTime(m_timing.getTimestamp(), time_val);
-    ::usleep(1000000);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 
@@ -321,7 +324,7 @@ void terminal::timestamping_thread_body() {
     timestamp.edge = false;
     timestamp.id = ++m_Ntimestamps;
     m_timestamping.push(m_timestamping.getTimestamp(), timestamp);
-    ::usleep(1000000);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 

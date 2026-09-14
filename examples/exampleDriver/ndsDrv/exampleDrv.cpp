@@ -1,7 +1,8 @@
 #include <functional>
 #include <sstream>
 #include <iostream>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 
 #include "simulated_signal.h"
 
@@ -245,7 +246,7 @@ void exampleDrv::firmware_thread_body() {
       FirmwarePathOld = FirmwarePath;
     }
 
-    ::usleep(1000000);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 

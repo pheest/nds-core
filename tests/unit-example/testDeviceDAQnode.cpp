@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include "nds3/nds.h"
 #include "nds3/ndsTestInterface.h"
@@ -190,7 +192,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -199,7 +201,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 
@@ -213,7 +215,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pStateMachineState);
-		::sleep(1);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -222,12 +224,12 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::running);
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::starting, *pStateMachineState);
-		::sleep(1);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::running, *pStateMachineState);
 	}
 
-	::sleep(2);//Data is being generated and pushed to Control system
+	std::this_thread::sleep_for(std::chrono::seconds(2));//Data is being generated and pushed to Control system
 
 	if(!autoEnable){
 		TestUtils::displayTitle("Stopping the DAQ Node");
@@ -235,7 +237,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-		::sleep(1);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -244,7 +246,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 		pInterface->writeCSValue("/rootNode-DataAcquisitionNode.StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-		::sleep(1);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		pInterface->getPushedInt32("/rootNode-DataAcquisitionNode.StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 		EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 	}
@@ -254,7 +256,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::on);
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::on, *pStateMachineState);
 
@@ -263,7 +265,7 @@ static void commonPVsVDBLTest(const bool testInitializers,  const bool autoEnabl
 	pInterface->writeCSValue("/rootNode-StateMachine.setState", timestamp, (std::int32_t)nds::state_t::off);
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pStateMachineState);
-	::sleep(1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	pInterface->getPushedInt32("/rootNode-StateMachine.getState", pStateMachineSwitchTime, pStateMachineState);
 	EXPECT_EQ((std::int32_t)nds::state_t::off, *pStateMachineState);
 

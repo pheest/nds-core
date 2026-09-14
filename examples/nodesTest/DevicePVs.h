@@ -4,7 +4,6 @@
 #include <memory>
 #include <functional>
 #include <math.h>
-#include <unistd.h>
 #include <iostream>
 #include <thread>
 

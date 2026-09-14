@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 #include <ctime>
 
@@ -229,7 +230,7 @@ void DeviceTiming::timing_thread_body() {
     // Get Self-Test enable
     timespec time_val = m_Timing.getTime();
     m_Timing.setTime(getCurrentTime(), time_val);
-    ::usleep(1000000);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 

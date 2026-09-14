@@ -1,4 +1,4 @@
-#include <unistd.h>
+#include <chrono>
 #include <thread>
 #include <functional>
 
@@ -120,7 +120,7 @@ TEST(testLogging, testLotOfPVs)
     factory.destroyDevice("");
 
     EXPECT_EQ(size_t(0), pFactory->getRegisteredCommandsNumber());
-    sleep(5);
+    std::this_thread::sleep_for(std::chrono::seconds(5));
     std::cout<<"------------------------------------------------------------------------------ "<<std::endl;
     std::cout<<"Ignore log messages that have been displayed, they are part of the test"<<std::endl;
     std::cout<<"------------------------------------------------------------------------------ "<<std::endl;

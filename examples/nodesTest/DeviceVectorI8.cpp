@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <nds3/nds.h>
@@ -581,7 +582,7 @@ void DeviceVectorI8::DataAcquisition_thread_body(){
 		++NumberOfPushedDataBlocks;
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 		m_DataAcquisition.setNumberOfPushedDataBlocks(m_DataAcquisition.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -846,7 +847,7 @@ void DeviceVectorI8::WaveformGeneration_thread_body(){
 	//TODO: Send values to data acquisition node.
 
 	// Rest for a while
-	::usleep(100000);
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_WaveformGeneration.setNumberOfPushedDataBlocks(m_WaveformGeneration.getTimestamp(),NumberOfPushedDataBlocks);
 }

@@ -1,4 +1,5 @@
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <gtest/gtest.h>
@@ -11,19 +12,19 @@
  * STM0
  */
 #define STM(NAME,TIME) void switchOn##NAME(){\
-	sleep(TIME);\
+	std::this_thread::sleep_for(std::chrono::seconds(TIME));\
 	std::cout<<"I'm on "<<__func__<<std::endl;\
 }\
 void starting##NAME(){\
-	sleep(TIME);\
+	std::this_thread::sleep_for(std::chrono::seconds(TIME));\
 	std::cout<<"I'm on "<<__func__<<std::endl;\
 }\
 void switchOff##NAME(){\
-	sleep(TIME);\
+	std::this_thread::sleep_for(std::chrono::seconds(TIME));\
 	std::cout<<"I'm on "<<__func__<<std::endl;\
 }\
 void stopping##NAME(){\
-	sleep(TIME);\
+	std::this_thread::sleep_for(std::chrono::seconds(TIME));\
 	std::cout<<"I'm on "<<__func__<<std::endl;\
 }\
 void recover##NAME(){\
@@ -193,7 +194,7 @@ TEST(testStateMachineAutoEnable, testAsynTransitionState)
     	std::cout<<e.what()<<std::endl;
     }
 
-    sleep(4); //Wait untill all the State Machines are in ON State
+    std::this_thread::sleep_for(std::chrono::seconds(4)); //Wait untill all the State Machines are in ON State
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN.getLocalState());
 
     //Expected behavior: STM0 & STM1 go automatically to ON state and STM2 stays in OFF
@@ -208,7 +209,7 @@ TEST(testStateMachineAutoEnable, testAsynTransitionState)
     	std::cout<<e.what()<<std::endl;
     }
 
-    sleep(4); //Wait untill all the State Machines are in ON State
+    std::this_thread::sleep_for(std::chrono::seconds(4)); //Wait untill all the State Machines are in ON State
     EXPECT_EQ((int)nds::state_t::running, (int)stateMachineRN.getLocalState());
 
     //Expected behavior: STM0 & STM1 go automatically to ON state and STM2 stays in OFF
@@ -223,7 +224,7 @@ TEST(testStateMachineAutoEnable, testAsynTransitionState)
     	std::cout<<e.what()<<std::endl;
     }
 
-    sleep(4); //Wait untill all the State Machines are in ON State
+    std::this_thread::sleep_for(std::chrono::seconds(4)); //Wait untill all the State Machines are in ON State
     EXPECT_EQ((int)nds::state_t::on, (int)stateMachineRN.getLocalState());
 
     //Expected behavior: STM0 & STM1 go automatically to ON state and STM2 stays in OFF
@@ -238,7 +239,7 @@ TEST(testStateMachineAutoEnable, testAsynTransitionState)
     	std::cout<<e.what()<<std::endl;
     }
 
-    sleep(4); //Wait untill all the State Machines are in ON State
+    std::this_thread::sleep_for(std::chrono::seconds(4)); //Wait untill all the State Machines are in ON State
     EXPECT_EQ((int)nds::state_t::off, (int)stateMachineRN.getLocalState());
 
     //Expected behavior: STM0 & STM1 go automatically to ON state and STM2 stays in OFF

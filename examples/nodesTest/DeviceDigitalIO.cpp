@@ -1,5 +1,6 @@
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 #include <nds3/nds.h>
@@ -451,7 +452,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_Bool(){
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DigitalIO_Bool.setNumberOfPushedDataBlocks(m_DigitalIO_Bool.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -577,7 +578,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I8(){
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DigitalIO_I8.setNumberOfPushedDataBlocks(m_DigitalIO_I8.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -701,7 +702,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I16(){
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DigitalIO_I16.setNumberOfPushedDataBlocks(m_DigitalIO_I16.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -824,7 +825,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I64(){
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DigitalIO_I64.setNumberOfPushedDataBlocks(m_DigitalIO_I64.getTimestamp(),NumberOfPushedDataBlocks);
 }
@@ -1022,7 +1023,7 @@ void DeviceDigitalIO::DigitalIO_thread_body_I32(){
 		//TODO: Send values to data acquisition node.
 
 		// Rest for a while
-		::usleep(100000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	m_DigitalIO_I32.setNumberOfPushedDataBlocks(m_DigitalIO_I32.getTimestamp(),NumberOfPushedDataBlocks);
 }

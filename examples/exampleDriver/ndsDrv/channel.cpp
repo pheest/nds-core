@@ -1,7 +1,8 @@
 #include <functional>
 #include <sstream>
 #include <iostream>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 
 #include "simulated_signal.h"
 
@@ -344,7 +345,7 @@ void channel::acquisition_thread_body() {
       ++NumberOfPushedDataBlocks;
 
       // Rest for a while
-      ::usleep(1000000);
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     m_acquisition.setNumberOfPushedDataBlocks(m_acquisition.getTimestamp(),
 					      NumberOfPushedDataBlocks);

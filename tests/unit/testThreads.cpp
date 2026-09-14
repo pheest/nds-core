@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -6,7 +8,7 @@ void runInThreadFunction(std::int32_t* pCounter)
 {
     for(int count(0); count != 5; ++count)
     {
-        ::sleep(1);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         *pCounter = count;
     }
 

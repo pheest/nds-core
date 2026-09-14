@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include <gtest/gtest.h>
 #include <nds3/nds.h>
 
@@ -51,7 +53,7 @@ TEST(testDeviceFirmware, StateMachineTest)
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::initializing, *pFirmwareStateMachineState);
 
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareStateMachineState);
@@ -67,11 +69,11 @@ TEST(testDeviceFirmware, StateMachineTest)
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::starting, *pFirmwareStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::running, *pFirmwareStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   //Get the Firmware global state
   pInterface->readCSValue("/deviceFirmware-Firm.StateMachine.getGlobalState",
@@ -84,7 +86,7 @@ TEST(testDeviceFirmware, StateMachineTest)
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::stopping, *pFirmwareStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::on, *pFirmwareStateMachineState);
@@ -95,7 +97,7 @@ TEST(testDeviceFirmware, StateMachineTest)
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::switchingOff, *pFirmwareStateMachineState);
-  ::sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   pInterface->getPushedInt32("/deviceFirmware-Firm.StateMachine.getState",
 			     pFirmwareStateMachineSwitchTime, pFirmwareStateMachineState);
   EXPECT_EQ((std::int32_t)nds::state_t::off, *pFirmwareStateMachineState);
@@ -135,7 +137,7 @@ static void commonPVsTest(bool testInitializers){
 	  //Change FirmwareNode state:  OFF -> (initializing) -> ON
 	  pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::on);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	  //Get the firmware version
 	  const std::string * firmwareVersion = NULL;
@@ -207,12 +209,12 @@ static void commonPVsTest(bool testInitializers){
 	  //Change FirmwareNode state:  ON -> (starting) -> RUNNING
 	  pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::running);
-	  ::sleep(3);
+	  std::this_thread::sleep_for(std::chrono::seconds(3));
 
 	  //Change Firmware Path
 	  std::string NewFirmwarePath="New FirmwarePath";
 	  pInterface->writeCSValue("/deviceFirmware-Firm.FilePath", timestamp, NewFirmwarePath);
-	  ::sleep(2);
+	  std::this_thread::sleep_for(std::chrono::seconds(2));
 	  pInterface->getPushedString("/deviceFirmware-Firm.FilePath_RBV",
 				      ptimestamp, firmwarePath);
 	  EXPECT_EQ((std::string)"New FirmwarePath", *firmwarePath);
@@ -220,7 +222,7 @@ static void commonPVsTest(bool testInitializers){
 	  //Change FirmwareNode state:  RUNNING -> (stopping) -> ON
 	  pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::on);
-	  ::sleep(3);
+	  std::this_thread::sleep_for(std::chrono::seconds(3));
 	  //Change FirmwareNode state:  ON -> (switchingOff) -> OFF
 	  pInterface->writeCSValue("/deviceFirmware-Firm.StateMachine.setState",
 				   timestamp, (std::int32_t)nds::state_t::off);

@@ -3,7 +3,8 @@
 
 #include <nds3/nds.h>
 #include <mutex>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <functional>
 
 
@@ -606,7 +607,7 @@ void DeviceBasic::Firmware_thread_body(){
 			FirmwarePathOld=FirmwarePath;
 		}
 		// Rest for a while
-		::usleep(1000000);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 
