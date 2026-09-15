@@ -21,9 +21,10 @@ jobs:
         run: cmake --build build --config Release -j$(nproc)
 
       - name: Run Tests
+        timeout-minutes: 45
         run: |
           cd build
-          ctest --output-on-failure
+          ctest --output-on-failure --timeout 1800
 
   build-windows:
     name: Build & Test (Windows)
@@ -43,9 +44,10 @@ jobs:
         run: cmake --build build --config Release
 
       - name: Run Tests
+        timeout-minutes: 60
         run: |
           cd build
-          ctest --output-on-failure -C Release
+          ctest --output-on-failure --timeout 1800 -C Release
 
   build-docs:
     name: Build Documentation
