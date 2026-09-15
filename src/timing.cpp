@@ -8,6 +8,10 @@
  */
 
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 #include "nds3/timing.h"
 #include "../include/nds3/impl/timingImpl.h"
 
@@ -139,7 +143,6 @@ void Timing::setState(const nds::state_t& newState)
 }
 
 #ifdef _WIN32
-#include <Windows.h>
 // https://github.com/esa/pykep/issues/47
 //C-file part
 int clock_gettime(int, struct timespec *spec)

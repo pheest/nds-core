@@ -6,6 +6,13 @@
 #include <nds3/nds.h>
 #include "terminal.h"
 
+#ifdef _WIN32
+// On Windows nds3/timing.h provides a clock_gettime() replacement built on top
+// of GetSystemTimeAsFileTime(). Pull it in so that the calls below compile
+// unchanged on both platforms.
+using nds::clock_gettime;
+#endif
+
 
 terminal::terminal(const std::string& name, nds::Node& parent):
   m_Ntimestamps(0) /* Initial number of timestamps is zero. */{

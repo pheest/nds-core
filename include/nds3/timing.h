@@ -273,11 +273,16 @@ class NDS3_API Timing: public Node  {
    void setState(const nds::state_t& newState);
 };
 
-}
-
 #ifdef _WIN32
 #define CLOCK_REALTIME 0
+/**
+ * @brief POSIX clock_gettime() replacement for Windows builds.
+ *
+ * Implemented in timing.cpp on top of GetSystemTimeAsFileTime().
+ */
 int NDS3_API clock_gettime(int, struct timespec *spec);
 #endif
+
+}
 
 #endif // NDSTIMING_H

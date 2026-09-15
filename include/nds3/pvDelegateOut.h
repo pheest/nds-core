@@ -61,7 +61,7 @@ template <typename T>
 class NDS3_API PVDelegateOut: public PVBaseOut
 {
 protected:
-    PVDelegateOut();
+    PVDelegateOut() = delete;
 
 public:
     /**

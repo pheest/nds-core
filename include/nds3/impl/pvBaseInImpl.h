@@ -53,7 +53,7 @@ public:
 /**
  * @brief Base class for all the PVs.
  */
-class PVBaseInImpl: public PVBaseImpl
+class NDS3_API PVBaseInImpl: public PVBaseImpl
 {
 public:
     /**

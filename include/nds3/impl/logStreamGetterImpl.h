@@ -10,12 +10,8 @@
 #ifndef NDSLOGSTREAMGETTERIMPL_H
 #define NDSLOGSTREAMGETTERIMPL_H
 
+#include <memory>
 #include <ostream>
-#include <array>
-
-#ifdef _WIN32
-#include <pthread.h>
-#endif
 
 #include "nds3/definitions.h"
 
@@ -47,18 +43,22 @@ public:
 protected:
     virtual std::ostream* createLogStream(const logLevel_t logLevel) = 0;
 
-    /**
-     * @brief This method is registered with pthread_create_key(&m_removeLoggersKey, this)
-     *        to remove the loggers that are specific to the running thread
-     */
-
 private:
+    /**
+     * @brief Registered as the thread-local storage destructor, to remove the
+     *        loggers that are specific to a thread when that thread exits
+     */
     static void deleteLogger(void* logger);
 
     /**
      * @brief Used to gain access to the node's loggers (they are different for each thread)
+     *
+     * Held behind an opaque pointer so that the thread-local storage type stays
+     * out of this header: it is installed, and naming pthread_key_t here would
+     * force every consumer to have pthread.h on its include path.
      */
-    std::array<pthread_key_t, (size_t)logLevel_t::none> m_loggersKeys;
+    struct LoggerKeys;
+    std::unique_ptr<LoggerKeys> m_loggersKeys;
 
 
 };

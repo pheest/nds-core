@@ -60,7 +60,7 @@ template <typename T>
 class NDS3_API PVDelegateIn: public PVBaseIn
 {
 protected:
-    PVDelegateIn();
+    PVDelegateIn() = delete;
 
 public:
 

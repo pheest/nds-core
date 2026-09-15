@@ -391,19 +391,19 @@ typedef std::function<void (void)> dbParser_t;
 #define NDS_DEFINE_DRIVER(driverName, className)\
 extern "C" \
 { \
-NDS3_API void* allocateDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters) \
+NDS3_DRIVER_API void* allocateDevice(nds::Factory& factory, const std::string& device, const nds::namedParameters_t& parameters) \
 { \
     return new className(factory, device, parameters); \
 } \
-NDS3_API void deallocateDevice(void* device) \
+NDS3_DRIVER_API void deallocateDevice(void* device) \
 { \
     delete reinterpret_cast<className*>(device); \
 } \
-NDS3_API const char* getDeviceName() \
+NDS3_DRIVER_API const char* getDeviceName() \
 { \
     return #driverName; \
 } \
-NDS3_API nds::RegisterDevice<className> registerDevice##driverName(#driverName); \
+NDS3_DRIVER_API nds::RegisterDevice<className> registerDevice##driverName(#driverName); \
 } // extern "C"
 
 // Generic helper definitions for shared library support
@@ -432,5 +432,24 @@ NDS3_API nds::RegisterDevice<className> registerDevice##driverName(#driverName);
 #else // NDS3_DLL is not defined: this means NDS3 is a static lib.
   #define NDS3_API
 #endif // NDS3_DLL
+
+// NDS3_DRIVER_API is used for the symbols that a driver module has to expose so
+// that the factory can look them up with dlsym()/GetProcAddress(). Unlike
+// NDS3_API these are always defined by the driver itself, so they are always
+// exported and never imported.
+#define NDS3_DRIVER_API NDS3_HELPER_DLL_EXPORT
+
+#if defined(_MSC_VER)
+  // C4251/C4275: MSVC warns whenever a class carrying a dll-interface has a data
+  // member or a base class that does not carry one itself. The NDS3 API uses C++
+  // standard library types (std::string, std::shared_ptr, std::function,
+  // std::mutex, std::list, ...) as members and derives its exception classes from
+  // std::runtime_error / std::logic_error. Those types cannot be given a
+  // dll-interface, so the warnings cannot be silenced by decorating the code and
+  // are suppressed here instead. As a consequence, NDS3 and the drivers and
+  // control system adapters using it must be built with the same toolset and
+  // linked against the same (dynamic) C++ runtime.
+  #pragma warning(disable: 4251 4275)
+#endif
 
 #endif // NDS3_DEFINITIONS_H

@@ -6,13 +6,6 @@ if(WIN32)
     # Search for dlfcn-win32 header and library
     find_path(DLFCN_INCLUDE_DIR dlfcn.h)
     find_library(DLFCN_LIBRARY NAMES dl dlfcn)
-
-    if(PTHREAD_INCLUDE_DIR)
-        include_directories(${PTHREAD_INCLUDE_DIR})
-    endif()
-    if(DLFCN_INCLUDE_DIR)
-        include_directories(${DLFCN_INCLUDE_DIR})
-    endif()
 endif()
 
 file(GLOB SOURCES "*.cpp")
@@ -30,6 +23,19 @@ target_include_directories(nds3_static PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
+if(WIN32)
+    # No installed header names a pthread or dlfcn type, so neither location has
+    # to propagate to anything using NDS3.
+    if(PTHREAD_INCLUDE_DIR)
+        target_include_directories(nds3 PRIVATE ${PTHREAD_INCLUDE_DIR})
+        target_include_directories(nds3_static PRIVATE ${PTHREAD_INCLUDE_DIR})
+    endif()
+    if(DLFCN_INCLUDE_DIR)
+        target_include_directories(nds3 PRIVATE ${DLFCN_INCLUDE_DIR})
+        target_include_directories(nds3_static PRIVATE ${DLFCN_INCLUDE_DIR})
+    endif()
+endif()
 
 target_compile_definitions(nds3 PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)
 target_compile_definitions(nds3_static PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)

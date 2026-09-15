@@ -589,6 +589,15 @@ int32_t WaveformGenerationImpl<T>::getGround()
 }
 
 template<typename T>
+int32_t WaveformGenerationImpl<T>::getNumberOfPushedDataBlocks()
+{
+	std::int32_t NumberOfPushedDataBlocks;
+	timespec timestamp;
+	m_NumberOfPushedDataBlocks->read(&timestamp, &NumberOfPushedDataBlocks);
+	return NumberOfPushedDataBlocks;
+}
+
+template<typename T>
 void WaveformGenerationImpl<T>::setNumberOfPushedDataBlocks(const timespec& timestamp, const std::int32_t& value)
 {
 	m_NumberOfPushedDataBlocks->setValue(timestamp, value);

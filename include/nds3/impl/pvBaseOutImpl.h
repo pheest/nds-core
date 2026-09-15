@@ -23,7 +23,7 @@ class PVBase;
 /**
  * @brief Base class for all the output PVs.
  */
-class PVBaseOutImpl: public PVBaseImpl
+class NDS3_API PVBaseOutImpl: public PVBaseImpl
 {
 public:
     /**

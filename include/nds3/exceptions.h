@@ -196,43 +196,43 @@ public:
     DeviceAlreadyCreated(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class PVAlreadyDeclared: public FactoryError
+class NDS3_API PVAlreadyDeclared: public FactoryError
 {
 public:
     PVAlreadyDeclared(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class MissingInputPV: public FactoryError
+class NDS3_API MissingInputPV: public FactoryError
 {
 public:
     MissingInputPV(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class MissingOutputPV: public FactoryError
+class NDS3_API MissingOutputPV: public FactoryError
 {
 public:
     MissingOutputPV(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class MissingDestinationPV: public FactoryError
+class NDS3_API MissingDestinationPV: public FactoryError
 {
 public:
     MissingDestinationPV(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class INIParserError: public NdsError
+class NDS3_API INIParserError: public NdsError
 {
 public:
     INIParserError(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class INIParserMissingSection: public INIParserError
+class NDS3_API INIParserMissingSection: public INIParserError
 {
 public:
     INIParserMissingSection(const std::string& what, statusPV_t status = statusPV_t::error);
 };
 
-class INIParserSyntaxError: public INIParserError
+class NDS3_API INIParserSyntaxError: public INIParserError
 {
 public:
     INIParserSyntaxError(const std::string& what, statusPV_t status = statusPV_t::error);
