@@ -6,9 +6,12 @@ namespace nds
 
 /**
  * @brief This is a class intended to be used as a static class for automatic registering of device supports
+ *
+ * No dll-interface: this template is instantiated by the driver module with the
+ * driver's own class, so its members cannot be imported from the NDS3 library.
  */
 template <class T>
-class NDS3_API RegisterDevice
+class RegisterDevice
 {
 private:
     const std::string m_driverName;

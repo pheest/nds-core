@@ -1,4 +1,5 @@
 
+#define _USE_MATH_DEFINES // Windows needs this for M_PI
 #include "DeviceFloat.h"
 
 #include <nds3/nds.h>

@@ -165,24 +165,24 @@ void TestControlSystemInterfaceImpl::readCSValue(const std::string& pvName, time
     findPV->second->read(pTimestamp, pValue);
 }
 
-template void TestControlSystemInterfaceImpl::readCSValue<std::int32_t>(const std::string& pvName, timespec* timestamp, std::int32_t* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::int64_t>(const std::string& pvName, timespec* timestamp, std::int64_t* value);
-template void TestControlSystemInterfaceImpl::readCSValue<float>(const std::string& pvName, timespec* timestamp, float* value);
-template void TestControlSystemInterfaceImpl::readCSValue<double>(const std::string& pvName, timespec* timestamp, double* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<bool> >(const std::string& pvName, timespec* timestamp, std::vector<bool>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint8_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint8_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint16_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint16_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint32_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint32_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int8_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int8_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int16_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int16_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int32_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int32_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int64_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int64_t>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<float> >(const std::string& pvName, timespec* timestamp, std::vector<float>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<double> >(const std::string& pvName, timespec* timestamp, std::vector<double>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::string>(const std::string& pvName, timespec* timestamp, std::string* value);
-template void TestControlSystemInterfaceImpl::readCSValue<timespec>(const std::string& pvName, timespec* timestamp, timespec* value);
-template void TestControlSystemInterfaceImpl::readCSValue<std::vector<timespec>>(const std::string& pvName, timespec* timestamp, std::vector<timespec>* value);
-template void TestControlSystemInterfaceImpl::readCSValue<timestamp_t>(const std::string& pvName, timespec* timestamp, timestamp_t* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::int32_t>(const std::string& pvName, timespec* timestamp, std::int32_t* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::int64_t>(const std::string& pvName, timespec* timestamp, std::int64_t* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<float>(const std::string& pvName, timespec* timestamp, float* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<double>(const std::string& pvName, timespec* timestamp, double* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<bool> >(const std::string& pvName, timespec* timestamp, std::vector<bool>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint8_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint8_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint16_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint16_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::uint32_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::uint32_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int8_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int8_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int16_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int16_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int32_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int32_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<std::int64_t> >(const std::string& pvName, timespec* timestamp, std::vector<std::int64_t>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<float> >(const std::string& pvName, timespec* timestamp, std::vector<float>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<double> >(const std::string& pvName, timespec* timestamp, std::vector<double>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::string>(const std::string& pvName, timespec* timestamp, std::string* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<timespec>(const std::string& pvName, timespec* timestamp, timespec* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<std::vector<timespec>>(const std::string& pvName, timespec* timestamp, std::vector<timespec>* value);
+template void NDS3_API TestControlSystemInterfaceImpl::readCSValue<timestamp_t>(const std::string& pvName, timespec* timestamp, timestamp_t* value);
 
 
 template<typename T>
@@ -196,24 +196,24 @@ void TestControlSystemInterfaceImpl::writeCSValue(const std::string& pvName, con
     findPV->second->write(timestamp, value);
 }
 
-template void TestControlSystemInterfaceImpl::writeCSValue<std::int32_t>(const std::string& pvName, const timespec& timestamp, const std::int32_t& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::int64_t>(const std::string& pvName, const timespec& timestamp, const std::int64_t& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<float>(const std::string& pvName, const timespec& timestamp, const float& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<double>(const std::string& pvName, const timespec& timestamp, const double& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<bool> >(const std::string& pvName, const timespec& timestamp, const std::vector<bool>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint8_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint8_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint16_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint16_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint32_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint32_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int8_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int8_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int16_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int16_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int32_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int32_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int64_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int64_t>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<float> >(const std::string& pvName, const timespec& timestamp, const std::vector<float>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<double> >(const std::string& pvName, const timespec& timestamp, const std::vector<double>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::string>(const std::string& pvName, const timespec& timestamp, const std::string& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<timespec>(const std::string& pvName, const timespec& timestamp, const timespec& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<std::vector<timespec>>(const std::string& pvName, const timespec& timestamp, const std::vector<timespec>& value);
-template void TestControlSystemInterfaceImpl::writeCSValue<timestamp_t>(const std::string& pvName, const timespec& timestamp, const timestamp_t& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::int32_t>(const std::string& pvName, const timespec& timestamp, const std::int32_t& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::int64_t>(const std::string& pvName, const timespec& timestamp, const std::int64_t& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<float>(const std::string& pvName, const timespec& timestamp, const float& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<double>(const std::string& pvName, const timespec& timestamp, const double& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<bool> >(const std::string& pvName, const timespec& timestamp, const std::vector<bool>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint8_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint8_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint16_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint16_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::uint32_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::uint32_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int8_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int8_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int16_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int16_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int32_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int32_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<std::int64_t> >(const std::string& pvName, const timespec& timestamp, const std::vector<std::int64_t>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<float> >(const std::string& pvName, const timespec& timestamp, const std::vector<float>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<double> >(const std::string& pvName, const timespec& timestamp, const std::vector<double>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::string>(const std::string& pvName, const timespec& timestamp, const std::string& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<timespec>(const std::string& pvName, const timespec& timestamp, const timespec& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<std::vector<timespec>>(const std::string& pvName, const timespec& timestamp, const std::vector<timespec>& value);
+template void NDS3_API TestControlSystemInterfaceImpl::writeCSValue<timestamp_t>(const std::string& pvName, const timespec& timestamp, const timestamp_t& value);
 
 
 void TestControlSystemInterfaceImpl::getPushedInt32(const std::string& pvName, const timespec*& pTime, const std::int32_t*& pValue, const std::uint32_t& timeoutMs)

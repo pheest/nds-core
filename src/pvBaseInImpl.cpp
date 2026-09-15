@@ -312,24 +312,24 @@ std::string PVBaseInImpl::buildFullExternalName(const FactoryBaseImpl& controlSy
 }
 
 
-template void PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&, const statusPV_t&);
-template void PVBaseInImpl::push<std::int64_t>(const timespec&, const std::int64_t&, const statusPV_t&);
-template void PVBaseInImpl::push<float>(const timespec&, const float&, const statusPV_t&);
-template void PVBaseInImpl::push<double>(const timespec&, const double&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::uint16_t> >(const timespec&, const std::vector<std::uint16_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, const std::vector<std::uint32_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<std::int64_t> >(const timespec&, const std::vector<std::int64_t>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<float> >(const timespec&, const std::vector<float>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&, const statusPV_t&);
-template void PVBaseInImpl::push<std::string >(const timespec&, const std::string&, const statusPV_t&);
-template void PVBaseInImpl::push<timespec >(const timespec&, const timespec&, const statusPV_t&);
-template void PVBaseInImpl::push<std::vector<timespec> >(const timespec&, const std::vector<timespec>&, const statusPV_t&);
-template void PVBaseInImpl::push<timestamp_t>(const timespec&, const timestamp_t&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::int32_t>(const timespec&, const std::int32_t&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::int64_t>(const timespec&, const std::int64_t&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<float>(const timespec&, const float&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<double>(const timespec&, const double&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<bool> >(const timespec&, const std::vector<bool>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::uint8_t> >(const timespec&, const std::vector<std::uint8_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::uint16_t> >(const timespec&, const std::vector<std::uint16_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::uint32_t> >(const timespec&, const std::vector<std::uint32_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::int8_t> >(const timespec&, const std::vector<std::int8_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::int16_t> >(const timespec&, const std::vector<std::int16_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::int32_t> >(const timespec&, const std::vector<std::int32_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<std::int64_t> >(const timespec&, const std::vector<std::int64_t>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<float> >(const timespec&, const std::vector<float>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<double> >(const timespec&, const std::vector<double>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::string >(const timespec&, const std::string&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<timespec >(const timespec&, const timespec&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<std::vector<timespec> >(const timespec&, const std::vector<timespec>&, const statusPV_t&);
+template void NDS3_API PVBaseInImpl::push<timestamp_t>(const timespec&, const timestamp_t&, const statusPV_t&);
 
 
 }

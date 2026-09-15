@@ -58,7 +58,10 @@ protected:
     commandNodes_t m_commandNodes;
 };
 
-class NDS3_API TestLogStreamBufferImpl: public std::stringbuf
+// No dll-interface: exporting a class derived from a std:: template exports
+// the base's members as well, colliding with the consumer's own
+// instantiation. This class is only used inside the library.
+class TestLogStreamBufferImpl: public std::stringbuf
 {
 public:
     TestLogStreamBufferImpl(const logLevel_t logLevel, TestControlSystemFactoryImpl* pFactory);
@@ -70,7 +73,8 @@ protected:
     TestControlSystemFactoryImpl* m_pFactory;
 };
 
-class NDS3_API TestLogStream: public std::ostream
+// No dll-interface, for the same reason as TestLogStreamBufferImpl above.
+class TestLogStream: public std::ostream
 {
 public:
     TestLogStream(const logLevel_t logLevel, TestControlSystemFactoryImpl* pFactory);

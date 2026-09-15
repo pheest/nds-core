@@ -174,15 +174,18 @@ private:
     {
     	std::int64_t usTimeout = timeoutMs*1000; //Convert timeout from milliseconds to microseconds
     	bool getData=false;
-    	std::chrono::system_clock::time_point begin = std::chrono::system_clock::now();
-    	std::chrono::system_clock::time_point end;
+    	// steady_clock, not system_clock: this measures an elapsed timeout and must
+    	// not be affected by wall clock adjustments. Mixing the two also fails to
+    	// compile where high_resolution_clock is an alias for steady_clock (MSVC).
+    	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    	std::chrono::steady_clock::time_point end;
 
     	do{
        		try {
        			storeInto[pvName].getValue(pTime, pValue);
        			getData=true; //This flag only turns true if data is available
        		} catch (const std::runtime_error& ex) {
-       			end = std::chrono::high_resolution_clock::now();
+       			end = std::chrono::steady_clock::now();
        			if(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() >=usTimeout){
        				std::string msg = ex.what();
        				msg += " (PV name: " + pvName + ")";

@@ -3,6 +3,21 @@
 
 #include <nds3/nds.h>
 
+/*
+ * The unit tests link against this module and call the static methods below
+ * directly, so those have to be exported from it. Only they are decorated: the
+ * rest of the class is private to the module.
+ */
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef NDS3_EXAMPLE_EXPORTS
+    #define NDS3_EXAMPLE_API __declspec(dllexport)
+  #else
+    #define NDS3_EXAMPLE_API __declspec(dllimport)
+  #endif
+#else
+  #define NDS3_EXAMPLE_API
+#endif
+
 //Class that declares and implement a fictional
 class Device
 {
@@ -16,16 +31,16 @@ public:
 
 
 	//Allocation method
-	static void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
+	static NDS3_EXAMPLE_API void* allocateDevice(nds::Factory& factory, const std::string& deviceName, const nds::namedParameters_t& parameters);
 	//Deallocation method
-	static void deallocateDevice(void* deviceName);
+	static NDS3_EXAMPLE_API void deallocateDevice(void* deviceName);
 
 
 	/*
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static Device* getInstance(const std::string& deviceName);
+	static NDS3_EXAMPLE_API Device* getInstance(const std::string& deviceName);
 
 private:
 

@@ -9,6 +9,20 @@
 
 #include <nds3/nds.h>
 
+/*
+ * The unit tests link against this module and call the methods below directly,
+ * so those have to be exported from it.
+ */
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef NDS3_NODESTEST_EXPORTS
+    #define NDS3_NODESTEST_API __declspec(dllexport)
+  #else
+    #define NDS3_NODESTEST_API __declspec(dllimport)
+  #endif
+#else
+  #define NDS3_NODESTEST_API
+#endif
+
 /**
  * @brief Class that declares and implement a fictional device with a NDSError throwing function for testing purposes of nds-core V3.
  *
@@ -41,12 +55,12 @@ public:
 	 * For test purposes we make it possible to retrieve running instances of
 	 *  the device
 	 */
-	static DeviceError* getInstance(const std::string& deviceName);
+	static NDS3_NODESTEST_API DeviceError* getInstance(const std::string& deviceName);
 	/**
 	 * @brief function that throws the different types of NdsErrors
 	 * @param value NdsError type value
 	 */
-	void throwError(std::int32_t value);
+	NDS3_NODESTEST_API void throwError(std::int32_t value);
 
 
 private:

@@ -35,7 +35,7 @@
     std::cout << FWHT <<start << TestUtils::getString(text) << RST << std::endl <<std::flush; \
 }
 
-class TestUtils
+class NDS3_API TestUtils
 {
 public:
 

@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <string>
 #include <sstream>
 
@@ -216,7 +217,13 @@ std::string TestUtils::getString(nds::timestamp_t data){
 
 std::string TestUtils::getAbsolutePath (const std::string& relativePath)
 {
+#ifdef _WIN32
+	// _fullpath() is the Windows counterpart of realpath(); it likewise returns a
+	// buffer obtained from malloc() when passed a null destination.
+	char* pAbsPath = _fullpath(NULL, relativePath.c_str(), 0);
+#else
 	char* pAbsPath = realpath(relativePath.c_str(), NULL);
+#endif
 	std::string absolutePath(relativePath);
 	if (pAbsPath != NULL) {
  		absolutePath = std::string(pAbsPath);
