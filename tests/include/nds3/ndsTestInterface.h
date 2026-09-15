@@ -1,6 +1,7 @@
 #ifndef NDSTESTINTERFACE_H
 #define NDSTESTINTERFACE_H
 
+#include <mutex>
 #include <vector>
 
 #include <nds3/impl/interfaceBaseImpl.h>
@@ -96,7 +97,7 @@ private:
     class PushedValues
     {
     public:
-        PushedValues(): m_firstUsed(0), m_firstAvailable(0){}
+        PushedValues(): m_firstUsed(0), m_firstAvailable(0), m_retrieved(), m_retrievedTimestamp(){}
 
         static const size_t m_historyBits = 10;
         static const size_t m_historyPositionMask = (0x1 << m_historyBits) - 1;
@@ -105,6 +106,17 @@ private:
         std::array<timespec, (0x1 << m_historyBits)> m_timestamps;
 
         size_t m_firstUsed, m_firstAvailable;
+
+        /**
+         * @brief Copy of the entry handed out by the last getValue() call.
+         *
+         * getValue() cannot return a pointer into the ring itself: the pushing
+         * thread overwrites the oldest entry once the ring is full, which would
+         * reallocate the value the caller is still reading. Only the retrieving
+         * thread touches these.
+         */
+        T m_retrieved;
+        timespec m_retrievedTimestamp;
 
 
         void storeValue(const timespec& timestamp, const T& value)
@@ -123,8 +135,10 @@ private:
             {
                 throw std::runtime_error("No pushed data to be retrieved");
             }
-            pTimestamp = &(m_timestamps[m_firstUsed & m_historyPositionMask]);
-            pValue = &(m_values[m_firstUsed++ & m_historyPositionMask]);
+            m_retrievedTimestamp = m_timestamps[m_firstUsed & m_historyPositionMask];
+            m_retrieved = m_values[m_firstUsed++ & m_historyPositionMask];
+            pTimestamp = &m_retrievedTimestamp;
+            pValue = &m_retrieved;
 
         }
     };
@@ -155,14 +169,11 @@ private:
                          const timespec& timestamp,
                          const T& value)
     {
-    	try{
-    		storeInto.at(pvName).storeValue(timestamp, value);
-    	}
-    	catch(const std::out_of_range& ex){
-    		mtx.lock();
-    		storeInto[pvName].storeValue(timestamp, value);
-    		mtx.unlock();
-      	}
+    	// operator[] inserts when the PV is seen for the first time, so this has to
+    	// hold the lock for every call, not just for the insert: the reader inserts
+    	// as well, and a concurrent mutation of the map is undefined behaviour.
+    	std::lock_guard<std::mutex> lock(mtx);
+    	storeInto[pvName].storeValue(timestamp, value);
     }
 
     template <typename T>
@@ -182,7 +193,12 @@ private:
 
     	do{
        		try {
-       			storeInto[pvName].getValue(pTime, pValue);
+       			{
+       				// Not held across the wait below, or the pushing thread could
+       				// never store anything.
+       				std::lock_guard<std::mutex> lock(mtx);
+       				storeInto[pvName].getValue(pTime, pValue);
+       			}
        			getData=true; //This flag only turns true if data is available
        		} catch (const std::runtime_error& ex) {
        			end = std::chrono::steady_clock::now();
