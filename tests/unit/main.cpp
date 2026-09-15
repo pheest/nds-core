@@ -41,11 +41,18 @@ void tryLoadDriver(const std::string& name)
     suffix = ".dll";
 #endif
 
-    std::vector<std::string> searchPaths = {
-        "../../examples/nodesTest/" + prefix + "nds3-" + name + suffix,
-        "../../../lib/" + prefix + "nds3-" + name + suffix,
-        prefix + "nds3-" + name + suffix
-    };
+    std::vector<std::string> searchPaths;
+
+#ifdef NDS3_TEST_MODULE_DIR
+    // The directory the build system put the device modules in. This is the only
+    // candidate that is correct for a multi-configuration generator, where the
+    // modules sit in a per-configuration subdirectory.
+    searchPaths.push_back(std::string(NDS3_TEST_MODULE_DIR) + "/" + prefix + "nds3-" + name + suffix);
+#endif
+
+    searchPaths.push_back("../../examples/nodesTest/" + prefix + "nds3-" + name + suffix);
+    searchPaths.push_back("../../../lib/" + prefix + "nds3-" + name + suffix);
+    searchPaths.push_back(prefix + "nds3-" + name + suffix);
 
 #ifdef _WIN32
     // Also try with 'lib' prefix on Windows
@@ -70,14 +77,10 @@ void tryLoadDriver(const std::string& name)
     }
     if (!loaded)
     {
-        // If not loaded by any of the searched paths, try the original one to report error
-        try
+        std::cerr << "Failed to load driver " << name << ", tried:" << std::endl;
+        for (const auto& path : searchPaths)
         {
-            nds::FactoryBaseImpl::loadDriver("../../../lib/libnds3-" + name + ".so");
-        }
-        catch (const std::exception& e)
-        {
-            std::cerr << "Failed to load driver " << name << ": " << e.what() << std::endl;
+            std::cerr << "    " << path << std::endl;
         }
     }
 }

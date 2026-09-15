@@ -15,4 +15,10 @@ if(GTest_FOUND OR GTEST_FOUND)
     )
 
     add_test(NAME nds3-unit-example COMMAND nds3-unit-example)
+
+    if(WIN32)
+        # See the comment in tests/unit/CMakeLists.txt.
+        set_tests_properties(nds3-unit-example PROPERTIES ENVIRONMENT_MODIFICATION
+            "PATH=path_list_prepend:$<TARGET_FILE_DIR:nds3>;PATH=path_list_prepend:$<TARGET_FILE_DIR:nds3-testcontrolsystem>;PATH=path_list_prepend:$<TARGET_FILE_DIR:nds3-dev-nds-example>")
+    endif()
 endif()
