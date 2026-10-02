@@ -8,6 +8,11 @@
  */
 
 #include <array>
+#ifdef _WIN32
+#ifndef _DLL
+#define __PTW32_STATIC_LIB
+#endif
+#endif
 #include <pthread.h>
 
 #include "nds3/impl/logStreamGetterImpl.h"

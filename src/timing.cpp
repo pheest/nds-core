@@ -142,10 +142,11 @@ void Timing::setState(const nds::state_t& newState)
     std::static_pointer_cast<TimingImpl>(m_pImplementation)->setState(newState);
 }
 
+}
 #ifdef _WIN32
 // https://github.com/esa/pykep/issues/47
 //C-file part
-int clock_gettime(int, struct timespec *spec)
+int clock_gettime(int, struct timespec* spec)
 {
     __int64 wintime; GetSystemTimeAsFileTime((FILETIME*)&wintime);
     wintime -= 116444736000000000i64;  //1jan1601 to 1jan1970
@@ -154,4 +155,3 @@ int clock_gettime(int, struct timespec *spec)
     return 0;
 }
 #endif
-}

@@ -60,7 +60,7 @@ organization.
 
 ## Requirements
 
-- **CMake** 3.10 or newer
+- **CMake** 3.15 or newer
 - A **C++11** compiler (GCC 4.9+ is recommended because of
   [GCC bug 57869](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=57869); MSVC on
   Windows — CI builds with the toolchain on GitHub's `windows-latest` image)
@@ -111,13 +111,14 @@ This installs:
 NDS uses POSIX threads and `dlopen`-style dynamic loading, so two compatibility
 libraries are required. The simplest route is [vcpkg](https://vcpkg.io):
 
-```powershell
+```cmd
 vcpkg install dlfcn-win32:x64-windows pthreads:x64-windows
+vcpkg install dlfcn-win32:x64-windows-static pthreads:x64-windows-static
 ```
 
 Then configure and build with the vcpkg toolchain file:
 
-```powershell
+```cmd
 cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON `
       -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
       -A x64

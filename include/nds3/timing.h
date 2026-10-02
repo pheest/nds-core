@@ -273,6 +273,8 @@ class NDS3_API Timing: public Node  {
    void setState(const nds::state_t& newState);
 };
 
+}
+
 #ifdef _WIN32
 #define CLOCK_REALTIME 0
 /**
@@ -282,7 +284,5 @@ class NDS3_API Timing: public Node  {
  */
 int NDS3_API clock_gettime(int, struct timespec *spec);
 #endif
-
-}
 
 #endif // NDSTIMING_H

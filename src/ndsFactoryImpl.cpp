@@ -8,6 +8,11 @@
  */
 
 #include <cstdlib>
+#ifdef _WIN32
+#ifdef _DLL
+#define DLFCN_WIN32_SHARED
+#endif
+#endif
 #include <dlfcn.h>
 #include <errno.h>
 #include <sstream>

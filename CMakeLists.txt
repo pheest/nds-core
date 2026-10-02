@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.10)
+# See https://stackoverflow.com/questions/78430503/setting-property-msvc-runtime-library-doesnt-change-the-runtime-library
+cmake_minimum_required(VERSION 3.15)
 project(nds3 VERSION 3.3.0.0)
 
 set(CMAKE_CXX_STANDARD 11)
