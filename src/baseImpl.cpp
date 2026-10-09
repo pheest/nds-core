@@ -8,16 +8,13 @@
  */
 
 #include <stdexcept>
+#include <time.h>
 
 #include "nds3/impl/baseImpl.h"
 #include "nds3/impl/nodeImpl.h"
 #include "nds3/impl/factoryBaseImpl.h"
 #include "nds3/impl/logStreamGetterImpl.h"
 #include "nds3/impl/threadBaseImpl.h"
-#ifdef _WIN32
-// For clock_gettime
-#include "nds3/timing.h"
-#endif
 
 namespace nds
 {
@@ -192,7 +189,7 @@ timespec BaseImpl::getLocalTimestamp() const
         return temporaryPointer->getTimestamp();
     }
     timespec timestamp;
-    clock_gettime(CLOCK_REALTIME, &timestamp);
+    timespec_get(&timestamp, TIME_UTC);
     return timestamp;
 }
 

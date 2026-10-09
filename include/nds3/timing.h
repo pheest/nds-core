@@ -279,7 +279,15 @@ class NDS3_API Timing: public Node  {
  * @brief POSIX clock_gettime() replacement for Windows builds.
  *
  * Implemented in timing.cpp on top of GetSystemTimeAsFileTime().
+ *
+ * @deprecated Use the standard timespec_get(spec, TIME_UTC) from <time.h>
+ *  instead, which works on every platform.
  */
+#ifdef _MSC_VER
+__declspec(deprecated("use timespec_get(spec, TIME_UTC) instead"))
+#else
+__attribute__((deprecated("use timespec_get(spec, TIME_UTC) instead")))
+#endif
 int NDS3_API clock_gettime(int, struct timespec *spec);
 #endif
 

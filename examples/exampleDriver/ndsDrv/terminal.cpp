@@ -2,19 +2,10 @@
 #include <functional>
 #include <iostream>
 #include <thread>
-#ifndef _WIN32
-#include <sys/time.h>
-#endif
+#include <time.h>
 
 #include <nds3/nds.h>
 #include "terminal.h"
-
-#ifdef _WIN32
-// On Windows nds3/timing.h provides a clock_gettime() replacement built on top
-// of GetSystemTimeAsFileTime(). Pull it in so that the calls below compile
-// unchanged on both platforms.
-using nds::clock_gettime;
-#endif
 
 
 terminal::terminal(const std::string& name, nds::Node& parent):
@@ -181,8 +172,8 @@ bool terminal::allow_timing_change(const nds::state_t, const nds::state_t,
 void terminal::pv_time_reader(timespec * /* time */, timespec* val) {
 
   // Delegate method for the time PV which reads the time from the HW. In this
-  // case the Linux time is published:
-  clock_gettime(CLOCK_REALTIME, val);
+  // case the system time is published:
+  timespec_get(val, TIME_UTC);
 }
 
 void terminal::timing_thread_body() {
