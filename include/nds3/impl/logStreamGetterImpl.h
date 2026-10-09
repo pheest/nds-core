@@ -54,8 +54,8 @@ private:
      * @brief Used to gain access to the node's loggers (they are different for each thread)
      *
      * Held behind an opaque pointer so that the thread-local storage type stays
-     * out of this header: it is installed, and naming pthread_key_t here would
-     * force every consumer to have pthread.h on its include path.
+     * out of this header: it is installed, and naming the platform's key type
+     * here would force every consumer to include that platform's headers.
      */
     struct LoggerKeys;
     std::unique_ptr<LoggerKeys> m_loggersKeys;

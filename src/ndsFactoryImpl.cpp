@@ -8,7 +8,9 @@
  */
 
 #include <cstdlib>
+#ifndef _WIN32
 #include <dlfcn.h>
+#endif
 #include <errno.h>
 #include <sstream>
 #include <string.h>
@@ -514,6 +516,93 @@ NdsFactoryImpl::fileNames_t NdsFactoryImpl::separateFoldersList(const char* fold
     return folders;
 }
 
+#ifdef _WIN32
+
+namespace
+{
+
+/**
+ * @brief Load a module the way dlopen() does: by the exact file name given.
+ *
+ * LoadLibrary() wants backslashes, appends ".dll" to a file name without an
+ *  extension unless that name ends in a dot, and only searches the module's
+ *  own directory for its dependencies when given an absolute path with
+ *  LOAD_WITH_ALTERED_SEARCH_PATH.
+ */
+HMODULE loadModule(const std::string& libraryName)
+{
+    std::string fileName(libraryName);
+    for(std::string::iterator scanChars(fileName.begin()); scanChars != fileName.end(); ++scanChars)
+    {
+        if(*scanChars == '/')
+        {
+            *scanChars = '\\';
+        }
+    }
+
+    const size_t lastSeparator(fileName.find_last_of('\\'));
+    const size_t baseNameStart(lastSeparator == std::string::npos ? 0 : lastSeparator + 1);
+    if(fileName.find('.', baseNameStart) == std::string::npos)
+    {
+        fileName += '.';
+    }
+
+    DWORD flags(0);
+    if(lastSeparator != std::string::npos)
+    {
+        char fullPath[MAX_PATH];
+        const DWORD length(GetFullPathNameA(fileName.c_str(), MAX_PATH, fullPath, 0));
+        if(length != 0 && length < MAX_PATH)
+        {
+            fileName = fullPath;
+            flags = LOAD_WITH_ALTERED_SEARCH_PATH;
+        }
+    }
+
+    // Report a module that cannot be loaded through the return value, not
+    //  through a message box.
+    DWORD previousMode(0);
+    const BOOL modeSet(SetThreadErrorMode(SEM_FAILCRITICALERRORS, &previousMode));
+    HMODULE module(LoadLibraryExA(fileName.c_str(), 0, flags));
+    const DWORD error(GetLastError());
+    if(modeSet)
+    {
+        SetThreadErrorMode(previousMode, 0);
+    }
+
+    if(module == 0)
+    {
+        char* message(0);
+        FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                       0, error, 0, reinterpret_cast<char*>(&message), 0, 0);
+        fprintf(stderr, "%s: %s\n", libraryName.c_str(), message != 0 ? message : "cannot be loaded");
+        LocalFree(message);
+    }
+    return module;
+}
+
+}
+
+DynamicModule::DynamicModule(const std::string& libraryName):
+    m_moduleHandle(loadModule(libraryName))
+{
+}
+
+DynamicModule::~DynamicModule()
+{
+    if(m_moduleHandle != 0)
+    {
+        FreeLibrary(static_cast<HMODULE>(m_moduleHandle));
+    }
+}
+
+void* DynamicModule::getAddress(const std::string &functionName)
+{
+    return reinterpret_cast<void*>(GetProcAddress(static_cast<HMODULE>(m_moduleHandle), functionName.c_str()));
+}
+
+#else
+
 #ifndef RTLD_NODELETE
 #define RTLD_NODELETE 0
 #endif
@@ -537,6 +626,8 @@ void* DynamicModule::getAddress(const std::string &functionName)
 {
     return dlsym(m_moduleHandle, functionName.c_str());
 }
+
+#endif
 
 
 #ifdef _WIN32

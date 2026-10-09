@@ -69,9 +69,6 @@ organization.
   GoogleTest v1.14.0 via CMake `FetchContent`, which requires network access at
   configure time. Only needed when `BUILD_TESTING=ON`.
 
-On Windows two POSIX compatibility libraries are needed as well; see
-[Building on Windows](#building-on-windows).
-
 ## Building on Linux
 
 ```bash
@@ -108,19 +105,11 @@ This installs (for Windows, see [Building on Windows](#building-on-windows)):
 
 ## Building on Windows
 
-NDS uses POSIX threads and `dlopen`-style dynamic loading, so two compatibility
-libraries are required. The simplest route is [vcpkg](https://vcpkg.io):
+NDS uses the Win32 API directly on Windows, so apart from Visual Studio and
+CMake nothing has to be installed:
 
 ```powershell
-vcpkg install dlfcn-win32:x64-windows pthreads:x64-windows
-```
-
-Then configure and build with the vcpkg toolchain file:
-
-```powershell
-cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON `
-      -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
-      -A x64
+cmake -B build -S . -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -A x64
 cmake --build build --config Release
 ```
 
@@ -130,12 +119,6 @@ Notes specific to Windows:
   at build time with `--config`, not at configure time with
   `CMAKE_BUILD_TYPE`. The same applies to `ctest -C Release` and
   `cmake --install build --config Release`.
-- `src/CMakeLists.txt` locates the two dependencies via `find_path`/
-  `find_library`, searching for `pthread.h` plus `pthreadVC2`/`pthreadVC3`/
-  `pthread`, and for `dlfcn.h` plus `dl`/`dlfcn`. If you install them outside
-  vcpkg, point CMake at them with `-DCMAKE_PREFIX_PATH=...`.
-- The DLLs for `pthreads` and `dlfcn-win32` must be on `PATH` (or beside the
-  executable) at runtime, including when running the tests.
 - `cmake --install` uses the directory layout of an EPICS module, so that
   EPICS-based modules can build against NDS like against any other module:
 
@@ -242,7 +225,7 @@ Plugins are recognized by filename: device plugins must be named
 or `lib<something>NdsControlSystem`.
 
 > **Note:** the `.so` filename pattern is matched on every platform, Windows
-> included — the dynamic loading itself goes through `dlfcn-win32` there.
+> included — a Windows plugin is a DLL named like a Linux shared object.
 
 Naming rules for the generated PV names are configurable; see
 `examples/naming_rules.txt` for a documented example of the ini-file format.
