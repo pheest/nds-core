@@ -96,7 +96,7 @@ configure with `-DBUILD_TESTING=OFF`.
 cmake --install build --prefix /usr/local
 ```
 
-This installs:
+This installs (for Windows, see [Building on Windows](#building-on-windows)):
 
 - `lib/libnds3.so` — shared library
 - `lib/libnds3.a` — static library
@@ -136,6 +136,23 @@ Notes specific to Windows:
   vcpkg, point CMake at them with `-DCMAKE_PREFIX_PATH=...`.
 - The DLLs for `pthreads` and `dlfcn-win32` must be on `PATH` (or beside the
   executable) at runtime, including when running the tests.
+- `cmake --install` uses the directory layout of an EPICS module, so that
+  EPICS-based modules can build against NDS like against any other module:
+
+  | Path | Contents |
+  | --- | --- |
+  | `bin/windows-x64/nds3.dll` | Shared library |
+  | `lib/windows-x64/nds3.lib` | Import library of the DLL |
+  | `lib/windows-x64-static/nds3.lib` | Static library |
+  | `include/nds3/` | Public headers |
+
+  Both libraries are called `nds3.lib`, as the EPICS build system expects, so
+  the separate directories are what keeps them apart. Installing the Debug
+  configuration appends `-debug` to the architecture, as EPICS does
+  (`bin/windows-x64-debug`, `lib/windows-x64-debug`,
+  `lib/windows-x64-static-debug`), so it can be installed next to Release.
+  The architecture name defaults to `windows-x64` (`win32-x86` for a 32-bit
+  build); set `-DNDS3_EPICS_ARCH=...` to change it.
 
 ## Build options
 
@@ -147,7 +164,8 @@ Notes specific to Windows:
 Both are standard CMake cache variables, e.g. `-DBUILD_EXAMPLES=OFF`.
 
 Two library targets are always produced: `nds3` (shared) and `nds3_static`
-(static, installed as `libnds3.a`).
+(static, installed as `libnds3.a` on Linux and as `nds3.lib` in
+`lib/windows-x64-static` on Windows).
 
 ## Running the tests
 
