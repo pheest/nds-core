@@ -53,8 +53,9 @@ if(WIN32)
     endif()
 endif()
 
+# Only the DLL gets these: for the static library NDS3_API must stay empty, or
+# its users would import from a DLL that is not there.
 target_compile_definitions(nds3 PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)
-target_compile_definitions(nds3_static PUBLIC NDS3_DLL PRIVATE NDS3_DLL_EXPORTS)
 
 target_link_libraries(nds3 PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
 target_link_libraries(nds3_static PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
