@@ -11,6 +11,13 @@ if(WIN32)
     set_target_properties(nds3_static PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/static)
 
+    # The static library is for EPICS static builds, which link the C runtime
+    # statically (/MT); the DLL keeps the default DLL runtime (/MD).
+    set(NDS3_STATIC_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING
+        "MSVC runtime library of the static NDS3 library")
+    set_target_properties(nds3_static PROPERTIES
+        MSVC_RUNTIME_LIBRARY "${NDS3_STATIC_MSVC_RUNTIME_LIBRARY}")
+
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(NDS3_DEFAULT_EPICS_ARCH windows-x64)
     else()

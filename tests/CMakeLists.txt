@@ -8,6 +8,10 @@ if(NOT GTest_FOUND AND NOT GTEST_FOUND)
     )
     # Prevent overriding the parent project's compiler/linker settings on Windows
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    # GoogleTest requires only CMake 3.13, which would leave it on the old way
+    # of setting the MSVC runtime: through flags this project no longer has, so
+    # it would end up with the static runtime instead of the DLL one.
+    set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
     FetchContent_MakeAvailable(googletest)
 
     if(NOT TARGET GTest::GTest)

@@ -60,7 +60,7 @@ organization.
 
 ## Requirements
 
-- **CMake** 3.10 or newer
+- **CMake** 3.15 or newer
 - A **C++11** compiler (GCC 4.9+ is recommended because of
   [GCC bug 57869](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=57869); MSVC on
   Windows — CI builds with the toolchain on GitHub's `windows-latest` image)
@@ -136,6 +136,13 @@ Notes specific to Windows:
   `lib/windows-x64-static-debug`), so it can be installed next to Release.
   The architecture name defaults to `windows-x64` (`win32-x86` for a 32-bit
   build); set `-DNDS3_EPICS_ARCH=...` to change it.
+- The DLL uses the DLL C runtime (`/MD`, `/MDd`), the static library the static
+  one (`/MT`, `/MTd`), matching EPICS shared and static builds. Code linking
+  the static library has to use the same runtime. To build the static library
+  for another runtime, set `-DNDS3_STATIC_MSVC_RUNTIME_LIBRARY=...` to a value
+  of CMake's
+  [`MSVC_RUNTIME_LIBRARY`](https://cmake.org/cmake/help/latest/prop_tgt/MSVC_RUNTIME_LIBRARY.html),
+  e.g. `MultiThreaded$<$<CONFIG:Debug>:Debug>DLL`.
 
 ## Build options
 
